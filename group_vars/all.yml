@@ -71,7 +71,7 @@ ssh_public_key: "{{ target_ssh_private_key_file }}"
 
 is_kube_master: "{{ inventory_hostname in groups['kube-master'] }}"
 
-source_ssh_public_key_file: "/Users/shilei/.ssh/id_rsa.pub"
+source_ssh_public_key_file: "{{ hostvars[inventory_hostname]['ansible_ssh_public_key_file'] }}"
 
 source_ssh_private_key_file: "{{ hostvars[inventory_hostname]['ansible_ssh_private_key_file'] }}"
 
