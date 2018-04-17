@@ -1,0 +1,36 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  annotations:
+    scheduler.alpha.kubernetes.io/critical-pod: ""
+  labels:
+    component: keepalived
+    tier: control-plane
+  name: keepalived
+  namespace: kube-system
+spec:
+  hostNetwork: true
+  containers:
+  - name: keepalived
+    image: slzcc/keepalived:1.2.24
+    env:
+    - name: VIRTUAL_IP
+      value: {{ k8s_load_balance_ip }}
+    - name: INTERFACE
+      value: {{ os_network_device_name }}
+    - name: VIRTUAL_MASK
+      value: "24"
+    - name: CHECK_IP
+      value: any
+    - name: CHECK_PORT
+      value: "2379"
+    - name: VRID
+      value: "53"
+    resources:
+      requests:
+        cpu: 100m
+    securityContext:
+      privileged: true
+      capabilities:
+        add:
+        - NET_ADMIN

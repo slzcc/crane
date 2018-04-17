@@ -1,0 +1,27 @@
+---
+
+docker_version: '17.03'
+
+os_user: 'shilei'
+os_system_release: 'Ubuntu'
+os_system_version: '16.04'
+os_system_arch: 'x86_64'
+os_system_codename: 'xenial'
+
+kubernetes_version: '1.10.0'
+
+
+# CentOS/RedHat docker-ce repo
+docker_rh_repo_base_url: 'https://download.docker.com/linux/centos/7/$basearch/stable'
+docker_rh_repo_gpgkey: 'https://download.docker.com/linux/centos/gpg'
+# Ubuntu docker-ce repo
+docker_ubuntu_repo_base_url: "https://download.docker.com/linux/ubuntu"
+docker_ubuntu_repo_gpgkey: 'https://download.docker.com/linux/ubuntu/gpg'
+# Debian docker-ce repo
+docker_debian_repo_base_url: "https://download.docker.com/linux/debian"
+docker_debian_repo_gpgkey: 'https://download.docker.com/linux/debian/gpg'
+# dockerproject repo
+dockerproject_rh_repo_base_url: 'https://yum.dockerproject.org/repo/main/centos/7'
+dockerproject_rh_repo_gpgkey: 'https://yum.dockerproject.org/gpg'
+dockerproject_apt_repo_base_url: 'https://apt.dockerproject.org/repo'
+dockerproject_apt_repo_gpgkey: 'https://apt.dockerproject.org/gpg'

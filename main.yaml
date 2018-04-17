@@ -1,0 +1,182 @@
+---
+- hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Output current Ansible Version.
+      shell: ansible --version || true
+
+- hosts: kube-master
+  gather_facts: false
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  tasks:
+    - name: Copy SSH Private Key
+      copy:
+        src: "{{ source_ssh_private_key_file }}"
+        dest: "{{ target_ssh_private_key_file }}"
+        owner: "{{ ssh_connect_user }}"
+        mode: 0400
+
+- hosts: all
+  sudo: yes
+  user: "{{ ssh_connect_user }}"
+  tasks:
+    - name: ssh-copy
+      authorized_key: user="{{ ssh_connect_user }}" key="{{ lookup('file', '{{ source_ssh_public_key_file }}') }}"
+    - name: setup
+      setup:
+
+- name: Install Docker
+  hosts: all
+  # gather_facts: on
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  roles:
+    - { role: docker-install, tags: [docker]}
+
+- name: Clean Server working directory to ensure the service can run.
+  hosts: all
+  gather_facts: false
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  roles:
+    - { role: clean-install, tags: [clean]}
+
+- name: System Configuration.
+  hosts: all
+  # gather_facts: false
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  roles:
+    - { role: system-info-install, tags: [system]}
+
+- name: Binary File Deployment.
+  hosts: all
+  # gather_facts: false
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  roles:
+    - { role: downloads-packages, tags: [packages]}
+
+- name: Copy Kubernetes Kubelet CFSSL to All Masters.
+  hosts: kube-master
+  # gather_facts: false
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  tasks:
+    - include: roles/downloads-configs/includes/main.yml
+
+- name: Cluster Master Configuration File Deployment, CFSSL Generated CA
+  hosts: kube-master[0]
+  # gather_facts: false
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  roles:
+    - { role: downloads-configs, tags: [configs]}
+    - { role: execute-install, tags: [execute]}
+
+- name: Cluster Master Kubernetes Manifests Files
+  hosts: kube-master
+  # gather_facts: false
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  roles:
+    - { role: kubernetes-manifests, tags: [manifests]}
+
+- name: Create Kubernetes Kubelet Config
+  hosts: kube-master
+  gather_facts: true
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  tasks:
+    - include: roles/execute-install/includes/main.yml
+
+
+- name: Run Kubernetes ApiServer
+  hosts: kube-master
+  # gather_facts: false
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  tasks:
+#     - name: Clean
+#       shell: 'rm -rf {{ kubernetes_pki_dirs }}*.json \
+#                      {{ kubernetes_pki_dirs }}*.csr \
+#                      {{ kubernetes_pki_dirs }}scheduler*.pem \
+#                      {{ kubernetes_pki_dirs }}controller-manager*.pem \
+#                      {{ kubernetes_pki_dirs }}admin*.pem \
+#                      {{ kubernetes_pki_dirs }}kubelet*.pem'
+#     - shell: 'rm -rf {{ etcd_ssl_dirs }}*.json {{ etcd_ssl_dirs }}*.csr'
+    
+    - name: Run Kubelet
+      service:
+        name: kubelet
+        state: started
+
+    - include: roles/kubernetes-bootstraps/includes/admin.yml
+
+- name:  Add Kubernetes Apiserver to Kubelet and Bootstrap RBAC.
+  hosts: kube-master[0]
+  gather_facts: true
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  roles:
+    - { role: kubernetes-bootstraps, tags: [bootstraps]}
+
+- name:  Copy Kubernetes Nodes in Nodes
+  hosts: kube-master[0]
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  roles:
+    - { role: kubernetes-nodes-config, tags: [nodes-config]}
+
+- name: Create Nodes
+  hosts: kube-node
+  gather_facts: true
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  roles:
+    - { role: kubernetes-nodes, tags: [nodes]}
+
+- name: Create Kubernetes Network
+  hosts: kube-master[0]
+  gather_facts: true
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  roles:
+    - { role: kubernetes-networks, tags: [networks]}
+
+# - name: Test
+#   hosts: all[0]
+#   # gather_facts: false
+#   # sudo: yes
+#   remote_user: "{{ ssh_connect_user }}"
+#   vars:
+#     ansible_ssh_pipelining: true
+#   tasks:
+#     - include: tests/includes/main.yml

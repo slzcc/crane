@@ -1,0 +1,3 @@
+---
+- name: Copy admin.conf to USER Dir
+  shell: cp /etc/kubernetes/admin.conf ~/.kube/config

@@ -1,0 +1,6 @@
+---
+
+hostt: >-
+  {%- for item in (groups['k8s-cluster'] -%}
+    {{ hostt | default (' ') }}
+  {%- endfor -%}

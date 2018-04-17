@@ -1,0 +1,304 @@
+---
+# CA
+## ********************************************************************************************************************************
+## Create Etcd CA
+- name:
+  setup:
+
+- name: Create Certificate Files
+  shell: cd {{ etcd_ssl_dirs }} && cfssl gencert -initca etcd-ca-csr.json | cfssljson -bare etcd-ca
+
+- name: Create Etcd Certificate Files
+  shell: "cd {{ etcd_ssl_dirs }} && cfssl gencert \
+            -ca=etcd-ca.pem \
+            -ca-key=etcd-ca-key.pem \
+            -config=ca-config.json \
+            -hostname=127.0.0.1,{{ k8s_master_ip_str }} \
+            -profile=kubernetes \
+            etcd-csr.json | cfssljson -bare etcd"
+
+## Create Kubernetes CA
+- name: Create Kubernetes Certificate Files
+  shell: cd {{ kubernetes_pki_dirs }} && cfssl gencert -initca ca-csr.json | cfssljson -bare ca
+
+- name: Create Kubernetes API Server Certificate Files
+  shell: "cd {{ kubernetes_pki_dirs }} && cfssl gencert \
+            -ca=ca.pem \
+            -ca-key=ca-key.pem \
+            -config=ca-config.json \
+            -hostname=127.0.0.1,{{ k8s_cluster_ip }},{{ k8s_load_balance_ip }},{{ k8s_master_ip_str }},kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.default.svc.cluster.local \
+            -profile=kubernetes \
+            apiserver-csr.json | cfssljson -bare apiserver"
+
+- name: Create Kubernetes Front Proxy Certificate Files
+  shell: "cd {{ kubernetes_pki_dirs }} && cfssl gencert \
+            -initca front-proxy-ca-csr.json | cfssljson -bare front-proxy-ca"
+
+- name: Create Kubernetes Front Proxy Client Certificate Files
+  shell: "cd {{ kubernetes_pki_dirs }} && cfssl gencert \
+            -ca=front-proxy-ca.pem \
+            -ca-key=front-proxy-ca-key.pem \
+            -config=ca-config.json \
+            -profile=kubernetes \
+            front-proxy-client-csr.json | cfssljson -bare front-proxy-client"
+
+- name: Create Kubernetes Admin Certificate Files
+  shell: "cd {{ kubernetes_pki_dirs }} && cfssl gencert \
+            -ca=ca.pem \
+            -ca-key=ca-key.pem \
+            -config=ca-config.json \
+            -profile=kubernetes \
+            admin-csr.json | cfssljson -bare admin"
+
+- name: Create Kubernetes Controller Manager Certificate Files
+  shell: "cd {{ kubernetes_pki_dirs }} && cfssl gencert \
+            -ca=ca.pem \
+            -ca-key=ca-key.pem \
+            -config=ca-config.json \
+            -profile=kubernetes \
+            manager-csr.json | cfssljson -bare controller-manager"
+
+- name: Create Kubernetes Scheduler Certificate Files
+  shell: "cd {{ kubernetes_pki_dirs }} && cfssl gencert \
+            -ca=ca.pem \
+            -ca-key=ca-key.pem \
+            -config=ca-config.json \
+            -profile=kubernetes \
+            scheduler-csr.json | cfssljson -bare scheduler"
+
+
+# Copy CA
+## ********************************************************************************************************************************
+## Copy Etcd CA in Nodes
+
+- shell: "for ITEM in $(ls {{ etcd_ssl_dirs }}); do 
+            chown {{ ssh_connect_user }} {{ etcd_ssl_dirs }}${ITEM}; 
+          done"
+
+- name: Copy the generated CA certificates to other nodes.
+  shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
+            -i {{ ssh_public_key }} \
+            -P 22 \
+            {{ etcd_ssl_dirs }}{{ item[1] }} \
+            {{ ssh_connect_user }}@{{ item[0] }}:{{ etcd_ssl_dirs }}{{ item[1] }}"
+  with_nested:
+    - "{{ k8s_master_ip_list }}"
+    - ['etcd-ca-key.pem', 'etcd-ca.pem', 'etcd-key.pem', 'etcd.pem']
+
+## Create Kubernetes Kubelet CA and Copy in Nodes
+- name: Create Kubernetes Kubelet CA Files
+  shell: 'cd {{ kubernetes_pki_dirs }} && cp kubelet-csr.json kubelet-{{ item[0] }}-csr.json;
+          sed -i "s/\$NODE/{{ item[0] }}/g" {{ kubernetes_pki_dirs }}kubelet-{{ item[0] }}-csr.json;'
+  with_nested:
+  - "{{ k8s_master_name_list }}"
+  - "-"
+
+- shell: 'cd {{ kubernetes_pki_dirs }} && cfssl gencert \
+            -ca=ca.pem \
+            -ca-key=ca-key.pem \
+            -config=ca-config.json \
+            -hostname={{ k8s_master_ip_str }} \
+            -profile=kubernetes \
+            kubelet-{{ item[0] }}-csr.json | cfssljson -bare kubelet-{{ item[0] }}'
+  with_nested:
+    - "{{ k8s_master_name_list }}"
+    - "-"
+
+- shell: "for ITEM in $(ls {{ kubernetes_pki_dirs }}); do 
+            chown {{ ssh_connect_user }} {{ kubernetes_pki_dirs }}${ITEM}; 
+          done"
+
+- shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
+            -i {{ ssh_public_key }} \
+            -P 22 \
+            {{ kubernetes_pki_dirs }}kubelet-{{ item[1] }}-key.pem \
+            {{ ssh_connect_user }}@{{ item[0] }}:{{ kubernetes_pki_dirs }}kubelet-{{ item[1] }}-key.pem"
+  with_nested:
+    - "{{ k8s_master_ip_list }}"
+    - "{{ k8s_master_name_list }}"
+
+- shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
+            -i {{ ssh_public_key }} \
+            -P 22 \
+            {{ kubernetes_pki_dirs }}kubelet-{{ item[1] }}.pem \
+            {{ ssh_connect_user }}@{{ item[0] }}:{{ kubernetes_pki_dirs }}kubelet-{{ item[1] }}.pem"
+  with_nested:
+    - "{{ k8s_master_ip_list }}"
+    - "{{ k8s_master_name_list }}"
+
+## Copy Kubernetes ca.pem in Nodes
+- shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
+            -i {{ ssh_public_key }} \
+            -P 22 \
+            {{ kubernetes_pki_dirs }}ca.pem \
+            {{ ssh_connect_user }}@{{ item[0] }}:{{ kubernetes_pki_dirs }}ca.pem"
+  with_nested:
+    - "{{ k8s_master_ip_list }}"
+    - "-"
+
+# Kubeconfig
+## ********************************************************************************************************************************
+## Create Kubernetes Admin Kubeconfig
+- name: Create Kubernetes Admin Kubeconfig
+  shell: "cd {{ kubernetes_pki_dirs }} && 
+            kubectl config set-cluster kubernetes \
+              --certificate-authority=ca.pem \
+              --embed-certs=true \
+              --server={{ k8s_apiserver_https_bind }} \
+              --kubeconfig={{ kubernetes_etc_dirs }}admin.conf &&
+            kubectl config set-credentials kubernetes-admin 
+              --client-certificate=admin.pem 
+              --client-key=admin-key.pem 
+              --embed-certs=true 
+              --kubeconfig={{ kubernetes_etc_dirs }}admin.conf && 
+            kubectl config set-context kubernetes-admin@kubernetes \
+              --cluster=kubernetes \
+              --user=kubernetes-admin \
+              --kubeconfig={{ kubernetes_etc_dirs }}admin.conf && 
+            kubectl config use-context kubernetes-admin@kubernetes \
+              --kubeconfig={{ kubernetes_etc_dirs }}admin.conf"
+
+## Create Kubernetes Controller Manager  Kubeconfig
+- name: Create Kubernetes Controller Manager  Kubeconfig
+  shell: "cd {{ kubernetes_pki_dirs }} && 
+          kubectl config set-cluster kubernetes 
+            --certificate-authority=ca.pem 
+            --embed-certs=true 
+            --server={{ k8s_apiserver_https_bind }} 
+            --kubeconfig={{ kubernetes_etc_dirs }}controller-manager.conf && 
+          kubectl config set-credentials system:kube-controller-manager 
+              --client-certificate=controller-manager.pem 
+              --client-key=controller-manager-key.pem 
+              --embed-certs=true 
+              --kubeconfig={{ kubernetes_etc_dirs }}controller-manager.conf && 
+           kubectl config set-context system:kube-controller-manager@kubernetes 
+              --cluster=kubernetes 
+              --user=system:kube-controller-manager 
+              --kubeconfig={{ kubernetes_etc_dirs }}controller-manager.conf &&
+           kubectl config use-context system:kube-controller-manager@kubernetes
+              --kubeconfig={{ kubernetes_etc_dirs }}controller-manager.conf"
+
+## Create Kubernetes Scheduler Kubeconfig
+- name: Create Kubernetes Scheduler Kubeconfig
+  shell: "cd {{ kubernetes_pki_dirs }} && 
+          kubectl config set-cluster kubernetes 
+              --certificate-authority=ca.pem 
+              --embed-certs=true 
+              --server={{ k8s_apiserver_https_bind }} 
+              --kubeconfig={{ kubernetes_etc_dirs }}scheduler.conf &&
+          kubectl config set-credentials system:kube-scheduler 
+              --client-certificate=scheduler.pem 
+              --client-key=scheduler-key.pem 
+              --embed-certs=true 
+              --kubeconfig={{ kubernetes_etc_dirs }}scheduler.conf && 
+          kubectl config set-context system:kube-scheduler@kubernetes 
+              --cluster=kubernetes 
+              --user=system:kube-scheduler 
+              --kubeconfig={{ kubernetes_etc_dirs }}scheduler.conf && 
+          kubectl config use-context system:kube-scheduler@kubernetes 
+              --kubeconfig={{ kubernetes_etc_dirs }}scheduler.conf"
+
+
+# # Create Kubernetes Nodes Kubeconfig
+# - name: Create Kubernetes Nodes Kubeconfig
+#   shell: 'sudo ssh -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
+#             -i {{ ssh_public_key }} -p 22 \
+#             {{ ssh_connect_user }}@{{ item[0] }} \
+#             "cd {{ kubernetes_pki_dirs }} && 
+#             kubectl config set-cluster kubernetes 
+#               --certificate-authority=ca.pem 
+#               --embed-certs=true 
+#               --server={{ k8s_apiserver_https_bind }} 
+#               --kubeconfig={{ kubernetes_etc_dirs }}kubelet.conf"'
+#   with_nested:
+#     - "{{ k8s_master_ip_list }}"
+#     - "-"
+
+# - shell: 'sudo ssh -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
+#             -i {{ ssh_public_key }} -p 22 \
+#             {{ ssh_connect_user }}@{{ item[0] }} \
+#             "cd {{ kubernetes_pki_dirs }} && 
+#             kubectl config set-cluster kubernetes 
+#               --certificate-authority=ca.pem 
+#               --embed-certs=true 
+#               --server={{ k8s_apiserver_https_bind }} 
+#               --kubeconfig={{ kubernetes_etc_dirs }}kubelet.conf"'
+#   with_nested:
+#     - "{{ k8s_master_ip_list }}"
+#     - "-"
+
+#   shell: 'sudo ssh -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
+#             -i {{ ssh_public_key }} -p 22 \
+#             {{ ssh_connect_user }}@{{ item[0] }} \
+#             "cd {{ kubernetes_pki_dirs }} && 
+#             kubectl config set-credentials system:node:{{ item[1] }} 
+#               --client-certificate=kubelet-{{ item[1] }}.pem 
+#               --client-key=kubelet-{{ item[1] }}-key.pem 
+#               --embed-certs=true 
+#               --kubeconfig={{ kubernetes_etc_dirs }}kubelet.conf"'
+#   with_nested:
+#     - "{{ k8s_master_ip_list }}"
+#     - "{{ k8s_master_name_list }}"
+
+# - shell: 'sudo ssh -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
+#             -i {{ ssh_public_key }} -p 22 \
+#             {{ ssh_connect_user }}@{{ item[0] }} \
+#             "cd {{ kubernetes_pki_dirs }} && 
+#             kubectl config set-context system:node:{{ item[1] }}@kubernetes 
+#               --cluster=kubernetes 
+#               --user=system:node:{{ item[1] }} 
+#               --kubeconfig={{ kubernetes_etc_dirs }}kubelet.conf"'
+#   with_nested:
+#     - "{{ k8s_master_ip_list }}"
+#     - "{{ k8s_master_name_list }}"
+
+# - shell: 'sudo ssh -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
+#             -i {{ ssh_public_key }} -p 22 \
+#             {{ ssh_connect_user }}@{{ item[0] }} \
+#             "cd {{ kubernetes_pki_dirs }} && 
+#             kubectl config use-context system:node:{{ item[1] }}@kubernetes 
+#               --kubeconfig={{ kubernetes_etc_dirs }}kubelet.conf"'
+#   with_nested:
+#     - "{{ k8s_master_ip_list }}"
+#     - "{{ k8s_master_name_list }}"
+
+# - shell: 'sudo ssh -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
+#             -i {{ ssh_public_key }} -p 22 \
+#             {{ ssh_connect_user }}@{{ item[0] }} \
+#             "cd {{ kubernetes_pki_dirs }} && 
+#             rm {{ kubernetes_etc_dirs }}kubelet-{{ item[1] }}.pem {{ kubernetes_etc_dirs }}kubelet-{{ item[1] }}-key.pem || true"'
+#   with_nested:
+#     - "{{ k8s_master_ip_list }}"
+#     - "{{ k8s_master_name_list }}"
+
+
+# Copy CA and Kubeconfig in Nodes
+## ********************************************************************************************************************************
+
+## Create Kubernetes Service Account Key
+- name: Create Kubernetes Service Account Key
+  shell: "cd {{ kubernetes_pki_dirs }} && 
+          openssl genrsa -out sa.key 2048 && openssl rsa -in sa.key -pubout -out sa.pub"
+
+- shell: "for ITEM in $(ls {{ kubernetes_etc_dirs }}); do 
+            chown {{ ssh_connect_user }} {{ kubernetes_etc_dirs }}${ITEM}; 
+          done"
+
+- shell: "for ITEM in $(ls {{ kubernetes_pki_dirs }}); do 
+            chown {{ ssh_connect_user }} {{ kubernetes_pki_dirs }}${ITEM}; 
+          done"
+
+## Copy CA Files in Nodes
+- name: Copy CA Files in Nodes
+  shell: "for FILE in $(ls {{ kubernetes_pki_dirs }}); do
+            sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no -i {{ ssh_public_key }} \
+            -P 22 {{ kubernetes_pki_dirs }}${FILE} {{ ssh_connect_user }}@{{ item[0] }}:{{ kubernetes_pki_dirs }}${FILE};
+          done;
+          for FILE in admin.conf controller-manager.conf scheduler.conf; do
+            sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no -i {{ ssh_public_key }} \
+            -P 22 {{ kubernetes_etc_dirs }}${FILE} {{ ssh_connect_user }}@{{ item[0] }}:{{ kubernetes_etc_dirs }}${FILE};
+          done"
+  with_nested:
+    - "{{ k8s_master_ip_list }}"
+    - "-"
+

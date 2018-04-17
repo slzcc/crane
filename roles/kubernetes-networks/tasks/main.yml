@@ -1,0 +1,27 @@
+---
+- name: Copy Kubernetes DNS Config Files
+  copy: 
+    src: kube-dns.yml.conf
+    dest: "{{ temporary_dirs }}kube-dns.yml.conf"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+- shell: kubectl apply -f {{ temporary_dirs }}kube-dns.yml.conf
+  ignore_errors: true
+
+- name: Copy Kubernetes Proxy Config Files
+  copy: 
+    src: kube-proxy.yml.conf
+    dest: "{{ temporary_dirs }}kube-proxy.yml.conf"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+- shell: kubectl apply -f {{ temporary_dirs }}kube-proxy.yml.conf
+  ignore_errors: true
+
+- name: Copy Calico Config Files
+  template: 
+    src: calico.j2
+    dest: "{{ temporary_dirs }}calico.yml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+- shell: kubectl apply -f {{ temporary_dirs }}calico.yml
+  ignore_errors: true

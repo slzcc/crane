@@ -1,0 +1,29 @@
+---
+# System
+## ********************************************************************************************************************************
+- name: Create Dir
+  shell: mkdir -p {{ systemd_etc_dirs }}kubelet.service.d/
+
+- name: Copy kubelet.service Files
+  copy: 
+    src: systemd/kubelet.service
+    dest: "{{ systemd_etc_dirs }}kubelet.service"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+
+- name: Copy 10-kubelet.conf Files
+  copy: 
+    src: systemd/10-kubelet.conf
+    dest: "{{ systemd_etc_dirs }}kubelet.service.d/10-kubelet.conf"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+
+- name: Kubelet Powered UP And Startd
+  service: 
+    name: kubelet
+    enabled: yes
+
+- name: Startd
+  service: 
+    name: kubelet
+    state: started

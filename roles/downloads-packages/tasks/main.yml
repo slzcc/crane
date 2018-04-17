@@ -1,0 +1,68 @@
+---
+# Kubernetes
+## ********************************************************************************************************************************
+- name: Copy Kubernetes CLi Binary Files
+  copy:
+    src: kubernetes/kubelet
+    dest: /usr/local/bin/kubelet
+    owner: "{{ ssh_connect_user }}"
+    mode: 0755
+
+- name: Copy Kubernetes Kubelet Binary Files
+  copy:
+    src: kubernetes/kubectl
+    dest: /usr/local/bin/kubectl
+    owner: "{{ ssh_connect_user }}"
+    mode: 0755
+  when: is_kube_master
+
+- name: Create Kubernetes-cni workdir
+  shell: mkdir -p /opt/cni/bin
+
+- name: Copy Kubernetes-cni Plugin Binary Files
+  copy:
+    src: kubernetes-cni/cni-plugins-amd64-v0.6.0.tgz
+    dest: /tmp/cni-plugins-amd64-v0.6.0.tgz
+    owner: "{{ ssh_connect_user }}"
+    mode: 0644
+
+- name: Unzip Files
+  shell: tar zxf /tmp/cni-plugins-amd64-v0.6.0.tgz -C /opt/cni/bin
+
+# CFSSL
+## ********************************************************************************************************************************
+- name: Copy CFSSL Binary Files
+  copy:
+    src: cfssl/cfssl
+    dest: /usr/local/bin/cfssl
+    owner: "{{ ssh_connect_user }}"
+    mode: 0755
+  when: is_kube_master
+
+- name: Copy CFSSL-JSON Binary Files
+  copy:
+    src: cfssl/cfssljson
+    dest: /usr/local/bin/cfssljson
+    owner: "{{ ssh_connect_user }}"
+    mode: 0755
+  when: is_kube_master
+
+# Docker Image
+# ********************************************************************************************************************************
+
+- name: Copy Kubernetes of Docker Images
+  copy:
+    src: images/kubernetes-1.10-docker_image.tar.gz
+    dest: /tmp/kubernetes-1.10-docker_image.tar.gz
+    owner: "{{ ssh_connect_user }}"
+    mode: 0755
+  when: is_kube_master
+  ignore_errors: true
+  
+- name: Check Image in Nodes
+  shell: docker images -f reference=gcr.io/google_containers/kube-apiserver-amd64
+  register: result
+
+- shell: docker load -i /tmp/kubernetes-1.10-docker_image.tar.gz
+  when: is_kube_master and not result.stdout
+  ignore_errors: true

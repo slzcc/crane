@@ -1,0 +1,106 @@
+---
+
+# - name: Remove the master Schedule status.
+#   shell: 'kubectl taint nodes node-role.kubernetes.io/master="":NoSchedule --all'
+#   ignore_errors: true
+
+- block:
+  - name: Remove the master Schedule status.
+    shell: "kubectl taint nodes node-role.kubernetes.io/master='':NoSchedule --all"
+  rescue:
+  - name: Repeat
+    shell: "sleep {{ item }} && kubectl taint nodes node-role.kubernetes.io/master='':NoSchedule --all"
+    with_sequence: start=0 end=10 stride=1
+  always:
+  - name: "-"
+    shell: cat ~/.kube/config
+    ignore_errors: true
+
+- name: Add Kubernetes Apiserver to Kubelet Rbac And Perform.
+  copy:
+    src: apiserver-to-kubelet-rbac.yml.conf
+    dest: /tmp/apiserver-to-kubelet-rbac.yml.conf
+    owner: "{{ ssh_connect_user }}"
+    mode: 0644
+
+- name: Check Cluster state
+  shell: kubectl get pods
+  register: result
+  ignore_errors: true
+
+- block:
+  - name: Add Apiserver to Kubelet RBAC.
+    shell: "kubectl apply -f /tmp/apiserver-to-kubelet-rbac.yml.conf"
+  rescue:
+  - name: Repeat
+    shell: "sleep {{ item }} && kubectl apply -f /tmp/apiserver-to-kubelet-rbac.yml.conf"
+    with_sequence: start=0 end=10 stride=1
+  always:
+  - name: "-"
+    shell: cat ~/.kube/config
+    ignore_errors: true
+
+- name: Create bootstrap-kubelet.conf .
+  shell: "openssl rand 3 -hex"
+  register: TOKEN_ID
+  changed_when: true
+
+- shell: "openssl rand 8 -hex"
+  register: TOKEN_SECRET
+  changed_when: true
+
+- name: If the old bootstrap-kubelet. Conf file is moved to TMP.
+  shell: "mv {{ kubernetes_etc_dirs }}bootstrap-kubelet.conf /tmp/"
+  ignore_errors: true
+
+- shell: "cd {{ kubernetes_pki_dirs }} &&
+          kubectl config set-cluster kubernetes 
+            --certificate-authority=ca.pem 
+            --embed-certs=true 
+            --server={{ k8s_apiserver_https_bind }} 
+            --kubeconfig={{ kubernetes_etc_dirs }}bootstrap-kubelet.conf &&
+          kubectl config set-credentials tls-bootstrap-token-user 
+            --token={{ item[0] }}.{{ item[1] }}
+            --kubeconfig={{ kubernetes_etc_dirs }}bootstrap-kubelet.conf && 
+          kubectl config set-context tls-bootstrap-token-user@kubernetes 
+            --cluster=kubernetes 
+            --user=tls-bootstrap-token-user 
+            --kubeconfig={{ kubernetes_etc_dirs }}bootstrap-kubelet.conf && 
+          kubectl config use-context tls-bootstrap-token-user@kubernetes 
+            --kubeconfig={{ kubernetes_etc_dirs }}bootstrap-kubelet.conf"
+  with_nested:
+    - "{{ TOKEN_ID['stdout_lines'] }}"
+    - "{{ TOKEN_SECRET['stdout_lines'] }}"
+- shell: chown {{ ssh_connect_user }} {{ kubernetes_etc_dirs }}bootstrap-kubelet.conf
+
+- name: Clean Cluster in TLS bootstrap secret.
+  shell: kubectl delete -f {{ bootstrappers_yaml_path }}
+  ignore_errors: true
+
+- name: Create TLS bootstrap secret.
+  shell: "echo -e 
+'apiVersion: v1 \n
+kind: Secret \n
+metadata: \n
+' '' 'name: bootstrap-token-{{ item[0] }} \n
+' '' 'namespace: kube-system \n
+type: bootstrap.kubernetes.io/token \n
+stringData: \n
+' '' 'token-id: {{ item[0] }} \n
+' '' 'token-secret: {{ item[1] }} \n 
+' '' 'usage-bootstrap-authentication: \"true\" \n
+' '' 'usage-bootstrap-signing: \"true\" \n
+' '' 'auth-extra-groups: system:bootstrappers:default-node-token' > {{ bootstrappers_yaml_path }}"
+  with_nested:
+    - "{{ TOKEN_ID['stdout_lines'] }}"
+    - "{{ TOKEN_SECRET['stdout_lines'] }}"
+- shell: sed -i "s/-e\ //g" {{ bootstrappers_yaml_path }}
+- shell: kubectl apply -f {{ bootstrappers_yaml_path }}
+
+- name: Add Kubelet Bootstrap Rbac.
+  copy: 
+    src: kubelet-bootstrap-rbac.yml.conf
+    dest: /tmp/kubelet-bootstrap-rbac.yml.conf
+    owner: "{{ ssh_connect_user }}"
+    mode: 0644
+- shell: kubectl apply -f /tmp/kubelet-bootstrap-rbac.yml.conf

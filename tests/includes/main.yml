@@ -1,0 +1,42 @@
+
+---
+## Testing..
+
+- name: Test
+  # shell: "ls /"
+  # shell: "pwd"
+  # debug: msg="{{ hostvars.iteritems() }}"
+  setup:
+# - debug: msg={{ testssss }}
+# - debug: msg={{ item }}
+#   with_items:
+#     - "{{ testssss }}"
+
+# - debug: msg="{{ ansible_facts }}"
+# - debug: msg="{{ inventory_hostname }}{{ ansible_facts.hostname}}"
+# - debug: msg={{ hostvars }}
+# - debug: msg={{ all_ip[0] }}
+# - debug: msg={{ hostvars[inventory_hostname].groups['kube-master'][0] }}
+  # debug: msg={{ target_ssh_private_key_file }}
+# - debug: msg={{ ansible_facts }}
+# - debug: msg={{ hostvars[inventory_hostname].ansible_default_ipv4.address }}
+# - debug: msg={{ hostvars[inventory_hostname].ansible_hostname }
+# - name: Copy the generated CA certificates to other nodes.
+#   shell: "sudo scp -r -o StrictHostKeyChecking=no \
+#             -i {{ ssh_public_key }} \
+#             -P 22 \
+#             {{ etcd_ssl_dirs }}{{ item[1] }} \
+#             {{ ssh_connect_user }}@{{ item[0] }}:{{ etcd_ssl_dirs }}{{ item[1] }}"
+#   with_nested:
+#     - "{{ k8s_master_ip_list }}"
+#     - ['etcd-ca-key.pem', 'etcd-ca.pem', 'etcd-key.pem', 'etcd.pem']
+
+# - shell: 'tee /etc/docker/daemon.json <<-EOF
+#         {
+#           "registry-mirrors": ["https://4dyopx9i.mirror.aliyuncs.com"]
+#         }
+#         EOF'
+
+- shell: cat < /tmp/123.txt
+  args:
+    executable: /bin/bash

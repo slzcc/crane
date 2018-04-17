@@ -1,0 +1,102 @@
+---
+## Kubernetes
+## ********************************************************************************************************************************
+k8s_master_counts: "{{ groups['kube-master'] | length }}"
+k8s_master_apiservice_bind_port: 5443
+k8s_cluster_ip: '10.96.0.1'
+k8s_cluster_ip_range: '10.96.0.0/12'
+k8s_load_balance_ip: 10.30.0.220
+
+k8s_apiserver_https_bind: 'https://{{ k8s_load_balance_ip }}:6443'
+k8s_apiserver_node_port_range: '30000-32767'
+
+k8s_master_ip_list: >-
+  [{% for host in groups['kube-master'] -%}
+    '{{ hostvars[host].ansible_default_ipv4.address }}'
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}]
+
+k8s_master_name_list: >-
+  [{% for host in groups['kube-master'] -%}
+    '{{ hostvars[host].ansible_hostname }}'
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}]
+
+k8s_master_ip_str: >-
+  {% for host in groups['kube-master'] -%}
+    {{ hostvars[host].ansible_default_ipv4.address }}
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}
+
+k8s_master_name_str: >-
+  {% for host in groups['kube-master'] -%}
+    {{ hostvars[host].ansible_hostname }}
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}
+
+k8s_node_ip_list: >-
+  [{% for host in groups['kube-node'] -%}
+    '{{ hostvars[host].ansible_default_ipv4.address }}'
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}]
+
+k8s_node_name_list: >-
+  [{% for host in groups['kube-node'] -%}
+    '{{ hostvars[host].ansible_hostname }}'
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}]
+
+## Configuration Directory
+## ********************************************************************************************************************************
+kubernetes_ctl_path: '/usr/local/bin/'
+
+etcd_ssl_dirs: '/etc/etcd/ssl/'
+
+kubernetes_pki_dirs: '/etc/kubernetes/pki/'
+
+kubernetes_etc_dirs: '/etc/kubernetes/'
+
+kubernetes_manifests_dirs: '/etc/kubernetes/manifests/'
+
+haproxy_etc_dirs: '/etc/haproxy/'
+
+systemd_etc_dirs: '/etc/systemd/system/'
+
+temporary_dirs: '/tmp/'
+## SSH
+## ********************************************************************************************************************************
+ssh_connect_user: 'root'
+
+ssh_public_key: "{{ target_ssh_private_key_file }}"
+
+is_kube_master: "{{ inventory_hostname in groups['kube-master'] }}"
+
+source_ssh_public_key_file: "/Users/shilei/.ssh/id_rsa.pub"
+
+source_ssh_private_key_file: "{{ hostvars[inventory_hostname]['ansible_ssh_private_key_file'] }}"
+
+target_ssh_private_key_file: "/tmp/.shilei-id_rsa"
+
+## Keepalived
+## ********************************************************************************************************************************
+is_keepalived: true
+
+keepalived_ip: "{{ k8s_load_balance_ip }}"
+
+os_network_device_name: 'enp0s3'
+
+## Etcd
+## ********************************************************************************************************************************
+etcd_url_scheme: "https"
+
+etcd_peer_url_scheme: "https"
+
+etcd_client_cert_auth: true
+
+etcd_peer_client_cert_auth: true
+
+etcd_client_port: 2379
+
+etcd_peer_port: 2380
+
+etcd_interface: ""

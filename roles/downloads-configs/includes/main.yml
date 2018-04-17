@@ -1,0 +1,33 @@
+---
+# Kubernetes
+- name: Create Kubernetes WorkDir
+  shell: mkdir -p {{ item }}
+  when: is_kube_master
+  with_items:
+    - "{{ kubernetes_etc_dirs }}"
+    - "{{ kubernetes_pki_dirs }}"
+    - "{{ kubernetes_manifests_dirs }}"
+
+- shell: "chown {{ ssh_connect_user }} {{ item }}"
+  when: is_kube_master
+  with_items:
+    - "{{ kubernetes_etc_dirs }}"
+    - "{{ kubernetes_pki_dirs }}"
+    - "{{ kubernetes_manifests_dirs }}"
+
+- name: Create CA WorkDir
+  shell: mkdir -p {{ etcd_ssl_dirs }}
+  when: is_kube_master
+
+- shell: "chown {{ ssh_connect_user }} {{ etcd_ssl_dirs }}"
+  when: is_kube_master
+
+- name: Create Kubelet Systemd WorkDir
+  shell: mkdir -p {{ systemd_etc_dirs }}kubelet.service.d
+
+- name: Copy CFSSL Kubernetes Json Files
+  copy:
+    src: roles/downloads-configs/files/cfssl-jsonfile/kubelet-csr.json
+    dest: "{{ kubernetes_pki_dirs }}kubelet-csr.json"
+    owner: "{{ ssh_connect_user }}" 
+    mode: 0644

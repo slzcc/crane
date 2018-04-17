@@ -1,0 +1,33 @@
+---
+
+- name: 1
+  shell: "cd {{ kubernetes_pki_dirs }} && 
+          kubectl config set-cluster kubernetes 
+            --certificate-authority=ca.pem 
+            --embed-certs=true 
+            --server={{ k8s_apiserver_https_bind }} 
+            --kubeconfig={{ kubernetes_etc_dirs }}kubelet.conf"
+- name: 2
+  shell: "cd {{ kubernetes_pki_dirs }} && 
+          kubectl config set-cluster kubernetes 
+            --certificate-authority=ca.pem 
+            --embed-certs=true 
+            --server={{ k8s_apiserver_https_bind }} 
+            --kubeconfig={{ kubernetes_etc_dirs }}kubelet.conf"
+- name: 3
+  shell: "cd {{ kubernetes_pki_dirs }} && 
+          kubectl config set-credentials system:node:{{ hostvars[inventory_hostname].ansible_hostname }} 
+            --client-certificate=kubelet-{{ hostvars[inventory_hostname].ansible_hostname }}.pem 
+            --client-key=kubelet-{{ hostvars[inventory_hostname].ansible_hostname }}-key.pem 
+            --embed-certs=true 
+            --kubeconfig={{ kubernetes_etc_dirs }}kubelet.conf"
+- name: 4
+  shell: "cd {{ kubernetes_pki_dirs }} && 
+          kubectl config set-context system:node:{{ hostvars[inventory_hostname].ansible_hostname }}@kubernetes 
+            --cluster=kubernetes 
+            --user=system:node:{{ hostvars[inventory_hostname].ansible_hostname }} 
+            --kubeconfig={{ kubernetes_etc_dirs }}kubelet.conf"
+- name: 5
+  shell: "cd {{ kubernetes_pki_dirs }} && 
+          kubectl config use-context system:node:{{ hostvars[inventory_hostname].ansible_hostname }}@kubernetes 
+            --kubeconfig={{ kubernetes_etc_dirs }}kubelet.conf"

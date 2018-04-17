@@ -1,0 +1,68 @@
+{% macro initial_cluster() -%}
+{% for host in groups['etcd'] -%}
+  {{ hostvars[host]['ansible_hostname'] }}={{ etcd_peer_url_scheme }}://
+  {%- if etcd_interface != "" -%}
+    {{ hostvars[host]['ansible_' + etcd_interface].ipv4.address }}
+  {%- else -%}
+    {{ hostvars[host].ansible_default_ipv4.address }}
+  {%- endif -%}
+:{{ etcd_peer_port }}
+  {%- if not loop.last -%},{%- endif -%}
+{%- endfor -%}
+{% endmacro -%}
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    scheduler.alpha.kubernetes.io/critical-pod: ""
+  labels:
+    component: etcd
+    tier: control-plane
+  name: etcd
+  namespace: kube-system
+spec:
+  hostNetwork: true
+  containers:
+  - name: etcd
+    image: gcr.io/google_containers/etcd-amd64:3.1.13
+    command:
+    - etcd
+    - --name={{ hostvars[inventory_hostname].ansible_hostname }}
+    - --listen-client-urls=https://0.0.0.0:2379
+    - --listen-peer-urls=https://0.0.0.0:2380
+    - --advertise-client-urls=https://{{ hostvars[inventory_hostname].ansible_default_ipv4.address }}:2379
+    - --initial-advertise-peer-urls=https://{{ hostvars[inventory_hostname].ansible_default_ipv4.address }}:2380
+    - --client-cert-auth
+    - --peer-client-cert-auth
+    - --auto-tls
+    - --peer-auto-tls
+    - --cert-file=/certs/etcd.pem
+    - --key-file=/certs/etcd-key.pem
+    - --trusted-ca-file=/certs/etcd-ca.pem
+    - --peer-cert-file=/certs/etcd.pem
+    - --peer-key-file=/certs/etcd-key.pem
+    - --peer-trusted-ca-file=/certs/etcd-ca.pem
+    - --initial-cluster={{ initial_cluster() }}
+    - --initial-cluster-token=etcd-k8s-cluster
+    - --initial-cluster-state=new
+    - --data-dir=/var/lib/etcd
+    livenessProbe:
+      failureThreshold: 8
+      tcpSocket:
+        port: 2379
+      initialDelaySeconds: 15
+      timeoutSeconds: 15
+    volumeMounts:
+    - mountPath: /certs
+      name: etcd
+    - mountPath: /var/lib/etcd
+      name: data
+  volumes:
+  - hostPath:
+      path: /etc/etcd/ssl
+      type: DirectoryOrCreate
+    name: etcd
+  - hostPath:
+      path: /var/lib/etcd
+      type: DirectoryOrCreate
+    name: data

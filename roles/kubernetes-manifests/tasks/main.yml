@@ -1,0 +1,121 @@
+---
+## Copy Kubernetes Manifests Files
+## ********************************************************************************************************************************
+- name: setup
+  setup:
+
+- name: Create Kubernetes PKI WorkDir
+  shell: mkdir -p {{ kubernetes_manifests_dirs }}
+  when: is_kube_master
+
+- shell: "chown {{ ssh_connect_user }} {{ kubernetes_manifests_dirs }}"
+  when: is_kube_master
+
+- name: Copy Kubernetes ApiServer Config Files
+  template: 
+    src: kube-apiserver.j2
+    dest: "{{ kubernetes_manifests_dirs }}kube-apiserver.yml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+  when: is_kube_master
+
+- name: Copy Kubernetes Controller Manager Config Files
+  copy: 
+    src: master/kube-controller-manager.yml
+    dest: "{{ kubernetes_manifests_dirs }}kube-controller-manager.yml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+  when: is_kube_master
+
+- name: Copy Kubernetes Scheduler Config Files
+  copy: 
+    src: master/kube-scheduler.yml
+    dest: "{{ kubernetes_manifests_dirs }}kube-scheduler.yml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+  when: is_kube_master
+
+- name: Copy encryption Config Files
+  copy: 
+    src: master/encryption.yml
+    dest: "{{ kubernetes_etc_dirs }}encryption.yml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+  when: is_kube_master
+
+- name: Copy audit-policy Config Files
+  copy: 
+    src: master/audit-policy.yml
+    dest: "{{ kubernetes_etc_dirs }}audit-policy.yml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+  when: is_kube_master
+
+# Etcd
+## ********************************************************************************************************************************
+
+- name: Copy Etcd Config Files
+  template: 
+    src: etcd.j2
+    dest: "{{ kubernetes_manifests_dirs }}etcd.yml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+  when: is_kube_master
+
+
+# Haproxy
+## ********************************************************************************************************************************
+
+- name: Create Haproxy WorkDir
+  shell: mkdir -p /etc/haproxy/
+  when: is_kube_master
+
+- name: Copy Haproxy cfg Files
+  template: 
+    src: haproxy.j2
+    dest: "{{ haproxy_etc_dirs }}haproxy.cfg"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+  when: is_kube_master
+
+- name: Copy Haproxy conf Files
+  copy: 
+    src: master/haproxy.yml
+    dest: "{{ kubernetes_manifests_dirs }}haproxy.yml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+  when: is_kube_master
+
+# System
+## ********************************************************************************************************************************
+
+- name: Copy kubelet.service Files
+  copy: 
+    src: systemd/kubelet.service
+    dest: "{{ systemd_etc_dirs }}kubelet.service"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+
+- name: Copy 10-kubelet.conf Files
+  copy: 
+    src: systemd/10-kubelet.conf
+    dest: "{{ systemd_etc_dirs }}kubelet.service.d/10-kubelet.conf"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+
+- name: Kubelet Powered UP And Startd
+  service: 
+    name: kubelet
+    enabled: yes
+
+
+# Keepalived
+## ********************************************************************************************************************************
+
+- name: Copy keepalived config Files
+  template: 
+    src: keepalived.j2
+    dest: "{{ kubernetes_manifests_dirs }}keepalived.yml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+  when: is_keepalived and is_kube_master

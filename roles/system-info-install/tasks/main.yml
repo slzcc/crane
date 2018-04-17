@@ -1,0 +1,19 @@
+---
+
+- name: Copy Sysctl Files
+  copy:
+    src: k8s.conf
+    dest: /etc/sysctl.d/k8s.conf
+    mode: 0644
+
+- name: Execute Configuration Command
+  shell: sysctl -p /etc/sysctl.d/k8s.conf
+
+- name: Close the Swam
+  shell: swapoff -a && sysctl -w vm.swappiness=0
+
+- name: Create CA WorkDir
+  shell: mkdir -p /etc/etcd/ssl
+
+- name: Create Kubernetes PKI WorkDir
+  shell: mkdir -p /etc/kubernetes/pki

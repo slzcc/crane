@@ -1,0 +1,25 @@
+---
+- name: Stop Kubelet
+  service: 
+    name: kubelet
+    state: stopped
+  ignore_errors: true
+
+- name: Clean kubernetes Etc Working directory.
+  shell: "rm -rf /etc/kubernetes/*"
+  ignore_errors: true
+
+- name: Clean Etcd Working directory.
+  shell: "rm -rf /etc/etcd/ssl/*"
+  ignore_errors: true
+
+- shell: "rm -rf /var/lib/etcd/*"
+  ignore_errors: true
+
+- name: Clean Kubelet Working directory.
+  shell: "rm -rf /var/lib/kubelet/*"
+  ignore_errors: true
+
+- name: Clean Docker Containers.
+  shell: "docker rm -f $(docker ps -aq)"
+  ignore_errors: true
