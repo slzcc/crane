@@ -10,6 +10,8 @@ k8s_load_balance_ip: 10.30.0.220
 k8s_apiserver_https_bind: 'https://{{ k8s_load_balance_ip }}:6443'
 k8s_apiserver_node_port_range: '30000-32767'
 
+is_kube_master: "{{ inventory_hostname in groups['kube-master'] }}"
+
 k8s_master_ip_list: >-
   [{% for host in groups['kube-master'] -%}
     '{{ hostvars[host].ansible_default_ipv4.address }}'
@@ -68,8 +70,6 @@ temporary_dirs: '/tmp/'
 ssh_connect_user: 'root'
 
 ssh_public_key: "{{ target_ssh_private_key_file }}"
-
-is_kube_master: "{{ inventory_hostname in groups['kube-master'] }}"
 
 source_ssh_public_key_file: "{{ hostvars[inventory_hostname]['ansible_ssh_public_key_file'] }}"
 
