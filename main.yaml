@@ -58,7 +58,7 @@
     - { role: downloads-packages, tags: [packages]}
 
 - name: Copy Kubernetes Kubelet CFSSL to All Masters.
-  hosts: kube-cluster
+  hosts: k8s-cluster
   # gather_facts: false
   sudo: yes
   remote_user: "{{ ssh_connect_user }}"

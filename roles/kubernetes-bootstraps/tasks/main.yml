@@ -1,6 +1,6 @@
 ---
-# - name: Wait for Cluster to start sleep 50s.
-#   shell: sleep 50
+- name: Wait for Cluster to start sleep 50s.
+  shell: sleep 50
 
 - name: Check Cluster state
   shell: kubectl get pods
