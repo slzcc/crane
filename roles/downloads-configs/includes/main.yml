@@ -2,14 +2,14 @@
 # Kubernetes
 - name: Create Kubernetes WorkDir
   shell: mkdir -p {{ item }}
-  when: is_kube_master
+  when: is_kube_master or is_kube_node
   with_items:
     - "{{ kubernetes_etc_dirs }}"
     - "{{ kubernetes_pki_dirs }}"
     - "{{ kubernetes_manifests_dirs }}"
 
 - shell: "chown {{ ssh_connect_user }} {{ item }}"
-  when: is_kube_master
+  when: is_kube_master or is_kube_node
   with_items:
     - "{{ kubernetes_etc_dirs }}"
     - "{{ kubernetes_pki_dirs }}"
@@ -17,10 +17,10 @@
 
 - name: Create CA WorkDir
   shell: mkdir -p {{ etcd_ssl_dirs }}
-  when: is_kube_master
+  when: is_kube_master or is_kube_node
 
 - shell: "chown {{ ssh_connect_user }} {{ etcd_ssl_dirs }}"
-  when: is_kube_master
+  when: is_kube_master or is_kube_node
 
 - name: Create Kubelet Systemd WorkDir
   shell: mkdir -p {{ systemd_etc_dirs }}kubelet.service.d
@@ -31,3 +31,4 @@
     dest: "{{ kubernetes_pki_dirs }}kubelet-csr.json"
     owner: "{{ ssh_connect_user }}" 
     mode: 0644
+  when: is_kube_master

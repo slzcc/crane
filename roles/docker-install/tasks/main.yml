@@ -1,13 +1,9 @@
 ---
-
-- name: Check OS Info
-  setup:
-  when: ansible_lsb.id == 'Ubuntu'
-
 - name: Check Docker-ce Version
   shell: docker version
   register: result
-
+  ignore_errors: true
+  
 - name: Apt Update Source
   shell: apt update
   when: result.stderr

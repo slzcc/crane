@@ -1,3 +1,4 @@
 ---
 - name: Copy admin.conf to USER Dir
-  shell: cp /etc/kubernetes/admin.conf ~/.kube/config
+  shell: cp -a /etc/kubernetes/admin.conf ~/.kube/config
+  when: is_kube_master

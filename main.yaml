@@ -17,27 +17,18 @@
         owner: "{{ ssh_connect_user }}"
         mode: 0400
 
-- hosts: all
-  sudo: yes
-  user: "{{ ssh_connect_user }}"
-  tasks:
-    - name: ssh-copy
-      authorized_key: user="{{ ssh_connect_user }}" key="{{ lookup('file', '{{ source_ssh_public_key_file }}') }}"
-    - name: setup
-      setup:
-
 - name: Install Docker
-  hosts: all
+  hosts: k8s-cluster:etcd
   # gather_facts: on
   sudo: yes
   remote_user: "{{ ssh_connect_user }}"
   vars:
     ansible_ssh_pipelining: true
   roles:
-    - { role: docker-install, tags: [docker]}
+    - { role: docker-install, when: ansible_lsb.id == 'Ubuntu', tags: [docker]}
 
 - name: Clean Server working directory to ensure the service can run.
-  hosts: all
+  hosts: k8s-cluster:etcd
   gather_facts: false
   sudo: yes
   remote_user: "{{ ssh_connect_user }}"
@@ -47,7 +38,7 @@
     - { role: clean-install, tags: [clean]}
 
 - name: System Configuration.
-  hosts: all
+  hosts: k8s-cluster:etcd
   # gather_facts: false
   sudo: yes
   remote_user: "{{ ssh_connect_user }}"
@@ -57,7 +48,7 @@
     - { role: system-info-install, tags: [system]}
 
 - name: Binary File Deployment.
-  hosts: all
+  hosts: k8s-cluster:etcd
   # gather_facts: false
   sudo: yes
   remote_user: "{{ ssh_connect_user }}"
@@ -67,7 +58,7 @@
     - { role: downloads-packages, tags: [packages]}
 
 - name: Copy Kubernetes Kubelet CFSSL to All Masters.
-  hosts: kube-master
+  hosts: kube-cluster
   # gather_facts: false
   sudo: yes
   remote_user: "{{ ssh_connect_user }}"

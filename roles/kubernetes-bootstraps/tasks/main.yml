@@ -1,6 +1,6 @@
 ---
-- name: Wait for Cluster to start sleep 15s.
-  shell: sleep 15
+# - name: Wait for Cluster to start sleep 50s.
+#   shell: sleep 50
 
 - name: Check Cluster state
   shell: kubectl get pods
@@ -9,7 +9,7 @@
 
 - name: Remove the master Schedule status.
   shell: 'kubectl taint nodes node-role.kubernetes.io/master="":NoSchedule --all'
-  ignore_errors: true
+  ignore_errors: false
 
 - name: Add Kubernetes Apiserver to Kubelet Rbac And Perform.
   copy:

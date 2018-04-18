@@ -5,12 +5,14 @@ k8s_master_counts: "{{ groups['kube-master'] | length }}"
 k8s_master_apiservice_bind_port: 5443
 k8s_cluster_ip: '10.96.0.1'
 k8s_cluster_ip_range: '10.96.0.0/12'
-k8s_load_balance_ip: 10.30.0.220
+k8s_load_balance_ip: 35.194.227.25
 
 k8s_apiserver_https_bind: 'https://{{ k8s_load_balance_ip }}:6443'
 k8s_apiserver_node_port_range: '30000-32767'
 
 is_kube_master: "{{ inventory_hostname in groups['kube-master'] }}"
+is_kube_node: "{{ inventory_hostname in groups['kube-node'] }}"
+is_load_images: false
 
 k8s_master_ip_list: >-
   [{% for host in groups['kube-master'] -%}
@@ -67,7 +69,7 @@ systemd_etc_dirs: '/etc/systemd/system/'
 temporary_dirs: '/tmp/'
 ## SSH
 ## ********************************************************************************************************************************
-ssh_connect_user: 'root'
+ssh_connect_user: 'shilei'
 
 ssh_public_key: "{{ target_ssh_private_key_file }}"
 
@@ -79,11 +81,11 @@ target_ssh_private_key_file: "/tmp/.shilei-id_rsa"
 
 ## Keepalived
 ## ********************************************************************************************************************************
-is_keepalived: true
+is_keepalived: false
 
 keepalived_ip: "{{ k8s_load_balance_ip }}"
 
-os_network_device_name: 'enp0s3'
+os_network_device_name: 'ens4'
 
 ## Etcd
 ## ********************************************************************************************************************************

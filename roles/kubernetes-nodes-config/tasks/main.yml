@@ -1,12 +1,4 @@
 ---
-## Copy bootstrap-kubelet.conf to Nodes
-- name: Copy bootstrap-kubelet.conf in Nodes
-  shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no -i {{ ssh_public_key }} \
-            -P 22 {{ kubernetes_etc_dirs }}bootstrap-kubelet.conf {{ ssh_connect_user }}@{{ item[0] }}:{{ kubernetes_etc_dirs }}bootstrap-kubelet.conf"
-  with_nested:
-    - "{{ k8s_node_ip_list }}"
-    - "-"
-
 ## Copy Kubernetes Certification Files in Nodes
 - name: Copy Kubernetes Certification Files in Nodes
   shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no -i {{ ssh_public_key }} \
@@ -14,3 +6,11 @@
   with_nested:
     - "{{ k8s_node_ip_list }}"
     - ['pki/ca.pem', 'pki/ca-key.pem', 'bootstrap-kubelet.conf']
+
+## Copy Etcd CA Files in Nodes
+- name: Copy Etcd CA Files in Nodes
+  shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no -i {{ ssh_public_key }} \
+            -P 22 {{ etcd_ssl_dirs }}{{ item[1] }}  {{ ssh_connect_user }}@{{ item[0] }}:{{ etcd_ssl_dirs }}{{ item[1] }}"
+  with_nested:
+    - "{{ k8s_node_ip_list }}"
+    - ['etcd-ca.pem', 'etcd.pem', 'etcd-key.pem']

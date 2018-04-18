@@ -1,2 +1,3 @@
 roles/downloads-packages/files
 **/main.retry
+**/nodes
