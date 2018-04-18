@@ -27,6 +27,9 @@ frontend api-https
 
 backend api-backend
     mode tcp
-  {% for host in groups['kube-master'] %}
+{% for host in groups['kube-master'] %}
     server  {{ hostvars[host]['ansible_hostname'] }}  {{ hostvars[host].ansible_default_ipv4.address }}:5443  check
-  {% endfor %}
+{% endfor %}
+{% for host in groups['k8s-cluster-add-master'] %}
+    server  {{ hostvars[host]['ansible_hostname'] }}  {{ hostvars[host].ansible_default_ipv4.address }}:5443  check
+{% endfor %}

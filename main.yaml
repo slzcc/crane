@@ -9,13 +9,8 @@
   gather_facts: false
   sudo: yes
   remote_user: "{{ ssh_connect_user }}"
-  tasks:
-    - name: Copy SSH Private Key
-      copy:
-        src: "{{ source_ssh_private_key_file }}"
-        dest: "{{ target_ssh_private_key_file }}"
-        owner: "{{ ssh_connect_user }}"
-        mode: 0400
+  roles:
+    - { role: downloads-ssh-key, tags: [copy_ssh_private_key]}
 
 - name: Install Docker
   hosts: k8s-cluster:etcd
@@ -28,7 +23,7 @@
     - { role: docker-install, when: ansible_lsb.id == 'Ubuntu', tags: [docker]}
 
 - name: Clean Server working directory to ensure the service can run.
-  hosts: k8s-cluster:etcd
+  hosts: all
   gather_facts: false
   sudo: yes
   remote_user: "{{ ssh_connect_user }}"
@@ -98,7 +93,6 @@
   tasks:
     - include: roles/execute-install/includes/main.yml
 
-
 - name: Run Kubernetes ApiServer
   hosts: kube-master
   # gather_facts: false
@@ -107,20 +101,10 @@
   vars:
     ansible_ssh_pipelining: true
   tasks:
-#     - name: Clean
-#       shell: 'rm -rf {{ kubernetes_pki_dirs }}*.json \
-#                      {{ kubernetes_pki_dirs }}*.csr \
-#                      {{ kubernetes_pki_dirs }}scheduler*.pem \
-#                      {{ kubernetes_pki_dirs }}controller-manager*.pem \
-#                      {{ kubernetes_pki_dirs }}admin*.pem \
-#                      {{ kubernetes_pki_dirs }}kubelet*.pem'
-#     - shell: 'rm -rf {{ etcd_ssl_dirs }}*.json {{ etcd_ssl_dirs }}*.csr'
-    
     - name: Run Kubelet
       service:
         name: kubelet
         state: started
-
     - include: roles/kubernetes-bootstraps/includes/admin.yml
 
 - name:  Add Kubernetes Apiserver to Kubelet and Bootstrap RBAC.

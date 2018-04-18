@@ -56,6 +56,8 @@ kubernetes_ctl_path: '/usr/local/bin/'
 
 etcd_ssl_dirs: '/etc/etcd/ssl/'
 
+etcd_data_dirs: '/var/lib/etcd/'
+
 kubernetes_pki_dirs: '/etc/kubernetes/pki/'
 
 kubernetes_etc_dirs: '/etc/kubernetes/'
@@ -66,7 +68,10 @@ haproxy_etc_dirs: '/etc/haproxy/'
 
 systemd_etc_dirs: '/etc/systemd/system/'
 
+kubelet_work_dirs: '/var/lib/kubelet/'
+
 temporary_dirs: '/tmp/'
+
 ## SSH
 ## ********************************************************************************************************************************
 ssh_connect_user: "shilei"
@@ -102,3 +107,35 @@ etcd_client_port: 2379
 etcd_peer_port: 2380
 
 etcd_interface: ""
+
+is_etcd_master: "{{ inventory_hostname in groups['etcd'] }}"
+
+## Add Nodes
+## ********************************************************************************************************************************
+
+add_node_ip_list: >-
+  [{% for host in groups['k8s-cluster-add-node'] -%}
+    '{{ hostvars[host].ansible_default_ipv4.address }}'
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}]
+
+add_node_name_list: >-
+  [{% for host in groups['k8s-cluster-add-node'] -%}
+    '{{ hostvars[host].ansible_hostname }}'
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}]
+
+add_master_ip_list: >-
+  [{% for host in groups['k8s-cluster-add-master'] -%}
+    '{{ hostvars[host].ansible_default_ipv4.address }}'
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}]
+
+add_master_name_list: >-
+  [{% for host in groups['k8s-cluster-add-master'] -%}
+    '{{ hostvars[host].ansible_hostname }}'
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}]
+
+is_add_master: "{{ inventory_hostname in groups['k8s-cluster-add-master'] }}"
+is_add_node: "{{ inventory_hostname in groups['k8s-cluster-add-node'] }}"
