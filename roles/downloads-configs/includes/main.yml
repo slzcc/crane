@@ -15,7 +15,7 @@
     - "{{ kubernetes_pki_dirs }}"
     - "{{ kubernetes_manifests_dirs }}"
 
-- name: Create CA WorkDir
+- name: Create Etcd CA WorkDir
   shell: mkdir -p {{ etcd_ssl_dirs }}
   when: is_kube_master or is_kube_node
 

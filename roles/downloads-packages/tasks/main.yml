@@ -60,12 +60,11 @@
   ignore_errors: true
   
 - name: Check Masters Image in Nodes
-  shell: docker images -f reference=gcr.io/google_containers/kube-apiserver-amd64 | wc -l
-  when: is_kube_master and is_load_images
+  shell: docker images -f reference=gcr.io/google_containers/kube-apiserver-amd64
   register: result
 
 - shell: docker load -i {{ temporary_dirs }}kubernetes-1.10_master-docker_image.tar
-  when: is_kube_master and result.stdout >= 2 and is_load_images
+  when: is_kube_master and result.stdout.find('kube-apiserver-amd64') != -1 and is_load_images
   ignore_errors: true
 
 - name: Copy Kubernetes Nodes of Docker Images
@@ -79,9 +78,8 @@
 
 - name: Check Worker Image in Nodes
   shell: docker images -f reference=k8s.gcr.io/pause-amd64 | wc -l
-  when: is_kube_node and is_load_images 
   register: result
 
 - shell: docker load -i {{ temporary_dirs }}kubernetes-1.10_node-docker_image.tar
-  when: is_kube_node and result.stdout >= 2 and is_load_images
+  when: is_kube_node and result.stdout.find('pause-amd64) != -1 and is_load_images
   ignore_errors: true
