@@ -56,15 +56,16 @@
     dest: "{{ temporary_dirs }}kubernetes-1.10_master-docker_image.tar"
     owner: "{{ ssh_connect_user }}"
     mode: 0755
-  when: is_kube_master and is_load_images
+  when: (is_kube_master and is_load_images) or (is_add_master and is_load_images)
   ignore_errors: true
   
 - name: Check Masters Image in Nodes
-  shell: docker images -f reference=gcr.io/google_containers/kube-apiserver-amd64
+  shell: docker images -f reference=gcr.io/google_containers/kube-apiserver-amd64 | wc -l
   register: result
 
 - shell: docker load -i {{ temporary_dirs }}kubernetes-1.10_master-docker_image.tar
-  when: is_kube_master and result.stdout.find('kube-apiserver-amd64') != -1 and is_load_images
+  when: (is_kube_master and result.stdout|int < 2 and is_load_images) or
+        (is_add_master and result.stdout|int < 2 and is_load_images)
   ignore_errors: true
 
 - name: Copy Kubernetes Nodes of Docker Images
@@ -73,7 +74,7 @@
     dest: "{{ temporary_dirs }}kubernetes-1.10_node-docker_image.tar"
     owner: "{{ ssh_connect_user }}"
     mode: 0755
-  when: is_kube_node and is_load_images
+  when: (is_kube_node and is_load_images) or (is_add_node and is_load_images) 
   ignore_errors: true
 
 - name: Check Worker Image in Nodes
@@ -81,5 +82,6 @@
   register: result
 
 - shell: docker load -i {{ temporary_dirs }}kubernetes-1.10_node-docker_image.tar
-  when: is_kube_node and result.stdout.find('pause-amd64) != -1 and is_load_images
+  when: (is_kube_node and result.stdout|int < 2 and is_load_images) or
+        (is_add_node and result.stdout|int < 2 and is_load_images) 
   ignore_errors: true
