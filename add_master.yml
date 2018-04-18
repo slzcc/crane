@@ -1,0 +1,76 @@
+---
+- hosts: all
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: tasks
+  tasks:
+    - name: Check all Nodes
+      ping: 
+
+- hosts: kube-master
+  gather_facts: false
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  roles:
+    - { role: downloads-ssh-key, tags: [copy_ssh_private_key]}
+
+- name: Nodes Initialize
+  hosts: k8s-cluster-add-master
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: tasks
+  roles:
+    - { role: clean-install, tags: [clean]}
+    - { role: docker-install, when: ansible_lsb.id == 'Ubuntu', tags: [docker]}
+    - { role: system-info-install, tags: [system]}
+    - { role: downloads-packages, tags: [packages]}
+  tasks:
+    - { include: roles/downloads-configs/includes/main.yml }
+
+- name: Copy Cluster CA Files to Nodes.
+  hosts: kube-master[0]
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  roles:
+    - { role: k8s-cluster-add-master, tags: [add_master]}
+
+- name: Run Nodes
+  hosts: k8s-cluster-add-master
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  roles:
+    - { role: downloads-configs, tags: [configs]}
+    - { role: kubernetes-manifests, tags: [manifests]}
+  tasks:
+    - name: Copy Kubelet CSR JSON Files
+      shell: cp -a {{ kubernetes_pki_dirs }}kubelet-csr.json {{ kubernetes_pki_dirs }}kubelet-{{ hostvars[inventory_hostname].ansible_hostname }}-csr.json
+    - name: Generate a CA Files.
+      shell: 'cd {{ kubernetes_pki_dirs }} && cfssl gencert \
+                -ca=ca.pem \
+                -ca-key=ca-key.pem \
+                -config=ca-config.json \
+                -hostname={{ k8s_master_ip_str }} \
+                -profile=kubernetes \
+                kubelet-{{ item[0] }}-csr.json | cfssljson -bare kubelet-{{ item[0] }}'
+      with_nested:
+        - "{{ add_master_name_list }}"
+        - "-"
+    - { include: roles/execute-install/includes/main.yml }
+    - name: Clean 
+      shell: 'rm -rf {{ kubernetes_pki_dirs }}*.json \
+                     {{ kubernetes_pki_dirs }}*.csr \
+                     {{ kubernetes_pki_dirs }}scheduler*.pem \
+                     {{ kubernetes_pki_dirs }}controller-manager*.pem \
+                     {{ kubernetes_pki_dirs }}admin*.pem \
+                     {{ kubernetes_pki_dirs }}kubelet*.pem'
+    - shell: 'rm -rf {{ etcd_ssl_dirs }}*.json {{ etcd_ssl_dirs }}*.csr'
+    - name: Run Kubelet
+      service:
+        name: kubelet
+        state: started

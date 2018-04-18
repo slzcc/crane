@@ -1,0 +1,50 @@
+---
+- hosts: all
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: tasks
+  tasks:
+    - name: Check all Nodes
+      ping: 
+
+- hosts: kube-master
+  gather_facts: false
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  roles:
+    - { role: downloads-ssh-key, tags: [copy_ssh_private_key]}
+
+- name: Nodes Initialize
+  hosts: k8s-cluster-add-node
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: tasks
+  roles:
+    - { role: clean-install, tags: [clean]}
+    - { role: docker-install, when: ansible_lsb.id == 'Ubuntu', tags: [docker]}
+    - { role: system-info-install, tags: [system]}
+    - { role: downloads-packages, tags: [packages]}
+  tasks:
+    - { include: roles/downloads-configs/includes/main.yml }
+
+- name: Copy Cluster CA Files to Nodes.
+  hosts: kube-master[0]
+  # gather_facts: on
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  roles:
+    - { role: k8s-cluster-add-nodes, tags: [add_node]}
+
+- name: Add Nodes
+  hosts: k8s-cluster-add-node
+  # gather_facts: on
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  roles:
+    - { role: kubernetes-nodes, tags: [nodes]}
