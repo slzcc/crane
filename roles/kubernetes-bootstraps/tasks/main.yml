@@ -1,20 +1,15 @@
 ---
+- name: Wait for Cluster to start sleep 15s.
+  shell: sleep 15
 
-# - name: Remove the master Schedule status.
-#   shell: 'kubectl taint nodes node-role.kubernetes.io/master="":NoSchedule --all'
-#   ignore_errors: true
+- name: Check Cluster state
+  shell: kubectl get pods
+  register: result
+  ignore_errors: true
 
-- block:
-  - name: Remove the master Schedule status.
-    shell: "kubectl taint nodes node-role.kubernetes.io/master='':NoSchedule --all"
-  rescue:
-  - name: Repeat
-    shell: "sleep {{ item }} && kubectl taint nodes node-role.kubernetes.io/master='':NoSchedule --all"
-    with_sequence: start=0 end=10 stride=1
-  always:
-  - name: "-"
-    shell: cat ~/.kube/config
-    ignore_errors: true
+- name: Remove the master Schedule status.
+  shell: 'kubectl taint nodes node-role.kubernetes.io/master="":NoSchedule --all'
+  ignore_errors: true
 
 - name: Add Kubernetes Apiserver to Kubelet Rbac And Perform.
   copy:
@@ -23,31 +18,25 @@
     owner: "{{ ssh_connect_user }}"
     mode: 0644
 
-- name: Check Cluster state
-  shell: kubectl get pods
-  register: result
+- name: Add Apiserver to Kubelet RBAC.
+  shell: "kubectl apply -f /tmp/apiserver-to-kubelet-rbac.yml.conf"
   ignore_errors: true
-
-- block:
-  - name: Add Apiserver to Kubelet RBAC.
-    shell: "kubectl apply -f /tmp/apiserver-to-kubelet-rbac.yml.conf"
-  rescue:
-  - name: Repeat
-    shell: "sleep {{ item }} && kubectl apply -f /tmp/apiserver-to-kubelet-rbac.yml.conf"
-    with_sequence: start=0 end=10 stride=1
-  always:
-  - name: "-"
-    shell: cat ~/.kube/config
-    ignore_errors: true
 
 - name: Create bootstrap-kubelet.conf .
   shell: "openssl rand 3 -hex"
   register: TOKEN_ID
-  changed_when: true
+  changed_when: false
 
 - shell: "openssl rand 8 -hex"
   register: TOKEN_SECRET
-  changed_when: true
+  changed_when: false
+
+- set_fact:
+    bootstrap_token_id: "{{ item[0] }}"
+    bootstrap_token_secret: "{{ item[1] }}"
+  with_nested:
+    - "{{ TOKEN_ID['stdout_lines'] }}"
+    - "{{ TOKEN_SECRET['stdout_lines'] }}"
 
 - name: If the old bootstrap-kubelet. Conf file is moved to TMP.
   shell: "mv {{ kubernetes_etc_dirs }}bootstrap-kubelet.conf /tmp/"
@@ -60,7 +49,7 @@
             --server={{ k8s_apiserver_https_bind }} 
             --kubeconfig={{ kubernetes_etc_dirs }}bootstrap-kubelet.conf &&
           kubectl config set-credentials tls-bootstrap-token-user 
-            --token={{ item[0] }}.{{ item[1] }}
+            --token={{ bootstrap_token_id }}.{{ bootstrap_token_secret }}
             --kubeconfig={{ kubernetes_etc_dirs }}bootstrap-kubelet.conf && 
           kubectl config set-context tls-bootstrap-token-user@kubernetes 
             --cluster=kubernetes 
@@ -68,33 +57,39 @@
             --kubeconfig={{ kubernetes_etc_dirs }}bootstrap-kubelet.conf && 
           kubectl config use-context tls-bootstrap-token-user@kubernetes 
             --kubeconfig={{ kubernetes_etc_dirs }}bootstrap-kubelet.conf"
-  with_nested:
-    - "{{ TOKEN_ID['stdout_lines'] }}"
-    - "{{ TOKEN_SECRET['stdout_lines'] }}"
+
 - shell: chown {{ ssh_connect_user }} {{ kubernetes_etc_dirs }}bootstrap-kubelet.conf
 
 - name: Clean Cluster in TLS bootstrap secret.
   shell: kubectl delete -f {{ bootstrappers_yaml_path }}
   ignore_errors: true
 
+# - name: Create TLS bootstrap secret.
+#   shell: "echo -e 
+# 'apiVersion: v1 \n
+# kind: Secret \n
+# metadata: \n
+# ' '' 'name: bootstrap-token-{{ item[0] }} \n
+# ' '' 'namespace: kube-system \n
+# type: bootstrap.kubernetes.io/token \n
+# stringData: \n
+# ' '' 'token-id: {{ item[0] }} \n
+# ' '' 'token-secret: {{ item[1] }} \n 
+# ' '' 'usage-bootstrap-authentication: \"true\" \n
+# ' '' 'usage-bootstrap-signing: \"true\" \n
+# ' '' 'auth-extra-groups: system:bootstrappers:default-node-token' > {{ bootstrappers_yaml_path }}"
+#   with_nested:
+#     - "{{ TOKEN_ID['stdout_lines'] }}"
+#     - "{{ TOKEN_SECRET['stdout_lines'] }}"
+# - shell: sed -i "s/-e\ //g" {{ bootstrappers_yaml_path }}
+# - shell: kubectl apply -f {{ bootstrappers_yaml_path }}
+
 - name: Create TLS bootstrap secret.
-  shell: "echo -e 
-'apiVersion: v1 \n
-kind: Secret \n
-metadata: \n
-' '' 'name: bootstrap-token-{{ item[0] }} \n
-' '' 'namespace: kube-system \n
-type: bootstrap.kubernetes.io/token \n
-stringData: \n
-' '' 'token-id: {{ item[0] }} \n
-' '' 'token-secret: {{ item[1] }} \n 
-' '' 'usage-bootstrap-authentication: \"true\" \n
-' '' 'usage-bootstrap-signing: \"true\" \n
-' '' 'auth-extra-groups: system:bootstrappers:default-node-token' > {{ bootstrappers_yaml_path }}"
-  with_nested:
-    - "{{ TOKEN_ID['stdout_lines'] }}"
-    - "{{ TOKEN_SECRET['stdout_lines'] }}"
-- shell: sed -i "s/-e\ //g" {{ bootstrappers_yaml_path }}
+  template:
+    src: bootstrappers-default-node-token.j2
+    dest: "{{ bootstrappers_yaml_path }}"
+    owner: "{{ ssh_connect_user }}"
+    mode: 0644
 - shell: kubectl apply -f {{ bootstrappers_yaml_path }}
 
 - name: Add Kubelet Bootstrap Rbac.

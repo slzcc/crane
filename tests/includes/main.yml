@@ -37,6 +37,11 @@
 #         }
 #         EOF'
 
-- shell: cat < /tmp/123.txt
-  args:
-    executable: /bin/bash
+# - shell: cat < /tmp/123.txt
+#   args:
+#     executable: /bin/bash
+
+# - set_fact:
+#      one_fact: something
+
+# - debug: msg="{{ one_fact }}"

@@ -4,33 +4,41 @@
   setup:
   when: ansible_lsb.id == 'Ubuntu'
 
+- name: Check Docker-ce Version
+  shell: docker version
+  register: result
+
 - name: Apt Update Source
   shell: apt update
+  when: result.stderr
 
 - name: Apt Install Dependence
   shell: apt install -y apt-transport-https curl ca-certificates software-properties-common
+  when: result.stderr
 
 - name: Apt Install Docker GPG
   shell: curl -fsSL {{ docker_ubuntu_repo_gpgkey }} | sudo apt-key add -
+  when: result.stderr
 
 - name: Apt Configuration Docker Source And Update Apt Source
   shell: add-apt-repository "deb [arch=amd64] {{ docker_ubuntu_repo_base_url }} {{ os_system_codename }} stable" && apt update
+  when: result.stderr
 
 - name: Apt Install Docker-ce
   shell: apt install -y docker-ce=$(apt-cache madison docker-ce | grep {{ docker_version }} | head -1 | awk '{print $3}')
+  when: result.stderr
 
 - name: Docker-ce Powered UP And Startd
   service: 
     name: docker
     enabled: yes
+  when: result.stderr
+
 - service:
     name: docker
     state: started
-
-- name: Check Docker-ce Version
-  shell: docker version
-  register: result
-
+  when: result.stderr
+  
 - debug:
     var: result['stdout_lines']
     verbosity: 0  
