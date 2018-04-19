@@ -76,6 +76,8 @@ temporary_dirs: '/tmp/'
 ## ********************************************************************************************************************************
 ssh_connect_user: "shilei"
 
+ssh_connect_port: 22
+
 ssh_public_key: "{{ target_ssh_private_key_file }}"
 
 source_ssh_public_key_file: "{{ hostvars[inventory_hostname]['ansible_ssh_public_key_file'] }}"

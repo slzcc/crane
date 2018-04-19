@@ -24,7 +24,7 @@
 # - name: Copy the generated CA certificates to other nodes.
 #   shell: "sudo scp -r -o StrictHostKeyChecking=no \
 #             -i {{ ssh_public_key }} \
-#             -P 22 \
+#             -P {{ ssh_connect_port }} \
 #             {{ etcd_ssl_dirs }}{{ item[1] }} \
 #             {{ ssh_connect_user }}@{{ item[0] }}:{{ etcd_ssl_dirs }}{{ item[1] }}"
 #   with_nested:
