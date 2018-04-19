@@ -37,7 +37,7 @@
     dest: /usr/local/bin/cfssl
     owner: "{{ ssh_connect_user }}"
     mode: 0755
-  when: is_kube_master or is_add_master
+  when: is_kube_master or is_add_master or is_etcd_master
 
 - name: Copy CFSSL-JSON Binary Files
   copy:
@@ -45,7 +45,7 @@
     dest: /usr/local/bin/cfssljson
     owner: "{{ ssh_connect_user }}"
     mode: 0755
-  when: is_kube_master or is_add_master
+  when: is_kube_master or is_add_master or is_etcd_master
 
 # Docker Image
 # ********************************************************************************************************************************
