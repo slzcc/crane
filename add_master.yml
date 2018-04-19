@@ -49,7 +49,8 @@
     - { role: kubernetes-manifests, tags: [manifests]}
   tasks:
     - name: Copy Kubelet CSR JSON Files
-      shell: cp -a {{ kubernetes_pki_dirs }}kubelet-csr.json {{ kubernetes_pki_dirs }}kubelet-{{ hostvars[inventory_hostname].ansible_hostname }}-csr.json
+      shell: 'cp -a {{ kubernetes_pki_dirs }}kubelet-csr.json {{ kubernetes_pki_dirs }}kubelet-{{ hostvars[inventory_hostname].ansible_hostname }}-csr.json;
+              sed -i "s/\$NODE/{{ hostvars[inventory_hostname].ansible_hostname }}/g" {{ kubernetes_pki_dirs }}kubelet-{{ hostvars[inventory_hostname].ansible_hostname }}-csr.json'
     - name: Generate a CA Files.
       shell: 'cd {{ kubernetes_pki_dirs }} && cfssl gencert \
                 -ca=ca.pem \
@@ -62,13 +63,13 @@
         - "{{ add_master_name_list }}"
         - "-"
     - { include: roles/execute-install/includes/main.yml }
+    - { include: roles/kubernetes-bootstraps/includes/admin.yml }
     - name: Clean 
       shell: 'rm -rf {{ kubernetes_pki_dirs }}*.json \
                      {{ kubernetes_pki_dirs }}*.csr \
                      {{ kubernetes_pki_dirs }}scheduler*.pem \
                      {{ kubernetes_pki_dirs }}controller-manager*.pem \
-                     {{ kubernetes_pki_dirs }}admin*.pem \
-                     {{ kubernetes_pki_dirs }}kubelet*.pem'
+                     {{ kubernetes_pki_dirs }}admin*.pem'
     - shell: 'rm -rf {{ etcd_ssl_dirs }}*.json {{ etcd_ssl_dirs }}*.csr'
     - name: Run Kubelet
       service:

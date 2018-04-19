@@ -211,8 +211,7 @@
                  {{ kubernetes_pki_dirs }}*.csr \
                  {{ kubernetes_pki_dirs }}scheduler*.pem \
                  {{ kubernetes_pki_dirs }}controller-manager*.pem \
-                 {{ kubernetes_pki_dirs }}admin*.pem \
-                 {{ kubernetes_pki_dirs }}kubelet*.pem'
+                 {{ kubernetes_pki_dirs }}admin*.pem'
 - shell: 'rm -rf {{ etcd_ssl_dirs }}*.json {{ etcd_ssl_dirs }}*.csr'
 
 - shell: "for ITEM in $(ls {{ kubernetes_etc_dirs }}); do 

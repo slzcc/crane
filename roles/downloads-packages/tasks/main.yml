@@ -14,7 +14,7 @@
     dest: /usr/local/bin/kubectl
     owner: "{{ ssh_connect_user }}"
     mode: 0755
-  when: is_kube_master
+  when: is_kube_master or is_add_master
 
 - name: Create Kubernetes-cni workdir
   shell: mkdir -p /opt/cni/bin
@@ -37,7 +37,7 @@
     dest: /usr/local/bin/cfssl
     owner: "{{ ssh_connect_user }}"
     mode: 0755
-  when: is_kube_master
+  when: is_kube_master or is_add_master
 
 - name: Copy CFSSL-JSON Binary Files
   copy:
@@ -45,7 +45,7 @@
     dest: /usr/local/bin/cfssljson
     owner: "{{ ssh_connect_user }}"
     mode: 0755
-  when: is_kube_master
+  when: is_kube_master or is_add_master
 
 # Docker Image
 # ********************************************************************************************************************************
