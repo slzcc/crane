@@ -1,0 +1,59 @@
+---
+## Copy CFSSL Etcd Json Files
+## ********************************************************************************************************************************
+
+- name: Copy CFSSL Etcd Json Files
+  copy:
+    src: roles/etcd-install/files/{{ item }}
+    dest: "{{ etcd_ssl_dirs }}{{ item }}"
+    owner: "{{ ssh_connect_user }}" 
+    mode: 0644
+  with_items:
+    - ca-config.json
+    - etcd-ca-csr.json
+    - etcd-csr.json
+
+## Create Certificate Files
+## ********************************************************************************************************************************
+
+- name: Create Certificate Files
+  shell: cd {{ etcd_ssl_dirs }} && cfssl gencert -initca etcd-ca-csr.json | cfssljson -bare etcd-ca
+
+- name: Create Etcd Certificate Files
+  shell: "cd {{ etcd_ssl_dirs }} && cfssl gencert \
+            -ca=etcd-ca.pem \
+            -ca-key=etcd-ca-key.pem \
+            -config=ca-config.json \
+            -hostname=127.0.0.1,{{ etcd_master_ip_str }} \
+            -profile=kubernetes \
+            etcd-csr.json | cfssljson -bare etcd"
+
+## Copy Etcd CA in Nodes
+## ********************************************************************************************************************************
+
+- shell: "for ITEM in $(ls {{ etcd_ssl_dirs }}); do 
+            chown {{ ssh_connect_user }} {{ etcd_ssl_dirs }}${ITEM}; 
+          done"
+
+- name: Copy the Generated CA certificates to other Etcd Master
+  shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
+            -i {{ ssh_public_key }} \
+            -P {{ ssh_connect_port }} \
+            {{ etcd_ssl_dirs }}{{ item[1] }} \
+            {{ ssh_connect_user }}@{{ item[0] }}:{{ etcd_ssl_dirs }}{{ item[1] }}"
+  with_nested:
+    - "{{ etcd_master_ip_list }}"
+    - ['etcd-ca-key.pem', 'etcd-ca.pem', 'etcd-key.pem', 'etcd.pem']
+
+- name: Copy CA to Kubernetes Master
+  shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
+            -i {{ ssh_public_key }} \
+            -P {{ ssh_connect_port }} \
+            {{ etcd_ssl_dirs }}{{ item[1] }} \
+            {{ ssh_connect_user }}@{{ item[0] }}:{{ etcd_ssl_dirs }}{{ item[1] }}"
+  with_nested:
+    - "{{ k8s_master_ip_list }}"
+    - ['etcd-ca-key.pem', 'etcd-ca.pem', 'etcd-key.pem', 'etcd.pem']
+
+
+- shell: 'rm -rf {{ etcd_ssl_dirs }}*.json {{ etcd_ssl_dirs }}*.csr'

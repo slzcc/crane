@@ -1,5 +1,5 @@
 ---
-
+## Generate Kubelet Kubeconfig
 - name: 1
   shell: "cd {{ kubernetes_pki_dirs }} && 
           kubectl config set-cluster kubernetes 

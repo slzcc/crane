@@ -1,0 +1,26 @@
+---
+- name: Copy CFSSL Kubernetes Json Files
+  copy:
+    src: roles/kubernetes-default/files/{{ item }}
+    dest: "{{ kubernetes_pki_dirs }}{{ item }}"
+    owner: "{{ ssh_connect_user }}" 
+    mode: 0644
+  with_items:
+    - ca-config.json
+    - ca-csr.json
+
+- name: Copy Kubelet CSR JSON Files
+  shell: 'cp -a {{ kubernetes_pki_dirs }}kubelet-csr.json {{ kubernetes_pki_dirs }}kubelet-{{ hostvars[inventory_hostname].ansible_hostname }}-csr.json;
+          sed -i "s/\$NODE/{{ hostvars[inventory_hostname].ansible_hostname }}/g" {{ kubernetes_pki_dirs }}kubelet-{{ hostvars[inventory_hostname].ansible_hostname }}-csr.json'
+
+- name: Generate a CA Files.
+  shell: 'cd {{ kubernetes_pki_dirs }} && cfssl gencert \
+            -ca=ca.pem \
+            -ca-key=ca-key.pem \
+            -config=ca-config.json \
+            -hostname={{ k8s_master_ip_str }} \
+            -profile=kubernetes \
+            kubelet-{{ item[0] }}-csr.json | cfssljson -bare kubelet-{{ item[0] }}'
+  with_nested:
+    - "{{ add_master_name_list }}"
+    - "-"

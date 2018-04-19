@@ -20,7 +20,6 @@
 
 - shell: chown {{ ssh_connect_user }} {{ etcd_ssl_dirs }} {{ etcd_data_dirs }}
 
-
 # System
 ## ********************************************************************************************************************************
 
@@ -31,9 +30,10 @@
 
 # System
 ## ********************************************************************************************************************************
+
 - name: Copy CFSSL Kubernetes Json Files
   copy:
-    src: roles/downloads-configs/files/cfssl-jsonfile/kubelet-csr.json
+    src: roles/kubernetes-default/files/kubelet-csr.json
     dest: "{{ kubernetes_pki_dirs }}kubelet-csr.json"
     owner: "{{ ssh_connect_user }}" 
     mode: 0644

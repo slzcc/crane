@@ -1,6 +1,6 @@
 ---
-- name: Wait for Cluster to start sleep 50s.
-  shell: sleep 50
+- name: Wait for Cluster to start sleep {{ all_nodes_counts|int * 10 }}s.
+  shell: "sleep {{ all_nodes_counts|int * 10 }}"
 
 - name: Check Cluster state
   shell: kubectl get pods
@@ -63,27 +63,7 @@
 - name: Clean Cluster in TLS bootstrap secret.
   shell: kubectl delete -f {{ bootstrappers_yaml_path }}
   ignore_errors: true
-
-# - name: Create TLS bootstrap secret.
-#   shell: "echo -e 
-# 'apiVersion: v1 \n
-# kind: Secret \n
-# metadata: \n
-# ' '' 'name: bootstrap-token-{{ item[0] }} \n
-# ' '' 'namespace: kube-system \n
-# type: bootstrap.kubernetes.io/token \n
-# stringData: \n
-# ' '' 'token-id: {{ item[0] }} \n
-# ' '' 'token-secret: {{ item[1] }} \n 
-# ' '' 'usage-bootstrap-authentication: \"true\" \n
-# ' '' 'usage-bootstrap-signing: \"true\" \n
-# ' '' 'auth-extra-groups: system:bootstrappers:default-node-token' > {{ bootstrappers_yaml_path }}"
-#   with_nested:
-#     - "{{ TOKEN_ID['stdout_lines'] }}"
-#     - "{{ TOKEN_SECRET['stdout_lines'] }}"
-# - shell: sed -i "s/-e\ //g" {{ bootstrappers_yaml_path }}
-# - shell: kubectl apply -f {{ bootstrappers_yaml_path }}
-
+  
 - name: Create TLS bootstrap secret.
   template:
     src: bootstrappers-default-node-token.j2

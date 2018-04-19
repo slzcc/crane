@@ -2,6 +2,8 @@
 ## Kubernetes
 ## ********************************************************************************************************************************
 k8s_master_counts: "{{ groups['kube-master'] | length }}"
+all_nodes_counts: "{{ groups['all'] | length }}"
+
 k8s_master_apiservice_bind_port: 5443
 k8s_cluster_ip: '10.96.0.1'
 k8s_cluster_ip_range: '10.96.0.0/12'
@@ -111,6 +113,30 @@ etcd_peer_port: 2380
 etcd_interface: ""
 
 is_etcd_master: "{{ inventory_hostname in groups['etcd'] }}"
+
+etcd_master_ip_str: >-
+  {% for host in groups['etcd'] -%}
+    {{ hostvars[host].ansible_default_ipv4.address }}
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}
+
+etcd_master_ip_list: >-
+  [{% for host in groups['kube-master'] -%}
+    '{{ hostvars[host].ansible_default_ipv4.address }}'
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}]
+
+etcd_initial_cluster_addr: >-
+  {% for host in groups['etcd'] -%}
+    {{ etcd_peer_url_scheme }}://
+    {%- if etcd_interface != "" -%}
+      {{ hostvars[host]['ansible_' + etcd_interface].ipv4.address }}
+    {%- else -%}
+      {{ hostvars[host].ansible_default_ipv4.address }}
+    {%- endif -%}
+  :{{ etcd_client_port }}
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}
 
 ## Add Nodes
 ## ********************************************************************************************************************************

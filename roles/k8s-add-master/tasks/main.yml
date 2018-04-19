@@ -20,8 +20,7 @@
             {{ ssh_connect_user }}@{{ item[0] }}:{{ kubernetes_etc_dirs }}{{ item[1] }}"
   with_nested:
     - "{{ add_master_ip_list }}"
-    - ['admin.conf', 'audit-policy.yml', 'bootstrap-kubelet.conf', 'controller-manager.conf', 'encryption.yml', 'scheduler.conf']
-
+    - ['admin.conf', 'bootstrap-kubelet.conf', 'controller-manager.conf', 'scheduler.conf']
 
 ## Etcd
 ## ********************************************************************************************************************************

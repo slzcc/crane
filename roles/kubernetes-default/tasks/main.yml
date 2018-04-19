@@ -5,17 +5,22 @@
 - name:
   setup:
 
-- name: Create Certificate Files
-  shell: cd {{ etcd_ssl_dirs }} && cfssl gencert -initca etcd-ca-csr.json | cfssljson -bare etcd-ca
-
-- name: Create Etcd Certificate Files
-  shell: "cd {{ etcd_ssl_dirs }} && cfssl gencert \
-            -ca=etcd-ca.pem \
-            -ca-key=etcd-ca-key.pem \
-            -config=ca-config.json \
-            -hostname=127.0.0.1,{{ k8s_master_ip_str }} \
-            -profile=kubernetes \
-            etcd-csr.json | cfssljson -bare etcd"
+## Copy CFSSL Kubernetes Json Files
+- name: Copy CFSSL Kubernetes Json Files
+  copy:
+    src: "{{ item }}"
+    dest: "{{ kubernetes_pki_dirs }}{{ item }}"
+    owner: "{{ ssh_connect_user }}" 
+    mode: 0644
+  with_items:
+    - ca-config.json
+    - ca-csr.json
+    - apiserver-csr.json
+    - front-proxy-ca-csr.json
+    - front-proxy-client-csr.json
+    - admin-csr.json
+    - manager-csr.json
+    - scheduler-csr.json
 
 ## Create Kubernetes CA
 - name: Create Kubernetes Certificate Files
@@ -66,24 +71,8 @@
             -profile=kubernetes \
             scheduler-csr.json | cfssljson -bare scheduler"
 
-
 # Copy CA
 ## ********************************************************************************************************************************
-## Copy Etcd CA in Nodes
-
-- shell: "for ITEM in $(ls {{ etcd_ssl_dirs }}); do 
-            chown {{ ssh_connect_user }} {{ etcd_ssl_dirs }}${ITEM}; 
-          done"
-
-- name: Copy the generated CA certificates to other nodes.
-  shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
-            -i {{ ssh_public_key }} \
-            -P {{ ssh_connect_port }} \
-            {{ etcd_ssl_dirs }}{{ item[1] }} \
-            {{ ssh_connect_user }}@{{ item[0] }}:{{ etcd_ssl_dirs }}{{ item[1] }}"
-  with_nested:
-    - "{{ k8s_master_ip_list }}"
-    - ['etcd-ca-key.pem', 'etcd-ca.pem', 'etcd-key.pem', 'etcd.pem']
 
 ## Create Kubernetes Kubelet CA and Copy in Nodes
 - name: Create Kubernetes Kubelet CA Files
@@ -126,7 +115,6 @@
     - "{{ k8s_master_ip_list }}"
     - "{{ k8s_master_name_list }}"
 
-## Copy Kubernetes ca.pem in Nodes
 - shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
             -i {{ ssh_public_key }} \
             -P {{ ssh_connect_port }} \
@@ -212,7 +200,6 @@
                  {{ kubernetes_pki_dirs }}scheduler*.pem \
                  {{ kubernetes_pki_dirs }}controller-manager*.pem \
                  {{ kubernetes_pki_dirs }}admin*.pem'
-- shell: 'rm -rf {{ etcd_ssl_dirs }}*.json {{ etcd_ssl_dirs }}*.csr'
 
 - shell: "for ITEM in $(ls {{ kubernetes_etc_dirs }}); do 
             chown {{ ssh_connect_user }} {{ kubernetes_etc_dirs }}${ITEM}; 
@@ -235,4 +222,3 @@
   with_nested:
     - "{{ k8s_master_ip_list }}"
     - "-"
-
