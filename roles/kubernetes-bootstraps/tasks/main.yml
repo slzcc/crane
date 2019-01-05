@@ -3,12 +3,13 @@
   shell: "sleep {{ all_nodes_counts|int * 10 }}"
 
 - name: Check Cluster state
-  shell: kubectl get pods
+  shell: 'until kubectl get pod ; do >&2 echo "Kubenetes Cluster Starting..." && sleep 1 ; done'
   register: result
   ignore_errors: true
 
 - name: Remove the master Schedule status.
   shell: 'kubectl taint nodes node-role.kubernetes.io/master="":NoSchedule --all'
+  when: not is_kube_master_schedule
   ignore_errors: false
 
 - name: Add Kubernetes Apiserver to Kubelet Rbac And Perform.
@@ -19,7 +20,7 @@
     mode: 0644
 
 - name: Add Apiserver to Kubelet RBAC.
-  shell: "kubectl apply -f /tmp/apiserver-to-kubelet-rbac.yml.conf"
+  shell: 'until kubectl apply -f /tmp/apiserver-to-kubelet-rbac.yml.conf ; do >&2 echo "Starting..." && sleep 1 ; done'
   ignore_errors: true
 
 - name: Create bootstrap-kubelet.conf .
@@ -70,7 +71,7 @@
     dest: "{{ bootstrappers_yaml_path }}"
     owner: "{{ ssh_connect_user }}"
     mode: 0644
-- shell: kubectl apply -f {{ bootstrappers_yaml_path }}
+- shell: 'until kubectl apply -f {{ bootstrappers_yaml_path }} ; do >&2 echo "Starting..." && sleep 1 ; done'
 
 - name: Add Kubelet Bootstrap Rbac.
   copy: 
@@ -78,4 +79,4 @@
     dest: /tmp/kubelet-bootstrap-rbac.yml.conf
     owner: "{{ ssh_connect_user }}"
     mode: 0644
-- shell: kubectl apply -f /tmp/kubelet-bootstrap-rbac.yml.conf
+- shell: 'until kubectl apply -f /tmp/kubelet-bootstrap-rbac.yml.conf ; do >&2 echo "Starting..." && sleep 1 ; done'

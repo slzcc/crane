@@ -1,14 +1,18 @@
 [kube-master]
-35.185.150.182
-35.229.179.57
-35.201.190.210
+10.30.0.40
+10.30.0.43
+10.30.0.41
+
+[kube-master:vars]
+#ansible_ssh_user=root
+#ansible_ssh_port=6222
 
 [kube-node]
 
 [etcd]
-35.185.150.182
-35.229.179.57
-35.201.190.210
+10.30.0.41
+10.30.0.40
+10.30.0.43
 
 [k8s-cluster:children]
 kube-node
