@@ -6,7 +6,7 @@
       shell: ansible --version || true
 
 - hosts: k8s-cluster:etcd
-  gather_facts: false
+  gather_facts: true
   sudo: yes
   remote_user: "{{ ssh_connect_user }}"
   roles:

@@ -1,6 +1,6 @@
 {% macro initial_cluster() -%}
 {% for host in groups['etcd'] -%}
-  {{ hostvars[host]['ansible_hostname'] }}={{ etcd_peer_url_scheme }}://
+  {{ hostvars[host]['ansible_nodename'] }}={{ etcd_peer_url_scheme }}://
   {%- if etcd_interface != "" -%}
     {{ hostvars[host]['ansible_' + etcd_interface].ipv4.address }}
   {%- else -%}
@@ -27,7 +27,7 @@ spec:
     image: gcr.io/google_containers/etcd-amd64:3.1.13
     command:
     - etcd
-    - --name={{ hostvars[inventory_hostname].ansible_hostname }}
+    - --name={{ hostvars[inventory_hostname].ansible_nodename }}
     - --listen-client-urls=https://0.0.0.0:2379
     - --listen-peer-urls=https://0.0.0.0:2380
     - --advertise-client-urls=https://{{ hostvars[inventory_hostname].ansible_default_ipv4.address }}:2379

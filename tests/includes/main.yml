@@ -1,20 +1,20 @@
-
 ---
 ## Testing..
 
 - name: Test
-  # shell: "ls /"
-  # shell: "pwd"
-  # debug: msg="{{ hostvars.iteritems() }}"
+  #  shell: "ls /"
+  #  shell: "pwd"
+
+#- debug: msg="{{ hostvars.iteritems() }}"
   setup:
-# - debug: msg={{ testssss }}
-# - debug: msg={{ item }}
-#   with_items:
-#     - "{{ testssss }}"
+#- debug: msg={{ testssss }}
+#- debug: msg={{ item }}
+#  with_items:
+#    - "{{ testssss }}"
 
 # - debug: msg="{{ ansible_facts }}"
 # - debug: msg="{{ inventory_hostname }}{{ ansible_facts.hostname}}"
-# - debug: msg={{ hostvars }}
+- debug: msg={{ hostvars }}
 # - debug: msg={{ all_ip[0] }}
 # - debug: msg={{ hostvars[inventory_hostname].groups['kube-master'][0] }}
   # debug: msg={{ target_ssh_private_key_file }}

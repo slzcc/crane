@@ -14,7 +14,7 @@ k8s_apiserver_node_port_range: '30000-32767'
 
 is_kube_master: "{{ inventory_hostname in groups['kube-master'] }}"
 is_kube_node: "{{ inventory_hostname in groups['kube-node'] }}"
-is_load_images: true
+is_load_images: false
 is_kube_master_schedule: true
 
 k8s_master_ip_list: >-
@@ -25,7 +25,7 @@ k8s_master_ip_list: >-
 
 k8s_master_name_list: >-
   [{% for host in groups['kube-master'] -%}
-    '{{ hostvars[host].ansible_hostname }}'
+    '{{ hostvars[host].ansible_nodename }}'
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}]
 
@@ -37,7 +37,7 @@ k8s_master_ip_str: >-
 
 k8s_master_name_str: >-
   {% for host in groups['kube-master'] -%}
-    {{ hostvars[host].ansible_hostname }}
+    {{ hostvars[host].ansible_nodename }}
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}
 
@@ -49,7 +49,7 @@ k8s_node_ip_list: >-
 
 k8s_node_name_list: >-
   [{% for host in groups['kube-node'] -%}
-    '{{ hostvars[host].ansible_hostname }}'
+    '{{ hostvars[host].ansible_nodename }}'
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}]
 
@@ -150,7 +150,7 @@ add_node_ip_list: >-
 
 add_node_name_list: >-
   [{% for host in groups['k8s-cluster-add-node'] -%}
-    '{{ hostvars[host].ansible_hostname }}'
+    '{{ hostvars[host].ansible_nodename }}'
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}]
 
@@ -162,7 +162,7 @@ add_master_ip_list: >-
 
 add_master_name_list: >-
   [{% for host in groups['k8s-cluster-add-master'] -%}
-    '{{ hostvars[host].ansible_hostname }}'
+    '{{ hostvars[host].ansible_nodename }}'
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}]
 
