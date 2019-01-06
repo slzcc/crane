@@ -17,6 +17,8 @@
     dest: "{{ systemd_etc_dirs }}kubelet.service.d/10-kubelet.conf"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
+    
+- shell: systemctl daemon-reload
 
 - name: Kubelet Powered UP And Startd
   service: 

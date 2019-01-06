@@ -1,51 +1,13 @@
 ---
 # Kubernetes
 ## ********************************************************************************************************************************
-- name: Copy Kubernetes CLi Binary Files
-  copy:
-    src: kubernetes/kubelet
-    dest: /usr/local/bin/kubelet
-    owner: "{{ ssh_connect_user }}"
-    mode: 0755
+- name: Configure Kubernetes to execute files
+  include: includes/download_file.yml
+  when: not is_using_local_files
 
-- name: Copy Kubernetes Kubelet Binary Files
-  copy:
-    src: kubernetes/kubectl
-    dest: /usr/local/bin/kubectl
-    owner: "{{ ssh_connect_user }}"
-    mode: 0755
-  when: is_kube_master or is_add_master
-
-- name: Create Kubernetes-cni workdir
-  shell: mkdir -p /opt/cni/bin
-
-- name: Copy Kubernetes-cni Plugin Binary Files
-  copy:
-    src: kubernetes-cni/cni-plugins-amd64-v0.6.0.tgz
-    dest: /tmp/cni-plugins-amd64-v0.6.0.tgz
-    owner: "{{ ssh_connect_user }}"
-    mode: 0644
-
-- name: Unzip Files
-  shell: tar zxf /tmp/cni-plugins-amd64-v0.6.0.tgz -C /opt/cni/bin
-
-# CFSSL
-## ********************************************************************************************************************************
-- name: Copy CFSSL Binary Files
-  copy:
-    src: cfssl/cfssl
-    dest: /usr/local/bin/cfssl
-    owner: "{{ ssh_connect_user }}"
-    mode: 0755
-  when: is_kube_master or is_add_master or is_etcd_master
-
-- name: Copy CFSSL-JSON Binary Files
-  copy:
-    src: cfssl/cfssljson
-    dest: /usr/local/bin/cfssljson
-    owner: "{{ ssh_connect_user }}"
-    mode: 0755
-  when: is_kube_master or is_add_master or is_etcd_master
+- tasks:
+  include: includes/local_file.yml
+  when: is_using_local_files
 
 # Docker Image
 # ********************************************************************************************************************************

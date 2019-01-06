@@ -1,0 +1,32 @@
+---
+# Kubernetes
+## ********************************************************************************************************************************
+- shell: "ls {{ temporary_dirs }}kubernetes"
+  register: CHECK_KUBE_BIN_PACKAGE
+  ignore_errors: true
+
+- name: Download Kubernetes Ctl And Kubelet Binary Files
+  shell: "wget -qO- 'https://dl.k8s.io/v1.10.0/kubernetes-node-linux-amd64.tar.gz' | tar zx -C {{ temporary_dirs }}"
+  changed_when: true
+  when: CHECK_KUBE_BIN_PACKAGE.stderr
+
+- shell: "cp {{ temporary_dirs }}kubernetes/node/bin/kubectl /usr/local/bin/"
+
+- shell: "cp {{ temporary_dirs }}kubernetes/node/bin/kubelet /usr/local/bin/"
+
+- shell: "ls /opt/cni/bin"
+  register: CHECK_CNI_BIN_PACKAGE
+  ignore_errors: true
+
+- name: Download Kubernetes-cni Plugin Binary Files
+  shell: mkdir -p /opt/cni/bin
+  shell: "wget -qO- 'https://github.com/containernetworking/plugins/releases/download/v0.6.0/cni-plugins-amd64-v0.6.0.tgz' | tar -zx -C /opt/cni/bin"
+  when: CHECK_CNI_BIN_PACKAGE.stderr
+  
+# CFSSL
+## ********************************************************************************************************************************
+- name: Download CFSSL Binary Files
+  shell: "curl -os /usr/local/bin/cfssl https://pkg.cfssl.org/R1.2/cfssl_linux-amd64"
+  shell: "curl -os /usr/local/bin/cfssljson https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64"
+  shell: "chmod +x /usr/local/bin/cfssl*"
+  when: is_kube_master or is_add_master or is_etcd_master

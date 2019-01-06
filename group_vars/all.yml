@@ -14,8 +14,9 @@ k8s_apiserver_node_port_range: '30000-32767'
 
 is_kube_master: "{{ inventory_hostname in groups['kube-master'] }}"
 is_kube_node: "{{ inventory_hostname in groups['kube-node'] }}"
-is_load_images: true
+is_load_images: false
 is_kube_master_schedule: true
+is_using_local_files: false
 
 k8s_master_ip_list: >-
   [{% for host in groups['kube-master'] -%}
@@ -168,3 +169,8 @@ add_master_name_list: >-
 
 is_add_master: "{{ inventory_hostname in groups['k8s-cluster-add-master'] }}"
 is_add_node: "{{ inventory_hostname in groups['k8s-cluster-add-node'] }}"
+
+## Clean Kubernetes Cluster
+## ********************************************************************************************************************************
+
+is_remove_docker_ce: false

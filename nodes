@@ -4,6 +4,7 @@
 192.168.1.203
 
 [kube-node]
+192.168.1.204
 
 [etcd]
 192.168.1.201
@@ -15,7 +16,6 @@ kube-node
 kube-master
 
 [k8s-cluster-add-master]
-192.168.1.204
 [k8s-cluster-add-node]
 
 [all:vars]

@@ -116,13 +116,3 @@
     ansible_ssh_pipelining: true
   roles:
     - { role: kubernetes-networks, tags: [networks]}
-
-# - name: Test
-#   hosts: all[0]
-#   # gather_facts: false
-#   # sudo: yes
-#   remote_user: "{{ ssh_connect_user }}"
-#   vars:
-#     ansible_ssh_pipelining: true
-#   tasks:
-#     - include: tests/includes/main.yml

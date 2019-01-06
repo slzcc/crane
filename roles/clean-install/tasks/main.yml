@@ -23,3 +23,8 @@
 - name: Clean Docker Containers.
   shell: "docker rm -f $(docker ps -aq)"
   ignore_errors: true
+
+- name: Clean Kubernet Ctl.
+  shell: "rm -rf /usr/local/bin/kubectl"
+  shell: "rm -rf /usr/local/bin/kubelet"
+  ignore_errors: true

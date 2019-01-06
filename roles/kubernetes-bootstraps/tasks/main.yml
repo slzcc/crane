@@ -1,8 +1,5 @@
 ---
-- name: Wait for Cluster to start sleep {{ all_nodes_counts|int * 10 }}s.
-  shell: "sleep {{ all_nodes_counts|int * 10 }}"
-
-- name: Check Cluster state
+- name: Check Cluster Status
   shell: 'until kubectl get pod ; do >&2 echo "Kubenetes Cluster Starting..." && sleep 1 ; done'
   register: result
   ignore_errors: true
