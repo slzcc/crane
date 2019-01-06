@@ -1,5 +1,5 @@
 # Ansible-Kubernetes
-Please refer to the documentation for detailed configuration: [Wiki Docs URL](https://wiki.shileizcc.com/display/CASE/Ansibles+Kubernetes+Cluster).
+Please refer to the documentation for detailed configuration: [Wiki Docs URL](https://wiki.shileizcc.com/display/CASE/Ansible+Kubernetes+Cluster).
 
 The Kubernetes Version currently supported:
 * v1.10.0
