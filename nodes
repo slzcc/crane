@@ -15,6 +15,7 @@ kube-node
 kube-master
 
 [k8s-cluster-add-master]
+192.168.1.204
 [k8s-cluster-add-node]
 
 [all:vars]

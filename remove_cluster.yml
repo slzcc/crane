@@ -1,0 +1,18 @@
+---
+- hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Output current Ansible Version.
+      shell: ansible --version || true
+
+- name: Clean Kubernetes Cluster
+  hosts: all
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  roles:
+    - { role: clean-install, tags: [clean]}
+  tasks:
+    - name: Clean Docker CE
+      shell: "apt autoremove -y docker-ce"
