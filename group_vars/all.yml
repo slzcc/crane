@@ -7,7 +7,7 @@ all_nodes_counts: "{{ groups['all'] | length }}"
 k8s_master_apiservice_bind_port: 5443
 k8s_cluster_ip: '10.96.0.1'
 k8s_cluster_ip_range: '10.96.0.0/12'
-k8s_load_balance_ip: 192.168.1.200
+k8s_load_balance_ip: 192.168.1.201
 
 k8s_apiserver_https_bind: 'https://{{ k8s_load_balance_ip }}:6443'
 k8s_apiserver_node_port_range: '30000-32767'
@@ -62,11 +62,13 @@ etcd_ssl_dirs: '/etc/etcd/ssl/'
 
 etcd_data_dirs: '/var/lib/etcd/'
 
-kubernetes_pki_dirs: '/etc/kubernetes/pki/'
+kubernetes_pki_dirs: '{{ kubernetes_etc_dirs }}pki/'
 
 kubernetes_etc_dirs: '/etc/kubernetes/'
 
-kubernetes_manifests_dirs: '/etc/kubernetes/manifests/'
+kubernetes_manifests_dirs: '{{ kubernetes_etc_dirs }}manifests/'
+
+kubernetes_cni_dirs: '/opt/cni/bin'
 
 haproxy_etc_dirs: '/etc/haproxy/'
 
@@ -78,7 +80,7 @@ temporary_dirs: '/tmp/'
 
 ## SSH
 ## ********************************************************************************************************************************
-ssh_connect_user: "ubuntu"
+ssh_connect_user: "shilei"
 
 ssh_connect_port: 22
 
@@ -92,14 +94,17 @@ target_ssh_private_key_file: "{{ temporary_dirs }}.general-id_rsa"
 
 ## Keepalived
 ## ********************************************************************************************************************************
-is_keepalived: true
+is_keepalived: false
 
 keepalived_ip: "{{ k8s_load_balance_ip }}"
 
-os_network_device_name: 'ens33'
+vip_bind_net_device: "{{ os_network_device_name }}"
 
 ## Etcd
 ## ********************************************************************************************************************************
+#
+os_network_device_name: 'ens4'
+
 etcd_url_scheme: "https"
 
 etcd_peer_url_scheme: "https"

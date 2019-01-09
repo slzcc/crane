@@ -6,18 +6,19 @@
   ignore_errors: true
 
 - name: Clean kubernetes Etc Working directory.
-  shell: "rm -rf /etc/kubernetes/"
+  shell: "rm -rf {{ kubernetes_etc_dirs }}"
   ignore_errors: true
 
 - name: Clean Etcd Working directory.
-  shell: "rm -rf /etc/etcd/*"
+  shell: "rm -rf {{ etcd_ssl_dirs }}"
+  shell: "rm -rf {{ etcd_data_dirs }}"
   ignore_errors: true
 
-- shell: "rm -rf /var/lib/etcd/*"
+- shell: "rm -rf {{ kubelet_work_dirs }}*"
   ignore_errors: true
 
 - name: Clean Kubelet Working directory.
-  shell: "rm -rf /var/lib/kubelet/*"
+  shell: "rm -rf {{ kubelet_work_dirs }}*"
   ignore_errors: true
 
 - name: Clean Docker Containers.
@@ -25,6 +26,18 @@
   ignore_errors: true
 
 - name: Clean Kubernet Ctl.
-  shell: "rm -rf /usr/local/bin/kubectl"
-  shell: "rm -rf /usr/local/bin/kubelet"
+  shell: "rm -rf {{ kubernetes_ctl_path }}kubectl"
+  shell: "rm -rf {{ kubernetes_ctl_path }}kubelet"
+  ignore_errors: true
+
+- name: Clean Tmp
+  shell: "rm -rf {{ temporary_dirs }}kube*"
+  ignore_errors: true
+
+- name: Clean CNI
+  shell: "rm -rf {{ kubernetes_cni_dirs }}"
+  ignore_errors: true
+
+- name: Clean Haproxy
+  shell: "rm -rf {{ haproxy_etc_dirs }}"
   ignore_errors: true

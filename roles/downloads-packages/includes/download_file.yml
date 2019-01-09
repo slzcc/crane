@@ -14,13 +14,15 @@
 
 - shell: "cp {{ temporary_dirs }}kubernetes/node/bin/kubelet /usr/local/bin/"
 
-- shell: "ls /opt/cni/bin"
+- shell: "ls {{ kubernetes_cni_dirs }}"
   register: CHECK_CNI_BIN_PACKAGE
   ignore_errors: true
 
 - name: Download Kubernetes-cni Plugin Binary Files
-  shell: mkdir -p /opt/cni/bin
-  shell: "wget -qO- 'https://github.com/containernetworking/plugins/releases/download/v0.6.0/cni-plugins-amd64-v0.6.0.tgz' | tar -zx -C /opt/cni/bin"
+  shell: "mkdir -p {{ kubernetes_cni_dirs }} && chown -R {{ ssh_connect_user }}.{{ ssh_connect_user }} {{ kubernetes_cni_dirs }}"
+  when: CHECK_CNI_BIN_PACKAGE.stderr
+
+- shell: "wget -qO- 'https://github.com/containernetworking/plugins/releases/download/v0.6.0/cni-plugins-amd64-v0.6.0.tgz' | tar -zx -C {{ kubernetes_cni_dirs }}"
   when: CHECK_CNI_BIN_PACKAGE.stderr
   
 # CFSSL

@@ -17,7 +17,7 @@ spec:
     - name: VIRTUAL_IP
       value: {{ k8s_load_balance_ip }}
     - name: INTERFACE
-      value: {{ os_network_device_name }}
+      value: {{ vip_bind_net_device }}
     - name: VIRTUAL_MASK
       value: "24"
     - name: CHECK_IP

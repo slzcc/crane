@@ -3,28 +3,28 @@
 ## ********************************************************************************************************************************
 
 - name: Create Kubernetes WorkDirs
-  shell: mkdir -p {{ kubernetes_etc_dirs }} {{ kubernetes_pki_dirs }} {{ kubernetes_manifests_dirs }}
+  shell: "mkdir -p {{ kubernetes_etc_dirs }} {{ kubernetes_pki_dirs }} {{ kubernetes_manifests_dirs }}"
 
-- shell: chown {{ ssh_connect_user }} {{ kubernetes_etc_dirs }} {{ kubernetes_pki_dirs }} {{ kubernetes_manifests_dirs }}
+- shell: "chown {{ ssh_connect_user }} {{ kubernetes_etc_dirs }} {{ kubernetes_pki_dirs }} {{ kubernetes_manifests_dirs }}"
 
 - name: Create Kubelet WorkDirs
-  shell: mkdir -p {{ kubernetes_etc_dirs }} {{ kubelet_work_dirs }}
+  shell: "mkdir -p {{ kubernetes_etc_dirs }} {{ kubelet_work_dirs }}"
 
-- shell: chown {{ ssh_connect_user }} {{ kubelet_work_dirs }}
+- shell: "chown {{ ssh_connect_user }} {{ kubelet_work_dirs }}"
 
 # Etcd
 ## ********************************************************************************************************************************
 
 - name: Create Etcd WorkDirs
-  shell: mkdir -p {{ etcd_ssl_dirs }} {{ etcd_data_dirs }}
+  shell: "mkdir -p {{ etcd_ssl_dirs }} {{ etcd_data_dirs }}"
 
-- shell: chown {{ ssh_connect_user }} {{ etcd_ssl_dirs }} {{ etcd_data_dirs }}
+- shell: "chown {{ ssh_connect_user }} {{ etcd_ssl_dirs }} {{ etcd_data_dirs }}"
 
 
 # System
 ## ********************************************************************************************************************************
 
 - name: Create Kubelet Systemd ConfigDirs
-  shell: mkdir -p {{ systemd_etc_dirs }}kubelet.service.d/
+  shell: "mkdir -p {{ systemd_etc_dirs }}kubelet.service.d/"
 
-- shell: chown {{ ssh_connect_user }} {{ systemd_etc_dirs }}kubelet.service.d/
+- shell: "chown {{ ssh_connect_user }} {{ systemd_etc_dirs }}kubelet.service.d/"

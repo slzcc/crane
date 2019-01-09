@@ -17,7 +17,7 @@
   when: is_kube_master or is_add_master
 
 - name: Create Kubernetes-cni workdir
-  shell: mkdir -p /opt/cni/bin
+  shell: "mkdir -p {{ kubernetes_cni_dirs }} && chown -R {{ ssh_connect_user }}.{{ ssh_connect_user }} {{ kubernetes_cni_dirs }}"
 
 - name: Copy Kubernetes-cni Plugin Binary Files
   copy:
@@ -27,7 +27,7 @@
     mode: 0644
 
 - name: Unzip Files
-  shell: tar zxf /tmp/cni-plugins-amd64-v0.6.0.tgz -C /opt/cni/bin
+  shell: tar zxf /tmp/cni-plugins-amd64-v0.6.0.tgz -C {{ kubernetes_cni_dirs }}
 
 # CFSSL
 ## ********************************************************************************************************************************

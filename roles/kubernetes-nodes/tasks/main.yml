@@ -2,7 +2,7 @@
 # System
 ## ********************************************************************************************************************************
 - name: Create Dir
-  shell: mkdir -p {{ systemd_etc_dirs }}kubelet.service.d/
+  shell: "mkdir -p {{ systemd_etc_dirs }}kubelet.service.d/ && chown -R {{ ssh_connect_user }}.{{ ssh_connect_user }} {{ systemd_etc_dirs }}kubelet.service.d/"
 
 - name: Copy kubelet.service Files
   copy: 

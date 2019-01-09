@@ -5,7 +5,7 @@
   setup:
 
 - name: Create Kubernetes PKI WorkDir
-  shell: mkdir -p {{ kubernetes_manifests_dirs }}
+  shell: "mkdir -p {{ kubernetes_manifests_dirs }} && chown -R {{ ssh_connect_user }}.{{ ssh_connect_user }} {{ kubernetes_manifests_dirs }}"
   when: is_kube_master or is_add_master
 
 - shell: "chown {{ ssh_connect_user }} {{ kubernetes_manifests_dirs }}"
@@ -55,7 +55,7 @@
 ## ********************************************************************************************************************************
 
 - name: Create Haproxy WorkDir
-  shell: mkdir -p /etc/haproxy/
+  shell: "mkdir -p {{ haproxy_etc_dirs }} && chown -R {{ ssh_connect_user }}.{{ ssh_connect_user }} {{ haproxy_etc_dirs }}"
   when: is_kube_master or is_add_master
 
 - name: Copy Haproxy cfg Files
