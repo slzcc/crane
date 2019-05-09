@@ -21,11 +21,11 @@
   ignore_errors: true
 
 - name: Create bootstrap-kubelet.conf .
-  shell: "openssl rand 3 -hex"
+  shell: "openssl rand -hex 3"
   register: TOKEN_ID
   changed_when: false
 
-- shell: "openssl rand 8 -hex"
+- shell: "openssl rand -hex 8"
   register: TOKEN_SECRET
   changed_when: false
 
