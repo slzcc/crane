@@ -1,7 +1,11 @@
-bootstrappers_yaml_path: '{{ temporary_dirs }}bootstrappers-default-node-token.yml.conf'
-
 k8s_node_ip_list: >-
   [{% for host in groups['kube-node'] -%}
     '{{ hostvars[host].ansible_default_ipv4.address }}'
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}]
+
+k8s_node_name_list: >-
+  [{% for host in groups['kube-node'] -%}
+    '{{ hostvars[host].ansible_nodename }}'
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}]

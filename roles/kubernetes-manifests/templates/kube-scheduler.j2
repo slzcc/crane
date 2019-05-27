@@ -12,14 +12,14 @@ spec:
   hostNetwork: true
   containers:
   - name: kube-scheduler
-    image: gcr.io/google_containers/kube-scheduler-amd64:v1.10.0
+    image: k8s.gcr.io/kube-scheduler:{{ k8s_version }}
     command:
       - kube-scheduler
       - --v=0
       - --logtostderr=true
       - --address=127.0.0.1
       - --leader-elect=true
-      - --kubeconfig=/etc/kubernetes/scheduler.conf
+      - --kubeconfig={{ kubernetes_etc_dirs }}scheduler.conf
     livenessProbe:
       failureThreshold: 8
       httpGet:
@@ -33,18 +33,18 @@ spec:
       requests:
         cpu: 100m
     volumeMounts:
-    - mountPath: /etc/kubernetes/pki
+    - mountPath: {{ kubernetes_etc_dirs }}pki
       name: k8s-certs
       readOnly: true
-    - mountPath: /etc/kubernetes/scheduler.conf
+    - mountPath: {{ kubernetes_etc_dirs }}scheduler.conf
       name: kubeconfig
       readOnly: true
   volumes:
   - hostPath:
-      path: /etc/kubernetes/pki
+      path: {{ kubernetes_etc_dirs }}pki
       type: DirectoryOrCreate
     name: k8s-certs
   - hostPath:
-      path: /etc/kubernetes/scheduler.conf
+      path: {{ kubernetes_etc_dirs }}scheduler.conf
       type: FileOrCreate
     name: kubeconfig

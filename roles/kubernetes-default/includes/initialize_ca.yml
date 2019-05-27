@@ -10,8 +10,9 @@
     - ca-csr.json
 
 - name: Copy Kubelet CSR JSON Files
-  shell: 'cp -a {{ kubernetes_pki_dirs }}kubelet-csr.json {{ kubernetes_pki_dirs }}kubelet-{{ hostvars[inventory_hostname].ansible_nodename }}-csr.json;
-          sed -i "s/\$NODE/{{ hostvars[inventory_hostname].ansible_nodename }}/g" {{ kubernetes_pki_dirs }}kubelet-{{ hostvars[inventory_hostname].ansible_nodename }}-csr.json'
+  shell: 'until cp -a {{ kubernetes_pki_dirs }}kubelet-csr.json {{ kubernetes_pki_dirs }}kubelet-{{ hostvars[inventory_hostname].ansible_nodename }}-csr.json; do >&2 echo "Starting..." && sleep 1 ; done'
+
+- shell: 'sed -i "s#\$NODE#{{ hostvars[inventory_hostname].ansible_nodename }}#g" {{ kubernetes_pki_dirs }}kubelet-{{ hostvars[inventory_hostname].ansible_nodename }}-csr.json'
 
 - name: Generate a CA Files.
   shell: 'cd {{ kubernetes_pki_dirs }} && cfssl gencert \

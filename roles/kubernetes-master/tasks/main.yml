@@ -1,13 +1,11 @@
 ---
 # System
 ## ********************************************************************************************************************************
-- name: Create Dir
-  shell: "mkdir -p {{ systemd_etc_dirs }}kubelet.service.d/ && chown -R {{ ssh_connect_user }}.{{ ssh_connect_user }} {{ systemd_etc_dirs }}kubelet.service.d/"
 
 - name: Copy kubelet.service Files
   template: 
     src: kubelet.service.j2
-    dest: "{{ systemd_etc_dirs }}kubelet.service"
+    dest: "{{ systemd_default_dirs }}kubelet.service"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
 
@@ -17,27 +15,40 @@
     dest: "{{ systemd_etc_dirs }}kubelet.service.d/10-kubelet.conf"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
-
+    
 - name: Copy Kubelet Config
   template: 
-    src: config.j2
+    src: "config.j2"
     dest: "{{ kubelet_work_dirs }}config.yaml"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
 
-- shell: systemctl daemon-reload
+- name: Copy Kubelet Env Config
+  template: 
+    src: "kubernetes-flags.j2"
+    dest: "{{ kubelet_work_dirs }}kubernetes-flags.env"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+
+- name: Create Kubelet PEM
+  include: includes/kubelet_pem.yml
+- name: System Reload
+  shell: "systemctl daemon-reload"
 
 - name: Kubelet Powered UP And Startd
   service: 
     name: kubelet
     enabled: yes
 
+- name: Copy admin.yml To Home
+  include: includes/admin.yml
+  
 - name: Relaod Config
   service: 
     name: kubelet
     state: reloaded
 
-- name: Startd
-  service: 
+- name: Run Kubelet
+  service:
     name: kubelet
     state: started

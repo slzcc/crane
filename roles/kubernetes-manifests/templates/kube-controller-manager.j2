@@ -12,26 +12,22 @@ spec:
   hostNetwork: true
   containers:
   - name: kube-controller-manager
-    image: gcr.io/google_containers/kube-controller-manager-amd64:v1.10.0
+    image: k8s.gcr.io/kube-controller-manager:{{ k8s_version }}
     command:
       - kube-controller-manager
-      - --v=0
-      - --logtostderr=true
-      - --address=127.0.0.1
-      - --root-ca-file=/etc/kubernetes/pki/ca.pem
-      - --cluster-signing-cert-file=/etc/kubernetes/pki/ca.pem
-      - --cluster-signing-key-file=/etc/kubernetes/pki/ca-key.pem
-      - --service-account-private-key-file=/etc/kubernetes/pki/sa.key
-      - --kubeconfig=/etc/kubernetes/controller-manager.conf
-      - --leader-elect=true
-      - --use-service-account-credentials=true
-      - --node-monitor-grace-period=40s
-      - --node-monitor-period=5s
-      - --pod-eviction-timeout=2m0s
+      - --authentication-kubeconfig={{ kubernetes_etc_dirs }}controller-manager.conf
+      - --authorization-kubeconfig={{ kubernetes_etc_dirs }}controller-manager.conf
+      - --bind-address=127.0.0.1
+      - --client-ca-file={{ kubernetes_pki_dirs }}ca.pem
+      - --cluster-signing-cert-file={{ kubernetes_pki_dirs }}ca.pem
+      - --cluster-signing-key-file={{ kubernetes_pki_dirs }}ca-key.pem
       - --controllers=*,bootstrapsigner,tokencleaner
-      - --allocate-node-cidrs=true
-      - --cluster-cidr=10.244.0.0/16
-      - --node-cidr-mask-size=24
+      - --kubeconfig={{ kubernetes_etc_dirs }}controller-manager.conf
+      - --leader-elect=true
+      - --requestheader-client-ca-file={{ kubernetes_pki_dirs }}front-proxy-ca.pem
+      - --root-ca-file={{ kubernetes_pki_dirs }}ca.pem
+      - --service-account-private-key-file={{ kubernetes_pki_dirs }}sa.key
+      - --use-service-account-credentials=true
     livenessProbe:
       failureThreshold: 8
       httpGet:
@@ -45,20 +41,20 @@ spec:
       requests:
         cpu: 200m
     volumeMounts:
-    - mountPath: /etc/kubernetes/pki
+    - mountPath: {{ kubernetes_etc_dirs }}pki
       name: k8s-certs
       readOnly: true
     - mountPath: /etc/ssl/certs
       name: ca-certs
       readOnly: true
-    - mountPath: /etc/kubernetes/controller-manager.conf
+    - mountPath: {{ kubernetes_etc_dirs }}controller-manager.conf
       name: kubeconfig
       readOnly: true
     - mountPath: /usr/libexec/kubernetes/kubelet-plugins/volume/exec
       name: flexvolume-dir
   volumes:
   - hostPath:
-      path: /etc/kubernetes/pki
+      path: {{ kubernetes_etc_dirs }}pki
       type: DirectoryOrCreate
     name: k8s-certs
   - hostPath:
@@ -66,7 +62,7 @@ spec:
       type: DirectoryOrCreate
     name: ca-certs
   - hostPath:
-      path: /etc/kubernetes/controller-manager.conf
+      path: {{ kubernetes_etc_dirs }}controller-manager.conf
       type: FileOrCreate
     name: kubeconfig
   - hostPath:

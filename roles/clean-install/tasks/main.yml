@@ -9,9 +9,14 @@
   shell: "rm -rf {{ kubernetes_etc_dirs }}"
   ignore_errors: true
 
+- shell: "rm -rf {{ systemd_default_dirs }}kubelet.service"
+  ignore_errors: true
+
 - name: Clean Etcd Working directory.
   shell: "rm -rf {{ etcd_ssl_dirs }}"
-  shell: "rm -rf {{ etcd_data_dirs }}"
+  ignore_errors: true
+
+- shell: "rm -rf {{ etcd_data_dirs }}"
   ignore_errors: true
 
 - shell: "rm -rf {{ kubelet_work_dirs }}*"
@@ -30,14 +35,43 @@
   shell: "rm -rf {{ kubernetes_ctl_path }}kubelet"
   ignore_errors: true
 
+- name: Clean Kubelet Config.
+  shell: "rm -rf {{ systemd_etc_dirs }}kubelet.service.d/"
+  ignore_errors: true
+
+- shell: "rm -rf {{ systemd_default_dirs }}kubelet.service"
+  ignore_errors: true
+
 - name: Clean Tmp
   shell: "rm -rf {{ temporary_dirs }}kube*"
+  ignore_errors: true
+  
+- name: Clean CNI Cluster Config
+  shell: "rm -rf {{ cni_config_dir }}"
   ignore_errors: true
 
 - name: Clean CNI
   shell: "rm -rf {{ kubernetes_cni_dirs }}"
+  when: is_remove_cni
   ignore_errors: true
 
 - name: Clean Haproxy
   shell: "rm -rf {{ haproxy_etc_dirs }}"
+  ignore_errors: true
+
+- name: Systemd Reload
+  shell: "systemctl daemon-reload"
+
+- name: Clean Cfssl
+  shell: "rm -rf {{ kubernetes_ctl_path }}cfssl*"
+  when: is_remove_cfssl
+
+- name: Clean Docker for Ubuntu
+  shell: "apt-get auroremove --purge -y docker"
+  when: is_remove_docker_ce and ansible_lsb.id == 'Ubuntu'
+  ignore_errors: true
+
+- name: Clean Docker for Centos
+  shell: "yum remove -y docker"
+  when: is_remove_docker_ce and ansible_lsb.id == 'Centos'
   ignore_errors: true

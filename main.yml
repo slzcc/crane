@@ -21,7 +21,7 @@
   roles:
     - { role: clean-install, tags: [clean]}
     - { role: system-initialize, tags: [system]}
-    - { role: docker-install, when: ansible_lsb.id == 'Ubuntu', tags: [docker]}
+    - { role: docker-install, tags: [docker]}
 
 - name: Binary File Deployment.
   hosts: k8s-cluster:etcd
@@ -41,16 +41,7 @@
   vars:
     ansible_ssh_pipelining: true
   roles:
-    - { role: kubernetes-default, tags: [kubernetes]}
-
-- name: Generate Etcd CA
-  hosts: etcd[0]
-  sudo: yes
-  remote_user: "{{ ssh_connect_user }}"
-  vars:
-    ansible_ssh_pipelining: true
-  tasks:
-    - { include: roles/etcd-install/includes/main.yml }
+    - { role: kubernetes-default, tags: [default]}
 
 - name: Copy Etcd Config
   hosts: etcd
@@ -77,13 +68,8 @@
   remote_user: "{{ ssh_connect_user }}"
   vars:
     ansible_ssh_pipelining: true
-  tasks:
-    - { include: roles/kubernetes-default/includes/kubelet_pem.yml }
-    - name: Run Kubelet
-      service:
-        name: kubelet
-        state: started
-    - { include: roles/kubernetes-bootstraps/includes/admin.yml }
+  roles:
+    - { role: kubernetes-master, tags: [kubelet-master]}
 
 - name:  Add Kubernetes Apiserver to Kubelet and Bootstrap RBAC and Copy Nodes Config to Worker.
   hosts: kube-master[0]
@@ -94,8 +80,6 @@
     ansible_ssh_pipelining: true
   roles:
     - { role: kubernetes-bootstraps, tags: [bootstraps]}
-  tasks:
-    - { include: roles/kubernetes-nodes/includes/main.yml }
 
 - name: Create Nodes
   hosts: kube-node
@@ -105,7 +89,7 @@
   vars:
     ansible_ssh_pipelining: true
   roles:
-    - { role: kubernetes-nodes, tags: [nodes]}
+    - { role: kubernetes-nodes, tags: [kubelet-nodes]}
 
 - name: Create Kubernetes Network
   hosts: kube-master[0]

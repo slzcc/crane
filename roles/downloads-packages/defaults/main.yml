@@ -1,0 +1,5 @@
+k8s_master_name_list: >-
+  [{% for host in groups['kube-master'] -%}
+    '{{ hostvars[host].ansible_nodename }}'
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}]

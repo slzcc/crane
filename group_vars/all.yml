@@ -1,181 +1,203 @@
 ---
 ## Kubernetes
 ## ********************************************************************************************************************************
+# 部署 Kubernetes 对应版本, 与 Git Tag 强绑定关系, 不能建议修改
+k8s_version: 'v1.14.1'
+
+# 部署 CNI 对应版本
+cni_version: 'v0.7.5'
+
+# 获取当前需要部署的 Kubernetes Master 总数量, 配置数量在 nodes 文件中获取
 k8s_master_counts: "{{ groups['kube-master'] | length }}"
+
+# 获取当前需要部署的 Kubernetes Node 总数量, 配置数量在 nodes 文件中获取
 all_nodes_counts: "{{ groups['all'] | length }}"
 
+# Kubernetes ApiServer 监听的端口号
 k8s_master_apiservice_bind_port: 5443
+
+# Kubernetes HaProxy 监听的端口号
+# 在部署的 Kubernetes 集群架构中, 使用 HaProxy 作为 apiServer 负载均衡设备, 集群架构应为 SLB > HaProxy > apiServer
+# 请自行设置端口号, 最好保持默认值
+k8s_master_haproxy_bind_port: 6443
+
+# Kubernetes 在集群中使用的 ClusterIP, 此地址依赖 k8s_cluster_ip_range 的网段
 k8s_cluster_ip: '10.96.0.1'
+
+# Kubernetes 集群使用的 ClusterIP 网段
 k8s_cluster_ip_range: '10.96.0.0/12'
-k8s_load_balance_ip: 192.168.1.201
 
-k8s_apiserver_https_bind: 'https://{{ k8s_load_balance_ip }}:6443'
-k8s_apiserver_node_port_range: '30000-32767'
+# Kubernetes ApiServer 的总入口地址, 可配置 SLB 等云服务商提供的地址, 但需要接入后端服务器的 80, 443 端口, 此地址可以写某个单实例的 IP 地址
+k8s_load_balance_ip: 35.236.167.32
 
+# Kubernetes HaProxy 监听的 apiServer 完整的 URL
+k8s_apiserver_https_bind: 'https://{{ k8s_load_balance_ip }}:{{ k8s_master_haproxy_bind_port }}'
+
+# Kubernetes 可暴露的 NodePort 端口号
+k8s_apiserver_node_port_range: '70-32767'
+
+# 判定值, 勿动
 is_kube_master: "{{ inventory_hostname in groups['kube-master'] }}"
 is_kube_node: "{{ inventory_hostname in groups['kube-node'] }}"
+
+# 是否使用本地镜像, 默认为 false, 不建议开启此设置, 目前为测试状态
 is_load_images: false
+
+# 是否对 Master 节点开启调度, 默认为 true
 is_kube_master_schedule: true
+
+# 是否使用本地文件, 例如 kubectl, 不建议开启此设置, 目前为测试状态
 is_using_local_files: false
 
-k8s_master_ip_list: >-
-  [{% for host in groups['kube-master'] -%}
-    '{{ hostvars[host].ansible_default_ipv4.address }}'
-    {%- if not loop.last -%},{%- endif -%}
-  {%- endfor -%}]
+# infra image
+k8s_pod_infra_container_image: 'k8s.gcr.io/pause:3.1'
 
-k8s_master_name_list: >-
-  [{% for host in groups['kube-master'] -%}
-    '{{ hostvars[host].ansible_nodename }}'
-    {%- if not loop.last -%},{%- endif -%}
-  {%- endfor -%}]
+## HaProxy
+## ********************************************************************************************************************************
 
-k8s_master_ip_str: >-
-  {% for host in groups['kube-master'] -%}
-    {{ hostvars[host].ansible_default_ipv4.address }}
-    {%- if not loop.last -%},{%- endif -%}
-  {%- endfor -%}
+# 配置 stats 的 URI 地址
+haproxy_stats_url: '/haproxy_stats'
 
-k8s_master_name_str: >-
-  {% for host in groups['kube-master'] -%}
-    {{ hostvars[host].ansible_nodename }}
-    {%- if not loop.last -%},{%- endif -%}
-  {%- endfor -%}
+# 监听 stats 的端口
+haproxy_stats_port: 9090
 
-k8s_node_ip_list: >-
-  [{% for host in groups['kube-node'] -%}
-    '{{ hostvars[host].ansible_default_ipv4.address }}'
-    {%- if not loop.last -%},{%- endif -%}
-  {%- endfor -%}]
+# 访问 stats 时所需的账户/密码
+haproxy_admin_username: 'admin'
+haproxy_admin_password: 'admin123'
 
-k8s_node_name_list: >-
-  [{% for host in groups['kube-node'] -%}
-    '{{ hostvars[host].ansible_nodename }}'
-    {%- if not loop.last -%},{%- endif -%}
-  {%- endfor -%}]
+# Haproxy Config Path
+haproxy_etc_dirs: '/etc/haproxy/'
 
 ## Configuration Directory
 ## ********************************************************************************************************************************
+
+# Kubectl DirName
 kubernetes_ctl_path: '/usr/local/bin/'
 
-etcd_ssl_dirs: '/etc/etcd/ssl/'
-
-etcd_data_dirs: '/var/lib/etcd/'
-
+# Kubernetes PKI Path
 kubernetes_pki_dirs: '{{ kubernetes_etc_dirs }}pki/'
 
+# Etcd Config Path
 kubernetes_etc_dirs: '/etc/kubernetes/'
 
+# Kubernetes Manifests Path
 kubernetes_manifests_dirs: '{{ kubernetes_etc_dirs }}manifests/'
 
+# CNI Bin Path
 kubernetes_cni_dirs: '/opt/cni/bin'
 
-haproxy_etc_dirs: '/etc/haproxy/'
-
-systemd_etc_dirs: '/etc/systemd/system/'
-
+# Kubectl 工作目录
 kubelet_work_dirs: '/var/lib/kubelet/'
 
+# 前置临时目录
 temporary_dirs: '/tmp/'
+
+# Cgroup Drive
+kubelet_cgroup_drive: 'cgroupfs'
+
+## Systemd Config
+## ********************************************************************************************************************************
+
+# Systemd 子配置文件目录
+systemd_etc_dirs: '/etc/systemd/system/'
+
+# Systemd 主配置文件目录
+systemd_default_dirs: '/lib/systemd/system/'
 
 ## SSH
 ## ********************************************************************************************************************************
+
+# 使用 Ansible 部署时连接实例的用户
 ssh_connect_user: "shilei"
 
+# 使用 Ansible 部署时连接实例的 SSH 端口
 ssh_connect_port: 22
 
+# 使用 Ansible 部署时, 如需要节点之间进行协作传入的证书地址
+target_ssh_private_key_file: "{{ temporary_dirs }}.general-id_rsa"
+
+# 执行 SSH 或者 SCP 的公钥地址
 ssh_public_key: "{{ target_ssh_private_key_file }}"
 
+# 本地的公钥/私钥地址
 source_ssh_public_key_file: "{{ hostvars[inventory_hostname]['ansible_ssh_public_key_file'] }}"
-
 source_ssh_private_key_file: "{{ hostvars[inventory_hostname]['ansible_ssh_private_key_file'] }}"
-
-target_ssh_private_key_file: "{{ temporary_dirs }}.general-id_rsa"
 
 ## Keepalived
 ## ********************************************************************************************************************************
+
+# 是否使用 Keepalived, 在非公有云/私有云环境中，需要借助 keepalived 进行服务集群的高可用，它的位置在类 SLB 层
 is_keepalived: false
 
+# Keepalived 绑定的 IP 地址，它在 HaProxy 的上一层
 keepalived_ip: "{{ k8s_load_balance_ip }}"
 
+# Keepalived 绑定的物理网卡名称
 vip_bind_net_device: "{{ os_network_device_name }}"
 
 ## Etcd
 ## ********************************************************************************************************************************
-#
+
+# Etcd 绑定的宿主机网卡, 此配置需要在启动 Etcd 的节点上强制网卡名称一致
 os_network_device_name: 'ens4'
 
+# Etcd 使用的 Client 协议，默认 HTTPS，不能修改
 etcd_url_scheme: "https"
 
+# Etcd 使用的 Cluster Peer 协议，默认 HTTPS，不能修改
 etcd_peer_url_scheme: "https"
 
+# 暂无任何意义
 etcd_client_cert_auth: true
-
 etcd_peer_client_cert_auth: true
 
+# Etcd Client Port
 etcd_client_port: 2379
 
+# Etcd Cluster Peer Port
 etcd_peer_port: 2380
 
 etcd_interface: ""
 
+# 判定值, 勿动
 is_etcd_master: "{{ inventory_hostname in groups['etcd'] }}"
 
-etcd_master_ip_str: >-
-  {% for host in groups['etcd'] -%}
-    {{ hostvars[host].ansible_default_ipv4.address }}
-    {%- if not loop.last -%},{%- endif -%}
-  {%- endfor -%}
+# Etcd Certs Path
+etcd_ssl_dirs: '/etc/etcd/ssl/'
 
-etcd_master_ip_list: >-
-  [{% for host in groups['kube-master'] -%}
-    '{{ hostvars[host].ansible_default_ipv4.address }}'
-    {%- if not loop.last -%},{%- endif -%}
-  {%- endfor -%}]
-
-etcd_initial_cluster_addr: >-
-  {% for host in groups['etcd'] -%}
-    {{ etcd_peer_url_scheme }}://
-    {%- if etcd_interface != "" -%}
-      {{ hostvars[host]['ansible_' + etcd_interface].ipv4.address }}
-    {%- else -%}
-      {{ hostvars[host].ansible_default_ipv4.address }}
-    {%- endif -%}
-  :{{ etcd_client_port }}
-    {%- if not loop.last -%},{%- endif -%}
-  {%- endfor -%}
+# Etcd Data Path
+etcd_data_dirs: '/var/lib/etcd/'
 
 ## Add Nodes
 ## ********************************************************************************************************************************
 
-add_node_ip_list: >-
-  [{% for host in groups['k8s-cluster-add-node'] -%}
-    '{{ hostvars[host].ansible_default_ipv4.address }}'
-    {%- if not loop.last -%},{%- endif -%}
-  {%- endfor -%}]
+# Calico Pool CIDR
+calico_ipv4_pool_cidr: '10.244.0.0/16'
 
-add_node_name_list: >-
-  [{% for host in groups['k8s-cluster-add-node'] -%}
-    '{{ hostvars[host].ansible_nodename }}'
-    {%- if not loop.last -%},{%- endif -%}
-  {%- endfor -%}]
+# CNI Config Dir
+cni_config_dir: '/etc/cni/net.d'
 
-add_master_ip_list: >-
-  [{% for host in groups['k8s-cluster-add-master'] -%}
-    '{{ hostvars[host].ansible_default_ipv4.address }}'
-    {%- if not loop.last -%},{%- endif -%}
-  {%- endfor -%}]
-
-add_master_name_list: >-
-  [{% for host in groups['k8s-cluster-add-master'] -%}
-    '{{ hostvars[host].ansible_nodename }}'
-    {%- if not loop.last -%},{%- endif -%}
-  {%- endfor -%}]
-
+# 判定值, 勿动
 is_add_master: "{{ inventory_hostname in groups['k8s-cluster-add-master'] }}"
 is_add_node: "{{ inventory_hostname in groups['k8s-cluster-add-node'] }}"
+
+## Kubernetes Add Ons
+## ********************************************************************************************************************************
+
+# DNS 服务所需的 Domain 后缀
+dns_domain: 'cluster.local'
+
+# DNS 服务的 ClusterIP 地址, 依赖集群 ClusterIP 网段
+dns_cluster_ip: '10.96.0.10'
 
 ## Clean Kubernetes Cluster
 ## ********************************************************************************************************************************
 
+# 清除集群时是否删除 Docker
 is_remove_docker_ce: false
+
+# 清除集群时是否删除 CFSSL 可执行文件
+is_remove_cfssl: false
+
+# 清除集群时是否删除 CNI 插件
+is_remove_cni: false

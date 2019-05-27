@@ -6,13 +6,13 @@
   ignore_errors: true
 
 - name: Download Kubernetes Ctl And Kubelet Binary Files
-  shell: "wget -qO- 'https://dl.k8s.io/v1.10.0/kubernetes-node-linux-amd64.tar.gz' | tar zx -C {{ temporary_dirs }}"
+  shell: "wget -qO- 'https://dl.k8s.io/{{ k8s_version }}/kubernetes-node-linux-amd64.tar.gz' | tar zx -C {{ temporary_dirs }}"
   changed_when: true
   when: CHECK_KUBE_BIN_PACKAGE.stderr
 
-- shell: "cp {{ temporary_dirs }}kubernetes/node/bin/kubectl /usr/local/bin/"
+- shell: "cp -rf {{ temporary_dirs }}kubernetes/node/bin/kubectl {{ kubernetes_ctl_path }}"
 
-- shell: "cp {{ temporary_dirs }}kubernetes/node/bin/kubelet /usr/local/bin/"
+- shell: "cp -rf {{ temporary_dirs }}kubernetes/node/bin/kubelet {{ kubernetes_ctl_path }}"
 
 - shell: "ls {{ kubernetes_cni_dirs }}"
   register: CHECK_CNI_BIN_PACKAGE
@@ -22,13 +22,19 @@
   shell: "mkdir -p {{ kubernetes_cni_dirs }} && chown -R {{ ssh_connect_user }}.{{ ssh_connect_user }} {{ kubernetes_cni_dirs }}"
   when: CHECK_CNI_BIN_PACKAGE.stderr
 
-- shell: "wget -qO- 'https://github.com/containernetworking/plugins/releases/download/v0.6.0/cni-plugins-amd64-v0.6.0.tgz' | tar -zx -C {{ kubernetes_cni_dirs }}"
+- shell: "wget -qO- 'https://github.com/containernetworking/plugins/releases/download/{{ cni_version }}/cni-plugins-amd64-{{ cni_version }}.tgz' | tar -zx -C {{ kubernetes_cni_dirs }}"
   when: CHECK_CNI_BIN_PACKAGE.stderr
   
 # CFSSL
 ## ********************************************************************************************************************************
-- name: Download CFSSL Binary Files
-  shell: "curl -os /usr/local/bin/cfssl https://pkg.cfssl.org/R1.2/cfssl_linux-amd64"
-  shell: "curl -os /usr/local/bin/cfssljson https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64"
-  shell: "chmod +x /usr/local/bin/cfssl*"
+- name: Download CFSSL Binary Files *
+  shell: "curl -s -o {{ kubernetes_ctl_path }}cfssl https://pkg.cfssl.org/R1.2/cfssl_linux-amd64"
+  when: is_kube_master or is_add_master or is_etcd_master
+
+- name: Download CFSSL Binary Files **
+  shell: "curl -s -o {{ kubernetes_ctl_path }}cfssljson https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64"
+  when: is_kube_master or is_add_master or is_etcd_master
+
+- name: Download CFSSL Binary Files ***
+  shell: "chmod +x {{ kubernetes_ctl_path }}cfssl*"
   when: is_kube_master or is_add_master or is_etcd_master

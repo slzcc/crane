@@ -5,6 +5,7 @@ metadata:
   namespace: kube-system
   labels:
     addonmanager.kubernetes.io/mode: Reconcile
+    
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1beta1
@@ -20,6 +21,7 @@ roleRef:
   kind: ClusterRole
   name: system:node-proxier
   apiGroup: rbac.authorization.k8s.io
+
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -38,7 +40,7 @@ data:
       contentType: application/vnd.kubernetes.protobuf
       kubeconfig: /var/lib/kube-proxy/kubeconfig.conf
       qps: 5
-    clusterCIDR: 10.244.0.0/16
+    clusterCIDR: ""
     configSyncPeriod: 15m0s
     conntrack:
       max: null
@@ -55,8 +57,10 @@ data:
       minSyncPeriod: 0s
       syncPeriod: 30s
     ipvs:
+      excludeCIDRs: null
       minSyncPeriod: 0s
       scheduler: ""
+      strictARP: false
       syncPeriod: 30s
     kind: KubeProxyConfiguration
     metricsBindAddress: 127.0.0.1:10249
@@ -66,6 +70,10 @@ data:
     portRange: ""
     resourceContainer: /kube-proxy
     udpIdleTimeout: 250ms
+    winkernel:
+      enableDSR: false
+      networkName: ""
+      sourceVip: ""
   kubeconfig.conf: |-
     apiVersion: v1
     kind: Config
@@ -85,8 +93,9 @@ data:
     - name: default
       user:
         tokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+
 ---
-apiVersion: apps/v1
+apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
   labels:
@@ -94,33 +103,36 @@ metadata:
   name: kube-proxy
   namespace: kube-system
 spec:
+  revisionHistoryLimit: 10
   selector:
     matchLabels:
       k8s-app: kube-proxy
   template:
     metadata:
+      creationTimestamp: null
       labels:
         k8s-app: kube-proxy
     spec:
-      tolerations:
-      - effect: NoSchedule
-        key: node-role.kubernetes.io/master
-      - effect: NoSchedule
-        key: node.cloudprovider.kubernetes.io/uninitialized
-        value: "true"
-      hostNetwork: true
-      restartPolicy: Always
-      serviceAccount: kube-proxy
-      serviceAccountName: kube-proxy
       containers:
-      - name: kube-proxy
-        image: k8s.gcr.io/kube-proxy-amd64:v1.10.0
-        command:
-        - /usr/local/bin/kube-proxy
+      - command:
+        - {{ kubernetes_ctl_path }}kube-proxy
         - --config=/var/lib/kube-proxy/config.conf
+        - --hostname-override=$(NODE_NAME)
+        env:
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
+        image: k8s.gcr.io/kube-proxy:{{ k8s_version }}
         imagePullPolicy: IfNotPresent
+        name: kube-proxy
+        resources: {}
         securityContext:
           privileged: true
+          procMount: Default
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
         volumeMounts:
         - mountPath: /var/lib/kube-proxy
           name: kube-proxy
@@ -129,6 +141,19 @@ spec:
         - mountPath: /lib/modules
           name: lib-modules
           readOnly: true
+      dnsPolicy: ClusterFirst
+      hostNetwork: true
+      priorityClassName: system-node-critical
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: kube-proxy
+      serviceAccountName: kube-proxy
+      terminationGracePeriodSeconds: 30
+      tolerations:
+      - key: CriticalAddonsOnly
+        operator: Exists
+      - operator: Exists
       volumes:
       - configMap:
           defaultMode: 420
@@ -140,4 +165,5 @@ spec:
         name: xtables-lock
       - hostPath:
           path: /lib/modules
+          type: ""
         name: lib-modules

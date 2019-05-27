@@ -1,30 +1,33 @@
 ---
-# Kubernetes
+## Kubernetes
 ## ********************************************************************************************************************************
 
-- name: Create Kubernetes WorkDirs
-  shell: "mkdir -p {{ kubernetes_etc_dirs }} {{ kubernetes_pki_dirs }} {{ kubernetes_manifests_dirs }}"
+- name: Copy Master CA Files.
+  shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
+            -i {{ ssh_public_key }} \
+            -P {{ ssh_connect_port }} \
+            {{ kubernetes_pki_dirs }}{{ item[1] }} \
+            {{ ssh_connect_user }}@{{ item[0] }}:{{ kubernetes_pki_dirs }}{{ item[1] }}"
+  with_nested:
+    - "{{ add_master_ip_list }}"
+    - ['apiserver-key.pem', 'apiserver.pem', 'ca-key.pem', 'ca.pem', 'front-proxy-ca-key.pem', 'front-proxy-ca.pem', 'front-proxy-client-key.pem', 'front-proxy-client.pem', 'sa.key', 'sa.pub']
 
-- shell: "chown {{ ssh_connect_user }} {{ kubernetes_etc_dirs }} {{ kubernetes_pki_dirs }} {{ kubernetes_manifests_dirs }}"
+- name: Copy Cluster Config Files.
+  shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
+            -i {{ ssh_public_key }} \
+            -P {{ ssh_connect_port }} \
+            {{ kubernetes_etc_dirs }}{{ item[1] }} \
+            {{ ssh_connect_user }}@{{ item[0] }}:{{ kubernetes_etc_dirs }}{{ item[1] }}"
+  with_nested:
+    - "{{ add_master_ip_list }}"
+    - ['admin.conf', 'bootstrap-kubelet.conf', 'controller-manager.conf', 'scheduler.conf']
 
-- name: Create Kubelet WorkDirs
-  shell: "mkdir -p {{ kubernetes_etc_dirs }} {{ kubelet_work_dirs }}"
-
-- shell: "chown {{ ssh_connect_user }} {{ kubelet_work_dirs }}"
-
-# Etcd
+## Etcd
 ## ********************************************************************************************************************************
 
-- name: Create Etcd WorkDirs
-  shell: "mkdir -p {{ etcd_ssl_dirs }} {{ etcd_data_dirs }}"
-
-- shell: "chown {{ ssh_connect_user }} {{ etcd_ssl_dirs }} {{ etcd_data_dirs }}"
-
-
-# System
-## ********************************************************************************************************************************
-
-- name: Create Kubelet Systemd ConfigDirs
-  shell: "mkdir -p {{ systemd_etc_dirs }}kubelet.service.d/"
-
-- shell: "chown {{ ssh_connect_user }} {{ systemd_etc_dirs }}kubelet.service.d/"
+- name: Copy Etcd CA Files in Nodes
+  shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no -i {{ ssh_public_key }} \
+            -P {{ ssh_connect_port }} {{ etcd_ssl_dirs }}{{ item[1] }}  {{ ssh_connect_user }}@{{ item[0] }}:{{ etcd_ssl_dirs }}{{ item[1] }}"
+  with_nested:
+    - "{{ add_master_ip_list }}"
+    - ['etcd-ca.pem', 'etcd.pem', 'etcd-key.pem', 'etcd-ca-key.pem']

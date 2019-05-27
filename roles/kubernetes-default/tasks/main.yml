@@ -31,7 +31,7 @@
             -ca=ca.pem \
             -ca-key=ca-key.pem \
             -config=ca-config.json \
-            -hostname=127.0.0.1,{{ k8s_cluster_ip }},{{ k8s_load_balance_ip }},{{ k8s_master_ip_str }},kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.default.svc.cluster.local \
+            -hostname=127.0.0.1,{{ k8s_cluster_ip }},{{ k8s_load_balance_ip }},{{ k8s_master_ip_str }},kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.default.svc.{{ dns_domain }} \
             -profile=kubernetes \
             apiserver-csr.json | cfssljson -bare apiserver"
 
@@ -82,7 +82,8 @@
   - "{{ k8s_master_name_list }}"
   - "-"
 
-- shell: 'cd {{ kubernetes_pki_dirs }} && cfssl gencert \
+- name: Create CA *
+  shell: 'cd {{ kubernetes_pki_dirs }} && cfssl gencert \
             -ca=ca.pem \
             -ca-key=ca-key.pem \
             -config=ca-config.json \
@@ -93,11 +94,13 @@
     - "{{ k8s_master_name_list }}"
     - "-"
 
-- shell: "for ITEM in $(ls {{ kubernetes_pki_dirs }}); do 
+- name: Modify File Owner **
+  shell: "for ITEM in $(ls {{ kubernetes_pki_dirs }}); do 
             chown {{ ssh_connect_user }} {{ kubernetes_pki_dirs }}${ITEM}; 
           done"
 
-- shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
+- name: Create Kubelet Root CA ***
+  shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
             -i {{ ssh_public_key }} \
             -P {{ ssh_connect_port }} \
             {{ kubernetes_pki_dirs }}kubelet-{{ item[1] }}-key.pem \
@@ -106,7 +109,8 @@
     - "{{ k8s_master_ip_list }}"
     - "{{ k8s_master_name_list }}"
 
-- shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
+- name: Copy Kubelet CA To Node ****
+  shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
             -i {{ ssh_public_key }} \
             -P {{ ssh_connect_port }} \
             {{ kubernetes_pki_dirs }}kubelet-{{ item[1] }}.pem \
@@ -115,7 +119,8 @@
     - "{{ k8s_master_ip_list }}"
     - "{{ k8s_master_name_list }}"
 
-- shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
+- name: Copy Root CA To Node *****
+  shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
             -i {{ ssh_public_key }} \
             -P {{ ssh_connect_port }} \
             {{ kubernetes_pki_dirs }}ca.pem \
@@ -194,18 +199,20 @@
   shell: "cd {{ kubernetes_pki_dirs }} && 
           openssl genrsa -out sa.key 2048 && openssl rsa -in sa.key -pubout -out sa.pub"
           
-- name: Clean 
+- name: Clean Files *
   shell: 'rm -rf {{ kubernetes_pki_dirs }}*.json \
                  {{ kubernetes_pki_dirs }}*.csr \
                  {{ kubernetes_pki_dirs }}scheduler*.pem \
                  {{ kubernetes_pki_dirs }}controller-manager*.pem \
                  {{ kubernetes_pki_dirs }}admin*.pem'
 
-- shell: "for ITEM in $(ls {{ kubernetes_etc_dirs }}); do 
+- name: Clean Files **
+  shell: "for ITEM in $(ls {{ kubernetes_etc_dirs }}); do 
             chown {{ ssh_connect_user }} {{ kubernetes_etc_dirs }}${ITEM}; 
           done"
 
-- shell: "for ITEM in $(ls {{ kubernetes_pki_dirs }}); do 
+- name: Clean Files ***
+  shell: "for ITEM in $(ls {{ kubernetes_pki_dirs }}); do 
             chown {{ ssh_connect_user }} {{ kubernetes_pki_dirs }}${ITEM}; 
           done"
 

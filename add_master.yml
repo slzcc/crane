@@ -22,12 +22,12 @@
   vars:
     ansible_ssh_pipelining: tasks
   roles:
-    - { role: docker-install, when: ansible_lsb.id == 'Ubuntu', tags: [docker]}
     - { role: clean-install, tags: [clean]}
+    - { role: docker-install, tags: [docker]}
     - { role: system-initialize, tags: [system]}
     - { role: downloads-packages, tags: [packages]}
   tasks:
-    - { include: roles/kubernetes-default/includes/main.yml }
+    - { include: 'roles/kubernetes-default/includes/main.yml' }
 
 - name: Run Nodes
   hosts: k8s-cluster-add-master
@@ -36,7 +36,7 @@
   vars:
     ansible_ssh_pipelining: true
   roles:
-    - { role: kubernetes-manifests, tags: [manifests]}
+    - { role: kubernetes-manifests, tags: [kubernetes-manifests]}
 
 - name: Copy Cluster CA Files to Nodes.
   hosts: kube-master[0]
@@ -44,20 +44,18 @@
   remote_user: "{{ ssh_connect_user }}"
   vars:
     ansible_ssh_pipelining: true
-  roles:
-    - { role: k8s-add-master, tags: [add_master]}
-
+  vars_files:
+    - "roles/k8s-add-master/defaults/main.yml"
+  tasks:
+    - { include: roles/k8s-add-master/includes/main.yml }
+    
 - name: Add Nodes
   hosts: k8s-cluster-add-master
   sudo: yes
   remote_user: "{{ ssh_connect_user }}"
   vars:
     ansible_ssh_pipelining: true
-  tasks:
-    - { include: roles/k8s-add-master/includes/initialize_ca.yml }
-    - { include: roles/kubernetes-default/includes/kubelet_pem.yml }
-    - { include: roles/kubernetes-bootstraps/includes/admin.yml }
-    - name: Run Kubelet
-      service:
-        name: kubelet
-        state: started
+  roles:
+    - { role: k8s-add-master, tags: [add-master]}
+    - { role: kubernetes-master, tags: [kubelet-master]}
+    

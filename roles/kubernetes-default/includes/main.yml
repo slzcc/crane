@@ -37,4 +37,3 @@
     dest: "{{ kubernetes_pki_dirs }}kubelet-csr.json"
     owner: "{{ ssh_connect_user }}" 
     mode: 0644
-  when: is_kube_master or is_add_master

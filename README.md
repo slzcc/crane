@@ -1,10 +1,61 @@
 # Ansible-Kubernetes
 Please refer to the documentation for detailed configuration: [Wiki Docs URL](https://wiki.shileizcc.com/display/CASE/Ansible+Kubernetes+Cluster).
 
-The Kubernetes Version currently supported:
-* v1.10.0
+使用 Ansible 部署 Kubernetes Cluster, 并支持 Master/Node 节点的添加。
 
-## Create Kubernetes Cluster
+目前支持的版本:
+* v1.10.0
+* v1.14.x
+在 v1.14.x 开始，可以支持动态的选择版本进行部署，如 v1.14.1/v1.14.2 版本，但目前只支持小版本。后续会添加集群的热更新。
+
+## 获取对应的版本
+切记，如需要安装哪个大版本的集群，就获取相应的 tag :
+```
+$ git clone -b v1.14.1 https://github.com/slzcc/Ansible-Kubernetes.git
+```
+## 使用说明
+在 nodes 文件中，分为 kube-master/kube-node/etcd 第一部分，k8s-cluster-add-master/k8s-cluster-add-node 第二部分，第三部分为集群识别的 SSH 秘钥。
+```
+[kube-master]
+35.236.167.32
+
+[kube-node]
+34.80.142.147
+
+[etcd]
+35.236.167.32
+
+[k8s-cluster:children]
+kube-node
+kube-master
+
+[k8s-cluster-add-master]
+
+[k8s-cluster-add-node]
+
+[all:vars]
+ansible_ssh_public_key_file='/Users/shilei/.ssh/id_rsa.pub'
+ansible_ssh_private_key_file='/Users/shilei/.ssh/id_rsa'
+```
+第一部分为部署集群所规划的集群初始节点，可自定义添加。
+第二部分为后续集群需要添加的节点可分为 master/node 。
+第三部分为集群内所有节点均可使用的 SSH 秘钥。
+在初次部署时，应先修改基础配置文件 group_vars/all.yml 文件, 下面列出初始部署时应修改的选项：
+```
+# apiServer 的入口，也就是 apiServer 的负载均衡层，可支持 lvs/keepalived 组合，如第一次部署请不要开启 lvs/keepalived ，如公有云环境也不支持 lvs/keepalived 。
+k8s_load_balance_ip: < SLB 或 某节点 IP >
+
+# Ansible 使用的远程服务器用户，可使用普通用户但必须属于 Sudo 组
+ssh_connect_user: < SSH USER >
+
+# 所有节点统一的网卡名称，否则会出现环境不一致的问题，此配置被 Etcd/LVS 服务依赖。
+os_network_device_name: < NetWork Name >
+```
+
+> 如有不明确的问题，请参照上方的 Wiki 链接，如果还有问题请提交 issue .
+
+## Deploy Kubernetes Cluster
+如上述修改完成后，可执行命令：
 ```
 $ ansible-playbook -i nodes main.yml -vv
 ```
@@ -122,5 +173,5 @@ node-csr-xk3fBmT4OOHNAtbYJq4IXtLLpFlfyXLeX2PWFMNsrjk   46m       system:bootstra
 
 ## Clean Kubernetes Cluster
 ```
-$ ansible-playbook -i nodes add_nodes.yml -vv
+$ ansible-playbook -i nodes remove_cluster.yml -vv
 ```

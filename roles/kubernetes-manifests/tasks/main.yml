@@ -20,16 +20,16 @@
   when: is_kube_master or is_add_master
 
 - name: Copy Kubernetes Controller Manager Config Files
-  copy: 
-    src: master/kube-controller-manager.yml
+  template: 
+    src: kube-controller-manager.j2
     dest: "{{ kubernetes_manifests_dirs }}kube-controller-manager.yml"
     mode: 0644
     owner: "{{ ssh_connect_user }}" 
   when: is_kube_master or is_add_master
 
 - name: Copy Kubernetes Scheduler Config Files
-  copy: 
-    src: master/kube-scheduler.yml
+  template: 
+    src: kube-scheduler.j2
     dest: "{{ kubernetes_manifests_dirs }}kube-scheduler.yml"
     mode: 0644
     owner: "{{ ssh_connect_user }}" 
@@ -60,41 +60,19 @@
 
 - name: Copy Haproxy cfg Files
   template: 
-    src: haproxy.j2
+    src: haproxy.cfg.j2
     dest: "{{ haproxy_etc_dirs }}haproxy.cfg"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
   when: is_kube_master or is_add_master
 
 - name: Copy Haproxy conf Files
-  copy: 
-    src: master/haproxy.yml
+  template: 
+    src: haproxy.yml.j2
     dest: "{{ kubernetes_manifests_dirs }}haproxy.yml"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
   when: is_kube_master or is_add_master
-
-# System
-## ********************************************************************************************************************************
-
-- name: Copy kubelet.service Files
-  copy: 
-    src: systemd/kubelet.service
-    dest: "{{ systemd_etc_dirs }}kubelet.service"
-    mode: 0644
-    owner: "{{ ssh_connect_user }}"
-
-- name: Copy 10-kubelet.conf Files
-  copy: 
-    src: systemd/10-kubelet.conf
-    dest: "{{ systemd_etc_dirs }}kubelet.service.d/10-kubelet.conf"
-    mode: 0644
-    owner: "{{ ssh_connect_user }}"
-
-- name: Kubelet Powered UP And Startd
-  service: 
-    name: kubelet
-    enabled: yes
 
 
 # Keepalived

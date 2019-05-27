@@ -4,3 +4,10 @@ hostt: >-
   {%- for item in (groups['k8s-cluster'] -%}
     {{ hostt | default (' ') }}
   {%- endfor -%}
+
+
+k8s_master_ip_list: >-
+  [{% for host in groups['kube-master'] -%}
+    '{{ hostvars[host].ansible_default_ipv4.address }}'
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}]

@@ -24,7 +24,7 @@ spec:
   hostNetwork: true
   containers:
   - name: etcd
-    image: gcr.io/google_containers/etcd-amd64:3.1.13
+    image: k8s.gcr.io/etcd:3.3.10
     command:
     - etcd
     - --name={{ hostvars[inventory_hostname].ansible_nodename }}

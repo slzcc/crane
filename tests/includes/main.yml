@@ -1,19 +1,19 @@
 ---
 ## Testing..
 
-- name: Test
-  shell: "ls /"
-  shell: "date"
-  #  shell: "pwd"
+# - name: Test
+#   shell: "ls /"
+#   shell: "date"
+#   #  shell: "pwd"
 
-#- debug: msg="{{ hostvars.iteritems() }}"
+# - debug: msg="{{ hostvars.iteritems() }}"
 #  setup:
-#- debug: msg={{ testssss }}
+# - debug: msg={{ testssss }}
 #- debug: msg={{ item }}
 #  with_items:
 #    - "{{ testssss }}"
 
-# - debug: msg="{{ ansible_facts }}"
+- debug: msg="{{ ansible_facts }}"
 # - debug: msg="{{ inventory_hostname }}{{ ansible_facts.hostname}}"
 # - debug: msg={{ hostvars }}
 # - debug: msg={{ all_ip[0] }}

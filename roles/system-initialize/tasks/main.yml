@@ -16,4 +16,7 @@
   shell: "mkdir -p /etc/etcd/ssl && chown -R {{ ssh_connect_user }}.{{ ssh_connect_user }} {{ etcd_ssl_dirs }}"
 
 - name: Create Kubernetes PKI WorkDir
-  shell: "mkdir -p /etc/kubernetes/pki && chown -R {{ ssh_connect_user }}.{{ ssh_connect_user }} {{ kubernetes_etc_dirs }}"
+  shell: "mkdir -p {{ kubernetes_etc_dirs }}pki && chown -R {{ ssh_connect_user }}.{{ ssh_connect_user }} {{ kubernetes_etc_dirs }}"
+
+- name: Create CNI Cluster Config
+  shell: "mkdir -p {{ cni_config_dir }}"

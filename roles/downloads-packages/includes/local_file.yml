@@ -4,14 +4,14 @@
 - name: Copy Kubernetes CLi Binary Files
   copy:
     src: kubernetes/kubelet
-    dest: /usr/local/bin/kubelet
+    dest: "{{ kubernetes_ctl_path }} kubelet"
     owner: "{{ ssh_connect_user }}"
     mode: 0755
 
 - name: Copy Kubernetes Kubelet Binary Files
   copy:
     src: kubernetes/kubectl
-    dest: /usr/local/bin/kubectl
+    dest: "{{ kubernetes_ctl_path }} kubectl"
     owner: "{{ ssh_connect_user }}"
     mode: 0755
   when: is_kube_master or is_add_master
@@ -22,19 +22,19 @@
 - name: Copy Kubernetes-cni Plugin Binary Files
   copy:
     src: kubernetes-cni/cni-plugins-amd64-v0.6.0.tgz
-    dest: /tmp/cni-plugins-amd64-v0.6.0.tgz
+    dest: "{{ temporary_dirs }}cni-plugins-amd64-v0.6.0.tgz"
     owner: "{{ ssh_connect_user }}"
     mode: 0644
 
 - name: Unzip Files
-  shell: tar zxf /tmp/cni-plugins-amd64-v0.6.0.tgz -C {{ kubernetes_cni_dirs }}
+  shell: tar zxf {{ temporary_dirs }}cni-plugins-amd64-v0.6.0.tgz -C {{ kubernetes_cni_dirs }}
 
 # CFSSL
 ## ********************************************************************************************************************************
 - name: Copy CFSSL Binary Files
   copy:
     src: cfssl/cfssl
-    dest: /usr/local/bin/cfssl
+    dest: "{{ kubernetes_ctl_path }} cfssl"
     owner: "{{ ssh_connect_user }}"
     mode: 0755
   when: is_kube_master or is_add_master or is_etcd_master
@@ -42,7 +42,7 @@
 - name: Copy CFSSL-JSON Binary Files
   copy:
     src: cfssl/cfssljson
-    dest: /usr/local/bin/cfssljson
+    dest: "{{ kubernetes_ctl_path }} cfssljson"
     owner: "{{ ssh_connect_user }}"
     mode: 0755
   when: is_kube_master or is_add_master or is_etcd_master

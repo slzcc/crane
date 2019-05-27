@@ -13,8 +13,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  annotations:
-    scheduler.alpha.kubernetes.io/critical-pod: ""
+  creationTimestamp: null
   labels:
     component: kube-apiserver
     tier: control-plane
@@ -22,48 +21,41 @@ metadata:
   namespace: kube-system
 spec:
   hostNetwork: true
-  containers :
-  - name: kube-apiserver
-    image: gcr.io/google_containers/kube-apiserver-amd64:v1.10.0
-    command:
-      - kube-apiserver
-      - --v=0
-      - --logtostderr=true
-      - --allow-privileged=true
-      - --bind-address=0.0.0.0
-      - --secure-port={{ k8s_master_apiservice_bind_port }}
-      - --insecure-port=0
-      - --advertise-address={{ k8s_load_balance_ip }}
-      - --service-cluster-ip-range=10.96.0.0/12
-      - --service-node-port-range={{ k8s_apiserver_node_port_range }}
-      - --etcd-servers={{ initial_cluster() }}
-      - --etcd-cafile=/etc/etcd/ssl/etcd-ca.pem
-      - --etcd-certfile=/etc/etcd/ssl/etcd.pem
-      - --etcd-keyfile=/etc/etcd/ssl/etcd-key.pem
-      - --client-ca-file=/etc/kubernetes/pki/ca.pem
-      - --tls-cert-file=/etc/kubernetes/pki/apiserver.pem
-      - --tls-private-key-file=/etc/kubernetes/pki/apiserver-key.pem
-      - --kubelet-client-certificate=/etc/kubernetes/pki/apiserver.pem
-      - --kubelet-client-key=/etc/kubernetes/pki/apiserver-key.pem
-      - --service-account-key-file=/etc/kubernetes/pki/sa.pub
-      - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
-      - --admission-control=Initializers,NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,DefaultTolerationSeconds,NodeRestriction,ResourceQuota
-      - --authorization-mode=Node,RBAC
-      - --enable-bootstrap-token-auth=true
-      - --requestheader-client-ca-file=/etc/kubernetes/pki/front-proxy-ca.pem
-      - --proxy-client-cert-file=/etc/kubernetes/pki/front-proxy-client.pem
-      - --proxy-client-key-file=/etc/kubernetes/pki/front-proxy-client-key.pem
-      - --requestheader-allowed-names=aggregator
-      - --requestheader-group-headers=X-Remote-Group
-      - --requestheader-extra-headers-prefix=X-Remote-Extra-
-      - --requestheader-username-headers=X-Remote-User
-      - --audit-log-maxage=30
-      - --audit-log-maxbackup=3
-      - --audit-log-maxsize=100
-      - --audit-log-path=/var/log/kubernetes/audit.log
-      - --audit-policy-file=/etc/kubernetes/audit-policy.yml
-      - --experimental-encryption-provider-config=/etc/kubernetes/encryption.yml
-      - --event-ttl=1h
+  priorityClassName: system-cluster-critical
+  containers:
+  - command:
+    - kube-apiserver
+    - --advertise-address={{ k8s_load_balance_ip }}
+    - --allow-privileged=true
+    - --authorization-mode=Node,RBAC
+    - --client-ca-file={{ kubernetes_pki_dirs }}ca.pem
+    - --enable-admission-plugins=NodeRestriction
+    - --enable-bootstrap-token-auth=true
+    - --etcd-cafile={{ etcd_ssl_dirs }}etcd-ca.pem
+    - --etcd-certfile={{ etcd_ssl_dirs }}etcd.pem
+    - --etcd-keyfile={{ etcd_ssl_dirs }}etcd-key.pem
+    - --etcd-servers={{ initial_cluster() }}
+    - --insecure-port=0
+    - --kubelet-client-certificate={{ kubernetes_pki_dirs }}apiserver.pem
+    - --kubelet-client-key={{ kubernetes_pki_dirs }}apiserver-key.pem
+    - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
+    - --proxy-client-cert-file={{ kubernetes_pki_dirs }}front-proxy-client.pem
+    - --proxy-client-key-file={{ kubernetes_pki_dirs }}front-proxy-client-key.pem
+    - --requestheader-allowed-names=front-proxy-client
+    - --requestheader-client-ca-file={{ kubernetes_pki_dirs }}front-proxy-ca.pem
+    - --requestheader-extra-headers-prefix=X-Remote-Extra-
+    - --requestheader-group-headers=X-Remote-Group
+    - --requestheader-username-headers=X-Remote-User
+    - --secure-port={{ k8s_master_apiservice_bind_port }}
+    - --service-account-key-file={{ kubernetes_pki_dirs }}sa.pub
+    - --service-cluster-ip-range={{ k8s_cluster_ip_range }}
+    - --tls-cert-file={{ kubernetes_pki_dirs }}apiserver.pem
+    - --tls-private-key-file={{ kubernetes_pki_dirs }}apiserver-key.pem
+    - --service-node-port-range={{ k8s_apiserver_node_port_range }}
+    - --client-ca-file={{ kubernetes_pki_dirs }}ca.pem
+    - --service-account-key-file={{ kubernetes_pki_dirs }}sa.pub
+    image: gcr.io/google_containers/kube-apiserver-amd64:{{ k8s_version }}
+    imagePullPolicy: IfNotPresent
     livenessProbe:
       failureThreshold: 8
       httpGet:
@@ -73,49 +65,52 @@ spec:
         scheme: HTTPS
       initialDelaySeconds: 15
       timeoutSeconds: 15
+    name: kube-apiserver
     resources:
       requests:
         cpu: 250m
     volumeMounts:
-    - mountPath: /var/log/kubernetes
-      name: k8s-audit-log
-    - mountPath: /etc/kubernetes/pki
-      name: k8s-certs
+    - mountPath: /etc/etcd/ssl
+      name: etcd-certs
       readOnly: true
     - mountPath: /etc/ssl/certs
       name: ca-certs
       readOnly: true
-    - mountPath: /etc/kubernetes/encryption.yml
-      name: encryption-config
+    - mountPath: /etc/ca-certificates
+      name: etc-ca-certificates
       readOnly: true
-    - mountPath: /etc/kubernetes/audit-policy.yml
-      name: audit-config
+    - mountPath: {{ kubernetes_etc_dirs }}pki
+      name: k8s-certs
       readOnly: true
-    - mountPath: /etc/etcd/ssl
-      name: etcd-ca-certs
+    - mountPath: /usr/local/share/ca-certificates
+      name: usr-local-share-ca-certificates
+      readOnly: true
+    - mountPath: /usr/share/ca-certificates
+      name: usr-share-ca-certificates
       readOnly: true
   volumes:
   - hostPath:
-      path: /var/log/kubernetes
+      path: /etc/etcd/ssl
       type: DirectoryOrCreate
-    name: k8s-audit-log
-  - hostPath:
-      path: /etc/kubernetes/pki
-      type: DirectoryOrCreate
-    name: k8s-certs
-  - hostPath:
-      path: /etc/kubernetes/encryption.yml
-      type: FileOrCreate
-    name: encryption-config
-  - hostPath:
-      path: /etc/kubernetes/audit-policy.yml
-      type: FileOrCreate
-    name: audit-config
+    name: etcd-certs
   - hostPath:
       path: /etc/ssl/certs
       type: DirectoryOrCreate
     name: ca-certs
   - hostPath:
-      path: /etc/etcd/ssl
+      path: /etc/ca-certificates
       type: DirectoryOrCreate
-    name: etcd-ca-certs
+    name: etc-ca-certificates
+  - hostPath:
+      path: {{ kubernetes_etc_dirs }}pki
+      type: DirectoryOrCreate
+    name: k8s-certs
+  - hostPath:
+      path: /usr/local/share/ca-certificates
+      type: DirectoryOrCreate
+    name: usr-local-share-ca-certificates
+  - hostPath:
+      path: /usr/share/ca-certificates
+      type: DirectoryOrCreate
+    name: usr-share-ca-certificates
+status: {}

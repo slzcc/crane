@@ -11,13 +11,13 @@
 
 - name: Add Kubernetes Apiserver to Kubelet Rbac And Perform.
   copy:
-    src: apiserver-to-kubelet-rbac.yml.conf
-    dest: /tmp/apiserver-to-kubelet-rbac.yml.conf
+    src: "apiserver-to-kubelet-rbac.yml.conf"
+    dest: "{{ temporary_dirs }}apiserver-to-kubelet-rbac.yml.conf"
     owner: "{{ ssh_connect_user }}"
     mode: 0644
 
 - name: Add Apiserver to Kubelet RBAC.
-  shell: 'until kubectl apply -f /tmp/apiserver-to-kubelet-rbac.yml.conf ; do >&2 echo "Starting..." && sleep 1 ; done'
+  shell: 'until kubectl apply -f {{ temporary_dirs }}apiserver-to-kubelet-rbac.yml.conf ; do >&2 echo "Starting..." && sleep 1 ; done'
   ignore_errors: true
 
 - name: Create bootstrap-kubelet.conf .
@@ -37,7 +37,7 @@
     - "{{ TOKEN_SECRET['stdout_lines'] }}"
 
 - name: If the old bootstrap-kubelet. Conf file is moved to TMP.
-  shell: "mv {{ kubernetes_etc_dirs }}bootstrap-kubelet.conf /tmp/"
+  shell: "mv {{ kubernetes_etc_dirs }}bootstrap-kubelet.conf {{ temporary_dirs }}"
   ignore_errors: true
 
 - shell: "cd {{ kubernetes_pki_dirs }} &&
@@ -62,18 +62,25 @@
   shell: kubectl delete -f {{ bootstrappers_yaml_path }}
   ignore_errors: true
   
-- name: Create TLS bootstrap secret.
+- name: Create TLS Bootstrap Secret.
   template:
     src: bootstrappers-default-node-token.j2
     dest: "{{ bootstrappers_yaml_path }}"
     owner: "{{ ssh_connect_user }}"
     mode: 0644
+
 - shell: 'until kubectl apply -f {{ bootstrappers_yaml_path }} ; do >&2 echo "Starting..." && sleep 1 ; done'
 
 - name: Add Kubelet Bootstrap Rbac.
   copy: 
     src: kubelet-bootstrap-rbac.yml.conf
-    dest: /tmp/kubelet-bootstrap-rbac.yml.conf
+    dest: "{{ temporary_dirs }}kubelet-bootstrap-rbac.yml.conf"
     owner: "{{ ssh_connect_user }}"
     mode: 0644
-- shell: 'until kubectl apply -f /tmp/kubelet-bootstrap-rbac.yml.conf ; do >&2 echo "Starting..." && sleep 1 ; done'
+
+- shell: 'until kubectl apply -f {{ temporary_dirs }}kubelet-bootstrap-rbac.yml.conf ; do >&2 echo "Starting..." && sleep 1 ; done'
+
+- name: 
+  include: includes/main.yml
+  run_once: true
+  delegate_to: "{{ groups['kube-master'][0] }}"

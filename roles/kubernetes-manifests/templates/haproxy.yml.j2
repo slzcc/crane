@@ -12,15 +12,15 @@ spec:
   hostNetwork: true
   containers:
   - name: haproxy
-    image: slzcc/haproxy:1.7
+    image: haproxy:1.9.6
     resources:
       requests:
         cpu: 100m
     volumeMounts:
     - name: cfg-volume
       readOnly: true
-      mountPath: "/usr/local/etc/haproxy/haproxy.cfg"
+      mountPath: "/usr/local{{ haproxy_etc_dirs }}haproxy.cfg"
   volumes:
   - name: cfg-volume
     hostPath:
-      path: "/etc/haproxy/haproxy.cfg"
+      path: "{{ haproxy_etc_dirs }}haproxy.cfg"

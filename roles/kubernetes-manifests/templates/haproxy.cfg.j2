@@ -13,16 +13,16 @@ defaults
   timeout server 50000ms
 
 listen stats
-    bind :9090
+    bind :{{ haproxy_stats_port }}
     mode http
     balance
-    stats uri /haproxy_stats
-    stats auth admin:admin123
+    stats uri {{ haproxy_stats_url }}
+    stats auth {{ haproxy_admin_username }}:{{ haproxy_admin_password }}
     stats admin if TRUE
 
 frontend api-https
    mode tcp
-   bind :6443
+   bind :{{ k8s_master_haproxy_bind_port }}
    default_backend api-backend
 
 backend api-backend
