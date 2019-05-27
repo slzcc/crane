@@ -1,7 +1,7 @@
 # Ansible-Kubernetes
 Please refer to the documentation for detailed configuration: [Wiki Docs URL](https://wiki.shileizcc.com/display/CASE/Ansible+Kubernetes+Cluster).
 
-使用 Ansible 部署 Kubernetes Cluster, 并支持 Master/Node 节点的添加。
+使用 Ansible 基于容器化部署 Kubernetes Cluster（非 Kubeadm）, 并支持 Master/Node 节点的添加。（旧版本的 HaProxy 需要自己更新新节点的上游配置）
 
 目前支持的版本:
 * v1.10.0
