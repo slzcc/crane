@@ -1,11 +1,10 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: gateway
+  name: nginx-example
   namespace: default
   labels:
     app: nginx-example
-    nginx-example: gateway
 spec:
   replicas: 1
   selector:
@@ -15,7 +14,7 @@ spec:
     metadata:
       labels:
         app: nginx-example
-        version: v0.0.1
+        version: v1.0.0
     spec:
       containers:
       - name: nginx

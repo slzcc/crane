@@ -12,7 +12,7 @@ spec:
     metadata:
       labels:
         app: example-busybox
-        version: v0.0.1
+        version: v1.0.0
     spec:
       containers:
       - image: slzcc/ansible:demo4
