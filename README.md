@@ -39,7 +39,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 $ git clone -b v1.14.1.1 https://github.com/slzcc/Ansible-Kubernetes.git
 ```
 
-> v1.14.1.0 最末尾一位属于编写 Ansible 脚本的迭代版本，不属于 Kubernetes 自身版本。
+> v1.14.1.1 最末尾一位属于编写 Ansible 脚本的迭代版本，不属于 Kubernetes 自身版本。
 
 ## 使用说明
 在 nodes 文件中，分为 kube-master/kube-node/etcd 第一部分，k8s-cluster-add-master/k8s-cluster-add-node 第二部分，第三部分为集群识别的 SSH 秘钥。
@@ -66,8 +66,11 @@ ansible_ssh_public_key_file='/Users/shilei/.ssh/id_rsa.pub'
 ansible_ssh_private_key_file='/Users/shilei/.ssh/id_rsa'
 ```
 第一部分为部署集群所规划的集群初始节点，可自定义添加。
+
 第二部分为后续集群需要添加的节点可分为 master/node 。
+
 第三部分为集群内所有节点均可使用的 SSH 秘钥。
+
 在初次部署时，应先修改基础配置文件 group_vars/all.yml 文件, 下面列出初始部署时应修改的选项：
 ```
 # apiServer 的入口，也就是 apiServer 的负载均衡层，可支持 lvs/keepalived 组合，如第一次部署请不要开启 lvs/keepalived ，如公有云环境也不支持 lvs/keepalived 。
@@ -145,6 +148,7 @@ kube-scheduler-instance-4                  1/1       Running             0      
 ```
 
 ## Add K8s Cluster Manager Node.
+批量添加 Master 节点到集群:
 ```
 $ ansible-playbook -i nodes add_master.yml -vv
 ```
@@ -172,6 +176,7 @@ node-csr-xk3fBmT4OOHNAtbYJq4IXtLLpFlfyXLeX2PWFMNsrjk   45m       system:bootstra
 ```
 
 ## Add K8s Cluster Worker Node.
+批量添加 Node 节点到集群:
 ```
 $ ansible-playbook -i nodes add_nodes.yml -vv
 ```
@@ -201,6 +206,7 @@ node-csr-xk3fBmT4OOHNAtbYJq4IXtLLpFlfyXLeX2PWFMNsrjk   46m       system:bootstra
 ```
 
 ## Clean Kubernetes Cluster
+清除集群所有部署的数据信息:
 ```
 $ ansible-playbook -i nodes remove_cluster.yml -vv
 ```
