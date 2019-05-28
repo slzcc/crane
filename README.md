@@ -1,13 +1,37 @@
 # Ansible-Kubernetes
 Please refer to the documentation for detailed configuration: [Wiki Docs URL](https://wiki.shileizcc.com/display/CASE/Ansible+Kubernetes+Cluster).
 
-使用 Ansible 基于容器化部署 Kubernetes Cluster（非 Kubeadm）, 并支持 Master/Node 节点的添加。（旧版本的 HaProxy 需要自己更新新节点的上游配置）
+使用 Ansible 基于容器化部署 Kubernetes Cluster（非 Kubeadm）, 并支持 Master/Node 节点的添加。（旧版本的 HaProxy 需要自己更新新节点的上游配置）, 部署全局基于 TLS，并区分 K8s Cluster CA、Etcd CA 证书。
+> 不支持单独使用 tag 方式部署, 因全部使用 Kubelet 的静态方式部署启动 Pod, 如删除集群某一批次的节点时 tag 比较有用。
+> 目前还暂不支持国内服务器直接进行部署，因镜像基于 `k8s.gcr.io` 地址进行下载，国内访问时可能会被墙。受影响的应用 `etcd`、`kube-apiserver-amd64`、`kube-controller-manager`、`kube-scheduler`、`kube-proxy`。
 
 目前支持的版本:
 * v1.10.0
 * v1.14.x
 
 在 v1.14.x 开始，可以支持动态的选择版本进行部署，如 v1.14.1/v1.14.2 版本，但目前只支持小版本。后续会添加集群的热更新。
+
+## 项目部署架构
+以 v1.14.x 为例：
+* Kubernetes A/C/S v1.14.x
+* CoreDNS: v1.5.0
+* Calico: v3.7.2
+* Kube Proxy: v1.14.x
+* HaProxy: v1.9.6
+* Etcd: v3.3.10
+
+## 代办项目
+
+```
+- [ ] 支持自定义远程镜像仓库地址 `k8s.gcr.io`
+- [ ] 支持 Etcd 热添加节点
+- [ ] 支持 Add Ons 其他 Tools 部署, Helm、Prometheus
+- [ ] 支持 Istio
+- [ ] 支持操作系统预判部署 Ubuntu/Centos 更合理的安装即优化
+- [ ] 支持 Harbor HTTPS 部署
+- [ ] 支持 TLS 证书自定义
+- [ ] 支持 OpenResty 入口的流量灰度发布
+```
 
 ## 获取对应的版本
 切记，如需要安装哪个大版本的集群，就获取相应的 tag :
@@ -59,8 +83,9 @@ os_network_device_name: < NetWork Name >
 > 如有不明确的问题，请参照上方的 Wiki 链接，如果还有问题请提交 issue .
 
 ## Deploy Kubernetes Cluster
-如上述修改完成后，可执行命令：
+如上述修改完成后，可执行命令（v1.10.0 部署版本为例）：
 ```
+$ export ANSIBLE_HOST_KEY_CHECKING=true
 $ ansible-playbook -i nodes main.yml -vv
 ```
 Cluster Status

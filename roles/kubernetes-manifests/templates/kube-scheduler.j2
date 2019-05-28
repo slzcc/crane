@@ -12,7 +12,7 @@ spec:
   hostNetwork: true
   containers:
   - name: kube-scheduler
-    image: k8s.gcr.io/kube-scheduler:{{ k8s_version }}
+    image: {{ k8s_cluster_component_registry }}/kube-scheduler:{{ k8s_version }}
     command:
       - kube-scheduler
       - --v=0

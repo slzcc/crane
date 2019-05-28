@@ -124,7 +124,7 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: spec.nodeName
-        image: k8s.gcr.io/kube-proxy:{{ k8s_version }}
+        image: {{ k8s_cluster_component_registry }}/kube-proxy:{{ k8s_version }}
         imagePullPolicy: IfNotPresent
         name: kube-proxy
         resources: {}

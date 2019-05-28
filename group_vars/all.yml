@@ -52,6 +52,9 @@ is_using_local_files: false
 # infra image
 k8s_pod_infra_container_image: 'k8s.gcr.io/pause:3.1'
 
+# Kubernetes Cluster Registry Addr
+k8s_cluster_component_registry: 'k8s.gcr.io'
+
 ## HaProxy
 ## ********************************************************************************************************************************
 
