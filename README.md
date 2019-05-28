@@ -1,16 +1,16 @@
 # Ansible-Kubernetes
 Please refer to the documentation for detailed configuration: [Wiki Docs URL](https://wiki.shileizcc.com/display/CASE/Ansible+Kubernetes+Cluster).
 
-使用 Ansible 基于容器化部署 Kubernetes Cluster（非 Kubeadm）, 并支持 Master/Node 节点的添加。（旧版本的 HaProxy 需要自己更新新节点的上游配置）, 部署全局基于 TLS，并区分 K8s Cluster CA、Etcd CA 证书。
+使用 Ansible 基于容器化部署 Kubernetes Cluster（非 Kubeadm）, 并支持 Master/Node 节点的添加。（旧版本的 HaProxy 需要自己更新新节点的上游配置）, 部署全局基于 TLS, 并区分 K8s Cluster CA、Etcd CA 证书。
 > 不支持单独使用 tag 方式部署, 因全部使用 Kubelet 的静态方式部署启动 Pod, 如删除集群某一批次的节点时 tag 比较有用。
 
-> 目前还暂不支持国内服务器直接进行部署，因镜像基于 `k8s.gcr.io` 地址进行下载，国内访问时可能会被墙。受影响的应用 `etcd`、`kube-apiserver-amd64`、`kube-controller-manager`、`kube-scheduler`、`kube-proxy`、`pause`, 可修改参数 `k8s_cluster_component_registry` 值为 `slzcc` 自定义镜像仓库地址, 在使用自定义镜像仓库时，请确保已经执行过 `script/PublishK8sRegistryImages.sh` 脚本。
+> 目前还暂不支持国内服务器直接进行部署, 因镜像基于 `k8s.gcr.io` 地址进行下载, 国内访问时可能会被墙。受影响的应用 `etcd`、`kube-apiserver-amd64`、`kube-controller-manager`、`kube-scheduler`、`kube-proxy`、`pause`, 可修改参数 `k8s_cluster_component_registry` 值为 `slzcc` 自定义镜像仓库地址, 在使用自定义镜像仓库时, 请确保已经执行过 `script/PublishK8sRegistryImages.sh` 脚本。
 
 目前支持的版本:
 * v1.10.0
 * v1.14.x
 
-在 v1.14.x 开始，可以支持动态的选择版本进行部署，如 v1.14.1/v1.14.2 版本，但目前只支持小版本。后续会添加集群的热更新。
+在 v1.14.x 开始, 可以支持动态的选择版本进行部署, 如 v1.14.1/v1.14.2 版本, 但目前只支持小版本。后续会添加集群的热更新。
 
 ## 项目部署架构
 以 v1.14.x 为例：
@@ -24,7 +24,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 
 ## 代办项目
 
-- [x] 支持自定义远程镜像仓库地址, 默认 `k8s.gcr.io`, 可修改为 `slzcc` 自定义镜像仓库, 在使用自定义镜像仓库时，请确保已经执行过 `script/PublishK8sRegistryImages.sh` 脚本。
+- [x] 支持自定义远程镜像仓库地址, 默认 `k8s.gcr.io`, 可修改为 `slzcc` 自定义镜像仓库, 在使用自定义镜像仓库时, 请确保已经执行过 `script/PublishK8sRegistryImages.sh` 脚本。
 - [ ] 支持 Etcd 热添加节点
 - [ ] 支持 Add Ons 其他 Tools 部署, Helm、Prometheus
 - [ ] 支持 Istio
@@ -35,15 +35,15 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 
 
 ## 获取对应的版本
-切记，如需要安装哪个大版本的集群，就获取相应的 tag :
+切记, 如需要安装哪个大版本的集群, 就获取相应的 tag :
 ```
 $ git clone -b v1.14.1.2 https://github.com/slzcc/Ansible-Kubernetes.git
 ```
 
-> v1.14.1.x 最末尾一位属于编写 Ansible 脚本的迭代版本，不属于 Kubernetes 自身版本。
+> v1.14.1.x 最末尾一位属于编写 Ansible 脚本的迭代版本, 不属于 Kubernetes 自身版本。
 
 ## 使用说明
-在 nodes 文件中，分为 kube-master/kube-node/etcd 第一部分，k8s-cluster-add-master/k8s-cluster-add-node 第二部分，第三部分为集群识别的 SSH 秘钥。
+在 nodes 文件中, 分为 kube-master/kube-node/etcd 第一部分, k8s-cluster-add-master/k8s-cluster-add-node 第二部分, 第三部分为集群识别的 SSH 秘钥。
 ```
 [kube-master]
 35.236.167.32
@@ -66,28 +66,28 @@ kube-master
 ansible_ssh_public_key_file='/Users/shilei/.ssh/id_rsa.pub'
 ansible_ssh_private_key_file='/Users/shilei/.ssh/id_rsa'
 ```
-第一部分为部署集群所规划的集群初始节点，可自定义添加。(第一次创建集群时, 不能在添加 master/node 中写入节点地址，否则会冲突)
+第一部分为部署集群所规划的集群初始节点, 可自定义添加。(第一次创建集群时, 不能在添加 master/node 中写入节点地址, 否则会冲突)
 
 第二部分为后续集群需要添加的节点可分为 master/node 。
 
 第三部分为集群内所有节点均可使用的 SSH 秘钥。
 
-在初次部署时，应先修改基础配置文件 group_vars/all.yml 文件, 下面列出初始部署时应修改的选项：
+在初次部署时, 应先修改基础配置文件 group_vars/all.yml 文件, 下面列出初始部署时应修改的选项：
 ```
-# apiServer 的入口，也就是 apiServer 的负载均衡层，可支持 lvs/keepalived 组合，如第一次部署请不要开启 lvs/keepalived ，如公有云环境也不支持 lvs/keepalived 。
+# apiServer 的入口, 也就是 apiServer 的负载均衡层, 可支持 lvs/keepalived 组合, 如第一次部署请不要开启 lvs/keepalived , 如公有云环境也不支持 lvs/keepalived 。
 k8s_load_balance_ip: < SLB 或 某节点 IP >
 
-# Ansible 使用的远程服务器用户，可使用普通用户但必须属于 Sudo 组
+# Ansible 使用的远程服务器用户, 可使用普通用户但必须属于 Sudo 组
 ssh_connect_user: < SSH USER >
 
-# 所有节点统一的网卡名称，否则会出现环境不一致的问题，此配置被 Etcd/LVS 服务依赖。
+# 所有节点统一的网卡名称, 否则会出现环境不一致的问题, 此配置被 Etcd/LVS 服务依赖。
 os_network_device_name: < NetWork Name >
 ```
 
-> 如有不明确的问题，请参照上方的 Wiki 链接，如果还有问题请提交 issue .
+> 如有不明确的问题, 请参照上方的 Wiki 链接, 如果还有问题请提交 issue .
 
 ## Deploy Kubernetes Cluster
-如上述修改完成后，可执行命令（v1.10.0 部署版本为例）：
+如上述修改完成后, 可执行命令（v1.10.0 部署版本为例）：
 ```
 $ export ANSIBLE_HOST_KEY_CHECKING=true
 $ ansible-playbook -i nodes main.yml -vv
