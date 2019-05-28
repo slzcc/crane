@@ -1,0 +1,14 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: example
+  namespace: default
+spec:
+  rules:
+  - host: www.example.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: example-nginx
+          servicePort: http

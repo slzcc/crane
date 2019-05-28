@@ -7,11 +7,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: example
+      app: example-busybox
   template:
     metadata:
       labels:
-        app: example
+        app: example-busybox
         version: v0.0.1
     spec:
       containers:
@@ -34,4 +34,4 @@ spec:
     protocol: TCP
     targetPort: 80
   selector:
-   app: example
+   app: example-busybox

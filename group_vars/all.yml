@@ -28,7 +28,7 @@ k8s_cluster_ip: '10.96.0.1'
 k8s_cluster_ip_range: '10.96.0.0/12'
 
 # Kubernetes ApiServer 的总入口地址, 可配置 SLB 等云服务商提供的地址, 但需要接入后端服务器的 80, 443 端口, 此地址可以写某个单实例的 IP 地址
-k8s_load_balance_ip: 35.185.148.67
+k8s_load_balance_ip: 35.236.167.32
 
 # Kubernetes HaProxy 监听的 apiServer 完整的 URL
 k8s_apiserver_https_bind: 'https://{{ k8s_load_balance_ip }}:{{ k8s_master_haproxy_bind_port }}'
@@ -179,6 +179,8 @@ etcd_data_dirs: '/var/lib/etcd/'
 # Calico Pool CIDR
 calico_ipv4_pool_cidr: '10.244.0.0/16'
 
+calico_version: 'v3.7.2'
+
 # CNI Config Dir
 cni_config_dir: '/etc/cni/net.d'
 
@@ -194,6 +196,12 @@ dns_domain: 'cluster.local'
 
 # DNS 服务的 ClusterIP 地址, 依赖集群 ClusterIP 网段
 dns_cluster_ip: '10.96.0.10'
+
+# DNS 集群 ClusterIP 网段
+dns_cluster_range: "{{ k8s_cluster_ip_range }}"
+
+# CoreDNS Version
+dns_version: '1.5.0'
 
 ## Clean Kubernetes Cluster
 ## ********************************************************************************************************************************

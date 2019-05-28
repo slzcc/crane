@@ -186,7 +186,6 @@ subjects:
 ---
 
 apiVersion: apps/v1
-#kind: Deployment
 kind: DaemonSet
 metadata:
   name: nginx-ingress-controller
@@ -195,7 +194,6 @@ metadata:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
 spec:
-#  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: ingress-nginx
@@ -210,10 +208,9 @@ spec:
         prometheus.io/scrape: "true"
     spec:
       serviceAccountName: nginx-ingress-serviceaccount
-      hostNetwork: true
       containers:
         - name: nginx-ingress-controller
-          image: k8s.harbor/k8s/nginx-ingress-controller:0.24.0
+          image: quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.24.1
           args:
             - /nginx-ingress-controller
             - --configmap=$(POD_NAMESPACE)/nginx-configuration
@@ -228,7 +225,6 @@ spec:
                 - ALL
               add:
                 - NET_BIND_SERVICE
-            # www-data -> 33
             runAsUser: 33
           env:
             - name: POD_NAME
@@ -273,17 +269,18 @@ metadata:
  name: ingress-nginx
  namespace: ingress-nginx
 spec:
- type: ClusterIP
- clusterIP: "10.254.0.3"
+ type: NodePort
  ports:
  - name: http
    port: 80
    targetPort: 80
    protocol: TCP
+   nodePort: 80
  - name: https
    port: 443
    targetPort: 443
    protocol: TCP
+   nodePort: 443
  selector:
    app.kubernetes.io/name: ingress-nginx
    app.kubernetes.io/part-of: ingress-nginx

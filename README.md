@@ -6,7 +6,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 
 > 目前还暂不支持国内服务器直接进行部署, 因镜像基于 `k8s.gcr.io` 地址进行下载, 国内访问时可能会被墙。受影响的应用 `etcd`、`kube-apiserver-amd64`、`kube-controller-manager`、`kube-scheduler`、`kube-proxy`、`pause`, 可修改参数 `k8s_cluster_component_registry` 值为 `slzcc` 自定义镜像仓库地址, 在使用自定义镜像仓库时, 请确保已经执行过 `script/PublishK8sRegistryImages.sh` 脚本。
 
-目前支持的版本:
+目前支持的 Kubernetes 版本:
 * v1.10.0
 * v1.14.x
 
@@ -34,11 +34,14 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [ ] 支持 OpenResty 入口的流量灰度发布
 - [ ] 支持 Kubernetes 热更新 TLS
 
+## 修复
+
+- [x] 修复 Calico 在使用时，无法与 Etcd 进行通信. 
 
 ## 获取对应的版本
 切记, 如需要安装哪个大版本的集群, 就获取相应的 tag :
 ```
-$ git clone -b v1.14.1.2 https://github.com/slzcc/Ansible-Kubernetes.git
+$ git clone -b v1.14.1.3 https://github.com/slzcc/Ansible-Kubernetes.git
 ```
 
 > v1.14.1.x 最末尾一位属于编写 Ansible 脚本的迭代版本, 不属于 Kubernetes 自身版本。
@@ -86,6 +89,8 @@ os_network_device_name: < NetWork Name >
 ```
 
 > 如有不明确的问题, 请参照上方的 Wiki 链接, 如果还有问题请提交 issue .
+
+> 普通用户需要具有 Sudo 组, 并且配置 Sudo 免密. 
 
 ## Deploy Kubernetes Cluster
 如上述修改完成后, 可执行命令（v1.10.0 部署版本为例）：

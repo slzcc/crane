@@ -1,0 +1,41 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: gateway
+  namespace: default
+  labels:
+    app: nginx-example
+    nginx-example: gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-example
+  template:
+    metadata:
+      labels:
+        app: nginx-example
+        version: v0.0.1
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - name: http
+          containerPort: 80
+        volumeMounts:
+        - mountPath: "/etc/nginx/conf.d/default.conf"
+          subPath: default.conf
+          name: default.conf
+        - mountPath: /usr/share/nginx/html/index.html
+          name: config
+          subPath: index.html
+      volumes:
+        - name: config
+          configMap:
+            name: example-nginx
+            items:
+            - key: default.conf
+              path: default.conf
+            - key: index.html
+              path: index.html

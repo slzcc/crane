@@ -1,0 +1,18 @@
+---
+## Install Helm
+## ********************************************************************************************************************************
+- name: install Helm Cli *
+  shell: "curl -s https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash"
+
+- name: install Helm Cli **
+  shell: "helm init"
+
+## Install Nginx Ingess
+## ********************************************************************************************************************************
+
+- name: install Nginx Ingess
+  template: 
+    src: nginx-ingress.j2
+    dest: "{{ kubernetes_manifests_dirs }}nginx-ingress.yml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
