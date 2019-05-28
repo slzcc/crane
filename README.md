@@ -3,6 +3,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 
 使用 Ansible 基于容器化部署 Kubernetes Cluster（非 Kubeadm）, 并支持 Master/Node 节点的添加。（旧版本的 HaProxy 需要自己更新新节点的上游配置）, 部署全局基于 TLS，并区分 K8s Cluster CA、Etcd CA 证书。
 > 不支持单独使用 tag 方式部署, 因全部使用 Kubelet 的静态方式部署启动 Pod, 如删除集群某一批次的节点时 tag 比较有用。
+
 > 目前还暂不支持国内服务器直接进行部署，因镜像基于 `k8s.gcr.io` 地址进行下载，国内访问时可能会被墙。受影响的应用 `etcd`、`kube-apiserver-amd64`、`kube-controller-manager`、`kube-scheduler`、`kube-proxy`。
 
 目前支持的版本:
@@ -22,7 +23,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 
 ## 代办项目
 
-- [ ] 支持自定义远程镜像仓库地址 `k8s.gcr.io`
+- [x] 支持自定义远程镜像仓库地址, 默认 `k8s.gcr.io`, 可修改为 `slzcc` 自定义镜像仓库, 在使用自定义镜像仓库时，请确保已经执行过 `script/PublishK8sRegistryImages.sh` 脚本。
 - [ ] 支持 Etcd 热添加节点
 - [ ] 支持 Add Ons 其他 Tools 部署, Helm、Prometheus
 - [ ] 支持 Istio

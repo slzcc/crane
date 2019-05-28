@@ -53,6 +53,8 @@ is_using_local_files: false
 k8s_pod_infra_container_image: 'k8s.gcr.io/pause:3.1'
 
 # Kubernetes Cluster Registry Addr
+# 此地址可以修改为自定义镜像地址, 但需要确保已经执行 script/PublishK8sRegistryImages.sh 脚本, 所以参数可改为 slzcc, 如果在国内可使用 docker.io/slzcc 获取镜像。
+# 受影响的镜像为: etcd、kube-apiserver-amd64、kube-controller-manager、kube-scheduler、kube-proxy。
 k8s_cluster_component_registry: 'k8s.gcr.io'
 
 ## HaProxy
@@ -129,10 +131,10 @@ source_ssh_private_key_file: "{{ hostvars[inventory_hostname]['ansible_ssh_priva
 ## Keepalived
 ## ********************************************************************************************************************************
 
-# 是否使用 Keepalived, 在非公有云/私有云环境中，需要借助 keepalived 进行服务集群的高可用，它的位置在类 SLB 层
+# 是否使用 Keepalived, 在非公有云/私有云环境中, 需要借助 keepalived 进行服务集群的高可用, 它的位置在类 SLB 层
 is_keepalived: false
 
-# Keepalived 绑定的 IP 地址，它在 HaProxy 的上一层
+# Keepalived 绑定的 IP 地址, 它在 HaProxy 的上一层
 keepalived_ip: "{{ k8s_load_balance_ip }}"
 
 # Keepalived 绑定的物理网卡名称
@@ -144,10 +146,10 @@ vip_bind_net_device: "{{ os_network_device_name }}"
 # Etcd 绑定的宿主机网卡, 此配置需要在启动 Etcd 的节点上强制网卡名称一致
 os_network_device_name: 'ens4'
 
-# Etcd 使用的 Client 协议，默认 HTTPS，不能修改
+# Etcd 使用的 Client 协议, 默认 HTTPS, 不能修改
 etcd_url_scheme: "https"
 
-# Etcd 使用的 Cluster Peer 协议，默认 HTTPS，不能修改
+# Etcd 使用的 Cluster Peer 协议, 默认 HTTPS, 不能修改
 etcd_peer_url_scheme: "https"
 
 # 暂无任何意义
