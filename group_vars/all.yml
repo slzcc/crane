@@ -203,6 +203,31 @@ dns_cluster_range: "{{ k8s_cluster_ip_range }}"
 # CoreDNS Version
 dns_version: '1.5.0'
 
+# 部署 Helm
+is_deploy_helm: false
+
+# 部署 Ingress Nginx
+is_deploy_ingress_nginx: false
+
+# 部署 Ingress Nginx Example
+is_deploy_ingress_nginx_example: false
+
+# Ingress Nginx Example Domain
+# Ingres 示例使用的域名, 如果没有自定义域名, 可配置本机 Hosts
+ingress_nginx_example: 'www.example.com'
+
+# 部署 Prometheus Operator
+is_deploy_prometheus_operator: false
+
+# 部署 Prometheus Operator Ingress 所使用的 Domain
+monitoring_prometheus_domain: 'prometheus.example.com'
+monitoring_grafana_domain: 'grafana.example.com'
+monitoring_alertmanager_domain: 'alertmanager.example.com'
+
+# 部署 DNS Example Tools
+# 用来测试集群内是否 DNS 可用的 Tools Pods
+is_deploy_busybox_example: false
+
 ## Clean Kubernetes Cluster
 ## ********************************************************************************************************************************
 

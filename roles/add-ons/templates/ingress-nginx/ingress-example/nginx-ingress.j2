@@ -5,7 +5,7 @@ metadata:
   namespace: default
 spec:
   rules:
-  - host: www.example.com
+  - host: {{ ingress_nginx_example }}
     http:
       paths:
       - path: /

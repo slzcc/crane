@@ -1,18 +1,92 @@
 ---
 ## Install Helm
 ## ********************************************************************************************************************************
-- name: install Helm Cli *
+- name: Deploy Helm Cli *
   shell: "curl -s https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash"
+  when: is_deploy_helm
 
-- name: install Helm Cli **
+- name: Deploy Helm Cli **
   shell: "helm init"
+  when: is_deploy_helm
 
 ## Install Nginx Ingess
 ## ********************************************************************************************************************************
-
-- name: install Nginx Ingess
+- name: Deploy Nginx Ingess *
   template: 
-    src: nginx-ingress.j2
-    dest: "{{ kubernetes_manifests_dirs }}nginx-ingress.yml"
+    src: ingress-nginx/ingress-nginx.j2
+    dest: "{{ temporary_dirs }}ingress-nginx.yml"
     mode: 0644
     owner: "{{ ssh_connect_user }}" 
+  delegate_to: "{{ groups['kube-master'][0] }}"
+  when: is_deploy_ingress_nginx
+
+- name: Deploy Nginx Ingess **
+  shell: 'until kubectl apply -f {{ temporary_dirs }}ingress-nginx.yml ; do >&2 echo "Starting..." && sleep 1 ; done'
+  delegate_to: "{{ groups['kube-master'][0] }}"
+  when: is_deploy_ingress_nginx
+  ignore_errors: true
+
+## Install Ingress Nginx Example
+## ********************************************************************************************************************************
+- name: Deploy Ingress Nginx Example *
+  copy: 
+    src: templates/ingress-nginx/ingress-example
+    dest: "{{ temporary_dirs }}"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+  delegate_to: "{{ groups['kube-master'][0] }}"
+  when: is_deploy_ingress_nginx_example
+
+- name: Deploy Ingress Nginx Example **
+  template: 
+    src: ingress-nginx/ingress-example/nginx-ingress.j2
+    dest: "{{ temporary_dirs }}ingress-example/nginx-ingress.yml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+  delegate_to: "{{ groups['kube-master'][0] }}"
+  when: is_deploy_ingress_nginx_example
+
+- name: Deploy Ingress Nginx Example ***
+  shell: 'until kubectl apply -f {{ temporary_dirs }}ingress-example/ ; do >&2 echo "Starting..." && sleep 1 ; done'
+  when: is_deploy_ingress_nginx_example
+
+## Install Prometheus Operator
+## ********************************************************************************************************************************
+- name: Deploy Prometheus Operator *
+  copy: 
+    src: templates/prometheus-operator
+    dest: "{{ temporary_dirs }}"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+  delegate_to: "{{ groups['kube-master'][0] }}"
+  when: is_deploy_prometheus_operator
+
+- name: Deploy Prometheus Operator **
+  template: 
+    src: prometheus-operator/ingress.j2
+    dest: "{{ temporary_dirs }}prometheus-operator/ingress.yml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+  delegate_to: "{{ groups['kube-master'][0] }}"
+  when: is_deploy_prometheus_operator
+
+- name: Deploy Prometheus Operator ***
+  shell: 'until kubectl apply -f {{ temporary_dirs }}prometheus-operator/ ; do >&2 echo "Starting..." && sleep 1 ; done'
+  when: is_deploy_prometheus_operator
+
+## Install DNS Example
+## ********************************************************************************************************************************
+- name: Deploy DNS Example *
+  copy: 
+    src: dns-tools/busybox-tools.yml
+    dest: "{{ temporary_dirs }}busyox-tools.yml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+  delegate_to: "{{ groups['kube-master'][0] }}"
+  when: is_deploy_busybox_example
+
+- name: Deploy DNS Example **
+  shell: 'until kubectl apply -f {{ temporary_dirs }}busyox-tools.yml ; do >&2 echo "Starting..." && sleep 1 ; done'
+  delegate_to: "{{ groups['kube-master'][0] }}"
+  when: is_deploy_busybox_example
+  ignore_errors: true
