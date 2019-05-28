@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: busybox
+  name: example-busybox
   namespace: default
 spec:
   replicas: 1
@@ -25,7 +25,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: busybox
+  name: example-busybox
   namespace: default
 spec:
   ports:

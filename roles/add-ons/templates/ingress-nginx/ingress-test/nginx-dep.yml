@@ -1,19 +1,19 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: nginx-example
+  name: example-nginx
   namespace: default
   labels:
-    app: nginx-example
+    app: example-nginx
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: nginx-example
+      app: example-nginx
   template:
     metadata:
       labels:
-        app: nginx-example
+        app: example-nginx
         version: v1.0.0
     spec:
       containers:
