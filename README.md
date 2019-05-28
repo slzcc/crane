@@ -22,7 +22,6 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 
 ## 代办项目
 
-```
 - [ ] 支持自定义远程镜像仓库地址 `k8s.gcr.io`
 - [ ] 支持 Etcd 热添加节点
 - [ ] 支持 Add Ons 其他 Tools 部署, Helm、Prometheus
@@ -31,7 +30,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [ ] 支持 Harbor HTTPS 部署
 - [ ] 支持 TLS 证书自定义
 - [ ] 支持 OpenResty 入口的流量灰度发布
-```
+
 
 ## 获取对应的版本
 切记，如需要安装哪个大版本的集群，就获取相应的 tag :
