@@ -66,7 +66,7 @@ kube-master
 ansible_ssh_public_key_file='/Users/shilei/.ssh/id_rsa.pub'
 ansible_ssh_private_key_file='/Users/shilei/.ssh/id_rsa'
 ```
-第一部分为部署集群所规划的集群初始节点，可自定义添加。
+第一部分为部署集群所规划的集群初始节点，可自定义添加。(第一次创建集群时, 不能在添加 master/node 中写入节点地址，否则会冲突)
 
 第二部分为后续集群需要添加的节点可分为 master/node 。
 
