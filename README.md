@@ -26,7 +26,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 
 - [x] 支持自定义远程镜像仓库地址, 默认 `k8s.gcr.io`, 可修改为 `slzcc` 自定义镜像仓库, 在使用自定义镜像仓库时, 请确保已经执行过 `script/PublishK8sRegistryImages.sh` 脚本。
 - [ ] 支持 Etcd 热添加节点
-- [ ] 支持 Add Ons 其他 Tools 部署, Helm、Prometheus
+- [ ] 支持 Add Ons 其他 Tools 部署, Helm、Prometheus、nginx-ingress
 - [ ] 支持 Istio
 - [ ] 支持操作系统预判部署 Ubuntu/Centos 更合理的安装即优化
 - [ ] 支持 Harbor HTTPS 部署

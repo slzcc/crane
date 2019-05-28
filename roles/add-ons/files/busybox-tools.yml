@@ -1,0 +1,37 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: busybox
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: example
+  template:
+    metadata:
+      labels:
+        app: example
+        version: v0.0.1
+    spec:
+      containers:
+      - image: slzcc/ansible:demo4
+        command:
+          - sleep
+          - "3600000"
+        name: busybox
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: busybox
+  namespace: default
+spec:
+  ports:
+  - port: 80
+    name: http
+    protocol: TCP
+    targetPort: 80
+  selector:
+   app: example
