@@ -49,6 +49,7 @@
 
 - name: Deploy Ingress Nginx Example ***
   shell: 'until kubectl apply -f {{ temporary_dirs }}ingress-example/ ; do >&2 echo "Starting..." && sleep 1 ; done'
+  delegate_to: "{{ groups['kube-master'][0] }}"
   when: is_deploy_ingress_nginx_example
 
 ## Install Prometheus Operator
@@ -73,6 +74,7 @@
 
 - name: Deploy Prometheus Operator ***
   shell: 'until kubectl apply -f {{ temporary_dirs }}prometheus-operator/ ; do >&2 echo "Starting..." && sleep 1 ; done'
+  delegate_to: "{{ groups['kube-master'][0] }}"
   when: is_deploy_prometheus_operator
 
 ## Install DNS Example
