@@ -22,7 +22,7 @@
   vars:
     ansible_ssh_pipelining: tasks
   roles:
-    - { role: docker-install, when: ansible_lsb.id == 'Ubuntu', tags: [docker]}
+    - { role: docker-install, tags: [docker]}
     - { role: clean-install, tags: [clean]}
     - { role: system-initialize, tags: [system]}
     - { role: downloads-packages, tags: [packages]}
@@ -36,7 +36,7 @@
   vars:
     ansible_ssh_pipelining: true
   roles:
-    - { role: k8s-add-nodes, tags: [add_node]}
+    - { role: k8s-add-nodes, tags: [add-node]}
 
 - name: Add Nodes
   hosts: k8s-cluster-add-node
@@ -45,4 +45,4 @@
   vars:
     ansible_ssh_pipelining: true
   roles:
-    - { role: kubernetes-nodes, tags: [nodes]}
+    - { role: kubernetes-nodes, tags: [kubernetes-nodes]}
