@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: example
+  name: monitoring
   namespace: monitoring
 spec:
   rules:
