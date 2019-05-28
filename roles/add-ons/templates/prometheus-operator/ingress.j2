@@ -1,0 +1,28 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: monitoring
+  namespace: monitoring
+spec:
+  rules:
+  - host: {{ monitoring_prometheus_domain }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: prometheus-k8s
+          servicePort: web
+  - host: {{ monitoring_grafana_domain }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: grafana
+          servicePort: http
+  - host: {{ monitoring_alertmanager_domain }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: alertmanager-main
+          servicePort: web

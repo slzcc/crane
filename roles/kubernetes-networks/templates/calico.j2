@@ -38,7 +38,7 @@ data:
       "plugins": [
         {
           "type": "calico",
-          "etcd_endpoints": "__ETCD_ENDPOINTS__",
+          "etcd_endpoints": "{{ initial_cluster() }}",
           "etcd_ca_cert_file": "{{ etcd_ssl_dirs }}etcd-ca.pem",
           "etcd_cert_file": "{{ etcd_ssl_dirs }}etcd.pem",
           "etcd_key_file": "{{ etcd_ssl_dirs }}etcd-key.pem",
@@ -532,7 +532,7 @@ spec:
         # It can be deleted if this is a fresh installation, or if you have already
         # upgraded to use calico-ipam.
         - name: upgrade-ipam
-          image: calico/cni:v3.7.2
+          image: calico/cni:{{ calico_version }}
           command: ["{{ kubernetes_cni_dirs }}/calico-ipam", "-upgrade"]
           env:
             - name: KUBERNETES_NODE_NAME
@@ -552,7 +552,7 @@ spec:
         # This container installs the CNI binaries
         # and CNI network config file on each node.
         - name: install-cni
-          image: calico/cni:v3.7.2
+          image: calico/cni:{{ calico_version }}
           command: ["/install-cni.sh"]
           env:
             # Name of the CNI config file to create.
@@ -588,7 +588,7 @@ spec:
         # container programs network policy and routes on each
         # host.
         - name: calico-node
-          image: calico/node:v3.7.2
+          image: calico/node:{{ calico_version }}
           env:
             # Use Kubernetes API as the backing datastore.
             - name: DATASTORE_TYPE
@@ -626,7 +626,7 @@ spec:
             # chosen from this range. Changing this value after installation will have
             # no effect. This should fall within `--cluster-cidr`.
             - name: CALICO_IPV4POOL_CIDR
-              value: {{ calico_ipv4_pool_cidr }}
+              value: "{{ calico_ipv4_pool_cidr }}"
             # Disable file logging so `kubectl logs` works.
             - name: CALICO_DISABLE_FILE_LOGGING
               value: "true"
@@ -746,7 +746,7 @@ spec:
       serviceAccountName: calico-kube-controllers
       containers:
         - name: calico-kube-controllers
-          image: calico/kube-controllers:v3.7.2
+          image: calico/kube-controllers:{{ calico_version }}
           env:
             - name: ETCD_ENDPOINTS
               valueFrom:
