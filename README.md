@@ -11,6 +11,11 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 * v1.14.x
 
 在 v1.14.x 开始, 可以支持动态的选择版本进行部署, 如 v1.14.1/v1.14.2 版本, 但目前只支持小版本。后续会添加集群的热更新。
+## 推荐亮点
+
+- [x] 支持集群后期扩容, 支持添加 Master/None 节点
+- [x] 支持自定义镜像仓库地址
+- [x] 支持 Add-Ons 等应用部署
 
 ## 项目部署架构
 以 v1.14.x 为例：
