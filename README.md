@@ -37,10 +37,10 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 ## 获取对应的版本
 切记，如需要安装哪个大版本的集群，就获取相应的 tag :
 ```
-$ git clone -b v1.14.1.1 https://github.com/slzcc/Ansible-Kubernetes.git
+$ git clone -b v1.14.1.2 https://github.com/slzcc/Ansible-Kubernetes.git
 ```
 
-> v1.14.1.1 最末尾一位属于编写 Ansible 脚本的迭代版本，不属于 Kubernetes 自身版本。
+> v1.14.1.x 最末尾一位属于编写 Ansible 脚本的迭代版本，不属于 Kubernetes 自身版本。
 
 ## 使用说明
 在 nodes 文件中，分为 kube-master/kube-node/etcd 第一部分，k8s-cluster-add-master/k8s-cluster-add-node 第二部分，第三部分为集群识别的 SSH 秘钥。
