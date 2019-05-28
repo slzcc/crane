@@ -7,6 +7,7 @@
 
 - name: Deploy Helm Cli **
   shell: "helm init"
+  delegate_to: "{{ groups['kube-master'][0] }}"
   when: is_deploy_helm
 
 ## Install Nginx Ingess
