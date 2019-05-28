@@ -32,6 +32,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [ ] 支持 Harbor HTTPS 部署
 - [ ] 支持 TLS 证书自定义
 - [ ] 支持 OpenResty 入口的流量灰度发布
+- [ ] 支持 Kubernetes 热更新 TLS
 
 
 ## 获取对应的版本
