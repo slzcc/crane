@@ -11,9 +11,10 @@ kube-node
 kube-master
 
 [k8s-cluster-add-master]
+130.211.245.55
 
 [k8s-cluster-add-node]
-130.211.245.55
+
 
 [all:vars]
 ansible_ssh_public_key_file='/Users/shilei/.ssh/id_rsa.pub'
