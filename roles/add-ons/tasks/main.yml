@@ -93,3 +93,43 @@
   delegate_to: "{{ groups['kube-master'][0] }}"
   when: is_deploy_busybox_example
   ignore_errors: true
+
+## Install ISTIO
+## ********************************************************************************************************************************
+- name: Deploy Istio *
+  shell: "curl -sL https://git.io/getLatestIstio | ISTIO_VERSION={{ istio_version }} sh -" 
+  delegate_to: "{{ groups['kube-master'][0] }}"
+  when: is_deploy_istio
+
+- name: Deploy Istio **
+  shell: "cd ~/istio-{{ {{ istio_version }} }} && kubectl apply -f install/kubernetes/ -n istio-system" 
+  delegate_to: "{{ groups['kube-master'][0] }}"
+  when: is_deploy_istio
+
+- name: Deploy Istio ***
+  template: 
+    src: istio/ingress.j2
+    dest: "{{ temporary_dirs }}istio-ingress.yml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+  delegate_to: "{{ groups['kube-master'][0] }}"
+  when: is_deploy_istio
+
+- name: Deploy Istio ****
+  shell: 'until kubectl apply -f {{ temporary_dirs }}istio-ingress.yml ; do >&2 echo "Starting..." && sleep 1 ; done'
+  delegate_to: "{{ groups['kube-master'][0] }}"
+  when: is_deploy_istio
+
+- name: Deploy Istio *****
+  template: 
+    src: istio/kiali-secret.j2
+    dest: "{{ temporary_dirs }}kiali-secret.yml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+  delegate_to: "{{ groups['kube-master'][0] }}"
+  when: is_deploy_istio
+
+- name: Deploy Istio ******
+  shell: 'until kubectl apply -f {{ temporary_dirs }}kiali-secret.yml ; do >&2 echo "Starting..." && sleep 1 ; done'
+  delegate_to: "{{ groups['kube-master'][0] }}"
+  when: is_deploy_istio
