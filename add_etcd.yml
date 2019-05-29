@@ -1,0 +1,43 @@
+---
+- hosts: all
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: tasks
+  tasks:
+    - name: Check all Nodes
+      ping: 
+
+- hosts: etcd-cluster
+  gather_facts: false
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  roles:
+    - { role: downloads-ssh-key, tags: [copy_ssh_private_key]}
+
+- hosts: etcd-cluster-add-node
+  gather_facts: false
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  tasks:
+    - { include: 'roles/etcd-add-node/includes/clean.yml' }
+
+- name: Copy Etcd Old TLS for New Etcd Node
+  hosts: etcd[0]
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/etcd-add-node/defaults/main.yml"
+  tasks:
+    - { include: 'roles/etcd-add-node/includes/main.yml' }
+
+- name: Create New Etcd Node
+  hosts: etcd-cluster-add-node
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  roles:
+    - { role: etcd-add-node, tags: [etcd-add-node]}

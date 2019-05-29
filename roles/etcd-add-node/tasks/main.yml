@@ -1,0 +1,78 @@
+---
+# CFSSL
+## ********************************************************************************************************************************
+
+- name: Download CFSSL Binary Files *
+  shell: "curl -s -o {{ kubernetes_ctl_path }}cfssl https://pkg.cfssl.org/R1.2/cfssl_linux-amd64"
+  delegate_to: "{{ groups['etcd-cluster-add-node'][0] }}"
+
+- name: Download CFSSL Binary Files **
+  shell: "curl -s -o {{ kubernetes_ctl_path }}cfssljson https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64"
+  delegate_to: "{{ groups['etcd-cluster-add-node'][0] }}"
+
+- name: Download CFSSL Binary Files ***
+  shell: "chmod +x {{ kubernetes_ctl_path }}cfssl*"
+  delegate_to: "{{ groups['etcd-cluster-add-node'][0] }}"
+
+## Copy CFSSL Etcd Json Files
+## ********************************************************************************************************************************
+
+- name: Copy CFSSL Etcd Json Files
+  copy:
+    src: roles/etcd-install/files/{{ item }}
+    dest: "{{ etcd_ssl_dirs }}{{ item }}"
+    owner: "{{ ssh_connect_user }}" 
+    mode: 0644
+  with_items:
+    - ca-config.json
+    - etcd-csr.json
+  delegate_to: "{{ groups['etcd-cluster-add-node'][0] }}"
+
+## Create Certificate Files
+## ********************************************************************************************************************************
+
+- name: Create Etcd Certificate Files
+  shell: "cd {{ etcd_ssl_dirs }} && cfssl gencert \
+            -ca=etcd-ca.pem \
+            -ca-key=etcd-ca-key.pem \
+            -config=ca-config.json \
+            -hostname=127.0.0.1,{{ etcd_add_node_ip_str }} \
+            -profile=kubernetes \
+            etcd-csr.json | cfssljson -bare etcd"
+  delegate_to: "{{ groups['etcd-cluster-add-node'][0] }}"
+
+## Copy Etcd CA in Nodes
+## ********************************************************************************************************************************
+
+- shell: "for ITEM in $(ls {{ etcd_ssl_dirs }}); do 
+            chown {{ ssh_connect_user }} {{ etcd_ssl_dirs }}${ITEM}; 
+          done"
+
+- name: Copy the Generated CA certificates to other Etcd Master
+  shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
+            -i {{ ssh_public_key }} \
+            -P {{ ssh_connect_port }} \
+            {{ etcd_ssl_dirs }}{{ item[1] }} \
+            {{ ssh_connect_user }}@{{ item[0] }}:{{ etcd_ssl_dirs }}{{ item[1] }}"
+  with_nested:
+    - "{{ etcd_add_node_ip_list }}"
+    - ['etcd-key.pem', 'etcd.pem']
+  delegate_to: "{{ groups['etcd-cluster-add-node'][0] }}"
+
+- shell: 'rm -rf {{ etcd_ssl_dirs }}*.json {{ etcd_ssl_dirs }}*.csr'
+
+## Etcd
+## ********************************************************************************************************************************
+
+- name: Copy Etcd Config Files to Kubernetes Master
+  template: 
+    src: etcd.j2
+    dest: "{{ kubernetes_manifests_dirs }}etcd.yml"
+    # dest: "/tmp/etcd.yml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+
+- name: Add Etcd New Nodes
+  shell: "docker run --rm -i -e ETCDCTL_API=2 -v {{ etcd_ssl_dirs }}:{{ etcd_ssl_dirs }} -w {{ etcd_ssl_dirs }} {{ k8s_cluster_component_registry }}/etcd:{{ etcd_version }} 
+          etcdctl --ca-file=./etcd-ca.pem --key-file=./etcd-key.pem --cert-file=./etcd.pem --endpoints {{ etcd_cluster_str }} member add {{ hostvars[inventory_hostname].ansible_nodename }} https://{{ hostvars[inventory_hostname].ansible_default_ipv4.address }}:{{ etcd_peer_port }}"
+
