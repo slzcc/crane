@@ -1,0 +1,28 @@
+---
+- name: clean Data Path
+  shell: "rm -rf {{ etcd_data_dirs }}"
+  ignore_errors: true
+
+- name: clean Certs Path
+  shell: "rm -rf {{ etcd_ssl_dirs }}"
+  ignore_errors: true
+
+- name: Clean Old Etcd Cluster Config
+  shell: "rm -rf {{ kubernetes_manifests_dirs }}etcd.yml"
+  ignore_errors: true
+
+- name: Create Data Path
+  file:
+    path: "{{ etcd_data_dirs }}"
+    owner: "{{ ssh_connect_user }}" 
+    mode: 0755
+    state: directory
+  ignore_errors: true
+
+- name: Create Certs Path
+  file:
+    path: "{{ etcd_ssl_dirs }}"
+    owner: "{{ ssh_connect_user }}" 
+    mode: 0755
+    state: directory
+  ignore_errors: true

@@ -1,5 +1,5 @@
 {% macro initial_cluster() -%}
-{% for host in groups['etcd'] -%}
+{% for host in groups['etcd-cluster'] -%}
   {{ hostvars[host]['ansible_nodename'] }}={{ etcd_peer_url_scheme }}://
   {%- if etcd_interface != "" -%}
     {{ hostvars[host]['ansible_' + etcd_interface].ipv4.address }}
@@ -49,7 +49,7 @@ spec:
     - --peer-trusted-ca-file={{ etcd_ssl_dirs }}etcd-ca.pem
     - --initial-cluster={{ initial_cluster() }}
     - --initial-cluster-token={{ etcd_cluster_token }}
-    - --initial-cluster-state={{ etcd_cluster_type }}
+    - --initial-cluster-state=existing
     - --data-dir={{ etcd_data_dirs }}
     livenessProbe:
       failureThreshold: 8
