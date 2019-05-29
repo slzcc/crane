@@ -15,7 +15,6 @@ kube-master
 
 [k8s-cluster-add-node]
 
-
 [all:vars]
 ansible_ssh_public_key_file='/Users/shilei/.ssh/id_rsa.pub'
 ansible_ssh_private_key_file='/Users/shilei/.ssh/id_rsa'
