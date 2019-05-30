@@ -264,7 +264,7 @@ $ ansible-playbook -i nodes remove_cluster.yml -vv
 ...
 ```
 
-> 添加 Etcd 时, 需要保证添加的节点以及是 Master/Node 的成员, 否则不会生效。
+> 添加 Etcd 时, 需要保证添加的节点已经是 Kubernetes Master/Node 的成员, 否则不会生效。
 
 部署安装:
 ```
