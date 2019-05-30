@@ -6,6 +6,8 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 
 > 目前还暂不支持国内服务器直接进行部署, 因镜像基于 `k8s.gcr.io` 地址进行下载, 国内访问时可能会被墙。受影响的应用 `etcd`、`kube-apiserver-amd64`、`kube-controller-manager`、`kube-scheduler`、`kube-proxy`、`pause`, 可修改参数 `k8s_cluster_component_registry` 值为 `slzcc` 自定义镜像仓库地址, 在使用自定义镜像仓库时, 请确保已经执行过 `script/PublishK8sRegistryImages.sh` 脚本。
 
+> 默认 Etcd 需要跟随 Master 进行部署, 暂不支持 Etcd 部署在 Node 中. (后期会优化)
+
 目前支持的 Kubernetes 版本:
 * v1.10.0
 * v1.14.x
@@ -13,7 +15,8 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 在 v1.14.x 开始, 可以支持动态的选择版本进行部署, 如 v1.14.1/v1.14.2 版本, 但目前只支持小版本。后续会添加集群的热更新。
 ## 推荐亮点
 
-- [x] 支持集群后期扩容, 支持添加 Master/None 节点
+- [x] 支持集群 Kubernetes Cluster 后期扩容, 支持添加 Master/None 节点
+- [ ] 支持集群后续 Etcd Cluster 扩容 (只添加节点, 对现有集群无感知)
 - [x] 支持自定义镜像仓库地址
 - [x] 支持 Add-Ons 等应用部署
 
@@ -41,7 +44,8 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 
 ## 修复
 
-- [x] 修复 Calico 在使用时，无法与 Etcd 进行通信. 
+- [x] 修复 Calico 在使用时, 无法与 Etcd 进行通信. 
+- [ ] 脚本绝大部分使用 Shell 执行, 后期重构统一使用模块解决跨平台执行
 
 ## 获取对应的版本
 切记, 如需要安装哪个大版本的集群, 就获取相应的 tag :
@@ -160,11 +164,18 @@ kube-scheduler-instance-4                  1/1       Running             0      
 ```
 
 ## Add K8s Cluster Manager Node.
-批量添加 Master 节点到集群:
+批量添加 Master 节点到集群, 首先在 `nodes` 文件中 `k8s-cluster-add-node` 下添加需要添加的节点: (支持批量)
+```
+[k8s-cluster-add-master]
+130.211.245.55
+...
+```
+
+部署安装: 
 ```
 $ ansible-playbook -i nodes add_master.yml -vv
 ```
-Cluster Status
+查看 Cluster Status:
 ```
 $ kubectl get node
 NAME         STATUS     ROLES     AGE       VERSION
@@ -187,8 +198,17 @@ node-csr-e-yBfiDSbcDTxJM8wloZLHsOStlO7TWiKDGX29dnm6I   45m       system:bootstra
 node-csr-xk3fBmT4OOHNAtbYJq4IXtLLpFlfyXLeX2PWFMNsrjk   45m       system:bootstrap:ed3fd7   Approved,Issued
 ```
 
+> 在添加完相应的类型节点后, 请把 nodes 文件中对应添加节点的地址, 移动至 master/node 中, 以防止后续操作时遗漏。
+
 ## Add K8s Cluster Worker Node.
-批量添加 Node 节点到集群:
+批量添加 Node 节点到集群, 首先在 `nodes` 文件中 `k8s-cluster-add-node` 下添加需要添加的节点: (支持批量)
+```
+[k8s-cluster-add-node]
+34.80.142.147
+...
+```
+
+部署安装: 
 ```
 $ ansible-playbook -i nodes add_nodes.yml -vv
 ```
@@ -217,8 +237,40 @@ node-csr-e-yBfiDSbcDTxJM8wloZLHsOStlO7TWiKDGX29dnm6I   46m       system:bootstra
 node-csr-xk3fBmT4OOHNAtbYJq4IXtLLpFlfyXLeX2PWFMNsrjk   46m       system:bootstrap:ed3fd7   Approved,Issued
 ```
 
+> 在添加完相应的类型节点后, 请把 nodes 文件中对应添加节点的地址, 移动至 master/node 中, 以防止后续操作时遗漏。
+
 ## Clean Kubernetes Cluster
 清除集群所有部署的数据信息:
 ```
 $ ansible-playbook -i nodes remove_cluster.yml -vv
 ```
+
+> 移除集群是对集群中所有节点来说的, 它会销毁集群中的所有安装过的应用以及配置。但不包含 docker、cfssl 等可供后续使用的应用.
+
+## Add Etcd Cluster Node
+对现有集群添加支持 TLS 的 Etcd 节点, 批量添加 Node 节点到集群, 首先在 `nodes` 文件中 `etcd-cluster-add-node` 下添加需要添加的节点: (支持批量)
+
+> 添加 Etcd 需要保证 Etcd 节点数在 2 个以上, 否则会出现没有 Leader 而无法加入集群的问题.
+
+```
+[etcd-cluster-add-node]
+130.211.245.55
+...
+```
+
+> 添加 Etcd 时, 需要保证添加的节点以及是 Master/Node 的成员, 否则不会生效。
+
+部署安装:
+```
+$ ansible-playbook -i nodes add_etcd.yml -vv
+```
+> 添加的节点在现有的集群中不会被直接识别到, 因为 Etcd Endpoints 还是之前使用的, 如需要修改目前只支持手动更新, 因为牵扯太多目前不支持热更新服务配置, 否则会引起 apiServer、Calico 等应用的使用。
+
+> 在添加完相应的类型节点后, 请把 nodes 文件中对应添加节点的地址, 移动至 etcd 中, 以防止后续操作时遗漏。
+
+## Add Ons
+默认创建集群时, 是可以直接部署 Add-Ons 的, 如果后续进行部署, 则直接通过 tags 方式进行部署即可:
+```
+$ ansible-playbook -i nodes main.yml --tags k8s-addons -vv
+```
+
