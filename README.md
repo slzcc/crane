@@ -16,7 +16,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 ## 推荐亮点
 
 - [x] 支持集群 Kubernetes Cluster 后期扩容, 支持添加 Master/None 节点
-- [ ] 支持集群后续 Etcd Cluster 扩容 (只添加节点, 对现有集群无感知)
+- [x] 支持集群后续 Etcd Cluster 扩容 (只添加节点, 对现有集群无感知) v1.14.1.8 中添加
 - [x] 支持自定义镜像仓库地址
 - [x] 支持 Add-Ons 等应用部署
 
