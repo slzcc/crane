@@ -1,10 +1,23 @@
 [kube-master]
 35.236.167.32
+130.211.245.55
 
 [kube-node]
+34.80.142.147
 
 [etcd]
 35.236.167.32
+130.211.245.55
+
+
+[k8s-cluster-add-master]
+
+
+[k8s-cluster-add-node]
+
+
+[etcd-cluster-add-node]
+34.80.142.147
 
 [k8s-cluster:children]
 kube-node
@@ -13,13 +26,6 @@ kube-master
 [etcd-cluster:children]
 etcd
 etcd-cluster-add-node
-
-[k8s-cluster-add-master]
-
-[k8s-cluster-add-node]
-
-[etcd-cluster-add-node]
-34.80.142.147
 
 [all:vars]
 ansible_ssh_public_key_file='/Users/shilei/.ssh/id_rsa.pub'
