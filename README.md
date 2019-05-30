@@ -15,7 +15,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 在 v1.14.x 开始, 可以支持动态的选择版本进行部署, 如 v1.14.1/v1.14.2 版本, 但目前只支持小版本。后续会添加集群的热更新。
 ## 推荐亮点
 
-- [x] 支持集群后期 Kubernetes Cluster 扩容, 支持添加 Master/None 节点
+- [x] 支持集群后续 Kubernetes Cluster 扩容, 支持添加 Master/None 节点
 - [x] 支持集群后续 Etcd Cluster 扩容 (只添加节点, 对现有集群无感知) v1.14.1.8 中添加
 - [x] 支持自定义镜像仓库地址
 - [x] 支持 Add-Ons 等应用部署
