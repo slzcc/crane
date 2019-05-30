@@ -56,7 +56,7 @@ $ git clone -b v1.14.1.x https://github.com/slzcc/Ansible-Kubernetes.git
 > v1.14.1.x 最末尾一位属于编写 Ansible 脚本的迭代版本, 不属于 Kubernetes 自身版本。
 
 ## 使用说明
-在 nodes 文件中, 分为 kube-master/kube-node/etcd 第一部分, k8s-cluster-add-master/k8s-cluster-add-node 第二部分, 第三部分为集群识别的 SSH 秘钥。
+在 nodes 文件中, 分为三大块:
 ```
 [kube-master]
 35.236.167.32
@@ -67,21 +67,27 @@ $ git clone -b v1.14.1.x https://github.com/slzcc/Ansible-Kubernetes.git
 [etcd]
 35.236.167.32
 
+[k8s-cluster-add-master]
+
+[k8s-cluster-add-node]
+
+[etcd-cluster-add-node]
+
 [k8s-cluster:children]
 kube-node
 kube-master
 
-[k8s-cluster-add-master]
-
-[k8s-cluster-add-node]
+[etcd-cluster:children]
+etcd
+etcd-cluster-add-node
 
 [all:vars]
 ansible_ssh_public_key_file='/Users/shilei/.ssh/id_rsa.pub'
 ansible_ssh_private_key_file='/Users/shilei/.ssh/id_rsa'
 ```
-第一部分为部署集群所规划的集群初始节点, 可自定义添加。(第一次创建集群时, 不能在添加 master/node 中写入节点地址, 否则会冲突)
+第一部分为部署集群所规划的集群初始节点, 可自定义添加。(第一次创建集群时, 不能在添加 master/node/etcd 中写入节点地址, 否则会冲突)
 
-第二部分为后续集群需要添加的节点可分为 master/node 。
+第二部分为后续集群需要添加的节点可分为 master/node/etcd 。
 
 第三部分为集群内所有节点均可使用的 SSH 秘钥。
 
