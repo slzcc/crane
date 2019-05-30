@@ -170,7 +170,7 @@ kube-scheduler-instance-4                  1/1       Running             0      
 ```
 
 ## Add K8s Cluster Manager Node.
-批量添加 Master 节点到集群, 首先在 `nodes` 文件中 `k8s-cluster-add-node` 下添加需要添加的节点: (支持批量)
+批量添加 Master 节点到集群, 首先在 `nodes` 文件中 `k8s-cluster-add-master` 下添加需要添加的节点: (支持批量)
 ```
 [k8s-cluster-add-master]
 130.211.245.55
