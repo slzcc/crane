@@ -2,7 +2,7 @@
 Please refer to the documentation for detailed configuration: [Wiki Docs URL](https://wiki.shileizcc.com/display/CASE/Ansible+Kubernetes+Cluster)。
 
 > Wiki 文档内容为 1.10.0.x 版本, 暂未更新。
- 
+
 > 以下所有的部署全部使用 Ubuntu 16.04 为环境进行示例演练。
 
 使用 Ansible 基于容器化部署 Kubernetes Cluster（非 Kubeadm）, 并支持 Master/Node 节点的添加。（旧版本的 HaProxy 需要自己更新新节点的上游配置）, 部署全局基于 TLS, 并区分 K8s Cluster CA、Etcd CA 证书。
@@ -45,11 +45,14 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [ ] 支持 TLS 证书自定义。
 - [ ] 支持 OpenResty 入口的流量灰度发布。
 - [ ] 支持 Kubernetes 热更新 TLS。
+- [ ] 支持 Kubernetes 镜像导入方式部署。
 
 ## 修复
 
 - [x] 修复 Calico 在使用时, 无法与 Etcd 进行通信。
 - [ ] 脚本绝大部分使用 Shell 执行, 后期重构统一使用模块解决跨平台执行。
+- [ ] 修复 Calico 在使用时, 无法识别宿主机网卡, 造成无法通信的问题。
+- [ ] 修复 bootstrap 无法创建凭证的问题。
 
 ## 获取对应的版本
 切记, 如需要安装哪个大版本的集群, 就获取相应的 tag :
@@ -181,7 +184,7 @@ kube-scheduler-instance-4                  1/1       Running             0      
 ...
 ```
 
-部署安装: 
+部署安装:
 ```
 $ ansible-playbook -i nodes add_master.yml -vv
 ```
@@ -218,7 +221,7 @@ node-csr-xk3fBmT4OOHNAtbYJq4IXtLLpFlfyXLeX2PWFMNsrjk   45m       system:bootstra
 ...
 ```
 
-部署安装: 
+部署安装:
 ```
 $ ansible-playbook -i nodes add_nodes.yml -vv
 ```
@@ -283,4 +286,3 @@ $ ansible-playbook -i nodes add_etcd.yml -vv
 ```
 $ ansible-playbook -i nodes main.yml --tags k8s-addons -vv
 ```
-
