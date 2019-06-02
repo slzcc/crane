@@ -641,6 +641,10 @@ spec:
               value: "info"
             - name: FELIX_HEALTHENABLED
               value: "true"
+            - name: IP_AUTODETECTION_METHOD
+              value: "interface={{ os_network_device_name }}"
+            - name: IP6_AUTODETECTION_METHOD
+              value: "interface={{ os_network_device_name }}"
           securityContext:
             privileged: true
           resources:
