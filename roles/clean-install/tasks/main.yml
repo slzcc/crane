@@ -42,9 +42,9 @@
 - shell: "rm -rf {{ systemd_default_dirs }}kubelet.service"
   ignore_errors: true
 
-- name: Clean Tmp
-  shell: "rm -rf {{ temporary_dirs }}kube*"
-  ignore_errors: true
+# - name: Clean tmp file
+#   shell: "rm -rf {{ temporary_dirs }}kube*"
+#   ignore_errors: true
   
 - name: Clean CNI Cluster Config
   shell: "rm -rf {{ cni_config_dir }}"
