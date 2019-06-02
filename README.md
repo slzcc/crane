@@ -1,12 +1,16 @@
 # Ansible-Kubernetes
-Please refer to the documentation for detailed configuration: [Wiki Docs URL](https://wiki.shileizcc.com/display/CASE/Ansible+Kubernetes+Cluster).
+Please refer to the documentation for detailed configuration: [Wiki Docs URL](https://wiki.shileizcc.com/display/CASE/Ansible+Kubernetes+Cluster)。
+
+> Wiki 文档内容为 1.10.0.x 版本, 暂未更新。
+
+> 以下所有的部署全部使用 Ubuntu 16.04 为环境进行示例演练。
 
 使用 Ansible 基于容器化部署 Kubernetes Cluster（非 Kubeadm）, 并支持 Master/Node 节点的添加。（旧版本的 HaProxy 需要自己更新新节点的上游配置）, 部署全局基于 TLS, 并区分 K8s Cluster CA、Etcd CA 证书。
 > 不支持单独使用 tag 方式部署, 因全部使用 Kubelet 的静态方式部署启动 Pod, 如删除集群某一批次的节点时 tag 比较有用。
 
 > 目前还暂不支持国内服务器直接进行部署, 因镜像基于 `k8s.gcr.io` 地址进行下载, 国内访问时可能会被墙。受影响的应用 `etcd`、`kube-apiserver-amd64`、`kube-controller-manager`、`kube-scheduler`、`kube-proxy`、`pause`, 可修改参数 `k8s_cluster_component_registry` 值为 `slzcc` 自定义镜像仓库地址, 在使用自定义镜像仓库时, 请确保已经执行过 `script/PublishK8sRegistryImages.sh` 脚本。
 
-> 默认 Etcd 需要跟随 Master 进行部署, 暂不支持 Etcd 部署在 Node 中. (后期会优化)
+> 默认 Etcd 需要跟随 Master 进行部署, 暂不支持 Etcd 部署在 Node 中 (后期会优化)。
 
 目前支持的 Kubernetes 版本:
 * v1.10.0
@@ -15,10 +19,10 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 在 v1.14.x 开始, 可以支持动态的选择版本进行部署, 如 v1.14.1/v1.14.2 版本, 但目前只支持小版本。后续会添加集群的热更新。
 ## 推荐亮点
 
-- [x] 支持集群 Kubernetes Cluster 后期扩容, 支持添加 Master/None 节点
-- [ ] 支持集群后续 Etcd Cluster 扩容 (只添加节点, 对现有集群无感知)
-- [x] 支持自定义镜像仓库地址
-- [x] 支持 Add-Ons 等应用部署
+- [x] 支持集群后续 Kubernetes Cluster 扩容, 支持添加 Master/None 节点。
+- [x] 支持集群后续 Etcd Cluster 扩容 (只添加节点, 对现有集群无感知) v1.14.1.8 中添加。
+- [x] 支持自定义镜像仓库地址。
+- [x] 支持 Add-Ons 等应用部署。
 
 ## 项目部署架构
 以 v1.14.x 为例：
@@ -33,19 +37,22 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 ## 代办项目
 
 - [x] 支持自定义远程镜像仓库地址, 默认 `k8s.gcr.io`, 可修改为 `slzcc` 自定义镜像仓库, 在使用自定义镜像仓库时, 请确保已经执行过 `script/PublishK8sRegistryImages.sh` 脚本。
-- [ ] 支持 Etcd 热添加节点
-- [x] 支持 Add Ons 其他 Tools 部署, 包括 Helm、Prometheus、Ingress-Nginx、Ingress-Example、DNS-Tools
-- [x] 支持 Istio
-- [ ] 支持操作系统预判部署 Ubuntu/Centos 更合理的安装即优化
-- [ ] 支持 Harbor HTTPS 部署
-- [ ] 支持 TLS 证书自定义
-- [ ] 支持 OpenResty 入口的流量灰度发布
-- [ ] 支持 Kubernetes 热更新 TLS
+- [x] 支持 Etcd 热添加节点。
+- [x] 支持 Add Ons 其他 Tools 部署, 包括 Helm、Prometheus、Ingress-Nginx、Ingress-Example、DNS-Tools。
+- [x] 支持 Istio。
+- [ ] 支持操作系统预判部署 Ubuntu/Centos 更合理的安装即优化。
+- [ ] 支持 Harbor HTTPS 部署。
+- [ ] 支持 TLS 证书自定义。
+- [ ] 支持 OpenResty 入口的流量灰度发布。
+- [ ] 支持 Kubernetes 热更新 TLS。
+- [ ] 支持 Kubernetes 镜像导入方式部署。
 
 ## 修复
 
-- [x] 修复 Calico 在使用时, 无法与 Etcd 进行通信. 
-- [ ] 脚本绝大部分使用 Shell 执行, 后期重构统一使用模块解决跨平台执行
+- [x] 修复 Calico 在使用时, 无法与 Etcd 进行通信。
+- [ ] 脚本绝大部分使用 Shell 执行, 后期重构统一使用模块解决跨平台执行。
+- [ ] 修复 Calico 在使用时, 无法识别宿主机网卡, 造成无法通信的问题。
+- [ ] 修复 bootstrap 无法创建凭证的问题。
 
 ## 获取对应的版本
 切记, 如需要安装哪个大版本的集群, 就获取相应的 tag :
@@ -56,7 +63,7 @@ $ git clone -b v1.14.1.x https://github.com/slzcc/Ansible-Kubernetes.git
 > v1.14.1.x 最末尾一位属于编写 Ansible 脚本的迭代版本, 不属于 Kubernetes 自身版本。
 
 ## 使用说明
-在 nodes 文件中, 分为 kube-master/kube-node/etcd 第一部分, k8s-cluster-add-master/k8s-cluster-add-node 第二部分, 第三部分为集群识别的 SSH 秘钥。
+在 nodes 文件中, 分为三大块:
 ```
 [kube-master]
 35.236.167.32
@@ -67,21 +74,27 @@ $ git clone -b v1.14.1.x https://github.com/slzcc/Ansible-Kubernetes.git
 [etcd]
 35.236.167.32
 
+[k8s-cluster-add-master]
+
+[k8s-cluster-add-node]
+
+[etcd-cluster-add-node]
+
 [k8s-cluster:children]
 kube-node
 kube-master
 
-[k8s-cluster-add-master]
-
-[k8s-cluster-add-node]
+[etcd-cluster:children]
+etcd
+etcd-cluster-add-node
 
 [all:vars]
 ansible_ssh_public_key_file='/Users/shilei/.ssh/id_rsa.pub'
 ansible_ssh_private_key_file='/Users/shilei/.ssh/id_rsa'
 ```
-第一部分为部署集群所规划的集群初始节点, 可自定义添加。(第一次创建集群时, 不能在添加 master/node 中写入节点地址, 否则会冲突)
+第一部分为部署集群所规划的集群初始节点, 可自定义添加。(第一次创建集群时, 不能在添加 master/node/etcd 中写入节点地址, 否则会冲突)
 
-第二部分为后续集群需要添加的节点可分为 master/node 。
+第二部分为后续集群需要添加的节点可分为 master/node/etcd 。
 
 第三部分为集群内所有节点均可使用的 SSH 秘钥。
 
@@ -97,9 +110,9 @@ ssh_connect_user: < SSH USER >
 os_network_device_name: < NetWork Name >
 ```
 
-> 如有不明确的问题, 请参照上方的 Wiki 链接, 如果还有问题请提交 issue .
+> 如有不明确的问题, 请参照上方的 Wiki 链接, 如果还有问题请提交 issue。
 
-> 普通用户需要具有 Sudo 组, 并且配置 Sudo 免密. 
+> 普通用户需要具有 Sudo 组, 并且配置 Sudo 免密。
 
 ## Deploy Kubernetes Cluster
 如上述修改完成后, 可执行命令（v1.10.0 部署版本为例）：
@@ -164,14 +177,14 @@ kube-scheduler-instance-4                  1/1       Running             0      
 ```
 
 ## Add K8s Cluster Manager Node.
-批量添加 Master 节点到集群, 首先在 `nodes` 文件中 `k8s-cluster-add-node` 下添加需要添加的节点: (支持批量)
+批量添加 Master 节点到集群, 首先在 `nodes` 文件中 `k8s-cluster-add-master` 下添加需要添加的节点: (支持批量)
 ```
 [k8s-cluster-add-master]
 130.211.245.55
 ...
 ```
 
-部署安装: 
+部署安装:
 ```
 $ ansible-playbook -i nodes add_master.yml -vv
 ```
@@ -208,7 +221,7 @@ node-csr-xk3fBmT4OOHNAtbYJq4IXtLLpFlfyXLeX2PWFMNsrjk   45m       system:bootstra
 ...
 ```
 
-部署安装: 
+部署安装:
 ```
 $ ansible-playbook -i nodes add_nodes.yml -vv
 ```
@@ -245,12 +258,12 @@ node-csr-xk3fBmT4OOHNAtbYJq4IXtLLpFlfyXLeX2PWFMNsrjk   46m       system:bootstra
 $ ansible-playbook -i nodes remove_cluster.yml -vv
 ```
 
-> 移除集群是对集群中所有节点来说的, 它会销毁集群中的所有安装过的应用以及配置。但不包含 docker、cfssl 等可供后续使用的应用.
+> 移除集群是对集群中所有节点来说的, 它会销毁集群中的所有安装过的应用以及配置。但不包含 docker、cfssl 等可供后续使用的应用。
 
 ## Add Etcd Cluster Node
 对现有集群添加支持 TLS 的 Etcd 节点, 批量添加 Node 节点到集群, 首先在 `nodes` 文件中 `etcd-cluster-add-node` 下添加需要添加的节点: (支持批量)
 
-> 添加 Etcd 需要保证 Etcd 节点数在 2 个以上, 否则会出现没有 Leader 而无法加入集群的问题.
+> 添加 Etcd 需要保证 Etcd 节点数在 2 个以上, 否则会出现没有 Leader 而无法加入集群的问题。
 
 ```
 [etcd-cluster-add-node]
@@ -258,7 +271,7 @@ $ ansible-playbook -i nodes remove_cluster.yml -vv
 ...
 ```
 
-> 添加 Etcd 时, 需要保证添加的节点以及是 Master/Node 的成员, 否则不会生效。
+> 添加 Etcd 时, 需要保证添加的节点已经是 Kubernetes Master/Node 的成员, 否则不会生效。
 
 部署安装:
 ```
@@ -273,4 +286,3 @@ $ ansible-playbook -i nodes add_etcd.yml -vv
 ```
 $ ansible-playbook -i nodes main.yml --tags k8s-addons -vv
 ```
-

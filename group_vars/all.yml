@@ -28,7 +28,7 @@ k8s_cluster_ip: '10.96.0.1'
 k8s_cluster_ip_range: '10.96.0.0/12'
 
 # Kubernetes ApiServer 的总入口地址, 可配置 SLB 等云服务商提供的地址, 但需要接入后端服务器的 80, 443 端口, 此地址可以写某个单实例的 IP 地址
-k8s_load_balance_ip: 35.236.167.32
+k8s_load_balance_ip: 172.17.145.244
 
 # Kubernetes HaProxy 监听的 apiServer 完整的 URL
 k8s_apiserver_https_bind: 'https://{{ k8s_load_balance_ip }}:{{ k8s_master_haproxy_bind_port }}'
@@ -52,7 +52,7 @@ is_using_local_files: false
 # infra image, 依赖下方镜像仓库地址
 k8s_pod_infra_container_image: "{{ k8s_cluster_component_registry }}/pause:3.1"
 
-# Kubernetes Cluster Registry Addr
+# Kubernetes Cluster Registry Addr, 默认值为: k8s.gcr.io
 # 此地址可以修改为自定义镜像地址, 但需要确保已经执行 script/PublishK8sRegistryImages.sh 脚本, 所以参数可改为 slzcc, 如果在国内可使用 docker.io/slzcc 获取镜像。
 # 受影响的镜像为: etcd、kube-apiserver-amd64、kube-controller-manager、kube-scheduler、kube-proxy、pause。
 k8s_cluster_component_registry: 'k8s.gcr.io'
@@ -113,7 +113,7 @@ systemd_default_dirs: '/lib/systemd/system/'
 ## ********************************************************************************************************************************
 
 # 使用 Ansible 部署时连接实例的用户
-ssh_connect_user: "shilei"
+ssh_connect_user: "root"
 
 # 使用 Ansible 部署时连接实例的 SSH 端口
 ssh_connect_port: 22
@@ -144,7 +144,7 @@ vip_bind_net_device: "{{ os_network_device_name }}"
 ## ********************************************************************************************************************************
 
 # Etcd 绑定的宿主机网卡, 此配置需要在启动 Etcd 的节点上强制网卡名称一致
-os_network_device_name: 'ens4'
+os_network_device_name: 'eth0'
 
 # Etcd Verions
 etcd_version: '3.3.10'
@@ -195,7 +195,7 @@ etcd_data_dirs: '/var/lib/etcd/'
 ## ********************************************************************************************************************************
 
 # Calico Pool CIDR
-calico_ipv4_pool_cidr: '10.244.0.0/16'
+calico_ipv4_pool_cidr: '192.168.0.0/16'
 
 calico_version: 'v3.7.2'
 
