@@ -2,7 +2,7 @@
 ## Kubernetes
 ## ********************************************************************************************************************************
 # 部署 Kubernetes 对应版本, 不能建议修改, 如需修改请修改小版本进行部署测试, 大版本会引发部署参数不支持等问题.
-k8s_version: 'v1.14.1'
+k8s_version: 'v1.14.2'
 
 # 部署 CNI 对应版本
 cni_version: 'v0.7.5'
@@ -28,7 +28,7 @@ k8s_cluster_ip: '10.96.0.1'
 k8s_cluster_ip_range: '10.96.0.0/12'
 
 # Kubernetes ApiServer 的总入口地址, 可配置 SLB 等云服务商提供的地址, 但需要接入后端服务器的 80, 443 端口, 此地址可以写某个单实例的 IP 地址
-k8s_load_balance_ip: 172.17.145.244
+k8s_load_balance_ip: 34.92.146.194
 
 # Kubernetes HaProxy 监听的 apiServer 完整的 URL
 k8s_apiserver_https_bind: 'https://{{ k8s_load_balance_ip }}:{{ k8s_master_haproxy_bind_port }}'
@@ -40,16 +40,15 @@ k8s_apiserver_node_port_range: '70-32767'
 is_kube_master: "{{ inventory_hostname in groups['kube-master'] }}"
 is_kube_node: "{{ inventory_hostname in groups['kube-node'] }}"
 
-# 是否使用本地镜像, 默认为 false, 不建议开启此设置, 目前为测试状态
-is_load_images: false
+# 是否使用本地文件, 例如 kubectl, image 不建议开启此设置, 目前为测试状态
+is_using_local_files_deploy: false
 
-# 是否使用本地文件, 例如 kubectl, 不建议开启此设置, 目前为测试状态
-is_using_local_files: false
-
-# 是否使用远程镜像部署, 例如 kubectl, 默认为 true
+# 是否使用远程镜像部署, 例如 kubectl, image 默认为 true
+# 如果使用镜像部署需要保证 Ansible 中 *_version 未被修改的情况下才可使用, 否则版本不一致造成的问题自行解决.
+# 如果服务器是在国内, 强烈推荐使用此值设为 true, 并保证可以获取 docker hub 镜像资源.
 is_using_image_deploy: true
 
-# 是否对 Master 节点开启调度, 默认为 true
+# 是否开启 Master 节点调度, 默认为 true. 
 is_kube_master_schedule: true
 
 # infra image, 依赖下方镜像仓库地址
@@ -58,6 +57,7 @@ k8s_pod_infra_container_image: "{{ k8s_cluster_component_registry }}/pause:3.1"
 # Kubernetes Cluster Registry Addr, 默认值为: k8s.gcr.io
 # 此地址可以修改为自定义镜像地址, 但需要确保已经执行 script/PublishK8sRegistryImages.sh 脚本, 所以参数可改为 slzcc, 如果在国内可使用 docker.io/slzcc 获取镜像。
 # 受影响的镜像为: etcd、kube-apiserver-amd64、kube-controller-manager、kube-scheduler、kube-proxy、pause。
+# 此值依赖于 is_kube_master_schedule, 如果使用镜像方式部署时, 此值不能变动
 k8s_cluster_component_registry: 'k8s.gcr.io'
 
 ## HaProxy
@@ -116,7 +116,7 @@ systemd_default_dirs: '/lib/systemd/system/'
 ## ********************************************************************************************************************************
 
 # 使用 Ansible 部署时连接实例的用户
-ssh_connect_user: "root"
+ssh_connect_user: "shilei"
 
 # 使用 Ansible 部署时连接实例的 SSH 端口
 ssh_connect_port: 22
@@ -147,7 +147,7 @@ vip_bind_net_device: "{{ os_network_device_name }}"
 ## ********************************************************************************************************************************
 
 # Etcd 绑定的宿主机网卡, 此配置需要在启动 Etcd 的节点上强制网卡名称一致
-os_network_device_name: 'eth0'
+os_network_device_name: 'ens4'
 
 # Etcd Verions
 etcd_version: '3.3.10'
@@ -273,7 +273,7 @@ istio_kiali_password: 'YWRtaW4='
 is_remove_docker_ce: false
 
 # 清除集群时是否删除 CFSSL 可执行文件
-is_remove_cfssl: false
+is_remove_cfssl: true
 
 # 清除集群时是否删除 CNI 插件
-is_remove_cni: false
+is_remove_cni: true

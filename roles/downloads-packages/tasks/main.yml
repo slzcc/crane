@@ -1,14 +1,14 @@
 ---
 # Kubernetes
 ## ********************************************************************************************************************************
-- name: Configure Kubernetes to execute files
+- name: Configure Kubernetes to execute files in download
   include: includes/download_file.yml
-  when: not is_using_local_files
+  when: not is_using_local_files_deploy and not is_using_image_deploy
 
-- name: Configure Kubernetes to execute files
+- name: Configure Kubernetes to execute files in localhost
   include: includes/local_file.yml
-  when: is_using_local_files
+  when: is_using_local_files_deploy
 
-- name: Configure Kubernetes to execute files
-  include: includes/local_file.yml
+- name: Configure Kubernetes to execute files in image deploy
+  include: includes/image_deploy.yml
   when: is_using_image_deploy

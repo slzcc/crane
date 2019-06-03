@@ -4,19 +4,36 @@
   copy:
     src: k8s.conf
     dest: /etc/sysctl.d/k8s.conf
+    owner: "{{ ssh_connect_user }}"
     mode: 0644
 
 - name: Execute Configuration Command
   shell: sysctl -p /etc/sysctl.d/k8s.conf
 
-- name: Close the Swam
-  shell: swapoff -a && sysctl -w vm.swappiness=0
-
 - name: Create CA WorkDir
-  shell: "mkdir -p /etc/etcd/ssl && chown -R {{ ssh_connect_user }}.{{ ssh_connect_user }} {{ etcd_ssl_dirs }}"
+  file:
+    path: "{{ etcd_ssl_dirs }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
 
 - name: Create Kubernetes PKI WorkDir
-  shell: "mkdir -p {{ kubernetes_etc_dirs }}pki && chown -R {{ ssh_connect_user }}.{{ ssh_connect_user }} {{ kubernetes_etc_dirs }}"
+  file:
+    path: "{{ kubernetes_etc_dirs }}pki"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
 
 - name: Create CNI Cluster Config
-  shell: "mkdir -p {{ cni_config_dir }}"
+  file:
+    path: "{{ cni_config_dir }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
+- name: Create CNI Binary Directory
+  file:
+    path: "{{ kubernetes_cni_dirs }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
