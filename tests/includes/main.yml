@@ -8,7 +8,7 @@
 
 # - debug: msg="{{ hostvars.iteritems() }}"
 #  setup:
-# - debug: msg={{ testssss }}
+- debug: msg={{ all_ip_str }}
 #- debug: msg={{ item }}
 #  with_items:
 #    - "{{ testssss }}"
