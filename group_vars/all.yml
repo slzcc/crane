@@ -78,6 +78,9 @@ docker_storage_driver: "overlay2"
 # 允许的不安全 Registry 地址
 docker_insecure_registry: '[]'
 
+# docker cgroup drive
+docker_cgroup_drive: '{{ kubelet_cgroup_drive }}'
+
 ## HaProxy
 ## ********************************************************************************************************************************
 
