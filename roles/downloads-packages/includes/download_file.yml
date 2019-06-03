@@ -8,7 +8,7 @@
 - name: Download Kubernetes Ctl And Kubelet Binary Files
   shell: "wget -qO- 'https://dl.k8s.io/{{ k8s_version }}/kubernetes-node-linux-amd64.tar.gz' | tar zx -C {{ temporary_dirs }}"
   changed_when: true
-  when: CHECK_KUBE_BIN_PACKAGE | failed
+  when: CHECK_KUBE_BIN_PACKAGE is failed
 
 - shell: "cp -rf {{ temporary_dirs }}kubernetes/node/bin/kubectl {{ kubernetes_ctl_path }}"
 
@@ -20,10 +20,10 @@
 
 - name: Download Kubernetes-cni Plugin Binary Files
   shell: "mkdir -p {{ kubernetes_cni_dirs }} && chown -R {{ ssh_connect_user }}.{{ ssh_connect_user }} {{ kubernetes_cni_dirs }}"
-  when: CHECK_CNI_BIN_PACKAGE | failed
+  when: CHECK_CNI_BIN_PACKAGE is failed
 
 - shell: "wget -qO- 'https://github.com/containernetworking/plugins/releases/download/{{ cni_version }}/cni-plugins-amd64-{{ cni_version }}.tgz' | tar -zx -C {{ kubernetes_cni_dirs }}"
-  when: CHECK_CNI_BIN_PACKAGE | failed
+  when: CHECK_CNI_BIN_PACKAGE is failed
   
 # CFSSL
 ## ********************************************************************************************************************************

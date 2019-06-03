@@ -5,25 +5,34 @@
     state: stopped
   ignore_errors: true
 
-- name: Clean kubernetes Etc Working directory.
-  shell: "rm -rf {{ kubernetes_etc_dirs }}"
+- name: Clean kubernetes Etc Working directory * .
+  file:
+    path: "{{ kubernetes_etc_dirs }}"
+    state: absent
   ignore_errors: true
 
-- shell: "rm -rf {{ systemd_default_dirs }}kubelet.service"
+- name: Clean kubernetes Etc Working directory ** .
+  file:
+    path: "{{ systemd_default_dirs }}kubelet.service"
+    state: absent
+  ignore_errors: true
+
+- name: Clean Etcd ssl directory.
+  file:
+    path: "{{ etcd_ssl_dirs }}"
+    state: absent
   ignore_errors: true
 
 - name: Clean Etcd Working directory.
-  shell: "rm -rf {{ etcd_ssl_dirs }}"
-  ignore_errors: true
-
-- shell: "rm -rf {{ etcd_data_dirs }}"
-  ignore_errors: true
-
-- shell: "rm -rf {{ kubelet_work_dirs }}*"
+  file:
+    path: "{{ etcd_data_dirs }}"
+    state: absent
   ignore_errors: true
 
 - name: Clean Kubelet Working directory.
-  shell: "rm -rf {{ kubelet_work_dirs }}*"
+  file:
+    path: "{{ kubelet_work_dirs }}"
+    state: absent
   ignore_errors: true
 
 - name: Clean Docker Containers.
@@ -31,15 +40,27 @@
   ignore_errors: true
 
 - name: Clean Kubernet Ctl.
-  shell: "rm -rf {{ kubernetes_ctl_path }}kubectl"
-  shell: "rm -rf {{ kubernetes_ctl_path }}kubelet"
+  file:
+    path: "{{ kubernetes_ctl_path }}kubectl"
+    state: absent
   ignore_errors: true
 
-- name: Clean Kubelet Config.
-  shell: "rm -rf {{ systemd_etc_dirs }}kubelet.service.d/"
+- name: Clean Kubelet config.
+  file:
+    path: "{{ kubernetes_ctl_path }}kubelet"
+    state: absent
   ignore_errors: true
 
-- shell: "rm -rf {{ systemd_default_dirs }}kubelet.service"
+- name: Clean Kubelet Config *
+  file:
+    path: "{{ systemd_etc_dirs }}kubelet.service.d/"
+    state: absent
+  ignore_errors: true
+
+- name: Clean Kubelet Config **
+  file:
+    path: "{{ systemd_default_dirs }}kubelet.service"
+    state: absent
   ignore_errors: true
 
 # - name: Clean tmp file
@@ -47,23 +68,37 @@
 #   ignore_errors: true
   
 - name: Clean CNI Cluster Config
-  shell: "rm -rf {{ cni_config_dir }}"
+  file:
+    path: "{{ cni_config_dir }}"
+    state: absent
   ignore_errors: true
 
 - name: Clean CNI
-  shell: "rm -rf {{ kubernetes_cni_dirs }}"
+  file:
+    path: "{{ kubernetes_cni_dirs }}"
+    state: absent
   when: is_remove_cni
   ignore_errors: true
 
 - name: Clean Haproxy
-  shell: "rm -rf {{ haproxy_etc_dirs }}"
+  file:
+    path: "{{ haproxy_etc_dirs }}"
+    state: absent
   ignore_errors: true
 
 - name: Systemd Reload
   shell: "systemctl daemon-reload"
 
 - name: Clean Cfssl
-  shell: "rm -rf {{ kubernetes_ctl_path }}cfssl*"
+  file:
+    path: "{{ kubernetes_ctl_path }}cfssl"
+    state: absent
+  when: is_remove_cfssl
+
+- name: Clean Cfssljson
+  file:
+    path: "{{ kubernetes_ctl_path }}cfssljson"
+    state: absent
   when: is_remove_cfssl
 
 - name: Clean Docker for Ubuntu

@@ -1,3 +1,23 @@
 ---
 # Kubernetes
 ## ********************************************************************************************************************************
+- name: Pull the Image
+  shell: "docker run --name import-kubernetes-temporary -d -v /var/run/docker.sock:/var/run/docker.sock:ro slzcc/kubernetes:{{ k8s_version }} sleep 1234567"
+
+- name: Export the Image
+  shell: 'until docker exec -i import-kubernetes-temporary bash /docker-image-import.sh ; do >&2 echo "Starting..." && sleep 1 ; done'
+
+- name: Export the cfssl
+  shell: "docker cp import-kubernetes-temporary:/cfssl {{ kubernetes_ctl_path }}"
+
+- name: Export the cfssljson
+  shell: "docker cp import-kubernetes-temporary:/cfssljson {{ kubernetes_ctl_path }}"
+
+- name: Export the Kubelet
+  shell: "docker cp import-kubernetes-temporary:/kubernetes/node/bin/kubelet {{ kubernetes_ctl_path }}"
+
+- name: Export the Kubectl
+  shell: "docker cp import-kubernetes-temporary:/kubernetes/node/bin/kubectl {{ kubernetes_ctl_path }}"
+
+- name: Export the CNI
+  shell: "docker cp import-kubernetes-temporary:/cni/. {{ kubernetes_ctl_path }}"
