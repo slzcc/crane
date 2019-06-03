@@ -7,6 +7,15 @@
     dest: "{{ temporary_dirs }}kubernetes.tar.gz"
     owner: "{{ ssh_connect_user }}"
     mode: 0755
+  delegate_to: "{{ groups['all'][0] }}"
+
+- name: Copy Other Nodes
+  shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no -i {{ ssh_public_key }} \
+            -P {{ ssh_connect_port }} {{ item[1] }}  {{ ssh_connect_user }}@{{ item[0] }}:{{ item[1] }}"
+  with_nested:
+    - "{{ all_ip_str }}"
+    - ['{{ temporary_dirs }}kubernetes.tar.gz']
+  delegate_to: "{{ groups['all'][0] }}"
 
 - name: Import Kubernetes Docker Image  
   shell: "docker load -i {{ temporary_dirs }}kubernetes.tar.gz"

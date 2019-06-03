@@ -8,4 +8,4 @@ $ docker save -o roles/downloads-packages/files/kubernetes.tar.gz slzcc/kubernet
 
 此时需要保证 all.yml 文件中 `is_using_local_files_deploy` 为 `true` 并且 `is_kube_master_schedule` 为 `false` 才会使用本地文件进行部署.
 
-> 此方式会造成大量的网络 IO 阻塞, 所以非局域网环境不建议使用.
+> 此方式会造成大量的网络 IO 阻塞, 所以非局域网环境不建议使用, 文件大约在 1.5GB 左右.

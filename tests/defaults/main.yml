@@ -11,3 +11,9 @@ k8s_master_ip_list: >-
     '{{ hostvars[host].ansible_default_ipv4.address }}'
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}]
+
+all_ip_str: >-
+  {% for host in groups['all'] -%}
+    '{{ hostvars[host].ansible_default_ipv4.address }}'
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}
