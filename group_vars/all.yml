@@ -60,6 +60,20 @@ k8s_pod_infra_container_image: "{{ k8s_cluster_component_registry }}/pause:3.1"
 # 此值依赖于 is_kube_master_schedule, 如果使用镜像方式部署时, 此值不能变动
 k8s_cluster_component_registry: 'k8s.gcr.io'
 
+## Docker
+## ********************************************************************************************************************************
+
+# 使用 https://get.docker.com 方式安装, 并默认使用 Aliyun 镜像源, 可设为空.
+docker_install_source: "Aliyun"
+
+# 镜像加速, 如果为空则不设置.
+docker_registry_mirrors: '["https://registry.docker-cn.com"]'
+
+# Docker 存储路径
+docker_data_root: '/var/lib/docker'
+
+# Docker Image 存储驱动
+docker_storage_driver: "overlay2"
 ## HaProxy
 ## ********************************************************************************************************************************
 
@@ -271,6 +285,9 @@ istio_kiali_password: 'YWRtaW4='
 
 # 清除集群时是否删除 Docker
 is_remove_docker_ce: false
+
+# 清除 Docker CE 时清除数据目录
+is_remove_docker_dir: false
 
 # 清除集群时是否删除 CFSSL 可执行文件
 is_remove_cfssl: true

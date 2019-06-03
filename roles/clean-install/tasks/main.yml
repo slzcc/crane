@@ -98,11 +98,18 @@
   when: is_remove_cfssl
 
 - name: Clean Docker for Ubuntu
-  shell: "apt-get auroremove --purge -y docker"
+  shell: "apt-get autoremove --purge -y docker-ce"
   when: is_remove_docker_ce and ansible_lsb.id == 'Ubuntu'
   ignore_errors: true
 
 - name: Clean Docker for Centos
-  shell: "yum remove -y docker"
+  shell: "yum remove -y docker-ce"
   when: is_remove_docker_ce and ansible_lsb.id == 'Centos'
+  ignore_errors: true
+
+- name: Clean Docker Data DIR
+  file:
+    path: "/var/lib/docker"
+    state: absent
+  when: is_remove_docker_ce and is_remove_docker_dir
   ignore_errors: true
