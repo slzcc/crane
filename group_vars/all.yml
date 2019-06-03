@@ -41,12 +41,12 @@ is_kube_master: "{{ inventory_hostname in groups['kube-master'] }}"
 is_kube_node: "{{ inventory_hostname in groups['kube-node'] }}"
 
 # 是否使用本地文件, 例如 kubectl, image 不建议开启此设置, 目前为测试状态
-is_using_local_files_deploy: false
+is_using_local_files_deploy: true
 
 # 是否使用远程镜像部署, 例如 kubectl, image 默认为 true
 # 如果使用镜像部署需要保证 Ansible 中 *_version 未被修改的情况下才可使用, 否则版本不一致造成的问题自行解决.
 # 如果服务器是在国内, 强烈推荐使用此值设为 true, 并保证可以获取 docker hub 镜像资源.
-is_using_image_deploy: true
+is_using_image_deploy: false
 
 # 是否开启 Master 节点调度, 默认为 true. 
 is_kube_master_schedule: true

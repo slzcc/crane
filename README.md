@@ -47,6 +47,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [ ] 支持 Kubernetes 热更新 TLS。
 - [x] 支持 Kubernetes 镜像导入方式部署, v1.14.2.1 版本更新。
 - [ ] 支持 Proxy 方式部署 Docker Image 和 二进制应用。
+- [x] 支持离线方式部署 Kubernetes Cluster, 可参阅 [downloads-packages](roles/downloads-packages/files/)
 
 ## 修复
 

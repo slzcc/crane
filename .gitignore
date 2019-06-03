@@ -1,4 +1,4 @@
-roles/downloads-packages/files
+roles/downloads-packages/files/*.tar.gz
 **/*.retry
 **/nodes
 tage
