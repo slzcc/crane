@@ -14,7 +14,7 @@ export CleanPullImage=false
 export isImageExport=true 
 export isImagePush=false
 
-exec ./PublishK8sRegistryImages.sh
+bash -c ./PublishK8sRegistryImages.sh
 
 
 cat > /tmp/Dockerfile << EOF
