@@ -45,13 +45,14 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [ ] 支持 TLS 证书自定义。
 - [ ] 支持 OpenResty 入口的流量灰度发布。
 - [ ] 支持 Kubernetes 热更新 TLS。
-- [ ] 支持 Kubernetes 镜像导入方式部署。
+- [x] 支持 Kubernetes 镜像导入方式部署, v1.14.2.1 版本更新。
+- [ ] 支持 Proxy 方式部署 Docker Image 和 二进制应用。
 
 ## 修复
 
 - [x] 修复 Calico 在使用时, 无法与 Etcd 进行通信。
 - [ ] 脚本绝大部分使用 Shell 执行, 后期重构统一使用模块解决跨平台执行。
-- [ ] 修复 Calico 在使用时, 无法识别宿主机网卡, 造成无法通信的问题。
+- [x] 修复 Calico 在使用时, 无法识别宿主机网卡, 造成无法通信的问题。
 - [ ] 修复 bootstrap 无法创建凭证的问题。
 
 ## 获取对应的版本

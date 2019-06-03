@@ -1,63 +1,14 @@
 ---
 # Kubernetes
 ## ********************************************************************************************************************************
-- name: Configure Kubernetes to execute files
+- name: Configure Kubernetes to execute files in download
   include: includes/download_file.yml
-  when: not is_using_local_files
+  when: not is_using_local_files_deploy and not is_using_image_deploy
 
-- tasks:
+- name: Configure Kubernetes to execute files in localhost
   include: includes/local_file.yml
-  when: is_using_local_files
+  when: is_using_local_files_deploy
 
-# Docker Image
-# ********************************************************************************************************************************
-
-- name: Copy Kubernetes Master of Docker Images
-  copy:
-    src: images/kubernetes-1.10_master-docker_image.tar
-    dest: "{{ temporary_dirs }}kubernetes-1.10_master-docker_image.tar"
-    owner: "{{ ssh_connect_user }}"
-    mode: 0755
-  when: (is_kube_master and is_load_images) or (is_add_master and is_load_images)
-  ignore_errors: true
-  
-- name: Check Masters Image in Nodes
-  shell: docker images -f reference=gcr.io/google_containers/kube-apiserver-amd64 | wc -l
-  register: result
-
-- shell: "docker load -i {{ temporary_dirs }}kubernetes-1.10_master-docker_image.tar && \
-          docker tag 5f23bfb680c3 gcr.io/google_containers/etcd-amd64:3.1.13 && \
-          docker tag ad86dbed1555 gcr.io/google_containers/kube-controller-manager-amd64:v1.10.0 && \
-          docker tag af20925d51a3  gcr.io/google_containers/kube-apiserver-amd64:v1.10.0 && \
-          docker tag 704ba848e69a gcr.io/google_containers/kube-scheduler-amd64:v1.10.0 && \
-          docker tag 733c4b4d75c4 slzcc/haproxy:1.7 && \ 
-          docker tag da86e6ba6ca1 k8s.gcr.io/pause-amd64:3.1 && \
-          docker tag bfc21aadc7d3 k8s.gcr.io/kube-proxy-amd64:v1.10.0 && \
-          docker tag 0754e1c707e7 quay.io/calico/kube-controllers:v2.0.2 && \
-          docker tag 5feec37454f4 gcr.io/google_containers/k8s-dns-dnsmasq-nanny-amd64:1.14.7 && \
-          docker tag 5d049a8c4eec gcr.io/google_containers/k8s-dns-kube-dns-amd64:1.14.7 && \
-          docker tag db76ee297b85 gcr.io/google_containers/k8s-dns-sidecar-amd64:1.14.7 && \
-          docker tag cef0252b1749 quay.io/calico/cni:v2.0.3 && \
-          docker tag 5361c5a52912 quay.io/calico/node:v3.0.4" 
-
-  when: (is_kube_master and result.stdout|int < 2 and is_load_images) or
-        (is_add_master and result.stdout|int < 2 and is_load_images)
-  ignore_errors: true
-
-- name: Copy Kubernetes Nodes of Docker Images
-  copy:
-    src: images/kubernetes-1.10_node-docker_image.tar
-    dest: "{{ temporary_dirs }}kubernetes-1.10_node-docker_image.tar"
-    owner: "{{ ssh_connect_user }}"
-    mode: 0755
-  when: (is_kube_node and is_load_images) or (is_add_node and is_load_images) 
-  ignore_errors: true
-
-- name: Check Worker Image in Nodes
-  shell: docker images -f reference=k8s.gcr.io/pause-amd64 | wc -l
-  register: result
-
-- shell: docker load -i {{ temporary_dirs }}kubernetes-1.10_node-docker_image.tar
-  when: (is_kube_node and result.stdout|int < 2 and is_load_images) or
-        (is_add_node and result.stdout|int < 2 and is_load_images) 
-  ignore_errors: true
+- name: Configure Kubernetes to execute files in image deploy
+  include: includes/image_deploy.yml
+  when: is_using_image_deploy
