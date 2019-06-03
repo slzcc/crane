@@ -1,8 +1,0 @@
-{
-  "exec-opts": ["native.cgroupdriver=cgroupfs"],
-  "log-driver": "json-file",
-  "log-opts": {
-  "max-size": "1G"
-  },
-    "storage-driver": "overlay2"
-}

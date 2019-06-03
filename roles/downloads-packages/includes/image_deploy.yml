@@ -1,5 +1,5 @@
 ---
-# Kubernetes
+# Deploy
 ## ********************************************************************************************************************************
 - name: Pull the Image
   shell: "docker run --name import-kubernetes-temporary -d -v /var/run/docker.sock:/var/run/docker.sock:ro slzcc/kubernetes:{{ k8s_version }} sleep 1234567"
@@ -21,3 +21,6 @@
 
 - name: Export the CNI
   shell: "docker cp import-kubernetes-temporary:/cni/. {{ kubernetes_ctl_path }}"
+
+- name: Clean Temporary Container
+  shell: "docker rm -f import-kubernetes-temporary"

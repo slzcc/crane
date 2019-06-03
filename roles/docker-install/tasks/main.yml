@@ -16,8 +16,8 @@
   shell: yum install -y wget curl
   when: result.stderr and ansible_lsb.id == 'Centos'
 
-- name: Apt Install Docker-ce
-  shell: curl -fsSL https://get.docker.com | bash
+- name: Install Docker-ce
+  shell: "curl -fsSL https://get.docker.com | sh -s -- --mirror {{ docker_install_source }}"
   when: result.stderr
 
 - service:
@@ -33,8 +33,8 @@
   ignore_errors: true
 
 - name: Copy Dockerd Daemon.js
-  copy: 
-    src: "daemon.json"
+  template: 
+    src: "daemon.j2"
     dest: "/etc/docker/daemon.json"
     mode: 0644
     owner: "{{ ssh_connect_user }}"

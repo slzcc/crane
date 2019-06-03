@@ -1,0 +1,12 @@
+{
+{% if docker_registry_mirrors %}
+    "registry-mirrors": {{ docker_registry_mirrors }},
+{% endif %}
+    "exec-opts": ["native.cgroupdriver={{ kubelet_cgroup_drive }}"],
+    "log-driver": "json-file",
+    "log-opts": {
+        "max-size": "1G"
+    },
+    "data-root": "{{ docker_data_root }}",
+    "storage-driver": "{{ docker_storage_driver }}"
+}
