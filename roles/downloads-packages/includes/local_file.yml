@@ -17,7 +17,11 @@
   when: is_kube_master or is_add_master
 
 - name: Create Kubernetes-cni workdir
-  shell: "mkdir -p {{ kubernetes_cni_dirs }} && chown -R {{ ssh_connect_user }}.{{ ssh_connect_user }} {{ kubernetes_cni_dirs }}"
+  file:
+    path: "{{ kubernetes_cni_dirs }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
 
 - name: Copy Kubernetes-cni Plugin Binary Files
   copy:

@@ -51,7 +51,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 ## 修复
 
 - [x] 修复 Calico 在使用时, 无法与 Etcd 进行通信。
-- [ ] 脚本绝大部分使用 Shell 执行, 后期重构统一使用模块解决跨平台执行。
+- [x] 脚本绝大部分使用 Shell 执行, 后期重构统一使用模块解决跨平台执行。
 - [x] 修复 Calico 在使用时, 无法识别宿主机网卡, 造成无法通信的问题。
 - [ ] 修复 bootstrap 无法创建凭证的问题。
 

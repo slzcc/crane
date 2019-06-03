@@ -62,10 +62,6 @@
     path: "{{ systemd_default_dirs }}kubelet.service"
     state: absent
   ignore_errors: true
-
-# - name: Clean tmp file
-#   shell: "rm -rf {{ temporary_dirs }}kube*"
-#   ignore_errors: true
   
 - name: Clean CNI Cluster Config
   file:

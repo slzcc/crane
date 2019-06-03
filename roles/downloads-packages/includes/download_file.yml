@@ -19,7 +19,11 @@
   ignore_errors: true
 
 - name: Download Kubernetes-cni Plugin Binary Files
-  shell: "mkdir -p {{ kubernetes_cni_dirs }} && chown -R {{ ssh_connect_user }}.{{ ssh_connect_user }} {{ kubernetes_cni_dirs }}"
+  file:
+    path: "{{ kubernetes_cni_dirs }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
   when: CHECK_CNI_BIN_PACKAGE is failed
 
 - shell: "wget -qO- 'https://github.com/containernetworking/plugins/releases/download/{{ cni_version }}/cni-plugins-amd64-{{ cni_version }}.tgz' | tar -zx -C {{ kubernetes_cni_dirs }}"
