@@ -10,9 +10,9 @@ haproxyVersion=${haproxyVersion:-'1.9.6'}
 
 targetRegistry=${TargetRegistry:-'slzcc'}
 
-CleanPullImage=false 
-isImageExport=true 
-isImagePush=false
+export CleanPullImage=false 
+export isImageExport=true 
+export isImagePush=false
 
 exec ./PublishK8sRegistryImages.sh
 
