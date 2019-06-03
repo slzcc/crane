@@ -1,14 +1,16 @@
 #!/bin/bash
 
-k8sVersion=${K8sVersion:-'v1.14.2'}
-cniVersion=${cniVersion:-'v0.7.5'}
+export k8sVersion=${k8sVersion:-'v1.14.2'}
+export cniVersion=${cniVersion:-'v0.7.5'}
 
-etcdVersion=${EtcdVersion:-'3.3.10'}
-pauseVersion=${PauseVersion:-'3.1'}
-calicoVersion=${calicoVersion:-'v3.7.2'}
-haproxyVersion=${haproxyVersion:-'1.9.6'}
+export etcdVersion=${cniVersion:-'3.3.10'}
+export pauseVersion=${pauseVersion:-'3.1'}
+export calicoVersion=${calicoVersion:-'v3.7.2'}
+export haproxyVersion=${haproxyVersion:-'1.9.6'}
 
-targetRegistry=${TargetRegistry:-'slzcc'}
+export targetRegistry=${targetRegistry:-'slzcc'}
+
+export temporaryDirs=${temporaryDirs:-'/tmp'}
 
 export CleanPullImage=false 
 export isImageExport=true 
@@ -17,7 +19,7 @@ export isImagePush=false
 bash -c ./PublishK8sRegistryImages.sh
 
 
-cat > /tmp/Dockerfile << EOF
+cat > ${temporaryDirs}/Dockerfile << EOF
 FROM docker:18.09 as DockerCli
 
 FROM ubuntu:16.04
@@ -32,9 +34,13 @@ RUN wget -qO- "https://dl.k8s.io/${k8sVersion}/kubernetes-node-linux-amd64.tar.g
 RUN mkdir -p /cni && \
     wget -qO- "https://github.com/containernetworking/plugins/releases/download/${cniVersion}/cni-plugins-amd64-${cniVersion}.tgz" | tar zx -C /cni
 
+RUN wget -qO- "https://pkg.cfssl.org/R1.2/cfssl_linux-amd64" > /cfssl && \
+    wget -qO- "https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64" > /cfssljson && \
+    chmod +x /cfssl*
+
 COPY ./*.tar.gz /
 EOF
 
-cd /tmp && docker build -t ${targetRegistry}/kubernetes:${k8sVersion} .
+cd ${temporaryDirs} && docker build -t ${targetRegistry}/kubernetes:${k8sVersion} .
 
 docker push ${targetRegistry}/kubernetes:${k8sVersion}

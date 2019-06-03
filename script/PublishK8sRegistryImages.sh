@@ -14,19 +14,19 @@
 #########
 
 
-k8sVersion=${K8sVersion:-'v1.14.2'}
-etcdVersion=${EtcdVersion:-'3.3.10'}
-pauseVersion=${PauseVersion:-'3.1'}
+k8sVersion=${k8sVersion:-'v1.14.2'}
+etcdVersion=${etcdVersion:-'3.3.10'}
+pauseVersion=${pauseVersion:-'3.1'}
 calicoVersion=${calicoVersion:-'v3.7.2'}
 haproxyVersion=${haproxyVersion:-'1.9.6'}
 
 # Calico Source Registry
 calicoRegistry=${calicoRegistry:-'calico'}
 # Kubernetes Source Registry
-sourceRegistry=${SourceRegistry:-'k8s.gcr.io'}
+sourceRegistry=${sourceRegistry:-'k8s.gcr.io'}
 
 # Custom Target Registry
-targetRegistry=${TargetRegistry:-'slzcc'}
+targetRegistry=${targetRegistry:-'slzcc'}
 
 
 CleanPullImage=${CleanPullImage:-'true'}
@@ -34,7 +34,7 @@ isImageExport=${isImageExport:-'false'}
 isImagePush=${isImagePush:-'true'}
 
 # Temporary Directory
-temporaryDirs=${TemporaryDirs:-'/tmp'}
+temporaryDirs=${temporaryDirs:-'/tmp'}
 
 # Kubernetes ApiServer、Controller、Scheduler
 for i in kube-apiserver-amd64 kube-controller-manager kube-scheduler kube-proxy; do
