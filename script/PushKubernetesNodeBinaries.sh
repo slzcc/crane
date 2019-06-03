@@ -1,7 +1,8 @@
 #!/bin/bash
-set -xe
 
 k8sVersion=${K8sVersion:-'v1.14.2'}
+cniVersion=${cniVersion:-'v0.7.5'}
+
 etcdVersion=${EtcdVersion:-'3.3.10'}
 pauseVersion=${PauseVersion:-'3.1'}
 calicoVersion=${calicoVersion:-'v3.7.2'}
@@ -17,7 +18,11 @@ exec ./PublishK8sRegistryImages.sh
 
 
 cat > /tmp/Dockerfile << EOF
+FROM docker:18.09 as DockerCli
+
 FROM ubuntu:16.04
+
+COPY --from=DockerCli /usr/local/bin/docker /usr/local/bin
 
 RUN apt update && \
     apt install -y wget
