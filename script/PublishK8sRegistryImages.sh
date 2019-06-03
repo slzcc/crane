@@ -1,5 +1,4 @@
 #!/bin/bash
-set -ex
 
 ########
 # 删除镜像要比打包镜像优先级高, 所以要打包时不能清除本地镜像切记!
@@ -34,6 +33,9 @@ CleanPullImage=${CleanPullImage:-'true'}
 isImageExport=${isImageExport:-'false'}
 isImagePush=${isImagePush:-'true'}
 
+# Temporary Directory
+temporaryDirs=${TemporaryDirs:-'/tmp'}
+
 # Kubernetes ApiServer、Controller、Scheduler
 for i in kube-apiserver-amd64 kube-controller-manager kube-scheduler kube-proxy; do
     docker pull ${sourceRegistry}/$i:${k8sVersion}
@@ -45,7 +47,7 @@ for i in kube-apiserver-amd64 kube-controller-manager kube-scheduler kube-proxy;
 done
 
 [ ${isImageExport} == 'true' ] && \
-docker save -o image_kubernetes.tar.gz \
+docker save -o ${temporaryDirs}/image_kubernetes.tar.gz \
                ${sourceRegistry}/kube-apiserver-amd64:${k8sVersion} \
                ${sourceRegistry}/kube-controller-manager:${k8sVersion} \
                ${sourceRegistry}/kube-scheduler:${k8sVersion} \
@@ -61,7 +63,7 @@ docker pull ${sourceRegistry}/etcd:${etcdVersion}
 docker rmi -f ${sourceRegistry}/etcd:${etcdVersion} ${targetRegistry}/etcd:${etcdVersion}
 
 [ ${isImageExport} == 'true' ] && \
-docker save -o image_etcd.tar.gz \
+docker save -o ${temporaryDirs}/image_etcd.tar.gz \
                ${sourceRegistry}/etcd:${etcdVersion}
                
 # Pause
@@ -73,7 +75,7 @@ docker pull ${sourceRegistry}/pause:${pauseVersion}
 docker rmi -f ${sourceRegistry}/pause:${pauseVersion} ${targetRegistry}/pause:${pauseVersion}
 
 [ ${isImageExport} == 'true' ] && \
-docker save -o image_pause.tar.gz \
+docker save -o ${temporaryDirs}/image_pause.tar.gz \
                ${sourceRegistry}/pause:${pauseVersion} 
                
 # Calico
@@ -86,7 +88,7 @@ for i in cni node kube-controllers; do
 done
 
 [ ${isImageExport} == 'true' ] && \
-docker save -o image_calico.tar.gz \
+docker save -o ${temporaryDirs}/image_calico.tar.gz \
                ${calicoRegistry}/kube-controllers:${calicoVersion} \
                ${calicoRegistry}/cni:${calicoVersion} \
                ${calicoRegistry}/node:${calicoVersion}
@@ -96,7 +98,7 @@ docker pull haproxy:${haproxyVersion}
 [ ${CleanPullImage} == 'true' ] && docker rmi -f haproxy:${haproxyVersion}
 
 [ ${isImageExport} == 'true' ] && \
-docker save -o image_haproxy.tar.gz \
+docker save -o ${temporaryDirs}/image_haproxy.tar.gz \
                haproxy:${haproxyVersion}
 
 # keepalived
@@ -104,5 +106,5 @@ docker pull slzcc/keepalived:1.2.24
 [ ${CleanPullImage} == 'true' ] && docker rmi -f slzcc/keepalived:1.2.24
 
 [ ${isImageExport} == 'true' ] && \
-docker save -o image_keeplived.tar.gz \
+docker save -o ${temporaryDirs}/image_keeplived.tar.gz \
                slzcc/keepalived:1.2.24
