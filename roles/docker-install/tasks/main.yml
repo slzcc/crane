@@ -24,7 +24,12 @@
     name: docker
     state: stopped
 
-- shell: 'mkdir /etc/docker'
+- name: mkdir Docker Config DIR
+  file:
+    path: "/etc/docker"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
   ignore_errors: true
 
 - name: Copy Dockerd Daemon.js

@@ -1,3 +1,10 @@
 ---
-- name: Copy admin.conf to USER Dir
-  shell: mkdir -p ~/.kube && cp -a {{ kubernetes_etc_dirs }}admin.conf ~/.kube/config
+- name: Create Kubeconfig Dir
+  file:
+    path: "~/.kube"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
+- name: Copy Kubeconfig in Home Dir
+  shell: "cp -a {{ kubernetes_etc_dirs }}admin.conf ~/.kube/config"

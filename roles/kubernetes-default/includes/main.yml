@@ -2,31 +2,67 @@
 # Kubernetes
 ## ********************************************************************************************************************************
 
-- name: Create Kubernetes WorkDirs
-  shell: "mkdir -p {{ kubernetes_etc_dirs }} {{ kubernetes_pki_dirs }} {{ kubernetes_manifests_dirs }}"
+- name: Create Kubernetes ETC DIR
+  file:
+    path: "{{ kubernetes_etc_dirs }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
 
-- shell: "chown {{ ssh_connect_user }} {{ kubernetes_etc_dirs }} {{ kubernetes_pki_dirs }} {{ kubernetes_manifests_dirs }}"
+- name: Create Kubernetes PKI DIR
+  file:
+    path: "{{ kubernetes_pki_dirs }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
+- name: Create Kubernetes Manifests DIR
+  file:
+    path: "{{ kubernetes_manifests_dirs }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
 
 - name: Create Kubelet WorkDirs
-  shell: "mkdir -p {{ kubernetes_etc_dirs }} {{ kubelet_work_dirs }}"
+  file:
+    path: "{{ kubernetes_etc_dirs }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
 
-- shell: "chown {{ ssh_connect_user }} {{ kubelet_work_dirs }}"
+- name: Create Kubelet WorkDirs
+  file:
+    path: "{{ kubelet_work_dirs }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
 
 # Etcd
 ## ********************************************************************************************************************************
 
-- name: Create Etcd WorkDirs
-  shell: "mkdir -p {{ etcd_ssl_dirs }} {{ etcd_data_dirs }}"
+- name: Create Etcd SSL WorkDirs
+  file:
+    path: "{{ etcd_ssl_dirs }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
 
-- shell: "chown {{ ssh_connect_user }} {{ etcd_ssl_dirs }} {{ etcd_data_dirs }}"
+- name: Create Etcd Data WorkDirs
+  file:
+    path: "{{ etcd_data_dirs }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
 
 # System
 ## ********************************************************************************************************************************
 
 - name: Create Kubelet Systemd ConfigDirs
-  shell: "mkdir -p {{ systemd_etc_dirs }}kubelet.service.d/"
-
-- shell: "chown {{ ssh_connect_user }} {{ systemd_etc_dirs }}kubelet.service.d/"
+  file:
+    path: "{{ systemd_etc_dirs }}kubelet.service.d/"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
 
 # System
 ## ********************************************************************************************************************************
