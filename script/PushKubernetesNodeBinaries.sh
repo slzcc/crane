@@ -19,6 +19,14 @@ export isImagePush=false
 bash -c ./PublishK8sRegistryImages.sh
 
 
+cat > ${temporaryDirs}/docker-image-import.sh <<EOF
+for i in \$(ls /*.tar.gz); do
+    docker load -i \$i
+done
+EOF
+
+chmod +x ${temporaryDirs}/docker-image-import.sh
+
 cat > ${temporaryDirs}/Dockerfile << EOF
 FROM docker:18.09 as DockerCli
 
@@ -39,6 +47,9 @@ RUN wget -qO- "https://pkg.cfssl.org/R1.2/cfssl_linux-amd64" > /cfssl && \
     chmod +x /cfssl*
 
 COPY ./*.tar.gz /
+
+COPY docker-image-import.sh /docker-image-import.sh
+
 EOF
 
 cd ${temporaryDirs} && docker build -t ${targetRegistry}/kubernetes:${k8sVersion} .

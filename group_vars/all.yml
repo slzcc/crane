@@ -43,11 +43,14 @@ is_kube_node: "{{ inventory_hostname in groups['kube-node'] }}"
 # 是否使用本地镜像, 默认为 false, 不建议开启此设置, 目前为测试状态
 is_load_images: false
 
-# 是否对 Master 节点开启调度, 默认为 true
-is_kube_master_schedule: true
-
 # 是否使用本地文件, 例如 kubectl, 不建议开启此设置, 目前为测试状态
 is_using_local_files: false
+
+# 是否使用远程镜像部署, 例如 kubectl, 默认为 true
+is_using_image_deploy: true
+
+# 是否对 Master 节点开启调度, 默认为 true
+is_kube_master_schedule: true
 
 # infra image, 依赖下方镜像仓库地址
 k8s_pod_infra_container_image: "{{ k8s_cluster_component_registry }}/pause:3.1"
