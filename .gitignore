@@ -1,5 +1,5 @@
 roles/downloads-packages/files/*.tar.gz
 **/*.retry
 **/nodes
-tage
+tags
 nodes
