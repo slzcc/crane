@@ -10,6 +10,16 @@
 - name: Execute Configuration Command
   shell: sysctl -p /etc/sysctl.d/k8s.conf
 
+- name: Check Swap
+  shell: "swapon -s | sed '1d' | awk '{print $1}'"
+  register: result
+  ignore_errors: true
+
+- name: Off Swap
+  shell: "swapoff $(swapon -s | sed '1d' | awk '{print $1}')"
+  when: result is failed
+  ignore_errors: true
+
 - name: Create CA WorkDir
   file:
     path: "{{ etcd_ssl_dirs }}"

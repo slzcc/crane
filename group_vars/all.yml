@@ -28,7 +28,7 @@ k8s_cluster_ip: '10.96.0.1'
 k8s_cluster_ip_range: '10.96.0.0/12'
 
 # Kubernetes ApiServer 的总入口地址, 可配置 SLB 等云服务商提供的地址, 但需要接入后端服务器的 80, 443 端口, 此地址可以写某个单实例的 IP 地址
-k8s_load_balance_ip: 192.168.111.201
+k8s_load_balance_ip: 10.170.0.9
 
 # Kubernetes HaProxy 监听的 apiServer 完整的 URL
 k8s_apiserver_https_bind: 'https://{{ k8s_load_balance_ip }}:{{ k8s_master_haproxy_bind_port }}'
@@ -41,12 +41,12 @@ is_kube_master: "{{ inventory_hostname in groups['kube-master'] }}"
 is_kube_node: "{{ inventory_hostname in groups['kube-node'] }}"
 
 # 是否使用本地文件, 例如 kubectl, image 不建议开启此设置, 目前为测试状态
-is_using_local_files_deploy: true
+is_using_local_files_deploy: false
 
 # 是否使用远程镜像部署, 例如 kubectl, image 默认为 true
 # 如果使用镜像部署需要保证 Ansible 中 *_version 未被修改的情况下才可使用, 否则版本不一致造成的问题自行解决.
 # 如果服务器是在国内, 强烈推荐使用此值设为 true, 并保证可以获取 docker hub 镜像资源.
-is_using_image_deploy: false
+is_using_image_deploy: true
 
 # 是否开启 Master 节点调度, 默认为 true. 
 is_kube_master_schedule: true
@@ -137,7 +137,7 @@ systemd_default_dirs: '/lib/systemd/system/'
 ## ********************************************************************************************************************************
 
 # 使用 Ansible 部署时连接实例的用户
-ssh_connect_user: "root"
+ssh_connect_user: "shilei"
 
 # 使用 Ansible 部署时连接实例的 SSH 端口
 ssh_connect_port: 22
@@ -168,7 +168,7 @@ vip_bind_net_device: "{{ os_network_device_name }}"
 ## ********************************************************************************************************************************
 
 # Etcd 绑定的宿主机网卡, 此配置需要在启动 Etcd 的节点上强制网卡名称一致
-os_network_device_name: 'ens39'
+os_network_device_name: 'ens4'
 
 # Etcd Verions
 etcd_version: '3.3.10'
