@@ -16,7 +16,7 @@ export temporaryDirs=${temporaryDirs:-'/tmp'}
 # Clean old files
 rm -rf  ${temporaryDirs}/image_*.tar.gz | true
 
-CleanPullImage=false isImageExport=true isImagePush=false bash -x ./PublishK8sRegistryImages.sh
+CleanPullImage=false isImageExport=true isImagePush=false bash -c ./PublishK8sRegistryImages.sh
 
 cat > ${temporaryDirs}/docker-image-import.sh <<EOF
 for i in \$(ls /*.tar.gz); do
