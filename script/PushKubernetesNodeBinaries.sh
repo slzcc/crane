@@ -19,7 +19,7 @@ rm -rf  ${temporaryDirs}/image_*.tar.gz | true
 CleanPullImage=false isImageExport=true isImagePush=false bash -c ./PublishK8sRegistryImages.sh
 
 cat > ${temporaryDirs}/docker-image-import.sh <<EOF
-for i in \$(ls /*.tar.gz); do
+for i in \$(ls /image_*.tar.gz); do
     docker load -i \$i
 done
 EOF
