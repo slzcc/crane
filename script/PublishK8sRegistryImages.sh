@@ -104,7 +104,7 @@ docker save -o ${temporaryDirs}/image_haproxy.tar.gz \
 
 # CoreDNS
 docker pull coredns/coredns:${corednsVersion}
-${CleanPullImage} == 'true' ] && docker rmi -f coredns/coredns:${corednsVersion}
+[ ${CleanPullImage} == 'true' ] && docker rmi -f coredns/coredns:${corednsVersion}
 
 [ ${isImageExport} == 'true' ] && \
 docker save -o ${temporaryDirs}/image_coredns.tar.gz \
