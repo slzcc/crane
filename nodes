@@ -1,12 +1,10 @@
 [kube-master]
-35.243.116.95
-34.85.52.57
+34.80.142.147
 
 [kube-node]
 
 [etcd]
-35.243.116.95
-34.85.52.57
+34.80.142.147
 
 [k8s-cluster-add-master]
 
@@ -15,7 +13,7 @@
 
 
 [etcd-cluster-add-node]
-35.221.75.155
+
 
 [k8s-cluster:children]
 kube-node
