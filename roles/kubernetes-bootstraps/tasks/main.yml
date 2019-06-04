@@ -1,11 +1,11 @@
 ---
 - name: Check Cluster Status
-  shell: 'until kubectl get pod ; do >&2 echo "Kubenetes Cluster Starting..." && sleep 1 ; done'
+  shell: 'until {{ kubernetes_ctl_path }}kubectl get pod ; do >&2 echo "Kubenetes Cluster Starting..." && sleep 1 ; done'
   register: result
   ignore_errors: true
 
 - name: Remove the master Schedule status.
-  shell: 'kubectl taint nodes node-role.kubernetes.io/master="":NoSchedule --all'
+  shell: '{{ kubernetes_ctl_path }}kubectl taint nodes node-role.kubernetes.io/master="":NoSchedule --all'
   when: not is_kube_master_schedule
   ignore_errors: false
 
@@ -17,7 +17,7 @@
     mode: 0644
 
 - name: Add Apiserver to Kubelet RBAC.
-  shell: 'until kubectl apply -f {{ temporary_dirs }}apiserver-to-kubelet-rbac.yml.conf ; do >&2 echo "Starting..." && sleep 1 ; done'
+  shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}apiserver-to-kubelet-rbac.yml.conf ; do >&2 echo "Starting..." && sleep 1 ; done'
   ignore_errors: true
 
 - name: Create bootstrap-kubelet.conf .
@@ -41,25 +41,25 @@
   ignore_errors: true
 
 - shell: "cd {{ kubernetes_pki_dirs }} &&
-          kubectl config set-cluster kubernetes 
+          {{ kubernetes_ctl_path }}kubectl config set-cluster kubernetes 
             --certificate-authority=ca.pem 
             --embed-certs=true 
             --server={{ k8s_apiserver_https_bind }} 
             --kubeconfig={{ kubernetes_etc_dirs }}bootstrap-kubelet.conf &&
-          kubectl config set-credentials tls-bootstrap-token-user 
+          {{ kubernetes_ctl_path }}kubectl config set-credentials tls-bootstrap-token-user 
             --token={{ bootstrap_token_id }}.{{ bootstrap_token_secret }}
             --kubeconfig={{ kubernetes_etc_dirs }}bootstrap-kubelet.conf && 
-          kubectl config set-context tls-bootstrap-token-user@kubernetes 
+          {{ kubernetes_ctl_path }}kubectl config set-context tls-bootstrap-token-user@kubernetes 
             --cluster=kubernetes 
             --user=tls-bootstrap-token-user 
             --kubeconfig={{ kubernetes_etc_dirs }}bootstrap-kubelet.conf && 
-          kubectl config use-context tls-bootstrap-token-user@kubernetes 
+          {{ kubernetes_ctl_path }}kubectl config use-context tls-bootstrap-token-user@kubernetes 
             --kubeconfig={{ kubernetes_etc_dirs }}bootstrap-kubelet.conf"
 
 - shell: chown {{ ssh_connect_user }} {{ kubernetes_etc_dirs }}bootstrap-kubelet.conf
 
 - name: Clean Cluster in TLS bootstrap secret.
-  shell: kubectl delete -f {{ bootstrappers_yaml_path }}
+  shell: "{{ kubernetes_ctl_path }}kubectl delete -f {{ bootstrappers_yaml_path }}"
   ignore_errors: true
   
 - name: Create TLS Bootstrap Secret.
@@ -69,7 +69,7 @@
     owner: "{{ ssh_connect_user }}"
     mode: 0644
 
-- shell: 'until kubectl apply -f {{ bootstrappers_yaml_path }} ; do >&2 echo "Starting..." && sleep 1 ; done'
+- shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ bootstrappers_yaml_path }} ; do >&2 echo "Starting..." && sleep 1 ; done'
 
 - name: Add Kubelet Bootstrap Rbac.
   copy: 
@@ -78,7 +78,7 @@
     owner: "{{ ssh_connect_user }}"
     mode: 0644
 
-- shell: 'until kubectl apply -f {{ temporary_dirs }}kubelet-bootstrap-rbac.yml.conf ; do >&2 echo "Starting..." && sleep 1 ; done'
+- shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}kubelet-bootstrap-rbac.yml.conf ; do >&2 echo "Starting..." && sleep 1 ; done'
 
 - name: 
   include: includes/main.yml

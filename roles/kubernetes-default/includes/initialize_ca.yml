@@ -15,13 +15,13 @@
 - shell: 'sed -i "s#\$NODE#{{ hostvars[inventory_hostname].ansible_nodename }}#g" {{ kubernetes_pki_dirs }}kubelet-{{ hostvars[inventory_hostname].ansible_nodename }}-csr.json'
 
 - name: Generate a CA Files.
-  shell: 'cd {{ kubernetes_pki_dirs }} && cfssl gencert \
+  shell: 'cd {{ kubernetes_pki_dirs }} && {{ kubernetes_ctl_path }}cfssl gencert \
             -ca=ca.pem \
             -ca-key=ca-key.pem \
             -config=ca-config.json \
             -hostname={{ k8s_master_ip_str }} \
             -profile=kubernetes \
-            kubelet-{{ item[0] }}-csr.json | cfssljson -bare kubelet-{{ item[0] }}'
+            kubelet-{{ item[0] }}-csr.json | {{ kubernetes_ctl_path }}cfssljson -bare kubelet-{{ item[0] }}'
   with_nested:
     - "{{ add_master_name_list }}"
     - "-"

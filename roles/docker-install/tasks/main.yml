@@ -6,19 +6,19 @@
   
 - name: Apt Update Source
   shell: apt-get update
-  when: result is failed and ansible_lsb.id == 'Ubuntu'
+  when: result.stderr and ansible_distribution == 'Ubuntu'
 
 - name: Apt Install Dependence
   shell: apt-get install -y apt-transport-https curl ca-certificates software-properties-common
-  when: result is failed and ansible_lsb.id == 'Ubuntu'
+  when: result.stderr and ansible_distribution == 'Ubuntu'
 
 - name: Yum Install Dependence
   shell: yum install -y wget curl
-  when: result is failed and ansible_lsb.id == 'Centos'
+  when: result.stderr and ansible_distribution == 'CentOS'
 
 - name: Install Docker-ce
   shell: "curl -fsSL https://get.docker.com | sh -s -- --mirror {{ docker_install_source }}"
-  when: result is failed
+  when: result.stderr
 
 - service:
     name: docker

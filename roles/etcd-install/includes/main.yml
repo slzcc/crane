@@ -17,16 +17,16 @@
 ## ********************************************************************************************************************************
 
 - name: Create Certificate Files
-  shell: cd {{ etcd_ssl_dirs }} && cfssl gencert -initca etcd-ca-csr.json | cfssljson -bare etcd-ca
+  shell: cd {{ etcd_ssl_dirs }} && {{ kubernetes_ctl_path }}cfssl gencert -initca etcd-ca-csr.json | {{ kubernetes_ctl_path }}cfssljson -bare etcd-ca
 
 - name: Create Etcd Certificate Files
-  shell: "cd {{ etcd_ssl_dirs }} && cfssl gencert \
+  shell: "cd {{ etcd_ssl_dirs }} && {{ kubernetes_ctl_path }}cfssl gencert \
             -ca=etcd-ca.pem \
             -ca-key=etcd-ca-key.pem \
             -config=ca-config.json \
             -hostname=127.0.0.1,{{ etcd_master_ip_str }} \
             -profile=kubernetes \
-            etcd-csr.json | cfssljson -bare etcd"
+            etcd-csr.json | {{ kubernetes_ctl_path }}cfssljson -bare etcd"
 
 ## Copy Etcd CA in Nodes
 ## ********************************************************************************************************************************

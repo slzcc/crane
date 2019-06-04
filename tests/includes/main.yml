@@ -7,8 +7,8 @@
 #   #  shell: "pwd"
 
 # - debug: msg="{{ hostvars.iteritems() }}"
-#  setup:
-- debug: msg={{ all_ip_str }}
+- setup:
+- debug: msg="{{ ansible_facts.distribution }}"
 #- debug: msg={{ item }}
 #  with_items:
 #    - "{{ testssss }}"

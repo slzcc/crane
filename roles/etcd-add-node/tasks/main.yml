@@ -2,17 +2,13 @@
 # CFSSL install
 ## ********************************************************************************************************************************
 
-- name: Download CFSSL Binary Files *
-  shell: "curl -s -o {{ kubernetes_ctl_path }}cfssl https://pkg.cfssl.org/R1.2/cfssl_linux-amd64"
-  delegate_to: "{{ groups['etcd-cluster-add-node'][0] }}"
+- name: Download CFSSL 
+  include: includes/download_deploy.yml
+  when: not is_using_local_files_deploy
 
-- name: Download CFSSL Binary Files **
-  shell: "curl -s -o {{ kubernetes_ctl_path }}cfssljson https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64"
-  delegate_to: "{{ groups['etcd-cluster-add-node'][0] }}"
-
-- name: Download CFSSL Binary Files ***
-  shell: "chmod +x {{ kubernetes_ctl_path }}cfssl*"
-  delegate_to: "{{ groups['etcd-cluster-add-node'][0] }}"
+- name: Image CFSSL 
+  include: includes/image_deploy.yml
+  when: is_using_local_files_deploy
 
 ## Copy CFSSL Etcd Json Files
 ## ********************************************************************************************************************************
@@ -32,13 +28,13 @@
 ## ********************************************************************************************************************************
 
 - name: Create Etcd Certificate Files
-  shell: "cd {{ etcd_ssl_dirs }} && cfssl gencert \
+  shell: "cd {{ etcd_ssl_dirs }} && {{ kubernetes_ctl_path }}cfssl gencert \
             -ca=etcd-ca.pem \
             -ca-key=etcd-ca-key.pem \
             -config=ca-config.json \
             -hostname=127.0.0.1,{{ etcd_add_node_ip_str }} \
             -profile=kubernetes \
-            etcd-csr.json | cfssljson -bare etcd"
+            etcd-csr.json | {{ kubernetes_ctl_path }}cfssljson -bare etcd"
   delegate_to: "{{ groups['etcd-cluster-add-node'][0] }}"
 
 ## Copy Etcd CA in Nodes

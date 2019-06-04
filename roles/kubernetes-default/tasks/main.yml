@@ -24,52 +24,52 @@
 
 ## Create Kubernetes CA
 - name: Create Kubernetes Certificate Files
-  shell: cd {{ kubernetes_pki_dirs }} && cfssl gencert -initca ca-csr.json | cfssljson -bare ca
+  shell: cd {{ kubernetes_pki_dirs }} && {{ kubernetes_ctl_path }}cfssl gencert -initca ca-csr.json | {{ kubernetes_ctl_path }}cfssljson -bare ca
 
 - name: Create Kubernetes API Server Certificate Files
-  shell: "cd {{ kubernetes_pki_dirs }} && cfssl gencert \
+  shell: "cd {{ kubernetes_pki_dirs }} && {{ kubernetes_ctl_path }}cfssl gencert \
             -ca=ca.pem \
             -ca-key=ca-key.pem \
             -config=ca-config.json \
             -hostname=127.0.0.1,{{ k8s_cluster_ip }},{{ k8s_load_balance_ip }},{{ k8s_master_ip_str }},kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.default.svc.{{ dns_domain }} \
             -profile=kubernetes \
-            apiserver-csr.json | cfssljson -bare apiserver"
+            apiserver-csr.json | {{ kubernetes_ctl_path }}cfssljson -bare apiserver"
 
 - name: Create Kubernetes Front Proxy Certificate Files
-  shell: "cd {{ kubernetes_pki_dirs }} && cfssl gencert \
-            -initca front-proxy-ca-csr.json | cfssljson -bare front-proxy-ca"
+  shell: "cd {{ kubernetes_pki_dirs }} && {{ kubernetes_ctl_path }}cfssl gencert \
+            -initca front-proxy-ca-csr.json | {{ kubernetes_ctl_path }}cfssljson -bare front-proxy-ca"
 
 - name: Create Kubernetes Front Proxy Client Certificate Files
-  shell: "cd {{ kubernetes_pki_dirs }} && cfssl gencert \
+  shell: "cd {{ kubernetes_pki_dirs }} && {{ kubernetes_ctl_path }}cfssl gencert \
             -ca=front-proxy-ca.pem \
             -ca-key=front-proxy-ca-key.pem \
             -config=ca-config.json \
             -profile=kubernetes \
-            front-proxy-client-csr.json | cfssljson -bare front-proxy-client"
+            front-proxy-client-csr.json | {{ kubernetes_ctl_path }}cfssljson -bare front-proxy-client"
 
 - name: Create Kubernetes Admin Certificate Files
-  shell: "cd {{ kubernetes_pki_dirs }} && cfssl gencert \
+  shell: "cd {{ kubernetes_pki_dirs }} && {{ kubernetes_ctl_path }}cfssl gencert \
             -ca=ca.pem \
             -ca-key=ca-key.pem \
             -config=ca-config.json \
             -profile=kubernetes \
-            admin-csr.json | cfssljson -bare admin"
+            admin-csr.json | {{ kubernetes_ctl_path }}cfssljson -bare admin"
 
 - name: Create Kubernetes Controller Manager Certificate Files
-  shell: "cd {{ kubernetes_pki_dirs }} && cfssl gencert \
+  shell: "cd {{ kubernetes_pki_dirs }} && {{ kubernetes_ctl_path }}cfssl gencert \
             -ca=ca.pem \
             -ca-key=ca-key.pem \
             -config=ca-config.json \
             -profile=kubernetes \
-            manager-csr.json | cfssljson -bare controller-manager"
+            manager-csr.json | {{ kubernetes_ctl_path }}cfssljson -bare controller-manager"
 
 - name: Create Kubernetes Scheduler Certificate Files
-  shell: "cd {{ kubernetes_pki_dirs }} && cfssl gencert \
+  shell: "cd {{ kubernetes_pki_dirs }} && {{ kubernetes_ctl_path }}cfssl gencert \
             -ca=ca.pem \
             -ca-key=ca-key.pem \
             -config=ca-config.json \
             -profile=kubernetes \
-            scheduler-csr.json | cfssljson -bare scheduler"
+            scheduler-csr.json | {{ kubernetes_ctl_path }}cfssljson -bare scheduler"
 
 # Copy CA
 ## ********************************************************************************************************************************
@@ -83,13 +83,13 @@
   - "-"
 
 - name: Create CA *
-  shell: 'cd {{ kubernetes_pki_dirs }} && cfssl gencert \
+  shell: 'cd {{ kubernetes_pki_dirs }} && {{ kubernetes_ctl_path }}cfssl gencert \
             -ca=ca.pem \
             -ca-key=ca-key.pem \
             -config=ca-config.json \
             -hostname={{ k8s_master_ip_str }} \
             -profile=kubernetes \
-            kubelet-{{ item[0] }}-csr.json | cfssljson -bare kubelet-{{ item[0] }}'
+            kubelet-{{ item[0] }}-csr.json | {{ kubernetes_ctl_path }}cfssljson -bare kubelet-{{ item[0] }}'
   with_nested:
     - "{{ k8s_master_name_list }}"
     - "-"
@@ -134,61 +134,61 @@
 ## Create Kubernetes Admin Kubeconfig
 - name: Create Kubernetes Admin Kubeconfig
   shell: "cd {{ kubernetes_pki_dirs }} && 
-            kubectl config set-cluster kubernetes \
+            {{ kubernetes_ctl_path }}kubectl config set-cluster kubernetes \
               --certificate-authority=ca.pem \
               --embed-certs=true \
               --server={{ k8s_apiserver_https_bind }} \
               --kubeconfig={{ kubernetes_etc_dirs }}admin.conf &&
-            kubectl config set-credentials kubernetes-admin 
+            {{ kubernetes_ctl_path }}kubectl config set-credentials kubernetes-admin 
               --client-certificate=admin.pem 
               --client-key=admin-key.pem 
               --embed-certs=true 
               --kubeconfig={{ kubernetes_etc_dirs }}admin.conf && 
-            kubectl config set-context kubernetes-admin@kubernetes \
+            {{ kubernetes_ctl_path }}kubectl config set-context kubernetes-admin@kubernetes \
               --cluster=kubernetes \
               --user=kubernetes-admin \
               --kubeconfig={{ kubernetes_etc_dirs }}admin.conf && 
-            kubectl config use-context kubernetes-admin@kubernetes \
+            {{ kubernetes_ctl_path }}kubectl config use-context kubernetes-admin@kubernetes \
               --kubeconfig={{ kubernetes_etc_dirs }}admin.conf"
 
 ## Create Kubernetes Controller Manager  Kubeconfig
 - name: Create Kubernetes Controller Manager  Kubeconfig
   shell: "cd {{ kubernetes_pki_dirs }} && 
-          kubectl config set-cluster kubernetes 
+          {{ kubernetes_ctl_path }}kubectl config set-cluster kubernetes 
             --certificate-authority=ca.pem 
             --embed-certs=true 
             --server={{ k8s_apiserver_https_bind }} 
             --kubeconfig={{ kubernetes_etc_dirs }}controller-manager.conf && 
-          kubectl config set-credentials system:kube-controller-manager 
+          {{ kubernetes_ctl_path }}kubectl config set-credentials system:kube-controller-manager 
               --client-certificate=controller-manager.pem 
               --client-key=controller-manager-key.pem 
               --embed-certs=true 
               --kubeconfig={{ kubernetes_etc_dirs }}controller-manager.conf && 
-           kubectl config set-context system:kube-controller-manager@kubernetes 
+          {{ kubernetes_ctl_path }}kubectl config set-context system:kube-controller-manager@kubernetes 
               --cluster=kubernetes 
               --user=system:kube-controller-manager 
               --kubeconfig={{ kubernetes_etc_dirs }}controller-manager.conf &&
-           kubectl config use-context system:kube-controller-manager@kubernetes
+          {{ kubernetes_ctl_path }}kubectl config use-context system:kube-controller-manager@kubernetes
               --kubeconfig={{ kubernetes_etc_dirs }}controller-manager.conf"
 
 ## Create Kubernetes Scheduler Kubeconfig
 - name: Create Kubernetes Scheduler Kubeconfig
   shell: "cd {{ kubernetes_pki_dirs }} && 
-          kubectl config set-cluster kubernetes 
+          {{ kubernetes_ctl_path }}kubectl config set-cluster kubernetes 
               --certificate-authority=ca.pem 
               --embed-certs=true 
               --server={{ k8s_apiserver_https_bind }} 
               --kubeconfig={{ kubernetes_etc_dirs }}scheduler.conf &&
-          kubectl config set-credentials system:kube-scheduler 
+          {{ kubernetes_ctl_path }}kubectl config set-credentials system:kube-scheduler 
               --client-certificate=scheduler.pem 
               --client-key=scheduler-key.pem 
               --embed-certs=true 
               --kubeconfig={{ kubernetes_etc_dirs }}scheduler.conf && 
-          kubectl config set-context system:kube-scheduler@kubernetes 
+          {{ kubernetes_ctl_path }}kubectl config set-context system:kube-scheduler@kubernetes 
               --cluster=kubernetes 
               --user=system:kube-scheduler 
               --kubeconfig={{ kubernetes_etc_dirs }}scheduler.conf && 
-          kubectl config use-context system:kube-scheduler@kubernetes 
+          {{ kubernetes_ctl_path }}kubectl config use-context system:kube-scheduler@kubernetes 
               --kubeconfig={{ kubernetes_etc_dirs }}scheduler.conf"
 
 # Copy CA and Kubeconfig in Nodes
