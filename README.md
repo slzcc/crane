@@ -48,13 +48,14 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [x] 支持 Kubernetes 镜像导入方式部署, v1.14.2.1 版本更新。
 - [ ] ~~支持 Proxy 方式部署 Docker Image 和 二进制应用, 已经通过容器方式部署.~~
 - [x] 支持离线方式部署 Kubernetes Cluster, 可参阅 [downloads-packages](roles/downloads-packages/files/)
+- [ ] IPVS 支持.
 
 ## 修复
 
 - [x] 修复 Calico 在使用时, 无法与 Etcd 进行通信。
 - [x] 脚本绝大部分使用 Shell 执行, 后期重构统一使用模块解决跨平台执行。
 - [x] 修复 Calico 在使用时, 无法识别宿主机网卡, 造成无法通信的问题。
-- [ ] 修复 bootstrap 无法创建凭证的问题。
+- [x] 修复 Bootstrap 无法创建凭证的问题。
 - [x] 修复 Swap 如果打开情况下的优化配置, v1.14.2.5 中修复.
 
 ## 获取对应的版本

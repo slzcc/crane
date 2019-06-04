@@ -32,6 +32,7 @@
 
 - name: Create Kubelet PEM
   include: includes/kubelet_pem.yml
+  
 - name: System Reload
   shell: "systemctl daemon-reload"
 
