@@ -1,25 +1,4 @@
 ---
-- name: Check Cluster Status
-  shell: 'until {{ kubernetes_ctl_path }}kubectl get pod ; do >&2 echo "Kubenetes Cluster Starting..." && sleep 1 ; done'
-  register: result
-  ignore_errors: true
-
-- name: Remove the master Schedule status.
-  shell: '{{ kubernetes_ctl_path }}kubectl taint nodes node-role.kubernetes.io/master="":NoSchedule --all'
-  when: not is_kube_master_schedule
-  ignore_errors: false
-
-- name: Add Kubernetes Apiserver to Kubelet Rbac And Perform.
-  copy:
-    src: "apiserver-to-kubelet-rbac.yml.conf"
-    dest: "{{ temporary_dirs }}apiserver-to-kubelet-rbac.yml.conf"
-    owner: "{{ ssh_connect_user }}"
-    mode: 0644
-
-- name: Add Apiserver to Kubelet RBAC.
-  shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}apiserver-to-kubelet-rbac.yml.conf ; do >&2 echo "Starting..." && sleep 1 ; done'
-  ignore_errors: true
-
 - name: Create bootstrap-kubelet.conf .
   shell: "openssl rand -hex 3"
   register: TOKEN_ID
@@ -56,8 +35,7 @@
           {{ kubernetes_ctl_path }}kubectl config use-context tls-bootstrap-token-user@kubernetes 
             --kubeconfig={{ kubernetes_etc_dirs }}bootstrap-kubelet.conf"
 
-- name: File Empowerment
-  shell: chown {{ ssh_connect_user }} {{ kubernetes_etc_dirs }}bootstrap-kubelet.conf
+- shell: chown {{ ssh_connect_user }} {{ kubernetes_etc_dirs }}bootstrap-kubelet.conf
 
 - name: Clean Cluster in TLS bootstrap secret.
   shell: "{{ kubernetes_ctl_path }}kubectl delete -f {{ bootstrappers_yaml_path }}"
@@ -71,25 +49,4 @@
     mode: 0644
 
 - name: Deploy Bootstrap.
-  shell: '{{ kubernetes_ctl_path }}kubectl apply -f {{ bootstrappers_yaml_path }}'
-  register: result
-  ignore_errors: true
-
-- name: Deploy Bootstrap for Error do it Again.
-  include: includes/create-bootstrap.yml
-  when: result.stderr
-
-- name: Copy Kubelet Bootstrap RBAC.
-  copy: 
-    src: kubelet-bootstrap-rbac.yml.conf
-    dest: "{{ temporary_dirs }}kubelet-bootstrap-rbac.yml"
-    owner: "{{ ssh_connect_user }}"
-    mode: 0644
-
-- name: Deploy Bootstrap RBAC
-  shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}kubelet-bootstrap-rbac.yml ; do >&2 echo "Starting..." && sleep 1 ; done'
-
-- name: Deploy Kubernetes Certification Files
-  include: includes/main.yml
-  run_once: true
-  delegate_to: "{{ groups['kube-master'][0] }}"
+  shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ bootstrappers_yaml_path }} ; do >&2 echo "Starting..." && sleep 1 ; done'
