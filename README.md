@@ -40,7 +40,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [x] 支持 Etcd 热添加节点。
 - [x] 支持 Add Ons 其他 Tools 部署, 包括 Helm、Prometheus、Ingress-Nginx、Ingress-Example、DNS-Tools。
 - [x] 支持 Istio。
-- [ ] 支持操作系统预判部署 Ubuntu/Centos 更合理的安装即优化。
+- [x] 支持操作系统预判部署 Ubuntu/Centos 更合理的安装即优化, v1.14.2.6 中优化.
 - [ ] 支持 Harbor HTTPS 部署。
 - [ ] 支持 TLS 证书自定义。
 - [ ] 支持 OpenResty 入口的流量灰度发布。
