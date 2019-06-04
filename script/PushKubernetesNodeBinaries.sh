@@ -17,6 +17,10 @@ export CleanPullImage=false
 export isImageExport=true 
 export isImagePush=false
 
+# Clean old files
+
+rm -rf  ${temporaryDirs}/image_*.tar.gz | true
+
 bash -c ./PublishK8sRegistryImages.sh
 
 
@@ -47,7 +51,7 @@ RUN wget -qO- "https://pkg.cfssl.org/R1.2/cfssl_linux-amd64" > /cfssl && \
     wget -qO- "https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64" > /cfssljson && \
     chmod +x /cfssl*
 
-COPY ./*.tar.gz /
+COPY ./image_*.tar.gz /
 
 COPY docker-image-import.sh /docker-image-import.sh
 
