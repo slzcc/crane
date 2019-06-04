@@ -3,7 +3,7 @@
 export k8sVersion=${k8sVersion:-'v1.14.2'}
 export cniVersion=${cniVersion:-'v0.7.5'}
 
-export etcdVersion=${cniVersion:-'3.3.10'}
+export etcdVersion=${etcdVersion:-'3.3.10'}
 export pauseVersion=${pauseVersion:-'3.1'}
 export calicoVersion=${calicoVersion:-'v3.7.2'}
 export haproxyVersion=${haproxyVersion:-'1.9.6'}
