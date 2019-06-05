@@ -47,3 +47,27 @@
     mode: 0755
     owner: "{{ ssh_connect_user }}"
     state: directory
+
+- name: Ubuntu Install IPVS Admin
+  apt: 
+    name: ipvsadm 
+    state: present
+  when: kube_proxy_mode == 'ipvs' and ansible_distribution == 'Ubuntu' and is_install_ipvsadm
+  ignore_errors: true
+
+- name: Centos Install IPVS Admin
+  apt: 
+    name: ipvsadm 
+    state: present
+  when: kube_proxy_mode == 'ipvs' and ansible_distribution == 'CentOS' and is_install_ipvsadm
+  ignore_errors: true
+
+- name: IPVS initialize Module
+  shell: "modprobe -- ip_vs && \
+          modprobe -- ip_vs_rr && \
+          modprobe -- ip_vs_wrr && \
+          modprobe -- ip_vs_sh && \
+          modprobe -- nf_conntrack_ipv4"
+
+- name: Check IPVS
+  shell: "lsmod | grep ip_vs"
