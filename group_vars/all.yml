@@ -60,6 +60,12 @@ k8s_pod_infra_container_image: "{{ k8s_cluster_component_registry }}/pause:3.1"
 # 此值依赖于 is_kube_master_schedule, 如果使用镜像方式部署时, 此值不能变动
 k8s_cluster_component_registry: 'k8s.gcr.io'
 
+## Kube Proxy
+## ********************************************************************************************************************************
+
+# Kube Proxy 模式, 默认 ipvs, 如果设置为空则默认使用 iptable
+kube_proxy_mode: "ipvs"
+
 ## Docker
 ## ********************************************************************************************************************************
 

@@ -13,7 +13,7 @@ authorization:
   webhook:
     cacheAuthorizedTTL: 5m0s
     cacheUnauthorizedTTL: 30s
-cgroupDriver: cgroupfs
+cgroupDriver: {{ kubelet_cgroup_drive }}
 cgroupsPerQOS: true
 clusterDNS:
 - {{ dns_cluster_ip }}
