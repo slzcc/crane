@@ -28,7 +28,7 @@ k8s_cluster_ip: '10.96.0.1'
 k8s_cluster_ip_range: '10.96.0.0/12'
 
 # Kubernetes ApiServer 的总入口地址, 可配置 SLB 等云服务商提供的地址, 但需要接入后端服务器的 80, 443 端口, 此地址可以写某个单实例的 IP 地址
-k8s_load_balance_ip: 10.140.0.19
+k8s_load_balance_ip: 192.168.1.201
 
 # Kubernetes HaProxy 监听的 apiServer 完整的 URL
 k8s_apiserver_https_bind: 'https://{{ k8s_load_balance_ip }}:{{ k8s_master_haproxy_bind_port }}'
@@ -65,6 +65,8 @@ k8s_cluster_component_registry: 'k8s.gcr.io'
 
 # Kube Proxy 模式, 默认 ipvs, 如果设置为空则默认使用 iptable
 kube_proxy_mode: "ipvs"
+
+is_install_ipvsadm: false
 
 ## Docker
 ## ********************************************************************************************************************************
@@ -143,7 +145,7 @@ systemd_default_dirs: '/lib/systemd/system/'
 ## ********************************************************************************************************************************
 
 # 使用 Ansible 部署时连接实例的用户
-ssh_connect_user: "shilei"
+ssh_connect_user: "root"
 
 # 使用 Ansible 部署时连接实例的 SSH 端口
 ssh_connect_port: 22
@@ -174,7 +176,7 @@ vip_bind_net_device: "{{ os_network_device_name }}"
 ## ********************************************************************************************************************************
 
 # Etcd 绑定的宿主机网卡, 此配置需要在启动 Etcd 的节点上强制网卡名称一致
-os_network_device_name: 'ens4'
+os_network_device_name: 'ens33'
 
 # Etcd Verions
 etcd_version: '3.3.10'
