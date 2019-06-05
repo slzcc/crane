@@ -48,7 +48,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [x] 支持 Kubernetes 镜像导入方式部署, v1.14.2.1 版本更新。
 - [ ] ~~支持 Proxy 方式部署 Docker Image 和 二进制应用, 已经通过容器方式部署.~~
 - [x] 支持离线方式部署 Kubernetes Cluster, 可参阅 [downloads-packages](roles/downloads-packages/files/)
-- [x] IPVS 支持, v1.14.2.8 版本更新.
+- [x] 支持 IPVS, v1.14.2.8 版本更新.
 
 ## 修复
 
