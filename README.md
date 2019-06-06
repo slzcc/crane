@@ -56,7 +56,8 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [x] 脚本绝大部分使用 Shell 执行, 后期重构统一使用模块解决跨平台执行。
 - [x] 修复 Calico 在使用时, 无法识别宿主机网卡, 造成无法通信的问题。
 - [x] 修复 Bootstrap 无法创建凭证的问题。
-- [x] 修复 Swap 如果打开情况下的优化配置, v1.14.2.5 中修复.
+- [x] 修复 Swap 如果打开情况下的优化配置, v1.14.2.5 中修复。
+- [x] 修复 Ubuntu IPVS 模式下无法跨主机访问问。v1.14.2.9 中修复。
 
 ## 获取对应的版本
 切记, 如需要安装哪个大版本的集群, 就获取相应的 tag :
