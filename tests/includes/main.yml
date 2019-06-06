@@ -8,7 +8,7 @@
 
 # - debug: msg="{{ hostvars.iteritems() }}"
 - setup:
-- debug: msg="{{ ansible_facts.distribution }}"
+# - debug: msg="{{ ansible_facts.distribution }}"
 #- debug: msg={{ item }}
 #  with_items:
 #    - "{{ testssss }}"
@@ -50,3 +50,5 @@
 # - name: Detect cluster information
 #   debug: 
 #     msg: docker run --rm -i -e ETCDCTL_API=2 -v {{ etcd_ssl_dirs }}:{{ etcd_ssl_dirs }} -w {{ etcd_ssl_dirs }} {{ k8s_cluster_component_registry }}/etcd:{{ etcd_version }} etcdctl --ca-file=./etcd-ca.pem --key-file=./etcd-key.pem --cert-file=./etcd.pem --endpoints {{ etcd_cluster_str }} member list
+- debug:
+    msg: "{{ all_hostname_list }}"

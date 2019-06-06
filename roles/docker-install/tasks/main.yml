@@ -32,7 +32,7 @@
     state: directory
   ignore_errors: true
 
-- name: Copy Dockerd Daemon.js
+- name: Copy Dockerd Daemon JSON Config
   template: 
     src: "daemon.j2"
     dest: "/etc/docker/daemon.json"

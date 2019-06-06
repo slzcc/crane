@@ -31,7 +31,7 @@
             -ca=ca.pem \
             -ca-key=ca-key.pem \
             -config=ca-config.json \
-            -hostname=127.0.0.1,{{ k8s_cluster_ip }},{{ k8s_load_balance_ip }},{{ k8s_master_ip_str }},kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.default.svc.{{ dns_domain }} \
+            -hostname=127.0.0.1,{{ k8s_cluster_ip }},{{ k8s_load_balance_ip }},{{ k8s_master_ip_str }},kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.default.svc.{{ dns_domain }},{{ all_hostname_str }} \
             -profile=kubernetes \
             apiserver-csr.json | {{ kubernetes_ctl_path }}cfssljson -bare apiserver"
 

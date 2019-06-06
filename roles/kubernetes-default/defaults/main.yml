@@ -15,3 +15,9 @@ k8s_master_ip_str: >-
     {{ hostvars[host].ansible_default_ipv4.address }}
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}
+
+all_hostname_str: >-
+  {% for host in groups['kube-master'] -%}
+    {{ hostvars[host]['ansible_nodename'] }}
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}
