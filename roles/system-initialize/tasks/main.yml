@@ -1,15 +1,4 @@
 ---
-
-- name: Copy Sysctl Files
-  copy:
-    src: k8s.conf
-    dest: /etc/sysctl.d/k8s.conf
-    owner: "{{ ssh_connect_user }}"
-    mode: 0644
-
-- name: Execute Configuration Command
-  shell: sysctl -p /etc/sysctl.d/k8s.conf
-
 - name: Check Swap
   shell: "swapon -s | sed '1d' | awk '{print $1}'"
   register: result
@@ -62,12 +51,37 @@
   when: kube_proxy_mode == 'ipvs' and ansible_distribution == 'CentOS' and is_install_ipvsadm
   ignore_errors: true
 
+- name: Ubuntu Install IPset
+  apt: 
+    name: ipset 
+    state: present
+  when: ansible_distribution == 'Ubuntu' and is_install_ipvsadm
+  ignore_errors: true
+
+- name: Centos Install IPset
+  apt: 
+    name: ipset 
+    state: present
+  when: ansible_distribution == 'CentOS' and is_install_ipvsadm
+  ignore_errors: true
+
 - name: IPVS initialize Module
   shell: "modprobe -- ip_vs && \
           modprobe -- ip_vs_rr && \
           modprobe -- ip_vs_wrr && \
           modprobe -- ip_vs_sh && \
-          modprobe -- nf_conntrack_ipv4"
+          modprobe -- nf_conntrack_ipv4 && \
+          modprobe -- br_netfilter"
 
 - name: Check IPVS
   shell: "lsmod | grep ip_vs"
+
+- name: Copy Sysctl Files
+  copy:
+    src: k8s.conf
+    dest: /etc/sysctl.d/k8s.conf
+    owner: "{{ ssh_connect_user }}"
+    mode: 0644
+
+- name: Execute Configuration Command
+  shell: sysctl -p /etc/sysctl.d/k8s.conf
