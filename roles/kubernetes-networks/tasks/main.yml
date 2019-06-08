@@ -5,7 +5,9 @@
     dest: "{{ temporary_dirs }}CoreDNS.yml"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
-- shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}CoreDNS.yml ; do >&2 echo "Starting..." && sleep 1 ; done'
+
+- name: Deploy CoreDNS
+  shell: '{{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}CoreDNS.yml'
   ignore_errors: true
 
 - name: Copy Kubernetes Proxy Config Files
@@ -14,7 +16,9 @@
     dest: "{{ temporary_dirs }}kube-proxy.yml"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
-- shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}kube-proxy.yml ; do >&2 echo "Starting..." && sleep 1 ; done'
+
+- name: Deploy Kube-Proxy
+  shell: '{{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}kube-proxy.yml'
   ignore_errors: true
 
 - name: Copy Calico Config Files
@@ -23,5 +27,7 @@
     dest: "{{ temporary_dirs }}calico.yml"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
-- shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}calico.yml ; do >&2 echo "Starting..." && sleep 1 ; done'
+
+- name: Deploy Calico
+  shell: '{{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}calico.yml'
   ignore_errors: true
