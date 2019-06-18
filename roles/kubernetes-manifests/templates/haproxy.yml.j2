@@ -12,7 +12,7 @@ spec:
   hostNetwork: true
   containers:
   - name: haproxy
-    image: haproxy:1.9.6
+    image: haproxy:{{ haproxy_version }}
     resources:
       requests:
         cpu: 100m
