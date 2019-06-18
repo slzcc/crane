@@ -18,7 +18,7 @@ k8sVersion=${k8sVersion:-'v1.14.2'}
 etcdVersion=${etcdVersion:-'3.3.10'}
 pauseVersion=${pauseVersion:-'3.1'}
 calicoVersion=${calicoVersion:-'v3.7.2'}
-haproxyVersion=${haproxyVersion:-'1.9.6'}
+haproxyVersion=${haproxyVersion:-'2.0.0'}
 corednsVersion=${corednsVersion:-'1.5.0'}
 
 # Calico Source Registry

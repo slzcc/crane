@@ -6,7 +6,7 @@ export cniVersion=${cniVersion:-'v0.7.5'}
 export etcdVersion=${etcdVersion:-'3.3.10'}
 export pauseVersion=${pauseVersion:-'3.1'}
 export calicoVersion=${calicoVersion:-'v3.7.2'}
-export haproxyVersion=${haproxyVersion:-'1.9.6'}
+export haproxyVersion=${haproxyVersion:-'2.0.0'}
 export corednsVersion=${corednsVersion:-'1.5.0'}
 
 export targetRegistry=${targetRegistry:-'slzcc'}
