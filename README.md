@@ -265,6 +265,8 @@ $ ansible-playbook -i nodes remove_cluster.yml -vv
 ```
 
 > 移除集群是对集群中所有节点来说的, 它会销毁集群中的所有安装过的应用以及配置。但不包含 docker、cfssl 等可供后续使用的应用。
+> 
+> 清除集群时 IPVS 默认不会清除规则, 所以需要自己执行 `ipvsadm -C` 来解决.
 
 ## Add Etcd Cluster Node
 对现有集群添加支持 TLS 的 Etcd 节点, 批量添加 Node 节点到集群, 首先在 `nodes` 文件中 `etcd-cluster-add-node` 下添加需要添加的节点: (支持批量)
