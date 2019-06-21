@@ -9,6 +9,9 @@ k8s_version: 'v1.15.0'
 # https://github.com/containernetworking/plugins/releases/
 cni_version: 'v0.8.1'
 
+# CNI OS Type
+cni_os_drive: 'linux-amd64'
+
 # 获取当前需要部署的 Kubernetes Master 总数量, 配置数量在 nodes 文件中获取
 k8s_master_counts: "{{ groups['kube-master'] | length }}"
 
