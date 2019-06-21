@@ -102,7 +102,7 @@
   when: is_deploy_istio
 
 - name: Deploy Istio **
-  shell: "cd {{ temporary_dirs }}istio-{{ istio_version }} && kubectl apply -f install/kubernetes/ -n istio-system" 
+  shell: "cd {{ temporary_dirs }}istio-{{ istio_version }} && kubectl apply -f install/kubernetes/" 
   delegate_to: "{{ groups['kube-master'][0] }}"
   when: is_deploy_istio
 
