@@ -1,12 +1,12 @@
 #!/bin/bash
 
-_k8sVersion=`awk '/k8s_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed -r "s/'//g"`
-_cni_version=`awk '/cni_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed -r "s/'//g"`
-_etcdVersion=`awk '/etcd_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed -r "s/'//g"`
-_pauseVersion=`awk '/pause_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed -r "s/'//g"`
-_calicoVersion=`awk '/calico_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed -r "s/'//g"`
-_haproxyVersion=`awk '/haproxy_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed -r "s/'//g"`
-_corednsVersion=`awk '/dns_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed -r "s/'//g"`
+_k8sVersion=`awk '/^k8s_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed -r "s/'//g"`
+_cni_version=`awk '/^cni_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed -r "s/'//g"`
+_etcdVersion=`awk '/^etcd_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed -r "s/'//g"`
+_pauseVersion=`awk '/^pause_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed -r "s/'//g"`
+_calicoVersion=`awk '/^calico_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed -r "s/'//g"`
+_haproxyVersion=`awk '/^haproxy_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed -r "s/'//g"`
+_corednsVersion=`awk '/^dns_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed -r "s/'//g"`
 
 export dockercliVersion=18.09
 

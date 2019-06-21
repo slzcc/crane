@@ -189,7 +189,7 @@ os_network_device_name: 'eth0'
 
 # Etcd Verions
 # https://github.com/etcd-io/etcd/releases
-etcd_version: '3.3.10'
+etcd_version: '3.3.13'
 
 # Etcd 使用的 Client 协议, 默认 HTTPS, 不能修改
 etcd_url_scheme: "https"
