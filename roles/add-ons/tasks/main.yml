@@ -97,12 +97,12 @@
 ## Install ISTIO
 ## ********************************************************************************************************************************
 - name: Deploy Istio *
-  shell: "curl -sL https://git.io/getLatestIstio | ISTIO_VERSION={{ istio_version }} sh -" 
+  shell: "cd {{ temporary_dirs }} && curl -sL https://git.io/getLatestIstio | ISTIO_VERSION={{ istio_version }} sh -" 
   delegate_to: "{{ groups['kube-master'][0] }}"
   when: is_deploy_istio
 
 - name: Deploy Istio **
-  shell: "cd ~/istio-{{ {{ istio_version }} }} && kubectl apply -f install/kubernetes/ -n istio-system" 
+  shell: "cd {{ temporary_dirs }}istio-{{ istio_version }} && kubectl apply -f install/kubernetes/ -n istio-system" 
   delegate_to: "{{ groups['kube-master'][0] }}"
   when: is_deploy_istio
 
