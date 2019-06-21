@@ -1,4 +1,6 @@
 ---
+- setup:
+  
 - name: Check Swap
   shell: "swapon -s | sed '1d' | awk '{print $1}'"
   register: result
