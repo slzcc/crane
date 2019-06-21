@@ -1,16 +1,16 @@
 [kube-master]
-10.31.129.16
+101.200.83.130
 
 
 [kube-node]
 
 
 [etcd]
-10.31.129.16
+101.200.83.130
 
 
 [k8s-cluster-add-master]
-
+47.95.219.151
 
 [k8s-cluster-add-node]
 
@@ -27,5 +27,5 @@ etcd
 etcd-cluster-add-node
 
 [all:vars]
-ansible_ssh_public_key_file='/Users/shilei/.ssh/id_rsa.pub'
-ansible_ssh_private_key_file='/Users/shilei/.ssh/id_rsa'
+ansible_ssh_public_key_file='/Users/shilei/.ssh/shileizcc.pub'
+ansible_ssh_private_key_file='/Users/shilei/.ssh/shileizcc'
