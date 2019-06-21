@@ -85,3 +85,13 @@
 
 - name: Execute Configuration Command
   shell: sysctl -p /etc/sysctl.d/k8s.conf
+
+- name: Centos Stop Firewalld
+  service: 
+    name: firewalld
+    enabled: no
+  when: ansible_distribution == 'CentOS' and ansible_distribution_major_version == "7"
+
+- name: Centos Stop SELinux
+  shell: "sed -i 's#^SELINUX\=enforcing#SELINUX\=disabled#g' /etc/selinux/config && setenforce 0"
+  when: ansible_distribution == 'CentOS' and ansible_distribution_major_version == "7"

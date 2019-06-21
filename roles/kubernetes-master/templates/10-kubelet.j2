@@ -1,7 +1,7 @@
 [Service]
 Environment="KUBELET_KUBECONFIG_ARGS=--bootstrap-kubeconfig={{ kubernetes_etc_dirs }}bootstrap-kubelet.conf --kubeconfig={{ kubernetes_etc_dirs }}kubelet.conf"
 Environment="KUBELET_CONFIG_ARGS=--config={{ kubelet_work_dirs }}config.yaml"
-Environment="KUBELET_SYSTEM_PODS_ARGS=--pod-manifest-path={{ kubernetes_etc_dirs }}manifests --allow-privileged=true"
+Environment="KUBELET_SYSTEM_PODS_ARGS=--pod-manifest-path={{ kubernetes_etc_dirs }}manifests"
 Environment="KUBELET_DNS_ARGS=--cluster-dns={{ dns_cluster_ip }} --cluster-domain={{ dns_domain }}"
 Environment="KUBELET_AUTHZ_ARGS=--authorization-mode=Webhook --client-ca-file={{ kubernetes_etc_dirs }}pki/ca.pem"
 Environment="KUBELET_CERTIFICATE_ARGS=--rotate-certificates=true --cert-dir={{ kubelet_work_dirs }}pki"

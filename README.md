@@ -1,7 +1,7 @@
 # Ansible-Kubernetes
 Please refer to the documentation for detailed configuration: [Wiki Docs URL](https://wiki.shileizcc.com/display/CASE/Ansible+Kubernetes+Cluster)。
 
-> Wiki 文档内容为 1.10.0.x 版本, 暂未更新。
+> Wiki 文档内容为 1.14.x 版本
 
 > 以下所有的部署全部使用 Ubuntu 16.04 为环境进行示例演练。
 
@@ -15,6 +15,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 目前支持的 Kubernetes 版本:
 * v1.10.0
 * v1.14.x
+* v1.15.x
 
 在 v1.14.x 开始, 可以支持动态的选择版本进行部署, 如 v1.14.1/v1.14.2 版本, 但目前只支持小版本。后续会添加集群的热更新。
 ## 推荐亮点
@@ -25,12 +26,12 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [x] 支持 Add-Ons 等应用部署。
 
 ## 项目部署架构
-以 v1.14.x 为例：
-* Kubernetes A/C/S v1.14.x
+以 v1.15.x 为例：
+* Kubernetes A/C/S v1.15.x
 * CoreDNS: v1.5.0
-* Calico: v3.7.2
-* Kube Proxy: v1.14.x
-* HaProxy: v1.9.6
+* Calico: v3.7.3
+* Kube Proxy: v1.15.x
+* HaProxy: v2.0.0
 * Etcd: v3.3.10
 * pause: v3.1
 

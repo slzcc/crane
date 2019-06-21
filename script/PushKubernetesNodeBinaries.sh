@@ -74,3 +74,11 @@ cd ${temporaryDirs} && docker build -t ${targetRegistry}/kubernetes:${k8sVersion
 
 # Push Images
 docker push ${targetRegistry}/kubernetes:${k8sVersion}
+
+if [ $? -eq 0 ]; then
+    echo 
+    echo "Failure.."
+    echo "Please log on to Docker Hub and push to your image warehouse!"
+    echo "docker login ..."
+    echo
+fi
