@@ -68,6 +68,9 @@ k8s_pod_infra_container_image: "{{ k8s_cluster_component_registry }}/pause:{{ pa
 # 此值依赖于 is_kube_master_schedule, 如果使用镜像方式部署时, 此值不能变动
 k8s_cluster_component_registry: 'k8s.gcr.io'
 
+# 是否使用 RBAC
+is_rbac: true
+
 ## Kube Proxy
 ## ********************************************************************************************************************************
 

@@ -110,3 +110,13 @@
     ansible_ssh_pipelining: true
   roles:
     - { role: add-ons, tags: [k8s-addons]}
+
+- name: Deployment Kubernetes Cluster Afterward CMD
+  hosts: kube-master[0]
+  gather_facts: true
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  roles:
+    - { role: kubernetes-afterward, tags: [k8s-afterward]}
