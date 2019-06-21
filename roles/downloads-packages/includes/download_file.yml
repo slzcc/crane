@@ -26,7 +26,7 @@
     state: directory
   when: CHECK_CNI_BIN_PACKAGE is failed
 
-- shell: "wget -qO- 'https://github.com/containernetworking/plugins/releases/download/{{ cni_version }}/cni-plugins-amd64-{{ cni_version }}.tgz' | tar -zx -C {{ kubernetes_cni_dirs }}"
+- shell: "wget -qO- 'https://github.com/containernetworking/plugins/releases/download/{{ cni_version }}/cni-plugins-{{ cni_os_drive }}-{{ cni_version }}.tgz' | tar -zx -C {{ kubernetes_cni_dirs }}"
   when: CHECK_CNI_BIN_PACKAGE is failed
   
 # CFSSL
