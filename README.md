@@ -46,7 +46,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [ ] 支持 TLS 证书自定义。
 - [ ] 支持 OpenResty 入口的流量灰度发布。
 - [ ] 支持 Kubernetes 热更新 TLS。
-- [x] 支持 Kubernetes 镜像导入方式部署, v1.14.2.1 版本更新。
+- [x] 支持 Kubernetes 镜像导入方式部署, v1.14.2.1 版本更新。 默认使用镜像部署, 支持的版本请参看 [slzcc/kubernetes](https://hub.docker.com/r/slzcc/kubernetes/tags)
 - [ ] ~~支持 Proxy 方式部署 Docker Image 和 二进制应用, 已经通过容器方式部署.~~
 - [x] 支持离线方式部署 Kubernetes Cluster, 可参阅 [downloads-packages](roles/downloads-packages/files/)
 - [x] 支持 IPVS, v1.14.2.8 版本更新.
