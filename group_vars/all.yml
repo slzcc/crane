@@ -157,7 +157,7 @@ systemd_default_dirs: '/lib/systemd/system/'
 ## ********************************************************************************************************************************
 
 # 使用 Ansible 部署时连接实例的用户
-ssh_connect_user: "root"
+ssh_connect_user: "shilei"
 
 # 使用 Ansible 部署时连接实例的 SSH 端口
 ssh_connect_port: 22
@@ -188,7 +188,7 @@ vip_bind_net_device: "{{ os_network_device_name }}"
 ## ********************************************************************************************************************************
 
 # Etcd 绑定的宿主机网卡, 此配置需要在启动 Etcd 的节点上强制网卡名称一致
-os_network_device_name: 'eth0'
+os_network_device_name: 'ens4'
 
 # Etcd Verions
 # https://github.com/etcd-io/etcd/releases
