@@ -33,7 +33,7 @@ k8s_cluster_ip: '10.96.0.1'
 k8s_cluster_ip_range: '10.96.0.0/12'
 
 # Kubernetes ApiServer 的总入口地址, 可配置 SLB 等云服务商提供的地址, 但需要接入后端服务器的 80, 443 端口, 此地址可以写某个单实例的 IP 地址
-k8s_load_balance_ip: 172.17.145.244
+k8s_load_balance_ip: 10.174.0.8
 
 # Kubernetes HaProxy 监听的 apiServer 完整的 URL
 k8s_apiserver_https_bind: 'https://{{ k8s_load_balance_ip }}:{{ k8s_master_haproxy_bind_port }}'
@@ -192,7 +192,7 @@ os_network_device_name: 'ens4'
 
 # Etcd Verions
 # https://github.com/etcd-io/etcd/releases
-etcd_version: '3.3.13'
+etcd_version: '3.3.10'
 
 # Etcd 使用的 Client 协议, 默认 HTTPS, 不能修改
 etcd_url_scheme: "https"
@@ -266,6 +266,7 @@ dns_cluster_ip: '10.96.0.10'
 dns_cluster_range: "{{ k8s_cluster_ip_range }}"
 
 # CoreDNS Version
+# https://github.com/coredns/coredns/releases
 dns_version: '1.5.0'
 
 # 部署 Helm
@@ -298,7 +299,8 @@ is_deploy_busybox_example: false
 is_deploy_istio: false
 
 # Istio Version
-istio_version: '1.1.7'
+# https://github.com/istio/istio/releases
+istio_version: '1.2.0'
 
 # 部署 Istio 所使用的 Ingress Domain
 istio_ingress_prometheus_domain: 'prometheus.example.com'
@@ -306,7 +308,7 @@ istio_ingress_grafana_domain: 'grafana.example.com'
 istio_ingress_tracing_domain: 'tracing.example.com'
 istio_ingress_kiali_domain: 'kiali.example.com'
 
-# istio kiali user/pass base64 coding
+# istio kiali user/pass base64 coding, default admin
 istio_kiali_username: 'YWRtaW4='
 istio_kiali_password: 'YWRtaW4='
 
