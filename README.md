@@ -59,6 +59,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [x] 修复 Bootstrap 无法创建凭证的问题。
 - [x] 修复 Swap 如果打开情况下的优化配置, v1.14.2.5 中修复。
 - [x] 修复 Ubuntu IPVS 模式下无法跨主机访问问。v1.14.2.9 中修复。
+- [x] 修复 Kubernetes 添加节点时, 无法获取真实的宿主机 IP 地址, v1.15.0.1 中修复。
 
 ## 获取对应的版本
 切记, 如需要安装哪个大版本的集群, 就获取相应的 tag :

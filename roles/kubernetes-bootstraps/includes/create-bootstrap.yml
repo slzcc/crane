@@ -43,7 +43,7 @@
   
 - name: Create TLS Bootstrap Secret.
   template:
-    src: bootstrappers-default-node-token.j2
+    src: roles/kubernetes-bootstraps/templates/bootstrappers-default-node-token.j2
     dest: "{{ bootstrappers_yaml_path }}"
     owner: "{{ ssh_connect_user }}"
     mode: 0644

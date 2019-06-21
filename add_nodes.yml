@@ -29,6 +29,17 @@
   tasks:
     - { include: roles/kubernetes-default/includes/main.yml }
 
+- name: Create Bootstrap Config Files to Nodes.
+  hosts: kube-master[0]
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/kubernetes-bootstraps/defaults/main.yml"
+  tasks:
+    - { include: roles/kubernetes-bootstraps/includes/create-bootstrap.yml }
+
 - name: Copy Cluster CA Files to Nodes.
   hosts: kube-master[0]
   sudo: yes
@@ -36,7 +47,7 @@
   vars:
     ansible_ssh_pipelining: true
   roles:
-    - { role: k8s-add-nodes, tags: [add-node]}
+    - { role: k8s-add-nodes, tags: [k8s-add-node]}
 
 - name: Add Nodes
   hosts: k8s-cluster-add-node
@@ -45,4 +56,4 @@
   vars:
     ansible_ssh_pipelining: true
   roles:
-    - { role: kubernetes-nodes, tags: [kubernetes-nodes]}
+    - { role: kubernetes-nodes, tags: [k8s-nodes]}
