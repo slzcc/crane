@@ -247,7 +247,7 @@ calico_ipv4_pool_cidr: '192.168.0.0/16'
 
 # Calico Verion
 # https://github.com/projectcalico/calico/releases
-calico_version: 'v3.7.3'
+calico_version: 'v3.7.2'
 
 # CNI Config Dir
 cni_config_dir: '/etc/cni/net.d'
