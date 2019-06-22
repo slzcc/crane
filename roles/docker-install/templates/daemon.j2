@@ -5,7 +5,7 @@
     "exec-opts": ["native.cgroupdriver={{ docker_cgroup_drive }}"],
     "log-driver": "json-file",
     "log-opts": {
-        "max-size": "1G"
+        "max-size": "{{ docker_log_size }}"
     },
     "data-root": "{{ docker_data_root }}",
     "insecure-registry": {{ docker_insecure_registry }},

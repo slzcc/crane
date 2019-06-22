@@ -1,0 +1,7 @@
+{
+  "CN": "front-proxy-client",
+  "key": {
+    "algo": "{{ tls_k8s_encryption_algorithm }}",
+    "size": {{ tls_k8s_encryption_algorithm_size }}
+  }
+}

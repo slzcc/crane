@@ -1,7 +1,7 @@
 ---
 - name: Copy CFSSL Kubernetes Json Files
-  copy:
-    src: roles/kubernetes-default/files/{{ item }}
+  template:
+    src: roles/kubernetes-default/templates/{{ item }}
     dest: "{{ kubernetes_pki_dirs }}{{ item }}"
     owner: "{{ ssh_connect_user }}" 
     mode: 0644

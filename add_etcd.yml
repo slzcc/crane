@@ -39,5 +39,7 @@
   remote_user: "{{ ssh_connect_user }}"
   vars:
     ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/etcd-install/defaults/main.yml"
   roles:
     - { role: etcd-add-node, tags: [etcd-add-node]}

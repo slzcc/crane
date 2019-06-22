@@ -29,3 +29,9 @@ etcd_initial_cluster_addr: >-
   {%- endfor -%}
 
 etcd_master_one_host: "{{ groups['etcd'][0] }}"
+
+
+# TLS
+## ********************************************************************************************************************************
+
+tls_etcd_validity_period_hours: '{{ tls_etcd_validity_period * 365 * 24 }}'

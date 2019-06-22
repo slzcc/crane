@@ -24,6 +24,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [x] 支持集群后续 Etcd Cluster 扩容 (只添加节点, 对现有集群无感知) v1.14.1.8 中添加。
 - [x] 支持自定义镜像仓库地址。
 - [x] 支持 Add-Ons 等应用部署。
+- [x] 支持自定义 TLS 。
 
 ## 项目部署架构
 以 v1.15.x 为例：
@@ -43,7 +44,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [x] 支持 Istio。
 - [x] 支持操作系统预判部署 Ubuntu/Centos 更合理的安装即优化, v1.14.2.6 中优化.
 - [ ] 支持 Harbor HTTPS 部署。
-- [ ] 支持 TLS 证书自定义。
+- [x] 支持 TLS 证书自定义。v1.15.0.2 中更新。
 - [ ] 支持 OpenResty 入口的流量灰度发布。
 - [ ] 支持 Kubernetes 热更新 TLS。
 - [x] 支持 Kubernetes 镜像导入方式部署, v1.14.2.1 版本更新。 默认使用镜像部署, 支持的版本请参看 [slzcc/kubernetes](https://hub.docker.com/r/slzcc/kubernetes/tags)
@@ -60,6 +61,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [x] 修复 Swap 如果打开情况下的优化配置, v1.14.2.5 中修复。
 - [x] 修复 Ubuntu IPVS 模式下无法跨主机访问问。v1.14.2.9 中修复。
 - [x] 修复 Kubernetes 添加节点时, 无法获取真实的宿主机 IP 地址, v1.15.0.1 中修复。
+- [x] 修复 CNI 容器部署 Download Plugin 位置错误。v1.15.0.2 中修复。(之前版本实际不受影响, Calico 有自己的初始化 Plugin 部署方式) 
 
 ## 获取对应的版本
 切记, 如需要安装哪个大版本的集群, 就获取相应的 tag :

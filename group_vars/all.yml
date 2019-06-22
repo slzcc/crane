@@ -33,7 +33,7 @@ k8s_cluster_ip: '10.96.0.1'
 k8s_cluster_ip_range: '10.96.0.0/12'
 
 # Kubernetes ApiServer 的总入口地址, 可配置 SLB 等云服务商提供的地址, 但需要接入后端服务器的 80, 443 端口, 此地址可以写某个单实例的 IP 地址
-k8s_load_balance_ip: 10.146.0.2
+k8s_load_balance_ip: 10.174.0.11
 
 # Kubernetes HaProxy 监听的 apiServer 完整的 URL
 k8s_apiserver_https_bind: 'https://{{ k8s_load_balance_ip }}:{{ k8s_master_haproxy_bind_port }}'
@@ -45,7 +45,7 @@ k8s_apiserver_node_port_range: '70-32767'
 is_kube_master: "{{ inventory_hostname in groups['kube-master'] }}"
 is_kube_node: "{{ inventory_hostname in groups['kube-node'] }}"
 
-# 是否使用本地文件, 例如 kubectl, image 不建议开启此设置, 目前为测试状态
+# 是否使用本地文件, 例如 kubectl, image 不建议开启此设置
 is_using_local_files_deploy: false
 
 # 是否使用远程镜像部署, 例如 kubectl, image 默认为 true
@@ -68,8 +68,40 @@ k8s_pod_infra_container_image: "{{ k8s_cluster_component_registry }}/pause:{{ pa
 # 此值依赖于 is_kube_master_schedule, 如果使用镜像方式部署时, 此值不能变动
 k8s_cluster_component_registry: 'k8s.gcr.io'
 
-# 是否使用 RBAC
+# 是否使用 RBAC, 集群默认是 RBAC 认证, 但可以在部署完集群之后创建超级用户取消所有限制
 is_rbac: true
+
+## Kube TLS
+## ********************************************************************************************************************************
+
+# CFSSL 生成证书的加密方式
+tls_k8s_encryption_algorithm: 'rsa'
+
+# CFSSL 生成证书的通过加密算法生成的长度
+tls_k8s_encryption_algorithm_size: 2048
+
+# 证书有效期, 默认为 10 年
+tls_k8s_validity_period: 10
+
+# 证书信息头, 国家信息 
+# Country Name
+tls_k8s_head_info_C: 'CN'
+
+# 证书信息头, 地区或城市 
+# Locality Name
+tls_k8s_head_info_L: 'BeiJing'
+
+# 证书信息头, 组织 
+# Organization Name 
+tls_k8s_head_info_O: 'Kubernetes'
+
+# 证书信息头, 组织单位 
+# Organizational Units Name
+tls_k8s_head_info_OU: 'Kubernetes'
+
+# 证书信息头, 州或省 
+# State or Province Name
+tls_k8s_head_info_ST: 'BeiJing'
 
 ## Kube Proxy
 ## ********************************************************************************************************************************
@@ -100,6 +132,9 @@ docker_insecure_registry: '[]'
 
 # docker cgroup drive
 docker_cgroup_drive: '{{ kubelet_cgroup_drive }}'
+
+# docker login file size
+docker_log_size: '1G'
 
 ## HaProxy
 ## ********************************************************************************************************************************
@@ -238,6 +273,39 @@ etcd_ssl_dirs: '/etc/etcd/ssl/'
 
 # Etcd Data Path
 etcd_data_dirs: '/var/lib/etcd/'
+
+
+## Etcd TLS
+## ********************************************************************************************************************************
+
+# CFSSL 生成证书的加密方式
+tls_etcd_encryption_algorithm: 'rsa'
+
+# CFSSL 生成证书的通过加密算法生成的长度
+tls_etcd_encryption_algorithm_size: 2048
+
+# 证书有效期, 默认为 10 年
+tls_etcd_validity_period: 10
+
+# 证书信息头, 国家信息 
+# Country Name
+tls_etcd_head_info_C: 'CN'
+
+# 证书信息头, 地区或城市 
+# Locality Name
+tls_etcd_head_info_L: 'BeiJing'
+
+# 证书信息头, 组织 
+# Organization Name 
+tls_etcd_head_info_O: 'Etcd'
+
+# 证书信息头, 组织单位 
+# Organizational Units Name
+tls_etcd_head_info_OU: 'Etcd'
+
+# 证书信息头, 州或省 
+# State or Province Name
+tls_etcd_head_info_ST: 'BeiJing'
 
 ## Add Nodes
 ## ********************************************************************************************************************************

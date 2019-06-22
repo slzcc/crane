@@ -20,7 +20,7 @@
   shell: "docker cp import-kubernetes-temporary:/kubernetes/node/bin/kubectl {{ kubernetes_ctl_path }}"
 
 - name: Export the CNI
-  shell: "docker cp import-kubernetes-temporary:/cni/. {{ kubernetes_ctl_path }}"
+  shell: "docker cp import-kubernetes-temporary:/cni/. {{ kubernetes_cni_dirs }}"
 
 - name: Clean Temporary Container
   shell: "docker rm -f import-kubernetes-temporary"

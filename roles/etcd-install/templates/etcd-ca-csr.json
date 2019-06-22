@@ -1,0 +1,16 @@
+{
+  "CN": "etcd",
+  "key": {
+    "algo": "{{ tls_etcd_encryption_algorithm }}",
+    "size": {{ tls_etcd_encryption_algorithm_size }}
+  },
+  "names": [
+    {
+      "C": "{{ tls_etcd_head_info_C }}",
+      "ST": "{{ tls_etcd_head_info_ST }}",
+      "L": "{{ tls_etcd_head_info_L }}",
+      "O": "{{ tls_etcd_head_info_OU }}",
+      "OU": "{{ tls_etcd_head_info_OU }}"
+    }
+  ]
+}
