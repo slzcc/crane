@@ -21,6 +21,8 @@
   remote_user: "{{ ssh_connect_user }}"
   vars:
     ansible_ssh_pipelining: tasks
+  vars_files:
+    - "roles/kubernetes-default/defaults/main.yml"
   roles:
     - { role: clean-install, tags: [clean]}
     - { role: docker-install, tags: [docker]}
@@ -55,6 +57,8 @@
   remote_user: "{{ ssh_connect_user }}"
   vars:
     ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/kubernetes-default/defaults/main.yml"
   roles:
     - { role: k8s-add-master, tags: [add-master]}
     - { role: kubernetes-master, tags: [kubelet-master]}

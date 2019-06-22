@@ -1,7 +1,7 @@
 {
   "signing": {
     "default": {
-      "expiry": "87600h"
+      "expiry": "{{ tls_etcd_validity_period_hours }}h"
     },
     "profiles": {
       "kubernetes": {
@@ -11,7 +11,7 @@
           "server auth",
           "client auth"
         ],
-        "expiry": "87600h"
+        "expiry": "{{ tls_etcd_validity_period_hours }}h"
       }
     }
   }

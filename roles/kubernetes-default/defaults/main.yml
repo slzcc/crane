@@ -21,3 +21,14 @@ all_hostname_str: >-
     {{ hostvars[host]['ansible_nodename'] }}
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}
+
+
+# TLS
+## ********************************************************************************************************************************
+
+admin_tls_k8s_head_info_O: 'system:masters'
+nodes_tls_k8s_head_info_O: 'system:nodes'
+controller_manager_tls_k8s_head_info_O: 'system:kube-controller-manager'
+scheduler_tls_k8s_head_info_O: 'system:kube-scheduler'
+
+tls_k8s_validity_period_hours: '{{ tls_k8s_validity_period * 365 * 24 }}'

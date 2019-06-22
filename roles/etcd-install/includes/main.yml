@@ -3,8 +3,8 @@
 ## ********************************************************************************************************************************
 
 - name: Copy CFSSL Etcd Json Files
-  copy:
-    src: roles/etcd-install/files/{{ item }}
+  template:
+    src: roles/etcd-install/templates/{{ item }}
     dest: "{{ etcd_ssl_dirs }}{{ item }}"
     owner: "{{ ssh_connect_user }}" 
     mode: 0644

@@ -1,0 +1,16 @@
+{
+  "CN": "system:kube-controller-manager",
+  "key": {
+    "algo": "{{ tls_k8s_encryption_algorithm }}",
+    "size": {{ tls_k8s_encryption_algorithm_size }}
+  },
+  "names": [
+    {
+      "C": "{{ tls_k8s_head_info_C }}",
+      "ST": "{{ tls_k8s_head_info_ST }}",
+      "L": "{{ tls_k8s_head_info_L }}",
+      "O": "{{ controller_manager_tls_k8s_head_info_O }}",
+      "OU": "{{ tls_k8s_head_info_OU }}"
+    }
+  ]
+}

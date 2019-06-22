@@ -1,9 +1,6 @@
 ---
 ## Copy Kubernetes Manifests Files
 ## ********************************************************************************************************************************
-- name: setup
-  setup:
-
 - name: Create Kubernetes PKI WorkDir
   file:
     path: "{{ kubernetes_manifests_dirs }}"

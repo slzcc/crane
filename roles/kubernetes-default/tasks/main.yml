@@ -1,13 +1,10 @@
 ---
 # CA
 ## ********************************************************************************************************************************
-## Create Etcd CA
-- name:
-  setup:
 
 ## Copy CFSSL Kubernetes Json Files
 - name: Copy CFSSL Kubernetes Json Files
-  copy:
+  template:
     src: "{{ item }}"
     dest: "{{ kubernetes_pki_dirs }}{{ item }}"
     owner: "{{ ssh_connect_user }}" 
