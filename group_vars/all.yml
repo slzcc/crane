@@ -80,8 +80,8 @@ tls_k8s_encryption_algorithm: 'rsa'
 # CFSSL 生成证书的通过加密算法生成的长度
 tls_k8s_encryption_algorithm_size: 2048
 
-# 证书有效期, 默认为 10 年
-tls_k8s_validity_period: 10
+# 证书有效期, 默认为 5 年, 因 CA 根证书默认为 5 年, 此值改大没意义
+tls_k8s_validity_period: 5
 
 # 证书信息头, 国家信息 
 # Country Name
@@ -110,7 +110,7 @@ tls_k8s_head_info_ST: 'BeiJing'
 kube_proxy_mode: "ipvs"
 
 # 是否安装 ipvsadm
-is_install_ipvsadm: false
+is_install_ipvsadm: true
 
 ## Docker
 ## ********************************************************************************************************************************
@@ -284,8 +284,8 @@ tls_etcd_encryption_algorithm: 'rsa'
 # CFSSL 生成证书的通过加密算法生成的长度
 tls_etcd_encryption_algorithm_size: 2048
 
-# 证书有效期, 默认为 10 年
-tls_etcd_validity_period: 10
+# 证书有效期, 默认为 10 年, 因 CA 根证书默认为 5 年, 此值改大没意义
+tls_etcd_validity_period: 5
 
 # 证书信息头, 国家信息 
 # Country Name
@@ -367,7 +367,7 @@ is_deploy_busybox_example: false
 
 # 部署 Istio
 # 注意 部署 Istio 不建议与 Prometheus Operator 一同部署, 可能会引发服务之间的冲突问题, 如需一同部署请自行解决依赖
-is_deploy_istio: false
+is_deploy_istio: true
 
 # Istio Version
 # https://github.com/istio/istio/releases

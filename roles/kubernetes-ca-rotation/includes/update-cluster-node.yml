@@ -1,0 +1,28 @@
+---
+- name: Clean CNI Cluster Config
+  file:
+    path: "{{ cni_config_dir }}"
+    state: absent
+  ignore_errors: true
+
+- name: Create CNI Cluster Config
+  file:
+    path: "{{ cni_config_dir }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
+- name: Clean Old Kubelet CA
+  file:
+    path: "{{ kubelet_work_dirs }}/pki/{{ item }}"
+    state: absent
+  with_items:
+    - kubelet-client-current.pem
+    - kubelet.crt
+    - kubelet.key
+  ignore_errors: true
+  
+- name: Start Kubelet 
+  service:
+    name: kubelet
+    state: restarted

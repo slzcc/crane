@@ -1,0 +1,69 @@
+---
+- hosts: all
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  tasks:
+    - name: Check all Nodes
+      ping: 
+
+- hosts: k8s-cluster:etcd
+  gather_facts: false
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  roles:
+    - { role: downloads-ssh-key, tags: [copy_ssh_private_key]}
+
+- name: Create New CA
+  hosts: kube-master[0]
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/kubernetes-default/defaults/main.yml"
+  roles:
+    - { role: kubernetes-ca-rotation, tags: [k8s-ca-rotation]}
+
+- name: Create New CA
+  hosts: kube-master
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  tasks:
+    - { include: 'roles/kubernetes-master/includes/admin.yml' }
+    - { include: 'roles/kubernetes-master/includes/kubelet_pem.yml' }
+    - { include: 'roles/kubernetes-ca-rotation/includes/update-cluster-master.yml' }
+
+- name: Update Cluster Network
+  hosts: kube-master[0]
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  tasks:
+    - { include: 'roles/kubernetes-ca-rotation/includes/update-network.yml' }
+
+- name: Create New Bootstrap Config Files to Nodes.
+  hosts: kube-master[0]
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/kubernetes-bootstraps/defaults/main.yml"
+    - "roles/kubernetes-ca-rotation/defaults/main.yml"
+  tasks:
+    - { include: 'roles/kubernetes-bootstraps/includes/create-bootstrap.yml' }
+    - { include: 'roles/kubernetes-ca-rotation/includes/update-cluster-node-ca.yml' }
+
+- name: Create New CA
+  hosts: kube-node
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  tasks:
+    - { include: 'roles/kubernetes-ca-rotation/includes/update-cluster-node.yml' }

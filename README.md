@@ -25,6 +25,8 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [x] 支持自定义镜像仓库地址。
 - [x] 支持 Add-Ons 等应用部署。
 - [x] 支持自定义 TLS 。
+- [x] 支持 Kubernetes Cluster CA 根证书更新。
+- [ ] 支持 Etcd Cluster CA 根证书更新。
 
 ## 项目部署架构
 以 v1.15.x 为例：
@@ -46,7 +48,8 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [ ] 支持 Harbor HTTPS 部署。
 - [x] 支持 TLS 证书自定义。v1.15.0.2 中更新。
 - [ ] 支持 OpenResty 入口的流量灰度发布。
-- [ ] 支持 Kubernetes 热更新 TLS。
+- [x] 支持 Kubernetes 热更新 TLS, v1.15.0.3 版本更新。对集群中 Master/Node/Kubelet 等组件的所有 TLS 服务进行证书更新, 主要解决 CFSSL 默认申请 CA 证书 5 年时效问题, 以及后续可能存在的证书泄露问题。（Beta Version）
+- [ ] 支持 Etcd 热更新 TLS。
 - [x] 支持 Kubernetes 镜像导入方式部署, v1.14.2.1 版本更新。 默认使用镜像部署, 支持的版本请参看 [slzcc/kubernetes](https://hub.docker.com/r/slzcc/kubernetes/tags)
 - [ ] ~~支持 Proxy 方式部署 Docker Image 和 二进制应用, 已经通过容器方式部署.~~
 - [x] 支持离线方式部署 Kubernetes Cluster, 可参阅 [downloads-packages](roles/downloads-packages/files/)
@@ -296,4 +299,15 @@ $ ansible-playbook -i nodes add_etcd.yml -vv
 默认创建集群时, 是可以直接部署 Add-Ons 的, 如果后续进行部署, 则直接通过 tags 方式进行部署即可:
 ```
 $ ansible-playbook -i nodes main.yml --tags k8s-addons -vv
+```
+
+## TLS Rotation
+默认通过 CFSSL 创建出的 CA 根证书只有 5 年时效, 如果更新根证书不当可能会涉及到 Master/Node 上大面积的应用不可用的问题, 下面的集群证书更新方式只适用于通过上述安装部署的集群使用, 其他服务集群请自行尝试, 目前没有发现问题:
+> 需要保证 nodes 文件中不要有 add.* 开头的 Group, 在部署时会重新启动 Calico 网络, 但经过大量测试没有发现对集群访问的影响.
+
+> 使用时, 只需要保证 `tls_k8s.*` 的配置符合自身需求即可进行证书更新.
+
+部署安装:
+```
+$ ansible-playbook -i nodes certificate_rotation.yml -vv
 ```

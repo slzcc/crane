@@ -29,12 +29,6 @@
     state: absent
   ignore_errors: true
 
-- name: Clean Kubelet Working directory.
-  file:
-    path: "{{ kubelet_work_dirs }}"
-    state: absent
-  ignore_errors: true
-
 - name: Clean Docker Containers.
   shell: "docker rm -f $(docker ps -aq)"
   ignore_errors: true
@@ -112,4 +106,26 @@
     path: "/var/lib/docker"
     state: absent
   when: is_remove_docker_ce and is_remove_docker_dir
+  ignore_errors: true
+
+- name: Clean Kubelet Working directory.
+  file:
+    path: "{{ kubelet_work_dirs }}"
+    state: absent
+  ignore_errors: true
+
+- name: Clean Kubelet Working directory.
+  file:
+    path: "{{ kubelet_work_dirs }}/pki"
+    state: absent
+  ignore_errors: true
+
+- name: Clean IPVS Rules
+  shell: "ipvsadm -C"
+  when: is_install_ipvsadm
+  ignore_errors: true
+
+- name: Clean IPVS Rules
+  shell: "iptables -X"
+  when: is_install_ipvsadm
   ignore_errors: true

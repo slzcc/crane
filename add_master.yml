@@ -3,7 +3,7 @@
   sudo: yes
   remote_user: "{{ ssh_connect_user }}"
   vars:
-    ansible_ssh_pipelining: tasks
+    ansible_ssh_pipelining: true
   tasks:
     - name: Check all Nodes
       ping: 
@@ -20,7 +20,7 @@
   sudo: yes
   remote_user: "{{ ssh_connect_user }}"
   vars:
-    ansible_ssh_pipelining: tasks
+    ansible_ssh_pipelining: true
   vars_files:
     - "roles/kubernetes-default/defaults/main.yml"
   roles:
