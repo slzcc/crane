@@ -311,3 +311,31 @@ $ ansible-playbook -i nodes main.yml --tags k8s-addons -vv
 ```
 $ ansible-playbook -i nodes certificate_rotation.yml -vv
 ```
+
+此方式会让 kubelet 重新加入到集群中, 所以可能会大面积的看到 csr 状态:
+```
+$ kubectl get csr
+NAME        AGE   REQUESTOR                         CONDITION
+csr-26cfs   13m   system:node:instance-template-2   Approved,Issued
+csr-2ldhb   18m   system:node:instance-template-2   Approved,Issued
+csr-2q5rz   44m   system:node:instance-template-2   Approved,Issued
+csr-5ww4d   26m   system:node:instance-template-2   Approved,Issued
+csr-7fffj   62m   system:node:instance-template-1   Approved,Issued
+csr-7swmb   44m   system:node:instance-template-1   Approved,Issued
+csr-9pjxr   18m   system:node:instance-template-1   Approved,Issued
+csr-blrw7   66m   system:node:instance-template-2   Approved,Issued
+csr-bprkl   66m   system:node:instance-template-1   Approved,Issued
+csr-cmt86   55m   system:bootstrap:0a7860           Approved,Issued
+csr-dt6x4   48m   system:node:instance-template-1   Approved,Issued
+csr-j87l7   12m   system:bootstrap:2db6c4           Approved,Issued
+csr-kqtdr   75m   system:node:instance-template-2   Approved,Issued
+csr-m4567   48m   system:node:instance-template-2   Approved,Issued
+csr-mh9cr   26m   system:node:instance-template-1   Approved,Issued
+csr-nnkwg   38m   system:node:instance-template-1   Approved,Issued
+csr-pcnn8   13m   system:node:instance-template-1   Approved,Issued
+csr-rvmws   62m   system:node:instance-template-2   Approved,Issued
+csr-t8f44   38m   system:node:instance-template-2   Approved,Issued
+csr-zp7tr   75m   system:node:instance-template-1   Approved,Issued
+...
+```
+> 上述集群只有几个节点, 所以有重复的添加状态。
