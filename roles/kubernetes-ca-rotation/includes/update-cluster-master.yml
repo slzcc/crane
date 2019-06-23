@@ -1,0 +1,27 @@
+---
+- name: Rester Kubernetes ApiServer Service
+  shell: "docker rm -f $(docker ps --filter name=k8s_kube-apiserver -q)"
+  ignore_errors: true
+
+- name: Rester Kubernetes ControllerManager Service
+  shell: "docker rm -f $(docker ps --filter name=k8s_kube-controller-manager -q)"
+  ignore_errors: true
+
+- name: Rester Kubernetes Scheduler Service
+  shell: "docker rm -f $(docker ps --filter name=k8s_kube-scheduler -q)"
+  ignore_errors: true
+
+- name: Clean Old Kubelet CA
+  file:
+    path: "{{ kubelet_work_dirs }}/pki/{{ item }}"
+    state: absent
+  with_items:
+    - kubelet-client-current.pem
+    - kubelet.crt
+    - kubelet.key
+  ignore_errors: true
+
+- name: Start Kubelet 
+  service:
+    name: kubelet
+    state: restarted
