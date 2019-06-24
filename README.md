@@ -15,7 +15,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 
 部署全局基于 TLS, 并区分 K8s Cluster CA、Etcd CA 证书。
 
-部署时支持离线、在线和镜像方式部署, 默认使用在线和镜像方式部署, 在线方式相当于主动 Pull 获取包(如果基于镜像则下载镜像, 如非镜像部署则下载二进制), 镜像方式基于 `image in image` 策略方式部署, 离线则只适用于镜像方式部署, 把 `image in image` 镜像放置在本地推送到目标机进行部署。
+部署时支持离线、在线和镜像方式部署, 默认使用在线和镜像方式部署, 在线方式相当于主动 Pull 获取包(如果基于镜像则下载镜像, 如非镜像部署则下载二进制), 镜像方式基于 `image in image` 策略方式部署, 离线则只适用于镜像方式部署, 把 `image in image` 镜像放置在本地推送到目标机进行部署。参看文档: [Docs](script)
 
 > 不支持单独使用 tag 方式部署, 因全部使用 Kubelet 的静态方式部署启动 Pod, 如删除集群某一批次的节点时 tag 比较有用。
 
