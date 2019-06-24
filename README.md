@@ -9,7 +9,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 
 > Wiki 文档内容为 1.14.x 版本
 
-> 以下所有的部署全部使用 Ubuntu 16.04 为环境进行示例演练。
+> 以下所有的部署全部使用 Ubuntu 16.04 为环境进行示例演练。个人部署时请使用最新版进行尝试。
 
 使用 Ansible 基于容器化部署 Kubernetes Cluster（非 Kubeadm）, 并支持 Master/Node 节点的添加。（旧版本的 HaProxy 需要自己更新新节点的上游配置）
 
@@ -356,6 +356,34 @@ csr-zp7tr   75m   system:node:instance-template-1   Approved,Issued
 ...
 ```
 > 上述集群只有几个节点, 所以有重复的添加状态。
+
+## Upgrade Cluster
+支持集群版本升级, 执行命令如下: (目前支持 1.14.x 升级 1.15.x 其他版本请自行尝试)
+只需要配置 `k8s_version` 参数指定版本即可。
+
+部署安装:
+```
+$ ansible-playbook -i nodes upgrade_version.yml -vv
+```
+
+执行结果如下:
+```
+$  kubectl get node
+NAME                  STATUS   ROLES    AGE    VERSION
+instance-2            Ready    <none>   2m2s   v1.14.2
+instance-template-1   Ready    master   2m5s   v1.14.2
+instance-template-2   Ready    master   2m3s   v1.14.2
+
+$ kubectl get node
+NAME                  STATUS   ROLES    AGE   VERSION
+instance-2            Ready    <none>   6m6s  v1.15.0
+instance-template-1   Ready    master   6m6s  v1.15.0
+instance-template-2   Ready    master   6m6s  v1.15.0
+ 
+ $ kubectl version
+Client Version: version.Info{Major:"1", Minor:"15", GitVersion:"v1.15.0", GitCommit:"e8462b5b5dc2584fdcd18e6bcfe9f1e4d970a529", GitTreeState:"clean", BuildDate:"2019-06-19T16:40:16Z", GoVersion:"go1.12.5", Compiler:"gc", Platform:"linux/amd64"}
+Server Version: version.Info{Major:"1", Minor:"15", GitVersion:"v1.15.0", GitCommit:"e8462b5b5dc2584fdcd18e6bcfe9f1e4d970a529", GitTreeState:"clean", BuildDate:"2019-06-19T16:32:14Z", GoVersion:"go1.12.5", Compiler:"gc", Platform:"linux/amd64"}
+```
 
 ---
 
