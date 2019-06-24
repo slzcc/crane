@@ -82,6 +82,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [x] 修复 Kubernetes 添加节点时, 无法获取真实的宿主机 IP 地址, v1.15.0.1 中修复。
 - [x] 修复 CNI 容器部署 Download Plugin 位置错误。v1.15.0.2 中修复。(之前版本实际不受影响, Calico 有自己的初始化 Plugin 部署方式) 
 - [x] 修复 kubelet 重新加入集群时, 证书无效的问题, v1.15.0.3 中修复。
+- [x] 修复添加 Master 节点时, HaProxy 没有及时更新新节点问题, v1.15.0.5 中修复。
 
 ## 获取对应的版本
 切记, 如需要安装哪个大版本的集群, 就获取相应的 tag :
