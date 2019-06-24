@@ -62,4 +62,12 @@
   roles:
     - { role: k8s-add-master, tags: [add-master]}
     - { role: kubernetes-master, tags: [kubelet-master]}
-    
+
+- name: Update Master Cluster HaProxy Config
+  hosts: kube-master
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  tasks:
+    - { include: roles/k8s-add-master/includes/update-haproxy.yml }
