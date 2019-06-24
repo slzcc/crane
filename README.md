@@ -345,3 +345,7 @@ csr-zp7tr   75m   system:node:instance-template-1   Approved,Issued
 ...
 ```
 > 上述集群只有几个节点, 所以有重复的添加状态。
+
+---
+
+图片并非商业, 本人无意侵犯版权。
