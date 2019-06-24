@@ -76,7 +76,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 ## 获取对应的版本
 切记, 如需要安装哪个大版本的集群, 就获取相应的 tag :
 ```
-$ git clone -b v1.15.x.x https://github.com/slzcc/Ansible-Kubernetes.git
+$ git clone -b v1.15.x.x https://github.com/slzcc/crane.git
 ```
 
 > v1.15.x.x 最末尾一位属于编写 Ansible 脚本的迭代版本, 不属于 Kubernetes 自身版本。
