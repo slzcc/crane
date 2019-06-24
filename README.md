@@ -357,7 +357,7 @@ csr-zp7tr   75m   system:node:instance-template-1   Approved,Issued
 ```
 > 上述集群只有几个节点, 所以有重复的添加状态。
 
-## Upgrade Cluster
+## Upgrade Version
 支持集群版本升级, 执行命令如下: (目前支持 1.14.x 升级 1.15.x 其他版本请自行尝试)
 
 只需要配置 `k8s_version` 参数指定版本即可。
