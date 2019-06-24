@@ -47,7 +47,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [x] 支持操作系统预判部署 Ubuntu/Centos 更合理的安装即优化, v1.14.2.6 中优化.
 - [ ] 支持 Harbor HTTPS 部署。
 - [x] 支持 TLS 证书自定义。v1.15.0.2 中更新。
-- [ ] 支持 OpenResty 入口的流量灰度发布。
+- [ ] 支持 OpenResty 入口流量的灰度发布。
 - [x] 支持 Kubernetes 热更新 TLS, v1.15.0.3 版本更新。对集群中 Master/Node/Kubelet 等组件的所有 TLS 服务进行证书更新, 主要解决 CFSSL 默认申请 CA 证书 5 年时效问题, 以及后续可能存在的证书泄露问题。（Beta Version）
 - [ ] 支持 Etcd 热更新 TLS。
 - [x] 支持 Kubernetes 镜像导入方式部署, v1.14.2.1 版本更新。 默认使用镜像部署, 支持的版本请参看 [slzcc/kubernetes](https://hub.docker.com/r/slzcc/kubernetes/tags)
