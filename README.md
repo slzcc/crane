@@ -19,7 +19,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 
 > 不支持单独使用 tag 方式部署, 因全部使用 Kubelet 的静态方式部署启动 Pod, 如删除集群某一批次的节点时 tag 比较有用。
 
-> 目前还暂不支持国内服务器直接进行部署, 因镜像基于 `k8s.gcr.io` 地址进行下载, 国内访问时可能会被墙。受影响的应用 `etcd`、`kube-apiserver-amd64`、`kube-controller-manager`、`kube-scheduler`、`kube-proxy`、`pause`, 可修改参数 `k8s_cluster_component_registry` 值为 `slzcc` 自定义镜像仓库地址, 在使用自定义镜像仓库时, 请确保已经执行过 `script/PublishK8sRegistryImages.sh` 脚本。
+> 目前还暂不支持国内服务器直接进行部署, 因镜像基于 `k8s.gcr.io` 地址进行下载, 国内访问时可能会被墙。受影响的应用 `etcd`、`kube-apiserver-amd64`、`kube-controller-manager`、`kube-scheduler`、`kube-proxy`、`pause`, 可修改参数 `k8s_cluster_component_registry` 值为 `slzcc` 自定义镜像仓库地址, 在使用自定义镜像仓库时, 请确保已经执行过 `script/PublishK8sRegistryImages.sh` 脚本。(可支持的镜像版本参阅 [slzcc/kubernetes](https://hub.docker.com/r/slzcc/kubernetes))
 
 > 默认 Etcd 需要跟随 Master 进行部署, 暂不支持 Etcd 部署在 Node 中 (后期会优化)。
 
