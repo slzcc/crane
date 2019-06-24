@@ -1,4 +1,10 @@
-# Ansible-Kubernetes
+# Crane
+![language](https://img.shields.io/badge/language-Ansible-green.svg) [![Wiki](https://img.shields.io/badge/docs-94%25-green.svg)](https://wiki.shileizcc.com/display/CASE/Ansible+Kubernetes+Cluster)
+
+![logo](doc/logo_size6_w200_h200.jpeg)
+
+---
+
 Please refer to the documentation for detailed configuration: [Wiki Docs URL](https://wiki.shileizcc.com/display/CASE/Ansible+Kubernetes+Cluster)。
 
 > Wiki 文档内容为 1.14.x 版本
@@ -340,3 +346,7 @@ csr-zp7tr   75m   system:node:instance-template-1   Approved,Issued
 ...
 ```
 > 上述集群只有几个节点, 所以有重复的添加状态。
+
+---
+
+图片并非商业, 本人无意侵犯版权。
