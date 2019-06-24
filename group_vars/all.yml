@@ -5,7 +5,7 @@
 # https://github.com/kubernetes/kubernetes/releases
 k8s_version: 'v1.15.0'
 
-# 部署 CNI 对应版本
+# 部署 CNI 对应版本, 如使用容器化部署方式, 不能修改
 # https://github.com/containernetworking/plugins/releases/
 cni_version: 'v0.8.1'
 
@@ -60,6 +60,7 @@ k8s_image_deploy_repo: 'slzcc/kubernetes'
 is_kube_master_schedule: true
 
 # Pause Version
+# 如使用容器化部署方式, 不能修改
 pause_version: '3.1'
 
 # infra image, 依赖下方镜像仓库地址
@@ -143,6 +144,7 @@ docker_log_size: '1G'
 ## ********************************************************************************************************************************
 
 # HaProxy Version
+# 如使用容器化部署方式, 不能修改
 haproxy_version: '2.0.0'
 
 # 配置 stats 的 URI 地址
@@ -233,6 +235,7 @@ os_network_device_name: 'ens4'
 
 # Etcd Verions
 # https://github.com/etcd-io/etcd/releases
+# 如使用容器化部署方式, 不能修改
 etcd_version: '3.3.10'
 
 # Etcd 使用的 Client 协议, 默认 HTTPS, 不能修改
@@ -318,6 +321,7 @@ calico_ipv4_pool_cidr: '192.168.0.0/16'
 
 # Calico Verion
 # https://github.com/projectcalico/calico/releases
+# 如使用容器化部署方式, 不能修改
 calico_version: 'v3.7.2'
 
 # CNI Config Dir
@@ -341,6 +345,7 @@ dns_cluster_range: "{{ k8s_cluster_ip_range }}"
 
 # CoreDNS Version
 # https://github.com/coredns/coredns/releases
+# 如使用容器化部署方式, 不能修改
 dns_version: '1.5.0'
 
 # 部署 Helm
