@@ -122,7 +122,7 @@
 
 - name: Clean IPVS Rules
   shell: "ipvsadm -C"
-  when: is_install_ipvsadm
+  when: is_install_ipvsadm and kube_proxy_mode == 'ipvs'
   ignore_errors: true
 
 - name: Clean IPVS Rules
