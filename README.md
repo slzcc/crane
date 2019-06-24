@@ -1,6 +1,8 @@
 # Container Gantry Crane
 [![Wiki](https://wiki.shileizcc.com/confluence/display/CASE/Ansible+Kubernetes+Cluster)]
 
+[![GoDoc Widget]][GoDoc] [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/569/badge)](https://bestpractices.coreinfrastructure.org/projects/569)
+
 ![logo](doc/logo_size6_w200_h200.jpeg)
 
 ---
