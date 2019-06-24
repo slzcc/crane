@@ -60,6 +60,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [ ] ~~支持 Proxy 方式部署 Docker Image 和 二进制应用, 已经通过容器方式部署.~~
 - [x] 支持离线方式部署 Kubernetes Cluster, 可参阅 [downloads-packages](roles/downloads-packages/files/)
 - [x] 支持 IPVS, v1.14.2.8 版本更新.
+- [ ] 支持 Ansible in Docker 方式部署, 不在依赖于本地环境。
 
 ## 修复
 
