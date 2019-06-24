@@ -2,7 +2,7 @@
 # Deploy
 ## ********************************************************************************************************************************
 - name: Pull the Image
-  shell: "docker run --name import-kubernetes-temporary -d -v /var/run/docker.sock:/var/run/docker.sock:ro slzcc/kubernetes:{{ k8s_version }} sleep 1234567"
+  shell: "docker run --name import-kubernetes-temporary -d -v /var/run/docker.sock:/var/run/docker.sock:ro {{ k8s_image_deploy_repo }}:{{ k8s_version }} sleep 1234567"
   delegate_to: "{{ groups['etcd-cluster-add-node'][0] }}"
 
 - name: Export the cfssl

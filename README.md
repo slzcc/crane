@@ -1,4 +1,4 @@
-# Container Gantry Crane
+# Crane
 ![language](https://img.shields.io/badge/language-Ansible-green.svg) [![Wiki](https://img.shields.io/badge/docs-94%25-green.svg)](https://wiki.shileizcc.com/display/CASE/Ansible+Kubernetes+Cluster)
 
 ![logo](doc/logo_size6_w200_h200.jpeg)
