@@ -1,5 +1,5 @@
 # Container Gantry Crane
-[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/2891/badge)](https://bestpractices.coreinfrastructure.org/projects/2891)
+[![language](https://img.shields.io/badge/language-Ansible-green.svg)]
 
 ![logo](doc/logo_size6_w200_h200.jpeg)
 
