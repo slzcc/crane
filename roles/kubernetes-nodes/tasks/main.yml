@@ -23,6 +23,13 @@
     mode: 0644
     owner: "{{ ssh_connect_user }}"
 
+- name: Copy Kubelet Env Config
+  template: 
+    src: "kubernetes-flags.j2"
+    dest: "{{ kubelet_work_dirs }}kubernetes-flags.env"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+    
 - name: Copy Kubelet Config
   template: 
     src: config.j2

@@ -24,3 +24,5 @@ all_hostname_list: >-
     {{ hostvars[host]['ansible_nodename'] }}
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}
+
+k8s_upgrade_version: '{{ ".".join(k8s_version.split(".")[0:2]).split("v")[1:] }}'

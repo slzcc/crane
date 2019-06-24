@@ -1,0 +1,12 @@
+---
+
+- name: Copy New Haproxy cfg Files
+  template: 
+    src: roles/kubernetes-manifests/templates/haproxy.cfg.j2
+    dest: "{{ haproxy_etc_dirs }}haproxy.cfg"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+
+- name: Restart Kubernetes Master HaProxy Containers
+  shell: "docker rm -f $(docker ps --filter name=k8s_haproxy -q)"
+  ignore_errors: true
