@@ -88,6 +88,8 @@ $ git clone -b v1.15.x.x https://github.com/slzcc/crane.git
 
 > v1.15.x.x 最末尾一位属于编写 Ansible 脚本的迭代版本, 不属于 Kubernetes 自身版本。
 
+> 不建议下载 zip 格式源码进行部署, 没有正式测试。
+
 ## 使用说明
 在 nodes 文件中, 分为三大块:
 ```
