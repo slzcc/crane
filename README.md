@@ -349,4 +349,4 @@ csr-zp7tr   75m   system:node:instance-template-1   Approved,Issued
 
 ---
 
-图片并非商业, 本人无意侵犯版权。
+>Logo 图片并非商业, 本人无意侵犯版权。 前 Ansible-Kubernetes 正式更名 Crane
