@@ -1,4 +1,10 @@
-# Ansible-Kubernetes
+# Container Gantry Crane
+[![Wiki](https://wiki.shileizcc.com/confluence/display/CASE/Ansible+Kubernetes+Cluster)]
+
+![logo](doc/logo_size6_w200_h200.jpeg)
+
+---
+
 Please refer to the documentation for detailed configuration: [Wiki Docs URL](https://wiki.shileizcc.com/display/CASE/Ansible+Kubernetes+Cluster)。
 
 > Wiki 文档内容为 1.14.x 版本
