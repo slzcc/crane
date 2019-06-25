@@ -43,3 +43,23 @@
     - "roles/etcd-install/defaults/main.yml"
   roles:
     - { role: etcd-add-node, tags: [etcd-add-node]}
+
+- name: Update Cluster Manifests
+  hosts: kube-master
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  tasks:
+    - { include: 'roles/etcd-add-node/includes/update-manifests.yml' }
+
+- name: Check Etcd Cluster Info
+  hosts: kube-master[0]
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  tasks:
+    - { include: 'roles/etcd-add-node/includes/check-cluster.yml' }
+
+# Etcd 添加完集群后, 其配置 --initial-cluster-state=existing 应该为 --initial-cluster-state=new

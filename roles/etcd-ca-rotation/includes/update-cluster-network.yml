@@ -1,0 +1,33 @@
+---
+- name: Copy Calico Config Files
+  template: 
+    src: roles/kubernetes-networks/templates/calico.j2
+    dest: "{{ temporary_dirs }}calico.yml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+  delegate_to: "{{ groups['kube-master'][0] }}"
+
+- name: Clean Calico
+  shell: '{{ kubernetes_ctl_path }}kubectl delete -f {{ temporary_dirs }}calico.yml'
+  ignore_errors: true
+  delegate_to: "{{ groups['kube-master'][0] }}"
+
+- name: Clean CNI Cluster Config
+  file:
+    path: "{{ cni_config_dir }}"
+    state: absent
+  ignore_errors: true
+  delegate_to: "{{ groups['kube-master'][0] }}"
+
+- name: Create CNI Cluster Config
+  file:
+    path: "{{ cni_config_dir }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+  delegate_to: "{{ groups['kube-master'][0] }}"
+    
+- name: Deploy Calico
+  shell: '{{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}calico.yml'
+  ignore_errors: true
+  delegate_to: "{{ groups['kube-master'][0] }}"

@@ -1,0 +1,36 @@
+---
+- hosts: all
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  tasks:
+    - name: Check all Nodes
+      ping: 
+
+- hosts: k8s-cluster:etcd
+  gather_facts: false
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  roles:
+    - { role: downloads-ssh-key, tags: [copy_ssh_private_key]}
+
+- name: Create New CA
+  hosts: etcd[0]
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  roles:
+    - { role: etcd-ca-rotation, tags: [etcd-ca-rotation]}
+
+- name: Update Cluster Server Info
+  hosts: kube-master:etcd
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  tasks:
+    - { include: 'roles/etcd-ca-rotation/includes/update-cluster-etcd.yml' }
+    - { include: 'roles/etcd-ca-rotation/includes/update-cluster-apiserver.yml' }
+    - { include: 'roles/etcd-ca-rotation/includes/update-cluster-network.yml' }
