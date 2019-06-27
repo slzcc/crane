@@ -1,0 +1,10 @@
+---
+## Restart apiServer
+## ********************************************************************************************************************************
+
+- name: Copy Kubernetes ApiServer Config Files
+  template: 
+    src: roles/kubernetes-manifests/templates/kube-apiserver.j2
+    dest: "{{ kubernetes_manifests_dirs }}kube-apiserver.yml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 

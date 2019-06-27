@@ -1,0 +1,9 @@
+--- 
+# 目前不重新配置 Etcd Static Pod 配置文件, 会造成集群的不可用
+
+# - name: Copy Etcd Static Pod Config files
+#   template: 
+#     src: roles/etcd-install/templates/etcd.j2
+#     dest: "{{ kubernetes_manifests_dirs }}etcd.yml"
+#     mode: 0644
+#     owner: "{{ ssh_connect_user }}" 

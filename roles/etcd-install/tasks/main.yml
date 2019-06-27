@@ -12,4 +12,3 @@
     dest: "{{ kubernetes_manifests_dirs }}etcd.yml"
     mode: 0644
     owner: "{{ ssh_connect_user }}" 
-  when: is_etcd_master 
