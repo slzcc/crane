@@ -39,8 +39,9 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [x] 支持 Add-Ons 等应用部署。
 - [x] 支持自定义 TLS 。
 - [x] 支持 Kubernetes Cluster CA 根证书更新。
-- [ ] 支持 Etcd Cluster CA 根证书更新。
 - [x] 支持 Kubernetes Cluster 版本升级。
+- [x] 支持 Etcd Cluster CA 根证书更新。
+- [ ] 支持 Ansible in Docker 方式进行部署。
 
 ## 项目部署架构
 以 v1.15.x 为例：
@@ -63,7 +64,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [x] 支持 TLS 证书自定义。v1.15.0.2 中更新。
 - [ ] 支持 OpenResty 入口流量的灰度发布。
 - [x] 支持 Kubernetes 热更新 TLS, v1.15.0.3 版本更新。对集群中 Master/Node/Kubelet 等组件的所有 TLS 服务进行证书更新, 主要解决 CFSSL 默认申请 CA 证书 5 年时效问题, 以及后续可能存在的证书泄露问题。（Beta Version）
-- [ ] 支持 Etcd 热更新 TLS。
+- [x] 支持 Etcd 热更新 TLS, v1.15.0.6 中更新。
 - [x] 支持 Kubernetes 镜像导入方式部署, v1.14.2.1 版本更新。 默认使用镜像部署, 支持的版本请参看 [slzcc/kubernetes](https://hub.docker.com/r/slzcc/kubernetes/tags)
 - [ ] ~~支持 Proxy 方式部署 Docker Image 和 二进制应用, 已经通过容器方式部署.~~
 - [x] 支持离线方式部署 Kubernetes Cluster, 可参阅 [downloads-packages](roles/downloads-packages/files/)
@@ -83,6 +84,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [x] 修复 CNI 容器部署 Download Plugin 位置错误。v1.15.0.2 中修复。(之前版本实际不受影响, Calico 有自己的初始化 Plugin 部署方式) 
 - [x] 修复 kubelet 重新加入集群时, 证书无效的问题, v1.15.0.3 中修复。
 - [x] 修复添加 Master 节点时, HaProxy 没有及时更新新节点问题, v1.15.0.5 中修复。
+- [ ] 修复 Add Etcd 节点时, 没有更新 Kubu apiServer 和 Calico、Etcd 服务的配置信息, v1.15.0.6 中修复。
 
 ## 获取对应的版本
 切记, 如需要安装哪个大版本的集群, 就获取相应的 tag :
@@ -321,7 +323,7 @@ $ ansible-playbook -i nodes add_etcd.yml -vv
 $ ansible-playbook -i nodes main.yml --tags k8s-addons -vv
 ```
 
-## TLS Rotation
+## K8s TLS Rotation
 默认通过 CFSSL 创建出的 CA 根证书只有 5 年时效, 如果更新根证书不当可能会涉及到 Master/Node 上大面积的应用不可用的问题, 下面的集群证书更新方式只适用于通过上述安装部署的集群使用, 其他服务集群请自行尝试, 目前没有发现问题:
 > 需要保证 nodes 文件中不要有 add.* 开头的 Group, 在部署时会重新启动 Calico 网络, 但经过大量测试没有发现对集群访问的影响.
 
@@ -329,7 +331,7 @@ $ ansible-playbook -i nodes main.yml --tags k8s-addons -vv
 
 部署安装:
 ```
-$ ansible-playbook -i nodes certificate_rotation.yml -vv
+$ ansible-playbook -i nodes k8s_certificate_rotation.yml -vv
 ```
 
 此方式会让 kubelet 重新加入到集群中, 所以可能会大面积的看到 csr 状态:
@@ -387,6 +389,14 @@ instance-template-2   Ready    master   6m6s  v1.15.0
  $ kubectl version
 Client Version: version.Info{Major:"1", Minor:"15", GitVersion:"v1.15.0", GitCommit:"e8462b5b5dc2584fdcd18e6bcfe9f1e4d970a529", GitTreeState:"clean", BuildDate:"2019-06-19T16:40:16Z", GoVersion:"go1.12.5", Compiler:"gc", Platform:"linux/amd64"}
 Server Version: version.Info{Major:"1", Minor:"15", GitVersion:"v1.15.0", GitCommit:"e8462b5b5dc2584fdcd18e6bcfe9f1e4d970a529", GitTreeState:"clean", BuildDate:"2019-06-19T16:32:14Z", GoVersion:"go1.12.5", Compiler:"gc", Platform:"linux/amd64"}
+```
+
+## Etcd TLS Rotation
+与 K8s TLS Rotation 方式类似, 当更换证书时, 则集群中的 Etcd 需要重启服务, 可能会造成一定范围时间内的服务不可用, 启动完成时会对 Master 中的 apiServer 以及 Calico 进行重新配置并启动的过程.
+
+部署安装:
+```
+$ ansible-playbook -i nodes etcd_certificate_rotation.yml -vv
 ```
 
 ---

@@ -1,0 +1,5 @@
+---
+- name: Detect cluster information
+  debug: 
+    msg: docker run --rm -i -e ETCDCTL_API=2 -v {{ etcd_ssl_dirs }}:{{ etcd_ssl_dirs }} -w {{ etcd_ssl_dirs }} {{ k8s_cluster_component_registry }}/etcd:{{ etcd_version }} etcdctl --ca-file=./etcd-ca.pem --key-file=./etcd-key.pem --cert-file=./etcd.pem --endpoints {{ etcd_cluster_str }} member list
+  delegate_to: "{{ groups['etcd-cluster-add-node'][0] }}"

@@ -1,0 +1,69 @@
+---
+## Copy CFSSL Etcd Json Files
+## ********************************************************************************************************************************
+
+- name: Clean Clean Cert Directory
+  file:
+    path: "{{ deploy_new_ca_retation_dirs }}"
+    state: absent
+  ignore_errors: true
+
+- name: Create Temporary New Cert Directory
+  file:
+    path: "{{ deploy_new_ca_retation_dirs }}/cert"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
+- name: Copy CFSSL Etcd Json Files
+  template:
+    src: roles/etcd-install/templates/{{ item }}
+    dest: "{{ deploy_new_ca_retation_dirs }}/cert/{{ item }}"
+    owner: "{{ ssh_connect_user }}" 
+    mode: 0644
+  with_items:
+    - ca-config.json
+    - etcd-ca-csr.json
+    - etcd-csr.json
+
+## Create Certificate Files
+## ********************************************************************************************************************************
+
+- name: Create Certificate Files
+  shell: cd {{ deploy_new_ca_retation_dirs }}/cert && {{ kubernetes_ctl_path }}cfssl gencert -initca etcd-ca-csr.json | {{ kubernetes_ctl_path }}cfssljson -bare etcd-ca
+
+- name: Create Etcd Certificate Files
+  shell: "cd {{ deploy_new_ca_retation_dirs }}/cert && {{ kubernetes_ctl_path }}cfssl gencert \
+            -ca=etcd-ca.pem \
+            -ca-key=etcd-ca-key.pem \
+            -config=ca-config.json \
+            -hostname=127.0.0.1,{{ etcd_master_ip_str }} \
+            -profile=kubernetes \
+            etcd-csr.json | {{ kubernetes_ctl_path }}cfssljson -bare etcd"
+
+## Copy Etcd CA in Nodes
+## ********************************************************************************************************************************
+
+- shell: "for ITEM in $(ls {{ deploy_new_ca_retation_dirs }}/cert); do 
+            chown {{ ssh_connect_user }} {{ etcd_ssl_dirs }}${ITEM}; 
+          done"
+
+- name: Copy the Generated CA certificates to other Etcd Master
+  shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
+            -i {{ ssh_public_key }} \
+            -P {{ ssh_connect_port }} \
+            {{ deploy_new_ca_retation_dirs }}/cert/{{ item[1] }} \
+            {{ ssh_connect_user }}@{{ item[0] }}:{{ etcd_ssl_dirs }}{{ item[1] }}"
+  with_nested:
+    - "{{ etcd_master_ip_list }}"
+    - ['etcd-ca-key.pem', 'etcd-ca.pem', 'etcd-key.pem', 'etcd.pem']
+
+- name: Copy CA to Kubernetes Master
+  shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
+            -i {{ ssh_public_key }} \
+            -P {{ ssh_connect_port }} \
+            {{ deploy_new_ca_retation_dirs }}/cert/{{ item[1] }} \
+            {{ ssh_connect_user }}@{{ item[0] }}:{{ etcd_ssl_dirs }}{{ item[1] }}"
+  with_nested:
+    - "{{ k8s_master_ip_list }}"
+    - ['etcd-ca-key.pem', 'etcd-ca.pem', 'etcd-key.pem', 'etcd.pem']

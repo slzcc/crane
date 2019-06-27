@@ -1,0 +1,1 @@
+deploy_new_ca_retation_dirs: '{{ temporary_dirs }}etcd-ca-retation'
