@@ -33,12 +33,9 @@
 ## ********************************************************************************************************************************
 - name: Download CFSSL Binary Files *
   shell: "curl -s -o {{ kubernetes_ctl_path }}cfssl https://pkg.cfssl.org/R1.2/cfssl_linux-amd64"
-  when: is_kube_master or is_add_master or is_etcd_master
 
 - name: Download CFSSL Binary Files **
   shell: "curl -s -o {{ kubernetes_ctl_path }}cfssljson https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64"
-  when: is_kube_master or is_add_master or is_etcd_master
 
 - name: Download CFSSL Binary Files ***
   shell: "chmod +x {{ kubernetes_ctl_path }}cfssl*"
-  when: is_kube_master or is_add_master or is_etcd_master

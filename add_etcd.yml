@@ -44,14 +44,23 @@
   roles:
     - { role: etcd-add-node, tags: [etcd-add-node]}
 
-- name: Update Cluster Manifests
+- name: Update K8s Cluster Manifests
   hosts: kube-master
   sudo: yes
   remote_user: "{{ ssh_connect_user }}"
   vars:
     ansible_ssh_pipelining: true
   tasks:
-    - { include: 'roles/etcd-add-node/includes/update-manifests.yml' }
+    - { include: 'roles/etcd-add-node/includes/update-k8s-manifests.yml' }
+
+- name: Update Etcd Cluster Manifests
+  hosts: etcd
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  tasks:
+    - { include: 'roles/etcd-add-node/includes/update-etcd-manifests.yml' }
 
 - name: Check Etcd Cluster Info
   hosts: kube-master[0]
@@ -59,6 +68,8 @@
   remote_user: "{{ ssh_connect_user }}"
   vars:
     ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/etcd-add-node/defaults/main.yml"
   tasks:
     - { include: 'roles/etcd-add-node/includes/check-cluster.yml' }
 
