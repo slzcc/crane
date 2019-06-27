@@ -8,4 +8,3 @@
     dest: "{{ kubernetes_manifests_dirs }}kube-apiserver.yml"
     mode: 0644
     owner: "{{ ssh_connect_user }}" 
-  when: is_kube_master

@@ -4,4 +4,3 @@
 
 - name: Update Etcd Server
   shell: "docker rm -f $(docker ps --filter name=k8s_etcd -q)"
-  when: is_etcd_cluster

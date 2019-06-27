@@ -21,16 +21,34 @@
   remote_user: "{{ ssh_connect_user }}"
   vars:
     ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/etcd-install/defaults/main.yml"
   roles:
     - { role: etcd-ca-rotation, tags: [etcd-ca-rotation]}
 
-- name: Update Cluster Server Info
-  hosts: kube-master:etcd
+- name: Update Etcd Cluster Server Config
+  hosts: etcd-cluster
   sudo: yes
   remote_user: "{{ ssh_connect_user }}"
   vars:
     ansible_ssh_pipelining: true
   tasks:
     - { include: 'roles/etcd-ca-rotation/includes/update-cluster-etcd.yml' }
+
+- name: Update Kubernetes Cluster ApiServer Server Config
+  hosts: k8s-master
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  tasks:
     - { include: 'roles/etcd-ca-rotation/includes/update-cluster-apiserver.yml' }
+
+- name: Update Kubernetes Cluster Network Server Config
+  hosts: k8s-cluster
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  tasks:
     - { include: 'roles/etcd-ca-rotation/includes/update-cluster-network.yml' }
