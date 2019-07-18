@@ -3,3 +3,4 @@ roles/downloads-packages/files/*.tar.gz
 **/nodes
 tags
 nodes
+*.DS_Store

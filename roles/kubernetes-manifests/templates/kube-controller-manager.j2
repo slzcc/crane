@@ -17,7 +17,7 @@ spec:
       - kube-controller-manager
       - --authentication-kubeconfig={{ kubernetes_etc_dirs }}controller-manager.conf
       - --authorization-kubeconfig={{ kubernetes_etc_dirs }}controller-manager.conf
-      - --bind-address=127.0.0.1
+      - --bind-address=0.0.0.0
       - --client-ca-file={{ kubernetes_pki_dirs }}ca.pem
       - --cluster-signing-cert-file={{ kubernetes_pki_dirs }}ca.pem
       - --cluster-signing-key-file={{ kubernetes_pki_dirs }}ca-key.pem
