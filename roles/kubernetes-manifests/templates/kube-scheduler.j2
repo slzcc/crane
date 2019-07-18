@@ -17,7 +17,7 @@ spec:
       - kube-scheduler
       - --v=0
       - --logtostderr=true
-      - --address=127.0.0.1
+      - --address=0.0.0.0
       - --leader-elect=true
       - --kubeconfig={{ kubernetes_etc_dirs }}scheduler.conf
     livenessProbe:
