@@ -367,6 +367,13 @@ monitoring_ingress_prometheus_domain: 'prometheus.example.com'
 monitoring_ingress_grafana_domain: 'grafana.example.com'
 monitoring_ingress_alertmanager_domain: 'alertmanager.example.com'
 
+# Prometheus Operator Grafana SMTP Configs
+prometheus_operator_grafana_smtp_enable: true
+prometheus_operator_grafana_smtp_password: ''
+prometheus_operator_grafana_smtp_server: 'smtp.126.com:465'
+prometheus_operator_grafana_smtp_user: 'shileizcc@126.com'
+prometheus_operator_grafana_smtp_from_address: 'shileizcc@126.com'
+
 # 部署 DNS Example Tools
 # 用来测试集群内是否 DNS 可用的 Tools Pods
 is_deploy_busybox_example: false
