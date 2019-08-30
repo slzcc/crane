@@ -360,7 +360,7 @@ is_deploy_ingress_nginx_example: false
 ingress_nginx_example: 'www.example.com'
 
 # 部署 Prometheus Operator
-is_deploy_prometheus_operator: true
+is_deploy_prometheus_operator: false
 
 # 部署 Prometheus Operator Ingress 所使用的 Ingress Domain
 monitoring_ingress_prometheus_domain: 'prometheus.example.com'
