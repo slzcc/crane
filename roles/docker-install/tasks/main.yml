@@ -13,7 +13,7 @@
   when: result.stderr and ansible_distribution == 'Ubuntu'
 
 - name: Yum Install Dependence
-  shell: yum install -y wget curl
+  shell: yum install -y wget curl yum-plugin-ovl
   when: result.stderr and ansible_distribution == 'CentOS'
 
 - name: Install Docker-ce
