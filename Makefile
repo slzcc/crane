@@ -9,4 +9,4 @@ build:
 push:
 	@docker push ${DockerHubRepoName}/${ProjectName}:$(VERSION)
 run:
-	@docker run --rm -i -v ./node:/crane -v ./group_vars:/carne/group_vars -w /carne ${DockerHubRepoName}/${ProjectName}:$(VERSION) -i nodes ${CRANE_CMD} -vv
+	@docker run --rm -i -v ~/.ssh/id_rsa.pub:/root/.ssh/id_rsa.pub -v ~/.ssh/id_rsa:/root/.ssh/id_rsa -v ./nodes:/crane/nodes -v ./group_vars:/carne/group_vars -w /carne ${DockerHubRepoName}/${ProjectName}:$(VERSION) -i nodes ${CRANE_CMD} -vv
