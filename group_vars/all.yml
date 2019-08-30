@@ -129,7 +129,7 @@ docker_registry_mirrors: '["https://registry.docker-cn.com"]'
 # Docker 存储路径
 docker_data_root: '/var/lib/docker'
 
-# Docker Image 存储驱动
+# Docker Image 存储驱动 (此配置对 Centos 无效)
 docker_storage_driver: "overlay2"
 
 # 允许的不安全 Registry 地址
