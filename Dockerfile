@@ -2,7 +2,7 @@ FROM slzcc/ansible:2.8
 
 USER root
 
-COPY . /crane
+COPY . /crane/
 
 WORKDIR /crane
 
