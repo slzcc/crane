@@ -41,7 +41,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [x] 支持 Kubernetes Cluster CA 根证书更新。
 - [x] 支持 Kubernetes Cluster 版本升级。
 - [x] 支持 Etcd Cluster CA 根证书更新。
-- [ ] 支持 Ansible in Docker 方式进行部署。
+- [x] 支持 Ansible in Docker 方式进行部署。
 
 ## 项目部署架构
 以 v1.15.x 为例：
@@ -69,7 +69,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [ ] ~~支持 Proxy 方式部署 Docker Image 和 二进制应用, 已经通过容器方式部署.~~
 - [x] 支持离线方式部署 Kubernetes Cluster, 可参阅 [downloads-packages](roles/downloads-packages/files/)
 - [x] 支持 IPVS, v1.14.2.8 版本更新.
-- [ ] 支持 Ansible in Docker 方式部署, 不在依赖于本地环境。
+- [x] 支持 Ansible in Docker 方式部署, 不在依赖于本地环境。v1.15.3.0 中更新。
 - [x] 支持 Kubernetes Cluster 版本更新, v1.15.0.5 中更新。
 
 ## 修复
@@ -398,6 +398,20 @@ Server Version: version.Info{Major:"1", Minor:"15", GitVersion:"v1.15.0", GitCom
 ```
 $ ansible-playbook -i nodes etcd_certificate_rotation.yml -vv
 ```
+
+## Ansible in Docker
+在 Docker 内使用 Ansible 进行部署，使用时挂载本地的 nodes 文件和 group_vars/all.yml 文件进行部署。
+
+部署安装:
+```
+$ docker run --rm -i \
+         -v ~/.ssh:/root/.ssh \
+         -v ${PWD}/nodes:/crane/nodes \
+         -v ${PWD}/group_vars:/carne/group_vars \
+         slzcc/crane:v1.15.0 \
+         -i nodes main.yml -vv
+```
+
 
 ---
 
