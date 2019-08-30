@@ -74,7 +74,8 @@
           modprobe -- ip_vs_sh && \
           modprobe -- nf_conntrack_ipv4 && \
           modprobe -- br_netfilter"
-
+  ignore_errors: true
+  
 - name: Check IPVS
   shell: "lsmod | grep ip_vs"
 
