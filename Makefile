@@ -2,7 +2,7 @@ SHELL := /bin/bash
 
 DockerHubRepoName := "slzcc"
 ProjectName := "crane"
-VERSION := "v1.15.3.6"
+VERSION := "v1.15.3.0"
 CRANE_ENTRANCE := "main.yml"
 
 build:
