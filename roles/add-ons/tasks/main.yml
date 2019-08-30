@@ -66,13 +66,22 @@
 - name: Deploy Prometheus Operator **
   template: 
     src: prometheus-operator/ingress.j2
-    dest: "{{ temporary_dirs }}prometheus-operator/ingress.yml"
+    dest: "{{ temporary_dirs }}prometheus-operator/ingress.yaml"
     mode: 0644
     owner: "{{ ssh_connect_user }}" 
   delegate_to: "{{ groups['kube-master'][0] }}"
   when: is_deploy_prometheus_operator
 
 - name: Deploy Prometheus Operator ***
+  template: 
+    src: prometheus-operator/grafana-configmap.j2
+    dest: "{{ temporary_dirs }}prometheus-operator/grafana-configmap.j2"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+  delegate_to: "{{ groups['kube-master'][0] }}"
+  when: is_deploy_prometheus_operator
+
+- name: Deploy Prometheus Operator ****
   shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}prometheus-operator/ ; do >&2 echo "Starting..." && sleep 1 ; done'
   delegate_to: "{{ groups['kube-master'][0] }}"
   when: is_deploy_prometheus_operator
