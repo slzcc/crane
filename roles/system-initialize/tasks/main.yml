@@ -47,7 +47,7 @@
   ignore_errors: true
 
 - name: Centos Install IPVS Admin
-  apt: 
+  yum: 
     name: ipvsadm 
     state: present
   when: kube_proxy_mode == 'ipvs' and ansible_distribution == 'CentOS' and is_install_ipvsadm
@@ -61,7 +61,7 @@
   ignore_errors: true
 
 - name: Centos Install IPset
-  apt: 
+  yum: 
     name: ipset 
     state: present
   when: ansible_distribution == 'CentOS' and is_install_ipvsadm
