@@ -411,7 +411,7 @@ $ docker run --rm -i \
          slzcc/crane:v1.15.0 \
          -i nodes main.yml -vv
 ```
-
+> 切记！不要再任何 Master 或者 Node 节点上使用 Ansible in Docker 因为指令会重启 Dockerd！
 
 ---
 

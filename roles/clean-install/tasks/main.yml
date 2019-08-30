@@ -30,7 +30,7 @@
   ignore_errors: true
 
 - name: Clean Docker Containers.
-  shell: "docker rm -f $(docker ps -aq)"
+  shell: "docker rm -f $(docker ps -a -f 'before=crane' -aq)"
   ignore_errors: true
 
 - name: Clean Kubernet Ctl.
