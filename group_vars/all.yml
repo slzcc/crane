@@ -34,7 +34,7 @@ k8s_cluster_ip: '10.96.0.1'
 k8s_cluster_ip_range: '10.96.0.0/12'
 
 # Kubernetes ApiServer 的总入口地址, 可配置 SLB 等云服务商提供的地址, 但需要接入后端服务器的 80, 443 端口, 此地址可以写某个单实例的 IP 地址
-k8s_load_balance_ip: 10.174.0.16
+k8s_load_balance_ip: 10.160.0.2
 
 # Kubernetes HaProxy 监听的 apiServer 完整的 URL
 k8s_apiserver_https_bind: 'https://{{ k8s_load_balance_ip }}:{{ k8s_master_haproxy_bind_port }}'
@@ -75,6 +75,16 @@ k8s_cluster_component_registry: 'k8s.gcr.io'
 
 # 是否使用 RBAC, 集群默认是 RBAC 认证, 但可以在部署完集群之后创建超级用户取消所有限制
 is_rbac: true
+
+## External Proxy
+## ********************************************************************************************************************************
+# 执行过程中使用 Wget or Curl 时可以借助代理执行. (下载包文件与镜像部署方式没有交集，镜像部署已经包含这一步骤)
+
+# HTTP Proxy
+http_proxy: ""
+
+# HTTPS Proxy
+https_proxy: ""
 
 ## Kube TLS
 ## ********************************************************************************************************************************
@@ -201,10 +211,10 @@ systemd_default_dirs: '/lib/systemd/system/'
 ## ********************************************************************************************************************************
 
 # 使用 Ansible 部署时连接实例的用户
-ssh_connect_user: "shilei"
+ssh_connect_user: "{{ hostvars[inventory_hostname]['ansible_ssh_user'] }}"
 
 # 使用 Ansible 部署时连接实例的 SSH 端口
-ssh_connect_port: 22
+ssh_connect_port: "{{ hostvars[inventory_hostname]['ansible_ssh_port'] }}"
 
 # 使用 Ansible 部署时, 如需要节点之间进行协作传入的证书地址
 target_ssh_private_key_file: "{{ temporary_dirs }}.general-id_rsa"
@@ -232,7 +242,7 @@ vip_bind_net_device: "{{ os_network_device_name }}"
 ## ********************************************************************************************************************************
 
 # Etcd 绑定的宿主机网卡, 此配置需要在启动 Etcd 的节点上强制网卡名称一致
-os_network_device_name: 'ens4'
+os_network_device_name: 'eth0'
 
 # Etcd Verions
 # https://github.com/etcd-io/etcd/releases
@@ -384,7 +394,7 @@ is_deploy_istio: false
 
 # Istio Version
 # https://github.com/istio/istio/releases
-istio_version: '1.2.0'
+istio_version: '1.2.5'
 
 # 部署 Istio 所使用的 Ingress Domain
 istio_ingress_prometheus_domain: 'prometheus.example.com'
