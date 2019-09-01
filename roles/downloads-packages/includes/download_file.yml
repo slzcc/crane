@@ -6,7 +6,7 @@
   ignore_errors: true
 
 - name: Download Kubernetes Ctl And Kubelet Binary Files
-  shell: "wget -qO- 'https://dl.k8s.io/{{ k8s_version }}/kubernetes-node-linux-amd64.tar.gz' | tar zx -C {{ temporary_dirs }}"
+  shell: "http_proxy={{ http_proxy }} ; https_proxy={{ https_proxy }} ; wget -qO- 'https://dl.k8s.io/{{ k8s_version }}/kubernetes-node-linux-amd64.tar.gz' | tar zx -C {{ temporary_dirs }}"
   changed_when: true
   when: CHECK_KUBE_BIN_PACKAGE is failed
 
@@ -26,16 +26,16 @@
     state: directory
   when: CHECK_CNI_BIN_PACKAGE is failed
 
-- shell: "wget -qO- 'https://github.com/containernetworking/plugins/releases/download/{{ cni_version }}/cni-plugins-{{ cni_os_drive }}-{{ cni_version }}.tgz' | tar -zx -C {{ kubernetes_cni_dirs }}"
+- shell: "http_proxy={{ http_proxy }} ; https_proxy={{ https_proxy }} ; wget -qO- 'https://github.com/containernetworking/plugins/releases/download/{{ cni_version }}/cni-plugins-{{ cni_os_drive }}-{{ cni_version }}.tgz' | tar -zx -C {{ kubernetes_cni_dirs }}"
   when: CHECK_CNI_BIN_PACKAGE is failed
   
 # CFSSL
 ## ********************************************************************************************************************************
 - name: Download CFSSL Binary Files *
-  shell: "curl -s -o {{ kubernetes_ctl_path }}cfssl https://pkg.cfssl.org/R1.2/cfssl_linux-amd64"
+  shell: "http_proxy={{ http_proxy }} ; https_proxy={{ https_proxy }} ; curl -s -o {{ kubernetes_ctl_path }}cfssl https://pkg.cfssl.org/R1.2/cfssl_linux-amd64"
 
 - name: Download CFSSL Binary Files **
-  shell: "curl -s -o {{ kubernetes_ctl_path }}cfssljson https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64"
+  shell: "http_proxy={{ http_proxy }} ; https_proxy={{ https_proxy }} ; curl -s -o {{ kubernetes_ctl_path }}cfssljson https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64"
 
 - name: Download CFSSL Binary Files ***
   shell: "chmod +x {{ kubernetes_ctl_path }}cfssl*"

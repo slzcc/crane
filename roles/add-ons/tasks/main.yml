@@ -2,7 +2,7 @@
 ## Install Helm
 ## ********************************************************************************************************************************
 - name: Deploy Helm Cli *
-  shell: "curl -s https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash"
+  shell: "http_proxy={{ http_proxy }} ; https_proxy={{ https_proxy }} ; curl -s https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash"
   when: is_deploy_helm
 
 - name: Deploy Helm Cli **
@@ -106,7 +106,7 @@
 ## Install ISTIO
 ## ********************************************************************************************************************************
 - name: Deploy Istio *
-  shell: "cd {{ temporary_dirs }} && curl -sL https://git.io/getLatestIstio | ISTIO_VERSION={{ istio_version }} sh -" 
+  shell: "cd {{ temporary_dirs }} && http_proxy={{ http_proxy }} ; https_proxy={{ https_proxy }} ; curl -sL https://git.io/getLatestIstio | ISTIO_VERSION={{ istio_version }} sh -" 
   delegate_to: "{{ groups['kube-master'][0] }}"
   when: is_deploy_istio
 
