@@ -34,7 +34,7 @@ k8s_cluster_ip: '10.96.0.1'
 k8s_cluster_ip_range: '10.96.0.0/12'
 
 # Kubernetes ApiServer 的总入口地址, 可配置 SLB 等云服务商提供的地址, 但需要接入后端服务器的 80, 443 端口, 此地址可以写某个单实例的 IP 地址
-k8s_load_balance_ip: 10.174.0.16
+k8s_load_balance_ip: 10.160.0.2
 
 # Kubernetes HaProxy 监听的 apiServer 完整的 URL
 k8s_apiserver_https_bind: 'https://{{ k8s_load_balance_ip }}:{{ k8s_master_haproxy_bind_port }}'
@@ -243,7 +243,7 @@ vip_bind_net_device: "{{ os_network_device_name }}"
 ## ********************************************************************************************************************************
 
 # Etcd 绑定的宿主机网卡, 此配置需要在启动 Etcd 的节点上强制网卡名称一致
-os_network_device_name: 'ens4'
+os_network_device_name: 'eth0'
 
 # Etcd Verions
 # https://github.com/etcd-io/etcd/releases
