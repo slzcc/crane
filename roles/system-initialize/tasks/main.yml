@@ -54,7 +54,7 @@
     state: present
   with_items:
     - openssl
-  when: ansible_distribu == 'CentOS'
+  when: ansible_distribution == 'CentOS'
 
 - name: Ubuntu Install IPVS Admin
   apt: 
