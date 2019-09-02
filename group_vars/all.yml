@@ -76,7 +76,6 @@ k8s_cluster_component_registry: 'k8s.gcr.io'
 # 是否使用 RBAC, 集群默认是 RBAC 认证, 但可以在部署完集群之后创建超级用户取消所有限制
 is_rbac: true
 
-
 ## External Proxy
 ## ********************************************************************************************************************************
 # 执行过程中使用 Wget or Curl 时可以借助代理执行. (下载包文件与镜像部署方式没有交集，镜像部署已经包含这一步骤)
@@ -196,7 +195,7 @@ kubelet_work_dirs: '/var/lib/kubelet/'
 # 前置临时目录
 temporary_dirs: '/tmp/'
 
-# Cgroup Drive
+# Cgroup Drive (如果内核未达到 4.4.x 以上版本, 请改为 systemd, 否则低版本内核无法支持 cgroupfs 会造成集群无法启动)
 kubelet_cgroup_drive: 'cgroupfs'
 
 ## Systemd Config
