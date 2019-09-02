@@ -5,6 +5,10 @@
     state: stopped
   ignore_errors: true
 
+- name: Clean Docker Containers.
+  shell: "docker rm -f $(docker ps -a -f 'before=crane' -aq)"
+  ignore_errors: true
+  
 - name: Clean kubernetes Etc Working directory * .
   file:
     path: "{{ kubernetes_etc_dirs }}"
@@ -27,10 +31,6 @@
   file:
     path: "{{ etcd_data_dirs }}"
     state: absent
-  ignore_errors: true
-
-- name: Clean Docker Containers.
-  shell: "docker rm -f $(docker ps -a -f 'before=crane' -aq)"
   ignore_errors: true
 
 - name: Clean Kubernet Ctl.
