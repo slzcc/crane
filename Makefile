@@ -13,7 +13,7 @@ push:
 
 run_main:
 	@docker rm -f crane || true
-	@docker run --name crane --rm -i -v ~/.ssh:/root/.ssh -v ${PWD}:/crane ${DockerHubRepoName}/${ProjectName}:$(VERSION) -i nodes ${CRANE_ENTRANCE}
+	@docker run --name crane --rm -i -e COLUMNS=238 -e LINES=61 -v ~/.ssh:/root/.ssh -v ${PWD}:/crane ${DockerHubRepoName}/${ProjectName}:$(VERSION) -i nodes ${CRANE_ENTRANCE}
 
 local_save_image:
 	@docker pull slzcc/kubernetes:`awk '/^k8s_version/{print}' ./group_vars/all.yml | awk -F': ' '{print $2}' | sed -r "s/'//g"`
