@@ -39,6 +39,23 @@
     owner: "{{ ssh_connect_user }}"
     state: directory
 
+- name: Ubuntu Initialize Plugins
+  apt: 
+    name: "{{ item }}" 
+    state: present
+  with_items:
+    - openssl
+  when: ansible_distribution == 'Ubuntu'
+  ignore_errors: true
+
+- name: Centos Initialize Plugins
+  yum: 
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - openssl
+  when: ansible_distribu == 'CentOS'
+
 - name: Ubuntu Install IPVS Admin
   apt: 
     name: ipvsadm 
