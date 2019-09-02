@@ -8,11 +8,9 @@
 - name: Clean Docker Containers.
   shell: "docker rm -f $(docker ps -a -f 'before=crane' -aq)"
   ignore_errors: true
-  
-- name: Clean kubernetes Etc Working directory * .
-  file:
-    path: "{{ kubernetes_etc_dirs }}"
-    state: absent
+
+- name: Umount K8s Drive
+  shell: "for i in `cat /proc/mounts | grep '{{ kubelet_work_dirs }}' | awk '{print $2}'`;do umount $i; done"
   ignore_errors: true
 
 - name: Clean kubernetes Etc Working directory ** .
