@@ -12,7 +12,7 @@ push:
 	@docker push ${DockerHubRepoName}/${ProjectName}:$(VERSION)
 
 run_main:
-	@docker rm -f crane
+	@docker rm -f crane || true
 	@docker run --name crane --rm -i -v ~/.ssh:/root/.ssh -v ${PWD}:/crane ${DockerHubRepoName}/${ProjectName}:$(VERSION) -i nodes ${CRANE_ENTRANCE}
 
 local_save_image:
