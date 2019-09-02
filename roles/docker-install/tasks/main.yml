@@ -17,6 +17,9 @@
     - curl
     - ca-certificates
     - software-properties-common
+  environment:
+    http_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ https_proxy }}"
   when: ansible_distribution == 'Ubuntu'
 
 - name: Yum Install Dependence
@@ -27,6 +30,9 @@
     - wget 
     - curl 
     - yum-plugin-ovl
+  environment:
+    http_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ https_proxy }}"
   when: ansible_distribution == 'CentOS'
 
 - name: Install Docker-ce
