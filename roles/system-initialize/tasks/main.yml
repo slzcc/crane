@@ -45,6 +45,9 @@
     state: present
   with_items:
     - openssl
+  environment:
+    http_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ https_proxy }}"
   when: ansible_distribution == 'Ubuntu'
   ignore_errors: true
 
@@ -54,6 +57,9 @@
     state: present
   with_items:
     - openssl
+  environment:
+    http_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ https_proxy }}"
   when: ansible_distribution == 'CentOS'
 
 - name: Ubuntu Install IPVS Admin
