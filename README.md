@@ -402,16 +402,16 @@ $ ansible-playbook -i nodes etcd_certificate_rotation.yml -vv
 ## Ansible in Docker
 在 Docker 内使用 Ansible 进行部署，使用时挂载本地的 nodes 文件和 group_vars/all.yml 文件进行部署。
 
-部署安装:
+部署安装: (版本请自己根据需求查看 [slzcc/crane](https://cloud.docker.com/u/slzcc/repository/docker/slzcc/crane) 获取)
 ```
 $ docker run --rm -i \
          -v ~/.ssh:/root/.ssh \
          -v ${PWD}/nodes:/crane/nodes \
          -v ${PWD}/group_vars:/carne/group_vars \
-         slzcc/crane:v1.15.0 \
+         slzcc/crane:v1.15.x.x \
          -i nodes main.yml -vv
 ```
-> 切记！不要再任何 Master 或者 Node 节点上使用 Ansible in Docker 因为指令会重启 Dockerd！
+> 切记！不要在任何 Master 或者 Node 节点上使用 Ansible in Docker 会造成 Dockerd 被重启导致服务中断！
 
 ---
 
