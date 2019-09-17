@@ -105,7 +105,7 @@ kube_proxy_mode: "ipvs"
 # 是否安装 ipvsadm
 is_install_ipvsadm: true
 
-# 如果配置了 Keepalived 就需要配置绑定的 nodePort 的物理网段，否则 Keepalived 的流量无法到达 nodePort, 因为 Keepalived 会发送 ARP 请求到此网段内，如果不设置这个网段则会流量不可达. v1.15.0.7 中修复。
+# 如果配置了 Keepalived 就需要配置绑定的 nodePort 的物理网段，否则 Keepalived 的流量无法到达 nodePort, 因为 Keepalived 会发送 ARP 请求到此网段内，如果不设置这个网段则会流量不可达. v1.15.3.5 中修复。
 # 如果物理网段为 10.100.21.0/24, 请把值写入下方配置即可.
 kube_proxy_node_port_addresses: null
 
