@@ -86,6 +86,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [x] 修复添加 Master 节点时, HaProxy 没有及时更新新节点问题, v1.15.0.5 中修复。
 - [x] 修复 Add Etcd 节点时, 没有更新 Kubu apiServer 和 Calico、Etcd 服务的配置信息, v1.15.0.6 中修复。
 - [x] 修复 Proxy 中使用 Keepalived 通过 VIP 访问 nodePort 模式的服务时流量不可达的问题，v1.15.3.5 中修复。
+- [x] 修复 Kubelet 中的 Cgroup 与 Docker 版本兼容报错的问题，v1.15.3.6 中修复。
 
 ## 获取对应的版本
 切记, 如需要安装哪个大版本的集群, 就获取相应的 tag :
