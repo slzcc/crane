@@ -59,13 +59,13 @@ data:
     ipvs:
       excludeCIDRs: null
       minSyncPeriod: 0s
-      scheduler: ""
+      scheduler: {{ kube_proxy_ipvs_scheduler }}
       strictARP: false
       syncPeriod: 30s
     kind: KubeProxyConfiguration
     metricsBindAddress: 127.0.0.1:10249
     mode: "{{ kube_proxy_mode }}"
-    nodePortAddresses: null
+    nodePortAddresses: {{ kube_proxy_node_port_addresses }}
     oomScoreAdj: -999
     portRange: ""
     resourceContainer: /kube-proxy
