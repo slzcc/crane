@@ -59,7 +59,7 @@ data:
     ipvs:
       excludeCIDRs: null
       minSyncPeriod: 0s
-      scheduler: {{ kube_proxy_ipvs_scheduler }}
+      scheduler: "{{ kube_proxy_ipvs_scheduler }}"
       strictARP: false
       syncPeriod: 30s
     kind: KubeProxyConfiguration

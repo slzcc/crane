@@ -1,1 +1,1 @@
-KUBELET_KUBEADM_ARGS=--cgroup-driver={{ kubelet_cgroup_drive }} --network-plugin=cni --cni-conf-dir={{ cni_config_dir }} --cni-bin-dir={{ kubernetes_cni_dirs }} --pod-infra-container-image={{ k8s_pod_infra_container_image }}
+KUBELET_KUBEADM_ARGS=--cgroup-driver={{ kubelet_cgroup_drive }} --network-plugin=cni --cni-conf-dir={{ cni_config_dir }} --cni-bin-dir={{ kubernetes_cni_dirs }} --pod-infra-container-image={{ k8s_pod_infra_container_image }} --runtime-cgroups=/systemd/system.slice --kubelet-cgroups=/systemd/system.slice
