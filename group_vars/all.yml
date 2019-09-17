@@ -76,6 +76,42 @@ k8s_cluster_component_registry: 'k8s.gcr.io'
 # 是否使用 RBAC, 集群默认是 RBAC 认证, 但可以在部署完集群之后创建超级用户取消所有限制
 is_rbac: true
 
+## Kuber Network
+## ********************************************************************************************************************************
+
+# 第三方网络设备绑定的网络设备配置，需要集群内绑定的网卡名称统一，也就是说所有的内部外部通信走一块网卡
+# Etcd 绑定的宿主机网卡, 此配置需要在启动 Etcd 的节点上强制网卡名称一致
+# 如果配置了 Keepalived 则 Keepalived 也会绑定到这块网卡上，暂不支持多网卡
+os_network_device_name: 'eth0'
+
+## Keepalived
+## ********************************************************************************************************************************
+
+# 是否使用 Keepalived, 在非公有云/私有云环境中, 需要借助 keepalived 进行服务集群的高可用, 它的位置在类 SLB 层
+is_keepalived: false
+
+# Keepalived 绑定的 IP 地址, 它在 HaProxy 的上一层
+keepalived_ip: "{{ k8s_load_balance_ip }}"
+
+# Keepalived 绑定的物理网卡名称
+vip_bind_net_device: "{{ os_network_device_name }}"
+
+## Kube Proxy
+## ********************************************************************************************************************************
+
+# Kube Proxy 模式, 默认 ipvs, 如果设置为空则默认使用 iptable
+kube_proxy_mode: "ipvs"
+
+# 是否安装 ipvsadm
+is_install_ipvsadm: true
+
+# 如果配置了 Keepalived 就需要配置绑定的 nodePort 的物理网段，否则 Keepalived 的流量无法到达 nodePort, 因为 Keepalived 会发送 ARP 请求到此网段内，如果不设置这个网段则会流量不可达. v1.15.0.7 中修复。
+# 如果物理网段为 10.100.21.0/24, 请把值写入下方配置即可.
+kube_proxy_node_port_addresses: null
+
+# ipvs 调度策略.
+kube_proxy_ipvs_scheduler: "rr"
+
 ## External Proxy
 ## ********************************************************************************************************************************
 # 执行过程中使用 Wget or Curl 时可以借助代理执行. (下载包文件与镜像部署方式没有交集，镜像部署已经包含这一步骤)
@@ -117,15 +153,6 @@ tls_k8s_head_info_OU: 'Kubernetes'
 # 证书信息头, 州或省 
 # State or Province Name
 tls_k8s_head_info_ST: 'BeiJing'
-
-## Kube Proxy
-## ********************************************************************************************************************************
-
-# Kube Proxy 模式, 默认 ipvs, 如果设置为空则默认使用 iptable
-kube_proxy_mode: "ipvs"
-
-# 是否安装 ipvsadm
-is_install_ipvsadm: true
 
 ## Docker
 ## ********************************************************************************************************************************
@@ -226,23 +253,8 @@ ssh_public_key: "{{ target_ssh_private_key_file }}"
 source_ssh_public_key_file: "{{ hostvars[inventory_hostname]['ansible_ssh_public_key_file'] }}"
 source_ssh_private_key_file: "{{ hostvars[inventory_hostname]['ansible_ssh_private_key_file'] }}"
 
-## Keepalived
-## ********************************************************************************************************************************
-
-# 是否使用 Keepalived, 在非公有云/私有云环境中, 需要借助 keepalived 进行服务集群的高可用, 它的位置在类 SLB 层
-is_keepalived: false
-
-# Keepalived 绑定的 IP 地址, 它在 HaProxy 的上一层
-keepalived_ip: "{{ k8s_load_balance_ip }}"
-
-# Keepalived 绑定的物理网卡名称
-vip_bind_net_device: "{{ os_network_device_name }}"
-
 ## Etcd
 ## ********************************************************************************************************************************
-
-# Etcd 绑定的宿主机网卡, 此配置需要在启动 Etcd 的节点上强制网卡名称一致
-os_network_device_name: 'eth0'
 
 # Etcd Verions
 # https://github.com/etcd-io/etcd/releases
