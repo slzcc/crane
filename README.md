@@ -27,8 +27,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 
 目前支持的 Kubernetes 版本:
 * v1.10.0
-* v1.14.x
-* v1.15.x
+* v1.14.x >= 1.16.x
 
 在 v1.14.x 开始, 可以支持动态的选择版本进行部署, 如 v1.14.1/v1.14.2 版本, 但目前只支持小版本。后续会添加集群的热更新。
 ## 推荐亮点
@@ -44,12 +43,12 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [x] 支持 Ansible in Docker 方式进行部署。
 
 ## 项目部署架构
-以 v1.15.x 为例：
-* Kubernetes A/C/S v1.15.x
-* CoreDNS: v1.5.0
-* Calico: v3.7.3
+以 v1.16.x 为例：
+* Kubernetes A/C/S v1.16.x
+* CoreDNS: v1.5.x
+* Calico: v3.7.x
 * Kube Proxy: v1.15.x
-* HaProxy: v2.0.0
+* HaProxy: v2.0.x
 * Etcd: v3.3.10
 * pause: v3.1
 
@@ -91,7 +90,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 ## 获取对应的版本
 切记, 如需要安装哪个大版本的集群, 就获取相应的 tag :
 ```
-$ git clone -b v1.15.x.x https://github.com/slzcc/crane.git
+$ git clone -b v1.16.x.x https://github.com/slzcc/crane.git
 ```
 
 > v1.15.x.x 最末尾一位属于编写 Ansible 脚本的迭代版本, 不属于 Kubernetes 自身版本。
