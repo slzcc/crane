@@ -25,6 +25,9 @@ spec:
   containers:
   - name: etcd
     image: {{ k8s_cluster_component_registry }}/etcd:{{ etcd_version }}
+    env:
+    - name: TZ
+      value: "{{ time_location }}"
     command:
     - etcd
     - --name={{ hostvars[inventory_hostname].ansible_nodename }}

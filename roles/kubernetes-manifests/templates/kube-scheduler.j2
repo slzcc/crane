@@ -39,6 +39,9 @@ spec:
     - mountPath: {{ kubernetes_etc_dirs }}scheduler.conf
       name: kubeconfig
       readOnly: true
+    env:
+    - name: TZ
+      value: "{{ time_location }}"
   volumes:
   - hostPath:
       path: {{ kubernetes_etc_dirs }}pki

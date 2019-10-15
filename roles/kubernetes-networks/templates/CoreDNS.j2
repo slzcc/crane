@@ -112,6 +112,9 @@ spec:
         - name: config-volume
           mountPath: /etc/coredns
           readOnly: true
+        env:
+        - name: TZ
+          value: "{{ time_location }}"
         ports:
         - containerPort: 53
           name: dns

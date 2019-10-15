@@ -20,6 +20,9 @@ spec:
     - name: cfg-volume
       readOnly: true
       mountPath: "/usr/local{{ haproxy_etc_dirs }}haproxy.cfg"
+    env:
+    - name: TZ
+      value: "{{ time_location }}"
   volumes:
   - name: cfg-volume
     hostPath:

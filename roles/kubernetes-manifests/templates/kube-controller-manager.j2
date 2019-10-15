@@ -52,6 +52,9 @@ spec:
       readOnly: true
     - mountPath: /usr/libexec/kubernetes/kubelet-plugins/volume/exec
       name: flexvolume-dir
+    env:
+    - name: TZ
+      value: "{{ time_location }}"
   volumes:
   - hostPath:
       path: {{ kubernetes_etc_dirs }}pki

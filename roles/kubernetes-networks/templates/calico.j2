@@ -555,6 +555,8 @@ spec:
           image: calico/cni:{{ calico_version }}
           command: ["/install-cni.sh"]
           env:
+            - name: TZ
+              value: "{{ time_location }}"
             # Name of the CNI config file to create.
             - name: CNI_CONF_NAME
               value: "10-calico.conflist"
@@ -590,6 +592,8 @@ spec:
         - name: calico-node
           image: calico/node:{{ calico_version }}
           env:
+            - name: TZ
+              value: "{{ time_location }}"
             # Use Kubernetes API as the backing datastore.
             - name: DATASTORE_TYPE
               value: "kubernetes"
@@ -752,6 +756,8 @@ spec:
         - name: calico-kube-controllers
           image: calico/kube-controllers:{{ calico_version }}
           env:
+            - name: TZ
+              value: "{{ time_location }}"
             - name: ETCD_ENDPOINTS
               valueFrom:
                 configMapKeyRef:
