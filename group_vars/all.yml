@@ -433,7 +433,7 @@ is_remove_docker_ce: false
 is_remove_docker_dir: false
 
 # 清除集群时是否删除 CFSSL 可执行文件
-is_remove_cfssl: true
+is_remove_cfssl: false
 
 # 清除集群时是否删除 CNI 插件
 is_remove_cni: true
