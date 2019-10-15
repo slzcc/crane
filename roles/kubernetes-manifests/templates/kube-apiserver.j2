@@ -56,6 +56,9 @@ spec:
     - --service-account-key-file={{ kubernetes_pki_dirs }}sa.pub
     image: {{ k8s_cluster_component_registry }}/kube-apiserver-amd64:{{ k8s_version }}
     imagePullPolicy: IfNotPresent
+    env:
+    - name: TZ
+      value: "{{ time_location }}"
     livenessProbe:
       failureThreshold: 8
       httpGet:
