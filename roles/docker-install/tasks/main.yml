@@ -39,10 +39,36 @@
   shell: "curl -fsSL https://get.docker.com | sh -s -- --mirror {{ docker_install_source }}"
   when: result.stderr
 
+- name: Check DockerD Daemon.js isFile
+  shell: "ls /etc/docker/daemon.json"
+  register: check_daemon_file
+  ignore_errors: true
+
+- name: Check DockerD Daemon.js MD5 **
+  shell: "md5sum /etc/docker/daemon.json | awk '{print $1}'"
+  register: check_old_md5
+  ignore_errors: true
+  when: check_daemon_file is succeeded
+
+- name: Check DockerD Daemon.js MD5 *
+  template: 
+    src: "daemon.j2"
+    dest: "{{ temporary_dirs }}/.daemon.json"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+  when: check_daemon_file is succeeded
+
+- name: Check DockerD Daemon.js MD5 **
+  shell: "md5sum /tmp/.daemon.json | awk '{print $1}'"
+  register: check_new_md5
+  ignore_errors: true
+  when: check_daemon_file is succeeded
+
 - name: Stop DockerD
   service:
     name: docker
     state: stopped
+  when: check_old_md5.stderr == "" and check_old_md5.stdout != check_new_md5.stdout
 
 - name: mkdir Docker Config DIR
   file:
@@ -51,6 +77,7 @@
     owner: "{{ ssh_connect_user }}"
     state: directory
   ignore_errors: true
+  when: check_old_md5.stderr == "" and check_old_md5.stdout != check_new_md5.stdout
 
 - name: Copy Dockerd Daemon JSON Config
   template: 
@@ -58,6 +85,7 @@
     dest: "/etc/docker/daemon.json"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
+  when: check_old_md5.stderr == "" and check_old_md5.stdout != check_new_md5.stdout
   
 - name: Docker-ce Powered UP And Startd
   service: 
@@ -68,6 +96,7 @@
   service:
     name: docker
     state: restarted
+  when: check_old_md5.stderr == "" and check_old_md5.stdout != check_new_md5.stdout
   
 - debug:
     var: result['stdout_lines']
