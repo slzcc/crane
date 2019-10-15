@@ -6,7 +6,7 @@
   ignore_errors: true
 
 - name: Clean Docker Containers.
-  shell: "docker rm -f $(docker ps -aq)"
+  shell: "docker rm -f $(docker ps -f 'name=k8s*' -aq)"
   ignore_errors: true
 
 - name: Umount K8s Drive

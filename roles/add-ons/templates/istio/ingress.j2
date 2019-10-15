@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Ingress
 metadata:
   name: grafana
@@ -16,7 +16,7 @@ spec:
           serviceName: grafana
           servicePort: 3000
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Ingress
 metadata:
   name: prometheus
@@ -31,7 +31,7 @@ spec:
           serviceName: prometheus
           servicePort: 9090
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Ingress
 metadata:
   name: tracing
@@ -46,7 +46,7 @@ spec:
           serviceName: tracing
           servicePort: 80
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Ingress
 metadata:
   name: kiali
