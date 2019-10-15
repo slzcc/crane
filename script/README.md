@@ -3,9 +3,9 @@
 `PublishK8sRegistryImages.sh` 文件是把 `k8s.gcr.io` 中的 `etcd`、`kube-apiserver-amd64`、`kube-controller-manager`、`kube-scheduler`、`kube-proxy` 镜像 Push 到自己的镜像仓库。脚本比较简单请自行修改。
 > 其中 targetRegistry: slzcc 为我的官方 Docker Hub 地址。[slzcc/kubernetes](https://hub.docker.com/r/slzcc/kubernetes)
 
-如果需要单独部署镜像可使用如下命令, 以 1.16.1 版本为例：
+如果需要单独部署镜像可使用如下命令, 以 1.15.0 版本为例：
 ```
-$ docker run --name import-kubernetes-temporary -d -v /var/run/docker.sock:/var/run/docker.sock:ro slzcc/kubernetes:v1.16.1 sleep 1234567
+$ docker run --name import-kubernetes-temporary -d -v /var/run/docker.sock:/var/run/docker.sock:ro slzcc/kubernetes:v1.15.0 sleep 1234567
 
 $ until docker exec -i import-kubernetes-temporary bash /docker-image-import.sh ; do >&2 echo "Starting..." && sleep 1 ; done
 Loaded image: calico/kube-controllers:v3.7.2
