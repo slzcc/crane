@@ -19,7 +19,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 
 > 不支持单独使用 tag 方式部署, 因全部使用 Kubelet 的静态方式部署启动 Pod, 如删除集群某一批次的节点时 tag 比较有用。
 
-> 目前还暂不支持国内服务器直接进行部署, 如果不使用镜像方式部署，则部署时镜像基于 `k8s.gcr.io` 地址进行下载, 国内访问时可能会被墙。受影响的应用 `etcd`、`kube-apiserver-amd64`、`kube-controller-manager`、`kube-scheduler`、`kube-proxy`、`pause` 。
+> 目前还暂不支持国内服务器直接进行部署, 如果不使用镜像方式部署, 则部署时镜像基于 `k8s.gcr.io` 地址进行下载, 国内访问时可能会被墙。受影响的应用 `etcd`、`kube-apiserver-amd64`、`kube-controller-manager`、`kube-scheduler`、`kube-proxy`、`pause` 。
 
 > 可修改参数 `k8s_cluster_component_registry` 值为 `slzcc` 自定义镜像仓库地址, 在使用自定义镜像仓库时, 请确保已经执行过 `script/PublishK8sRegistryImages.sh` 脚本。(可支持的镜像版本参阅 [slzcc/kubernetes](https://hub.docker.com/r/slzcc/kubernetes))
 
@@ -84,8 +84,11 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [x] 修复 kubelet 重新加入集群时, 证书无效的问题, v1.15.0.3 中修复。
 - [x] 修复添加 Master 节点时, HaProxy 没有及时更新新节点问题, v1.15.0.5 中修复。
 - [x] 修复 Add Etcd 节点时, 没有更新 Kubu apiServer 和 Calico、Etcd 服务的配置信息, v1.15.0.6 中修复。
-- [x] 修复 Proxy 中使用 Keepalived 通过 VIP 访问 nodePort 模式的服务时流量不可达的问题，v1.15.3.5 中修复。
-- [x] 修复 Kubelet 中的 Cgroup 与 Docker 版本兼容报错的问题，v1.15.3.6 中修复。
+- [x] 修复 Proxy 中使用 Keepalived 通过 VIP 访问 nodePort 模式的服务时流量不可达的问题, v1.15.3.5 中修复。
+- [x] 修复 Kubelet 中的 Cgroup 与 Docker 版本兼容报错的问题, v1.15.3.6 中修复。
+- [x] 修复 `镜像` 部署模式中重复导入镜像/二进制文件的问题, v1.16.1.3 中修复。
+- [x] 修复 `docker` 安装时, 如果本地有集群外的服务(daemon.json 文件一致), 会停止服务的问题, v1.16.1.3 中修复。
+- [x] 修复 v1.16.x 中取消 `extensions/v1beta1` apiVersion 的问题, v1.16.1.1 中修复。
 
 ## 获取对应的版本
 切记, 如需要安装哪个大版本的集群, 就获取相应的 tag :
@@ -401,7 +404,7 @@ $ ansible-playbook -i nodes etcd_certificate_rotation.yml -vv
 ```
 
 ## Ansible in Docker
-在 Docker 内使用 Ansible 进行部署，使用时挂载本地的 nodes 文件和 group_vars/all.yml 文件进行部署。
+在 Docker 内使用 Ansible 进行部署, 使用时挂载本地的 nodes 文件和 group_vars/all.yml 文件进行部署。
 
 部署安装: (版本请自己根据需求查看 [slzcc/crane](https://cloud.docker.com/u/slzcc/repository/docker/slzcc/crane) 获取)
 ```
