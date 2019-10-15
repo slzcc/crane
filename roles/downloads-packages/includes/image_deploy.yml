@@ -3,38 +3,43 @@
 ## ********************************************************************************************************************************
 # Check kubernetes image
 - name: Check kubernetes image
-  shell: 'for i in k8s.gcr.io/kube-proxy k8s.gcr.io/kube-apiserver-amd64 k8s.gcr.io/kube-controller-manager k8s.gcr.io/kube-scheduler haproxy calico/node calico/cni calico/kube-controllers coredns/coredns k8s.gcr.io/etcd k8s.gcr.io/pause slzcc/keepalived; do if [ ! `docker images --filter=reference="$i*" -aq | wc -l` -ge 1 ] ;then exit 1 ; fi ; done'
+  shell: 'for i in k8s.gcr.io/kube-proxy k8s.gcr.io/kube-apiserver-amd64 k8s.gcr.io/kube-controller-manager k8s.gcr.io/kube-scheduler haproxy calico/node calico/cni calico/kube-controllers coredns/coredns k8s.gcr.io/etcd k8s.gcr.io/pause slzcc/keepalived; do if [ ! `docker images --filter=reference="$i*" -aq | wc -l` -ge 1 ] ;then echo 1 > /dev/stderr && exit 1 ; fi ; done'
   register: result
+  ignore_errors: true
+
+- name: Check Binary files
+  shell: 'for i in cfssl cfssljson kubelet kubectl; do if [ "`ls {{ kubernetes_ctl_path }}$i | wc -l`" -eq 0 ] ; then echo 1 > /dev/stderr && exit 1; fi ; done'
+  register: check_binary_files
   ignore_errors: true
 
 - name: Pull the Image
   shell: "docker run --name import-kubernetes-temporary -d -v /var/run/docker.sock:/var/run/docker.sock:ro {{ k8s_image_deploy_repo }}:{{ k8s_version }} sleep 1234567"
-  when: result.stderr
+  when: result is failed or check_binary_files is failed
 
 - name: Export the Image
   shell: 'until docker exec -i import-kubernetes-temporary bash /docker-image-import.sh ; do >&2 echo "Starting..." && sleep 1 ; done'
-  when: result.stderr
+  when: result is failed or check_binary_files is failed
 
 - name: Export the cfssl
   shell: "docker cp import-kubernetes-temporary:/cfssl {{ kubernetes_ctl_path }}"
-  when: result.stderr
+  when: (result is failed or check_binary_files is failed) and is_kube_master
 
 - name: Export the cfssljson
   shell: "docker cp import-kubernetes-temporary:/cfssljson {{ kubernetes_ctl_path }}"
-  when: result.stderr
+  when: (result is failed or check_binary_files is failed) and is_kube_master
 
 - name: Export the Kubelet
   shell: "docker cp import-kubernetes-temporary:/kubernetes/node/bin/kubelet {{ kubernetes_ctl_path }}"
-  when: result.stderr
+  when: result is failed or check_binary_files is failed
 
 - name: Export the Kubectl
   shell: "docker cp import-kubernetes-temporary:/kubernetes/node/bin/kubectl {{ kubernetes_ctl_path }}"
-  when: result.stderr
+  when: result is failed or check_binary_files is failed
 
 - name: Export the CNI
   shell: "docker cp import-kubernetes-temporary:/cni/. {{ kubernetes_cni_dirs }}"
-  when: result.stderr
+  when: result is failed or check_binary_files is failed
 
 - name: Clean Temporary Container
   shell: "docker rm -f import-kubernetes-temporary"
-  when: result.stderr
+  when: result is failed or check_binary_files is failed
