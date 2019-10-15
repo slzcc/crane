@@ -416,6 +416,7 @@ $ docker run --rm -i \
          -i nodes main.yml -vv
 ```
 > ~~切记！不要在任何 Master 或者 Node 节点上使用 Ansible in Docker 会造成 Dockerd 被重启导致服务中断！~~
+
 > 如果实例上的 daemon.json 与部署的文件一致, 则不会导致 DockerD 重启, 可以在任意节点上使用 Ansible in Docker.
 
 ---
