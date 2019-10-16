@@ -26,6 +26,10 @@ spec:
       value: "6443"
     - name: VRID
       value: "53"
+    volumeMounts:
+    - mountPath: /usr/share/zoneinfo
+      name: usr-local-timezone
+      readOnly: true
     resources:
       requests:
         cpu: 100m
@@ -34,3 +38,11 @@ spec:
       capabilities:
         add:
         - NET_ADMIN
+    env:
+    - name: TZ
+      value: "{{ time_location }}"
+  volumes:
+  - hostPath:
+      path: /usr/share/zoneinfo
+      type: DirectoryOrCreate
+    name: usr-local-timezone

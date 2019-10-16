@@ -32,6 +32,9 @@ spec:
     resources:
       requests:
         cpu: 100m
+    env:
+    - name: TZ
+      value: "{{ time_location }}"
     volumeMounts:
     - mountPath: {{ kubernetes_etc_dirs }}pki
       name: k8s-certs
@@ -39,10 +42,14 @@ spec:
     - mountPath: {{ kubernetes_etc_dirs }}scheduler.conf
       name: kubeconfig
       readOnly: true
-    env:
-    - name: TZ
-      value: "{{ time_location }}"
+    - mountPath: /usr/share/zoneinfo
+      name: usr-local-timezone
+      readOnly: true
   volumes:
+  - hostPath:
+      path: /usr/share/zoneinfo
+      type: DirectoryOrCreate
+    name: usr-local-timezone
   - hostPath:
       path: {{ kubernetes_etc_dirs }}pki
       type: DirectoryOrCreate
