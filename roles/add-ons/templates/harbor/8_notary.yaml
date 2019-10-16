@@ -1,0 +1,238 @@
+---
+# Shell: |-
+
+# cat > server.json << EOF
+# {
+#   "server": {
+#     "http_addr": ":4443"
+#   },
+#   "trust_service": {
+#     "type": "remote",
+#     "hostname": "release-name-harbor-notary-signer",
+#     "port": "7899",
+#     "tls_ca_file": "/etc/ssl/notary/ca.crt",
+#     "key_algorithm": "ecdsa"
+#   },
+#   "logging": {
+#     "level": "debug"
+#   },
+#   "storage": {
+#     "backend": "postgres",
+#     "db_url": "postgres://postgres:changeit@release-name-harbor-database:5432/notaryserver?sslmode=disable"
+#   },
+#   "auth": {
+#     "type": "token",
+#     "options": {
+#       "realm": "https://harbor.shileizcc.com/service/token",
+#       "service": "harbor-notary",
+#       "issuer": "harbor-token-issuer",
+#       "rootcertbundle": "/root.crt"
+#     }
+#   }
+# } 
+# EOF
+
+# cat > signer.json <<EOF
+# {
+#   "server": {
+#     "grpc_addr": ":7899",
+#     "tls_cert_file": "/etc/ssl/notary/tls.crt",
+#     "tls_key_file": "/etc/ssl/notary/tls.key"
+#   },
+#   "logging": {
+#     "level": "debug"
+#   },
+#   "storage": {
+#     "backend": "postgres",
+#     "db_url": "postgres://postgres:changeit@release-name-harbor-database:5432/notarysigner?sslmode=disable",
+#     "default_alias": "defaultalias"
+#   }
+# }
+# EOF
+
+# Shell: kubectl create secret generic -n harbor release-name-harbor-notary-server --from-file=tls.crt --from-file=tls.key --from-file=ca.crt --from-file=server.json --from-file=signer.json
+# Shell: kubectl label secret -n harbor release-name-harbor-notary-server heritage=Tiller release=release-name chart=harbor app=harbor 
+
+# Source: harbor/templates/notary/notary-secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: release-name-harbor-notary-server
+  labels:
+    heritage: Tiller
+    release: release-name
+    chart: harbor
+    app: "harbor"
+    component: notary
+type: Opaque
+data:
+  tls.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVHVENDQXdHZ0F3SUJBZ0lVYnlxcWNqWnhHRisySnM4S1U0WVRHbTNTTlhnd0RRWUpLb1pJaHZjTkFRRUwKQlFBd2FURUxNQWtHQTFVRUJoTUNRMDR4RURBT0JnTlZCQWdUQjBKbGFVcHBibWN4RURBT0JnTlZCQWNUQjBKbAphVXBwYm1jeEVUQVBCZ05WQkFvVENGcG9ZVzVuV1hWbE1Rd3dDZ1lEVlFRTEV3TlBVRk14RlRBVEJnTlZCQU1UCkRIcG9ZVzVuZVhWbExtTnZiVEFlRncweE9UQTRNamt3T1RFd01EQmFGdzB5T1RBNE1qWXdPVEV3TURCYU1Ic3gKQ3pBSkJnTlZCQVlUQWtOT01SQXdEZ1lEVlFRSUV3ZENaV2xLYVc1bk1SQXdEZ1lEVlFRSEV3ZENaV2xLYVc1bgpNUk13RVFZRFZRUUtFd3BMZFdKbGNtNWxkR1Z6TVJvd0dBWURWUVFMRXhGTGRXSmxjbTVsZEdWekxXMWhiblZoCmJERVhNQlVHQTFVRUF4TU9hM1ZpWlMxaGNHbHpaWEoyWlhJd2dnRWlNQTBHQ1NxR1NJYjNEUUVCQVFVQUE0SUIKRHdBd2dnRUtBb0lCQVFDd1llMXlRTWd2U0UrSm1NNW5nb0ZESDM3U1g3QTE3am5HMDhrV2s5TytJeEVVcTFSZwpwQ0lKbVc0d2taSHVybnJ6dk5DTTFnWVNuVnhuMDhiRExzQmNSRW9UUzJzWnIwdkFPSFJpbnMrSW1TeVRXUWJqCk1PVTlla2FnaEtWUXk4REF4Y1F4T0NmTW9PTEk2NWFlcVcvUXdiKy80WlY3NzcyRWNVd2Y2SkJJV25vdUJhbGsKdWVkR3hOUWFjMnUyRmV2NHBYb2lEYkszNlV2alRMdWVsNXdhWUQ5SndEa3U3WkJMbDVjdUJEdnFBOHJSZ3RmbwppU0dCZzZnWDN4UHFGSDRVQm9qQ1EvSVd3OW03Vi91bjJXMDFqQXFuNGw0bzNmMWRPaVJ2VXdwZFlXLysvanZ5Ci94Nm5PVllNMnlnSUpFcjBUQ2pnZ2cwN21pdnlObHpuVmxjNUFnTUJBQUdqZ2FZd2dhTXdEZ1lEVlIwUEFRSC8KQkFRREFnV2dNQjBHQTFVZEpRUVdNQlFHQ0NzR0FRVUZCd01CQmdnckJnRUZCUWNEQWpBTUJnTlZIUk1CQWY4RQpBakFBTUIwR0ExVWREZ1FXQkJUWEt1dFF4cFpjb250bkJyU1VKenFJaEJtc3hqQWZCZ05WSFNNRUdEQVdnQlRkCkNua0FZNS9ETWhwTFVqa2IyYzdxLzBOR0pqQWtCZ05WSFJFRUhUQWJnaE5vWVhKaWIzSXVlbWhoYm1kNWRXVXUKWTI5dGh3UUtaRlkzTUEwR0NTcUdTSWIzRFFFQkN3VUFBNElCQVFDQzk4ZEFjWEdlRi8xT3p0a05Dcm9QemFONwpaSU5rQTNvcFZMRlB3Tm8yeXM4SmE4MW5wNFhUR3ZOSG00SFpQQkRoQ1BEUnVoWEtJWGZKeUNiOVpROWdCZ2EyCmp1R3paRk5VSWRZS2NpZ05qa2c0UDJpcWRuUHdrMFBsaStTQXFHTlAxWGVvNzM2bXJzek01bEFkVHVHSnRaSm0KUm1lTmw4bHZ0RDdRNjdjSkN5Q2RERGFUK3o1N1JKWU9wcHFsRnl0aTdpWk8rN2Z0c3F2VnBsa0t5VnNVc0tYRApFbjhaRmFQdENVNXBHalNWRVpJM0lHMmY0cTQ4VnVHcTBKR0k5ZmhPR1hKTkF2MmdxdDBRalFlV3pHWVFEVDluCmVuOUszVy9zcVZlNGErejlid1VvR2pYRUlBYkQ0OTFzVnQ1REtHTlE1R3JkUk9idVVBNEkxTWpRMnJueQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+  tls.key: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcEFJQkFBS0NBUUVBc0dIdGNrRElMMGhQaVpqT1o0S0JReDkrMGwrd05lNDV4dFBKRnBQVHZpTVJGS3RVCllLUWlDWmx1TUpHUjdxNTY4N3pRak5ZR0VwMWNaOVBHd3k3QVhFUktFMHRyR2E5THdEaDBZcDdQaUprc2sxa0cKNHpEbFBYcEdvSVNsVU12QXdNWEVNVGduektEaXlPdVducWx2ME1HL3YrR1ZlKys5aEhGTUgraVFTRnA2TGdXcApaTG5uUnNUVUduTnJ0aFhyK0tWNklnMnl0K2xMNDB5N25wZWNHbUEvU2NBNUx1MlFTNWVYTGdRNzZnUEswWUxYCjZJa2hnWU9vRjk4VDZoUitGQWFJd2tQeUZzUFp1MWY3cDlsdE5Zd0twK0plS04zOVhUb2tiMU1LWFdGdi92NDcKOHY4ZXB6bFdETnNvQ0NSSzlFd280SUlOTzVvcjhqWmM1MVpYT1FJREFRQUJBb0lCQVFDSnhjUktKVTM0bU52LwoxNHNLRVVkVW5lcGErd0ZSN3VYVVo2TS83bkpMcDJwMUlhckQzaEQwUEpOMGZwQmx4b1lsa3N1MzVvbFJ5dmJkCjV1N3ZrTG9TbUFqZ2IxMlY3M1lWREVQa3NMWGN0Z0M2aTZTMG00SEVkcGxxVXBJcXZTeXZwd3FyZzNpYS91U0cKR25kSk1ZSTBwdEpYV0NhQ2EyNDJZS1VjbTNUdi9laExYbG5icnRENUxUbWpweXMwdGRway8ydVdqcyswMnNoWgowUnNidER0V3ZHZXZGMUtDbGl5cE96bDNYekN5a0UxQTVtT2h2WWhuc2lhV3d6d3NITit5Nm1JSlBHYU9OUzRQClhRMHVUMTdScEVFMHpOQytlcmIwOHJzYzcyN1ZPTVc0clBlaENZK2RqbGpjWU9NN0ZTOVF4ckxXMml3djdHVU0KWS9wcC9ZNjlBb0dCQU5JV283Q0JpS0xNbk53N3FqZG0zWnpBRk9KY0pZRnhUZWY2ODIrRmh4VlhGdE9yVVEzbQp6ZmJHQU5sblpJOHcyYWtuVjVQSXJoTDdEQjUyOXR1SFFlR2R1YUlkYzk1NkhXTmNKOUYyQStvS1BGU3BoZnhjClhudHZmaDgvR0pqMUVUUy9rbUF0SVZJMC9CNW5CL1lCbDR0cis1RDM1OWpzUEkwckZ0Q3BEVUJqQW9HQkFOYnQKbmZ5VDlJUytWazFrRWdJQmwwejJHQlFvK1BCcFBGS1JDb3MxdjNaQ2xlQnhJdUgxbEp2cEJGSjBPeUJ1Qzk5Qgp6VzFORUJTUXI1c2xwWFYzQzhnOFlUclNERzdxT0Y4bnNCV25mS2srN2ZDQ05EVU44b0ZzM1FWUXFVaWNyZmtqCmpaQVpmc0kydjdWT1pCQVZzMHhIQksxTit1bEFXRndFWk5TN01BYXpBb0dBVlVVckd6RDRMRnV3THhOb2V5UWQKUHNvWHIraUdzSXMwZTd1M29zUW5sOW5KUWhCK3pZMm9lMGpTZjJzZnZaNnVPYUhtUWUxcCtmbzdhUUlRSC9vKwpHenpSWTZOZ3JDUVVXWWZHQVpaTThHbEhJM1hMRkNySmpvQXFTTFJyWDJuWW1maEhpUkhJUEgyVTl5SUtjU2NrClEwcUl5TVpXTEExMlpqWGZCTUlZeHRFQ2dZQm9rcjZ1MlJJODBCdFBsbVFJbzl1STc2Z3hqdW5vbDF0cFZQYkwKV3dCb091ZVBoNXlRVXB2VzdCNVZQQVpVdGhhQ3J4S1RuczQzSTFxOTR5aEpLZjRLbEE0K3YxcWJVTXpTeDQydQpTNHFsRW1CVkNCVDh4MmQ1djQwZWUrdVJ6K0g1K1dsMGRtTXRmZFB6RkV3dFkxR1V5RzBuSVd6MnRuOEhibi9jCjNhTDFid0tCZ1FDUjdNczVjQ3I3Tm5rQVVoS0QxNWhFMEtCUjhRNC9HSmI1RGthY1hjQkNLMGlRWFp5UERSZXcKY24xWTkza2o3bFY3VG9uT1Zaa3VmSHRhSVdIdzVCeEE4aldKS0NSTmwzd0hpbzhxRXBkTTlMRVh6YjFWWjBwSgoxZ2NZUXQ3emZVL3Z1eTF2bENqV1d1ZFBSL3NSY1NMZ0lNV0ZwLzhiUGsyUXZlOU9kU2NRNEE9PQotLS0tLUVORCBSU0EgUFJJVkFURSBLRVktLS0tLQo=
+  ca.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUR4akNDQXE2Z0F3SUJBZ0lVZTdjSXA5Q1Z5TU9LTUpOcDYrTUhwOVdER1Y0d0RRWUpLb1pJaHZjTkFRRUwKQlFBd2FURUxNQWtHQTFVRUJoTUNRMDR4RURBT0JnTlZCQWdUQjBKbGFVcHBibWN4RURBT0JnTlZCQWNUQjBKbAphVXBwYm1jeEVUQVBCZ05WQkFvVENGcG9ZVzVuV1hWbE1Rd3dDZ1lEVlFRTEV3TlBVRk14RlRBVEJnTlZCQU1UCkRIcG9ZVzVuZVhWbExtTnZiVEFlRncweE9UQTRNamt3T1RBNE1EQmFGdzB5TkRBNE1qY3dPVEE0TURCYU1Ha3gKQ3pBSkJnTlZCQVlUQWtOT01SQXdEZ1lEVlFRSUV3ZENaV2xLYVc1bk1SQXdEZ1lEVlFRSEV3ZENaV2xLYVc1bgpNUkV3RHdZRFZRUUtFd2hhYUdGdVoxbDFaVEVNTUFvR0ExVUVDeE1EVDFCVE1SVXdFd1lEVlFRREV3eDZhR0Z1ClozbDFaUzVqYjIwd2dnRWlNQTBHQ1NxR1NJYjNEUUVCQVFVQUE0SUJEd0F3Z2dFS0FvSUJBUURocDFYaURHWjcKaytBcXlxeDZEMXRXNnJoaGR1V3lsbW15VGw3dkJWU24xbVVtZmJvQUhDeU5hWTJzem9qeXc5WTc1K0tMMldqSApXclFLVjA4Qjl6VGZiVnNMWHhLc25VWGIvaHYvZEVRM1FQTXU2L2NsbWpQU3lVdHNiNnIwQ3dHQzVnRXZDbXZaClVPd28yVkVhVGYvZW1NUnVRaktBWmNRWmV5eXd1RXI5NWNUM21ZMHNhWmt3dklsZDkrZmFBZHVlNDZjZnhEcFIKVkd0OEJJT296NGlnbmQ1M0JRVjlJZkRWR0lIbEI2ZkpxR3d1eUhvd0NiUHoyV1Npa1d4WXUzeTFVeGQ2TDB6dwozMkNlZFFCSUEyTUtRYzRmMXVYY3h1VWxTMDFRdXdOUHlhelFSa2pvNVNDYW1ydENMbzBFZUxmRXJRMHQyZzdxCkNMbkxVZGUvOXpIN0FnTUJBQUdqWmpCa01BNEdBMVVkRHdFQi93UUVBd0lCQmpBU0JnTlZIUk1CQWY4RUNEQUcKQVFIL0FnRUNNQjBHQTFVZERnUVdCQlRkQ25rQVk1L0RNaHBMVWprYjJjN3EvME5HSmpBZkJnTlZIU01FR0RBVwpnQlRkQ25rQVk1L0RNaHBMVWprYjJjN3EvME5HSmpBTkJna3Foa2lHOXcwQkFRc0ZBQU9DQVFFQXM5UTgxWTlRCnZmdE1wckdYakIxTmltYWtVeVZ4TVlKbFpJY29GSHBWSzNiT3FXYnNwSERDcUdjdXlHclQrVjNhL0RtSEZtdlAKT3c1OHExcmV6SVVmSnFMN3pqeFRsZzdjTTdaSGd3Uyt6NERVQm8xOGUxYm9vMnQ2SStyT21aVkxUb2lDM3ZsMApQWDlEVnk4MC9teDZuUlo3c2tCNFREeWs1YjNuVnVDdFAxSXI4V1E3ZGEwOTA0ejNKczRDeXg2NXVWUHFCajMxCnRxQ2FDZGtoOUtGdEgyMWcwTU9HYXlMc3Blb3dZTUk5RHhRd3hybHBHcEFISlo2NmwwL3JxRzFST2ZCOG8yREQKQTdYcWhzaGIzS0VSUS9EdGNoT3RyYkN0OUQ4dTJwRi9NeDRPdjczVkV3c2d6eUQ1bG1kTWtvVWN0OEU0eXRlbQp0SDE5WnJvU2h1ZW50dz09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+  server.json: ewogICJzZXJ2ZXIiOiB7CiAgICAiaHR0cF9hZGRyIjogIjo0NDQzIgogIH0sCiAgInRydXN0X3NlcnZpY2UiOiB7CiAgICAidHlwZSI6ICJyZW1vdGUiLAogICAgImhvc3RuYW1lIjogInJlbGVhc2UtbmFtZS1oYXJib3Itbm90YXJ5LXNpZ25lciIsCiAgICAicG9ydCI6ICI3ODk5IiwKICAgICJ0bHNfY2FfZmlsZSI6ICIvZXRjL3NzbC9ub3RhcnkvY2EuY3J0IiwKICAgICJrZXlfYWxnb3JpdGhtIjogImVjZHNhIgogIH0sCiAgImxvZ2dpbmciOiB7CiAgICAibGV2ZWwiOiAiZGVidWciCiAgfSwKICAic3RvcmFnZSI6IHsKICAgICJiYWNrZW5kIjogInBvc3RncmVzIiwKICAgICJkYl91cmwiOiAicG9zdGdyZXM6Ly9wb3N0Z3JlczpjaGFuZ2VpdEByZWxlYXNlLW5hbWUtaGFyYm9yLWRhdGFiYXNlOjU0MzIvbm90YXJ5c2VydmVyP3NzbG1vZGU9ZGlzYWJsZSIKICB9LAogICJhdXRoIjogewogICAgInR5cGUiOiAidG9rZW4iLAogICAgIm9wdGlvbnMiOiB7CiAgICAgICJyZWFsbSI6ICJodHRwczovL2hhcmJvci56aGFuZ3l1ZS5jb20vc2VydmljZS90b2tlbiIsCiAgICAgICJzZXJ2aWNlIjogImhhcmJvci1ub3RhcnkiLAogICAgICAiaXNzdWVyIjogImhhcmJvci10b2tlbi1pc3N1ZXIiLAogICAgICAicm9vdGNlcnRidW5kbGUiOiAiL3Jvb3QuY3J0IgogICAgfQogIH0KfSAK
+  signer.json: ewogICJzZXJ2ZXIiOiB7CiAgICAiZ3JwY19hZGRyIjogIjo3ODk5IiwKICAgICJ0bHNfY2VydF9maWxlIjogIi9ldGMvc3NsL25vdGFyeS90bHMuY3J0IiwKICAgICJ0bHNfa2V5X2ZpbGUiOiAiL2V0Yy9zc2wvbm90YXJ5L3Rscy5rZXkiCiAgfSwKICAibG9nZ2luZyI6IHsKICAgICJsZXZlbCI6ICJkZWJ1ZyIKICB9LAogICJzdG9yYWdlIjogewogICAgImJhY2tlbmQiOiAicG9zdGdyZXMiLAogICAgImRiX3VybCI6ICJwb3N0Z3JlczovL3Bvc3RncmVzOmNoYW5nZWl0QHJlbGVhc2UtbmFtZS1oYXJib3ItZGF0YWJhc2U6NTQzMi9ub3RhcnlzaWduZXI/c3NsbW9kZT1kaXNhYmxlIiwKICAgICJkZWZhdWx0X2FsaWFzIjogImRlZmF1bHRhbGlhcyIKICB9Cn0=
+
+---
+# Source: harbor/templates/notary/notary-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: release-name-harbor-notary-server
+  labels:
+    heritage: Tiller
+    release: release-name
+    chart: harbor
+    app: "harbor"
+spec:
+  ports:
+  - port: 4443
+  selector:
+    release: release-name
+    app: "harbor"
+    component: notary-server
+
+---
+# Source: harbor/templates/notary/notary-server.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: release-name-harbor-notary-server
+  labels:
+    heritage: Tiller
+    release: release-name
+    chart: harbor
+    app: "harbor"
+    component: notary-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      release: release-name
+      app: "harbor"
+      component: notary-server
+  template:
+    metadata:
+      labels:
+        heritage: Tiller
+        release: release-name
+        chart: harbor
+        app: "harbor"
+        component: notary-server
+      annotations:
+        checksum/secret: c0c411212fe00f3ea7bb265a212dc9f37f7b4dc58c40cb767dd0a5484269cdad
+        checksum/secret-core: 3f43764995a32b20d8ac029d57d787f61059b9d5f23d4a43f9ecce75616d13e7
+    spec:
+      securityContext:
+        fsGroup: 10000
+      imagePullSecrets:
+        - name: harbor-registry-secret
+      containers:
+      - name: notary-server
+        image: slzcc/notary-server-photon:v0.6.1-v1.8.2
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: MIGRATIONS_PATH
+          value: migrations/server/postgresql
+        - name: DB_URL
+          value: postgres://postgres:changeit@release-name-harbor-database:5432/notaryserver?sslmode=disable
+        volumeMounts:
+        - name: config
+          mountPath: /etc/notary/server-config.postgres.json
+          subPath: server.json
+        - name: token-service-certificate
+          mountPath: /root.crt
+          subPath: tls.crt
+        - name: signer-certificate
+          mountPath: /etc/ssl/notary/ca.crt
+          subPath: ca.crt
+      volumes:
+      - name: config
+        secret:
+          secretName: "release-name-harbor-notary-server"
+      - name: token-service-certificate
+        secret:
+          secretName: release-name-harbor-core
+      - name: signer-certificate
+        secret:
+          secretName: release-name-harbor-notary-server
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: release-name-harbor-notary-signer
+  labels:
+    heritage: Tiller
+    release: release-name
+    chart: harbor
+    app: "harbor"
+spec:
+  ports:
+  - port: 7899
+  selector:
+    release: release-name
+    app: "harbor"
+    component: notary-signer
+
+---
+# Source: harbor/templates/notary/notary-signer.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: release-name-harbor-notary-signer
+  labels:
+    heritage: Tiller
+    release: release-name
+    chart: harbor
+    app: "harbor"
+    component: notary-signer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      release: release-name
+      app: "harbor"
+      component: notary-signer
+  template:
+    metadata:
+      labels:
+        heritage: Tiller
+        release: release-name
+        chart: harbor
+        app: "harbor"
+        component: notary-signer
+      annotations:
+        checksum/secret: bdc2bf75d75b06dcdf960e28c81a962b36087032ad11aeb62bea739bbee153f4
+    spec:
+      securityContext:
+        fsGroup: 10000
+      imagePullSecrets:
+        - name: harbor-registry-secret
+      containers:
+      - name: notary-signer
+        image: slzcc/notary-signer-photon:v0.6.1-v1.8.2
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: MIGRATIONS_PATH
+          value: migrations/signer/postgresql
+        - name: DB_URL
+          value: postgres://postgres:changeit@release-name-harbor-database:5432/notarysigner?sslmode=disable
+        - name: NOTARY_SIGNER_DEFAULTALIAS
+          value: defaultalias
+        volumeMounts:
+        - name: config
+          mountPath: /etc/notary/signer-config.postgres.json
+          subPath: signer.json
+        - name: signer-certificate
+          mountPath: /etc/ssl/notary/tls.crt
+          subPath: tls.crt
+        - name: signer-certificate
+          mountPath: /etc/ssl/notary/tls.key
+          subPath: tls.key
+      volumes:
+      - name: config
+        secret:
+          secretName: "release-name-harbor-notary-server"
+      - name: signer-certificate
+        secret:
+          secretName: release-name-harbor-notary-server

@@ -1,0 +1,67 @@
+---
+# Source: harbor/templates/portal/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: "release-name-harbor-portal"
+  labels:
+    heritage: Tiller
+    release: release-name
+    chart: harbor
+    app: "harbor"
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    release: release-name
+    app: "harbor"
+    component: portal
+
+---
+# Source: harbor/templates/portal/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "release-name-harbor-portal"
+  labels:
+    heritage: Tiller
+    release: release-name
+    chart: harbor
+    app: "harbor"
+    component: portal
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      release: release-name
+      app: "harbor"
+      component: portal
+  template:
+    metadata:
+      labels:
+        release: release-name
+        app: "harbor"
+        component: portal
+      annotations:
+    spec:
+      imagePullSecrets:
+        - name: harbor-registry-secret
+      containers:
+      - name: portal
+        image: slzcc/harbor-portal:v1.8.2
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 1
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 1
+          periodSeconds: 10
+        ports:
+        - containerPort: 80

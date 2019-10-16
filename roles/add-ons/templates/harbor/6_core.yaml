@@ -1,0 +1,211 @@
+---
+# Shell: kubectl create secret generic -n harbor release-name-harbor-core --from-literal=secretKey=not-a-secure-key --from-literal=secret=90USoEBlROrSey6F --from-literal=HARBOR_ADMIN_PASSWORD=Harbor12345 --from-literal=POSTGRESQL_PASSWORD=changeit --from-literal=CLAIR_DB_PASSWORD=changeit --from-file=tls.crt --from-file=tls.key
+# Shell: kubectl label secret -n harbor release-name-harbor-core heritage=Tiller release=release-name chart=harbor app=harbor 
+# Source: harbor/templates/core/core-secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: release-name-harbor-core
+  labels:
+    heritage: Tiller
+    release: release-name
+    chart: harbor
+    app: "harbor"
+type: Opaque
+data:
+  secretKey: "bm90LWEtc2VjdXJlLWtleQ=="
+  secret: "OTBVU29FQmxST3JTZXk2Rg=="
+  tls.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVHVENDQXdHZ0F3SUJBZ0lVYnlxcWNqWnhHRisySnM4S1U0WVRHbTNTTlhnd0RRWUpLb1pJaHZjTkFRRUwKQlFBd2FURUxNQWtHQTFVRUJoTUNRMDR4RURBT0JnTlZCQWdUQjBKbGFVcHBibWN4RURBT0JnTlZCQWNUQjBKbAphVXBwYm1jeEVUQVBCZ05WQkFvVENGcG9ZVzVuV1hWbE1Rd3dDZ1lEVlFRTEV3TlBVRk14RlRBVEJnTlZCQU1UCkRIcG9ZVzVuZVhWbExtTnZiVEFlRncweE9UQTRNamt3T1RFd01EQmFGdzB5T1RBNE1qWXdPVEV3TURCYU1Ic3gKQ3pBSkJnTlZCQVlUQWtOT01SQXdEZ1lEVlFRSUV3ZENaV2xLYVc1bk1SQXdEZ1lEVlFRSEV3ZENaV2xLYVc1bgpNUk13RVFZRFZRUUtFd3BMZFdKbGNtNWxkR1Z6TVJvd0dBWURWUVFMRXhGTGRXSmxjbTVsZEdWekxXMWhiblZoCmJERVhNQlVHQTFVRUF4TU9hM1ZpWlMxaGNHbHpaWEoyWlhJd2dnRWlNQTBHQ1NxR1NJYjNEUUVCQVFVQUE0SUIKRHdBd2dnRUtBb0lCQVFDd1llMXlRTWd2U0UrSm1NNW5nb0ZESDM3U1g3QTE3am5HMDhrV2s5TytJeEVVcTFSZwpwQ0lKbVc0d2taSHVybnJ6dk5DTTFnWVNuVnhuMDhiRExzQmNSRW9UUzJzWnIwdkFPSFJpbnMrSW1TeVRXUWJqCk1PVTlla2FnaEtWUXk4REF4Y1F4T0NmTW9PTEk2NWFlcVcvUXdiKy80WlY3NzcyRWNVd2Y2SkJJV25vdUJhbGsKdWVkR3hOUWFjMnUyRmV2NHBYb2lEYkszNlV2alRMdWVsNXdhWUQ5SndEa3U3WkJMbDVjdUJEdnFBOHJSZ3RmbwppU0dCZzZnWDN4UHFGSDRVQm9qQ1EvSVd3OW03Vi91bjJXMDFqQXFuNGw0bzNmMWRPaVJ2VXdwZFlXLysvanZ5Ci94Nm5PVllNMnlnSUpFcjBUQ2pnZ2cwN21pdnlObHpuVmxjNUFnTUJBQUdqZ2FZd2dhTXdEZ1lEVlIwUEFRSC8KQkFRREFnV2dNQjBHQTFVZEpRUVdNQlFHQ0NzR0FRVUZCd01CQmdnckJnRUZCUWNEQWpBTUJnTlZIUk1CQWY4RQpBakFBTUIwR0ExVWREZ1FXQkJUWEt1dFF4cFpjb250bkJyU1VKenFJaEJtc3hqQWZCZ05WSFNNRUdEQVdnQlRkCkNua0FZNS9ETWhwTFVqa2IyYzdxLzBOR0pqQWtCZ05WSFJFRUhUQWJnaE5vWVhKaWIzSXVlbWhoYm1kNWRXVXUKWTI5dGh3UUtaRlkzTUEwR0NTcUdTSWIzRFFFQkN3VUFBNElCQVFDQzk4ZEFjWEdlRi8xT3p0a05Dcm9QemFONwpaSU5rQTNvcFZMRlB3Tm8yeXM4SmE4MW5wNFhUR3ZOSG00SFpQQkRoQ1BEUnVoWEtJWGZKeUNiOVpROWdCZ2EyCmp1R3paRk5VSWRZS2NpZ05qa2c0UDJpcWRuUHdrMFBsaStTQXFHTlAxWGVvNzM2bXJzek01bEFkVHVHSnRaSm0KUm1lTmw4bHZ0RDdRNjdjSkN5Q2RERGFUK3o1N1JKWU9wcHFsRnl0aTdpWk8rN2Z0c3F2VnBsa0t5VnNVc0tYRApFbjhaRmFQdENVNXBHalNWRVpJM0lHMmY0cTQ4VnVHcTBKR0k5ZmhPR1hKTkF2MmdxdDBRalFlV3pHWVFEVDluCmVuOUszVy9zcVZlNGErejlid1VvR2pYRUlBYkQ0OTFzVnQ1REtHTlE1R3JkUk9idVVBNEkxTWpRMnJueQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+  tls.key: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcEFJQkFBS0NBUUVBc0dIdGNrRElMMGhQaVpqT1o0S0JReDkrMGwrd05lNDV4dFBKRnBQVHZpTVJGS3RVCllLUWlDWmx1TUpHUjdxNTY4N3pRak5ZR0VwMWNaOVBHd3k3QVhFUktFMHRyR2E5THdEaDBZcDdQaUprc2sxa0cKNHpEbFBYcEdvSVNsVU12QXdNWEVNVGduektEaXlPdVducWx2ME1HL3YrR1ZlKys5aEhGTUgraVFTRnA2TGdXcApaTG5uUnNUVUduTnJ0aFhyK0tWNklnMnl0K2xMNDB5N25wZWNHbUEvU2NBNUx1MlFTNWVYTGdRNzZnUEswWUxYCjZJa2hnWU9vRjk4VDZoUitGQWFJd2tQeUZzUFp1MWY3cDlsdE5Zd0twK0plS04zOVhUb2tiMU1LWFdGdi92NDcKOHY4ZXB6bFdETnNvQ0NSSzlFd280SUlOTzVvcjhqWmM1MVpYT1FJREFRQUJBb0lCQVFDSnhjUktKVTM0bU52LwoxNHNLRVVkVW5lcGErd0ZSN3VYVVo2TS83bkpMcDJwMUlhckQzaEQwUEpOMGZwQmx4b1lsa3N1MzVvbFJ5dmJkCjV1N3ZrTG9TbUFqZ2IxMlY3M1lWREVQa3NMWGN0Z0M2aTZTMG00SEVkcGxxVXBJcXZTeXZwd3FyZzNpYS91U0cKR25kSk1ZSTBwdEpYV0NhQ2EyNDJZS1VjbTNUdi9laExYbG5icnRENUxUbWpweXMwdGRway8ydVdqcyswMnNoWgowUnNidER0V3ZHZXZGMUtDbGl5cE96bDNYekN5a0UxQTVtT2h2WWhuc2lhV3d6d3NITit5Nm1JSlBHYU9OUzRQClhRMHVUMTdScEVFMHpOQytlcmIwOHJzYzcyN1ZPTVc0clBlaENZK2RqbGpjWU9NN0ZTOVF4ckxXMml3djdHVU0KWS9wcC9ZNjlBb0dCQU5JV283Q0JpS0xNbk53N3FqZG0zWnpBRk9KY0pZRnhUZWY2ODIrRmh4VlhGdE9yVVEzbQp6ZmJHQU5sblpJOHcyYWtuVjVQSXJoTDdEQjUyOXR1SFFlR2R1YUlkYzk1NkhXTmNKOUYyQStvS1BGU3BoZnhjClhudHZmaDgvR0pqMUVUUy9rbUF0SVZJMC9CNW5CL1lCbDR0cis1RDM1OWpzUEkwckZ0Q3BEVUJqQW9HQkFOYnQKbmZ5VDlJUytWazFrRWdJQmwwejJHQlFvK1BCcFBGS1JDb3MxdjNaQ2xlQnhJdUgxbEp2cEJGSjBPeUJ1Qzk5Qgp6VzFORUJTUXI1c2xwWFYzQzhnOFlUclNERzdxT0Y4bnNCV25mS2srN2ZDQ05EVU44b0ZzM1FWUXFVaWNyZmtqCmpaQVpmc0kydjdWT1pCQVZzMHhIQksxTit1bEFXRndFWk5TN01BYXpBb0dBVlVVckd6RDRMRnV3THhOb2V5UWQKUHNvWHIraUdzSXMwZTd1M29zUW5sOW5KUWhCK3pZMm9lMGpTZjJzZnZaNnVPYUhtUWUxcCtmbzdhUUlRSC9vKwpHenpSWTZOZ3JDUVVXWWZHQVpaTThHbEhJM1hMRkNySmpvQXFTTFJyWDJuWW1maEhpUkhJUEgyVTl5SUtjU2NrClEwcUl5TVpXTEExMlpqWGZCTUlZeHRFQ2dZQm9rcjZ1MlJJODBCdFBsbVFJbzl1STc2Z3hqdW5vbDF0cFZQYkwKV3dCb091ZVBoNXlRVXB2VzdCNVZQQVpVdGhhQ3J4S1RuczQzSTFxOTR5aEpLZjRLbEE0K3YxcWJVTXpTeDQydQpTNHFsRW1CVkNCVDh4MmQ1djQwZWUrdVJ6K0g1K1dsMGRtTXRmZFB6RkV3dFkxR1V5RzBuSVd6MnRuOEhibi9jCjNhTDFid0tCZ1FDUjdNczVjQ3I3Tm5rQVVoS0QxNWhFMEtCUjhRNC9HSmI1RGthY1hjQkNLMGlRWFp5UERSZXcKY24xWTkza2o3bFY3VG9uT1Zaa3VmSHRhSVdIdzVCeEE4aldKS0NSTmwzd0hpbzhxRXBkTTlMRVh6YjFWWjBwSgoxZ2NZUXQ3emZVL3Z1eTF2bENqV1d1ZFBSL3NSY1NMZ0lNV0ZwLzhiUGsyUXZlOU9kU2NRNEE9PQotLS0tLUVORCBSU0EgUFJJVkFURSBLRVktLS0tLQo=
+  HARBOR_ADMIN_PASSWORD: "SGFyYm9yMTIzNDU="
+  POSTGRESQL_PASSWORD: "Y2hhbmdlaXQ="
+  CLAIR_DB_PASSWORD: "Y2hhbmdlaXQ="
+
+---
+# Source: harbor/templates/core/core-cm.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: release-name-harbor-core
+  labels:
+    heritage: Tiller
+    release: release-name
+    chart: harbor
+    app: "harbor"
+data:
+  app.conf: |+
+    appname = Harbor
+    runmode = dev
+    enablegzip = true
+
+    [dev]
+    httpport = 8080
+  DATABASE_TYPE: "postgresql"
+  POSTGRESQL_HOST: "release-name-harbor-database"
+  POSTGRESQL_PORT: "5432"
+  POSTGRESQL_USERNAME: "postgres"
+  POSTGRESQL_DATABASE: "registry"
+  POSTGRESQL_SSLMODE: "disable"
+  POSTGRESQL_MAX_IDLE_CONNS: "50"
+  POSTGRESQL_MAX_OPEN_CONNS: "100"
+  EXT_ENDPOINT: "https://harbor.shileizcc.com"
+  CORE_URL: "http://release-name-harbor-core"
+  JOBSERVICE_URL: "http://release-name-harbor-jobservice"
+  REGISTRY_URL: "http://release-name-harbor-registry:5000"
+  TOKEN_SERVICE_URL: "http://release-name-harbor-core/service/token"
+  WITH_NOTARY: "true"
+  NOTARY_URL: "http://release-name-harbor-notary-server:4443"
+  CFG_EXPIRATION: "5"
+  ADMIRAL_URL: "NA"
+  WITH_CLAIR: "true"
+  CLAIR_DB_HOST: "release-name-harbor-database"
+  CLAIR_DB_PORT: "5432"
+  CLAIR_DB_USERNAME: "postgres"
+  CLAIR_DB: "postgres"
+  CLAIR_DB_SSLMODE: "disable"
+  CLAIR_URL: "http://release-name-harbor-clair:6060"
+  REGISTRY_STORAGE_PROVIDER_NAME: "filesystem"
+  WITH_CHARTMUSEUM: "true"
+  CHART_REPOSITORY_URL: "http://release-name-harbor-chartmuseum"
+  LOG_LEVEL: "debug"
+  CONFIG_PATH: "/etc/core/app.conf"
+  SYNC_REGISTRY: "false"
+  CHART_CACHE_DRIVER: "redis"
+  _REDIS_URL: "release-name-harbor-redis:6379,100,"
+  _REDIS_URL_REG: "redis://release-name-harbor-redis:6379/2"
+  PORTAL_URL: "http://release-name-harbor-portal"
+  REGISTRYCTL_URL: "http://release-name-harbor-registry:8080"
+  CLAIR_HEALTH_CHECK_SERVER_URL: "http://release-name-harbor-clair:6061"
+  HTTP_PROXY: ""
+  HTTPS_PROXY: ""
+  NO_PROXY: "release-name-harbor-core,release-name-harbor-jobservice,release-name-harbor-database,release-name-harbor-chartmuseum,release-name-harbor-clair,release-name-harbor-notary-server,release-name-harbor-notary-signer,release-name-harbor-registry,127.0.0.1,localhost,.local,.internal"
+
+---
+# Source: harbor/templates/core/core-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: release-name-harbor-core
+  labels:
+    heritage: Tiller
+    release: release-name
+    chart: harbor
+    app: "harbor"
+spec:
+  ports:
+    - port: 80
+      targetPort: 8080
+  selector:
+    release: release-name
+    app: "harbor"
+    component: core
+
+---
+# Source: harbor/templates/core/core-dpl.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: release-name-harbor-core
+  labels:
+    heritage: Tiller
+    release: release-name
+    chart: harbor
+    app: "harbor"
+    component: core
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      release: release-name
+      app: "harbor"
+      component: core
+  template:
+    metadata:
+      labels:
+        release: release-name
+        app: "harbor"
+        component: core
+      annotations:
+        checksum/configmap: 0373a325098ed5b361361922e96600ae2be85875d2a4a9d985157017a2e832b0
+        checksum/secret: 80a7da5d8fd72242d8f013f1e072dc0fe7c87938525f1656be5041f805e702c7
+        checksum/secret-jobservice: 24dff4b3a305b02ae74e5f1e0233ce041801e9d74151f3240f7e99847a838ee4
+    spec:
+      securityContext:
+        fsGroup: 10000
+      imagePullSecrets:
+        - name: harbor-registry-secret
+      containers:
+      - name: core
+        image: slzcc/harbor-core:v1.8.2
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          httpGet:
+            path: /api/ping
+            port: 8080
+          initialDelaySeconds: 300
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /api/ping
+            port: 8080
+          initialDelaySeconds: 300
+          periodSeconds: 10
+        envFrom:
+        - configMapRef:
+            name: "release-name-harbor-core"
+        - secretRef:
+            name: "release-name-harbor-core"
+        env:
+          - name: CORE_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: release-name-harbor-core
+                key: secret
+          - name: JOBSERVICE_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: "release-name-harbor-jobservice"
+                key: secret
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: config
+          mountPath: /etc/core/app.conf
+          subPath: app.conf
+        - name: secret-key
+          mountPath: /etc/core/key
+          subPath: key
+        - name: token-service-private-key
+          mountPath: /etc/core/private_key.pem
+          subPath: tls.key
+        - name: ca-download
+          mountPath: /etc/core/ca/ca.crt
+          subPath: ca.crt
+        - name: psc
+          mountPath: /etc/core/token
+      volumes:
+      - name: config
+        configMap:
+          name: release-name-harbor-core
+          items:
+            - key: app.conf
+              path: app.conf
+      - name: secret-key
+        secret:
+          secretName: release-name-harbor-core
+          items:
+            - key: secretKey
+              path: key
+      - name: token-service-private-key
+        secret:
+          secretName: release-name-harbor-core
+      - name: ca-download
+        secret:
+          secretName: "release-name-harbor-ingress"
+          items:
+            - key: ca.crt
+              path: ca.crt
+      - name: psc
+        emptyDir: {}
+
+
