@@ -125,6 +125,8 @@ https_proxy: ""
 ## System Config
 ## ********************************************************************************************************************************
 
+# 部署的 Cluster 中 Containers 的时区, 由于是挂载宿主机 /usr/share/zoneinfo 目录解决, 所以要保证此目录的存在。
+# 如果需要设置 UTC 时区, 请设置值为: Europe/Moscow
 time_location: "Asia/Shanghai"
 
 ## Kube TLS
