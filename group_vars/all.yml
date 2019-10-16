@@ -425,6 +425,18 @@ istio_ingress_kiali_domain: 'kiali.example.com'
 istio_kiali_username: 'YWRtaW4='
 istio_kiali_password: 'YWRtaW4='
 
+# Harbor Deploy (Not Online)
+is_deploy_harbor: false
+
+# Harbor Deploy Namespace
+harbor_namespace: 'harbor'
+
+# Harbor Domain
+harbor_ingress_default_domain: 'harbor.example.com'
+harbor_ingress_notary_domain: 'notary.example.com'
+
+# kubectl create secret docker-registry harbor-registry-secret -n harbor --docker-server=harbor.ops.shileizcc.com --docker-username=harbor@shileizcc.com --docker-password=harbor --docker-email=harbor@shileizcc.com
+
 ## Clean Kubernetes Cluster
 ## ********************************************************************************************************************************
 # 初始化时, 是否进行 Clean, 如果是全新的环境可以不开启, 如果之前部署过或者使用 kubeadm 进行部署则需要开启此配置,
