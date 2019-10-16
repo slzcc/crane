@@ -20,12 +20,13 @@
   shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}apiserver-to-kubelet-rbac.yml ; do >&2 echo "Starting..." && sleep 1 ; done'
   ignore_errors: true
 
-- name: Create bootstrap-kubelet.conf .
+- name: Create 3 Byte Secret
   shell: "openssl rand -hex 3"
   register: TOKEN_ID
   changed_when: false
 
-- shell: "openssl rand -hex 8"
+- name: Create 8 Byte Secret
+  shell: "openssl rand -hex 8"
   register: TOKEN_SECRET
   changed_when: false
 
