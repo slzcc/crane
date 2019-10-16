@@ -19,8 +19,7 @@
   vars:
     ansible_ssh_pipelining: true
   roles:
-    - { role: clean-install, tags: [clean]}
-  when: is_initialize_clean
+    - { role: clean-install, tags: [clean], when: is_initialize_clean}
 
 - name: Prepare the environment and install docker.
   hosts: k8s-cluster:etcd
