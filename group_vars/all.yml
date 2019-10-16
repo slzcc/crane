@@ -413,7 +413,7 @@ is_deploy_istio: false
 
 # Istio Version
 # https://github.com/istio/istio/releases
-istio_version: '1.2.5'
+istio_version: '1.3.3'
 
 # 部署 Istio 所使用的 Ingress Domain
 istio_ingress_prometheus_domain: 'prometheus.example.com'
@@ -438,4 +438,4 @@ is_remove_docker_dir: false
 is_remove_cfssl: false
 
 # 清除集群时是否删除 CNI 插件
-is_remove_cni: true
+is_remove_cni: false
