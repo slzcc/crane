@@ -427,6 +427,9 @@ istio_kiali_password: 'YWRtaW4='
 
 ## Clean Kubernetes Cluster
 ## ********************************************************************************************************************************
+# 初始化时, 是否进行 Clean, 如果是全新的环境可以不开启, 如果之前部署过或者使用 kubeadm 进行部署则需要开启此配置,
+# 应避免部署时影响效率
+is_initialize_clean: false
 
 # 清除集群时是否删除 Docker
 is_remove_docker_ce: false
@@ -435,7 +438,10 @@ is_remove_docker_ce: false
 is_remove_docker_dir: false
 
 # 清除集群时是否删除 CFSSL 可执行文件
-is_remove_cfssl: false
+is_remove_cfssl: true
 
 # 清除集群时是否删除 CNI 插件
-is_remove_cni: false
+is_remove_cni: true
+
+# 是否清楚 Kubelet Kubectl 可执行文件
+is_remove_k8s_binary: true

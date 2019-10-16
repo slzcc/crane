@@ -1,12 +1,9 @@
 ---
+# Clean Kubernetes
 - name: Stop Kubelet
   service: 
     name: kubelet
     state: stopped
-  ignore_errors: true
-
-- name: Clean Docker Containers.
-  shell: "docker rm -f $(docker ps -f 'name=k8s*' -aq)"
   ignore_errors: true
 
 - name: Umount K8s Drive
@@ -19,75 +16,46 @@
     state: absent
   ignore_errors: true
 
-- name: Clean Etcd ssl directory.
+- name: Clean Kubelet Systemd Config
   file:
-    path: "{{ etcd_ssl_dirs }}"
+    path: "{{ item }}"
     state: absent
+  with_items:
+    - "{{ systemd_etc_dirs }}kubelet.service.d/"
+    - "{{ systemd_default_dirs }}kubelet.service"
   ignore_errors: true
 
-- name: Clean Etcd Working directory.
+- name: Clean Kuberentes Binary Files
   file:
-    path: "{{ etcd_data_dirs }}"
+    path: "{{ kubernetes_ctl_path }}{{ item }}"
     state: absent
-  ignore_errors: true
-
-- name: Clean Kubernet Ctl.
-  file:
-    path: "{{ kubernetes_ctl_path }}kubectl"
-    state: absent
-  ignore_errors: true
-
-- name: Clean Kubelet config.
-  file:
-    path: "{{ kubernetes_ctl_path }}kubelet"
-    state: absent
-  ignore_errors: true
-
-- name: Clean Kubelet Config *
-  file:
-    path: "{{ systemd_etc_dirs }}kubelet.service.d/"
-    state: absent
-  ignore_errors: true
-
-- name: Clean Kubelet Config **
-  file:
-    path: "{{ systemd_default_dirs }}kubelet.service"
-    state: absent
-  ignore_errors: true
+  with_items:
+    - "kubectl"
+    - "kubelet"
+  when: is_remove_k8s_binary
   
-- name: Clean CNI Cluster Config
+- name: Clean KubeConfig Dir
   file:
-    path: "{{ cni_config_dir }}"
+    path: "~/.kube"
     state: absent
   ignore_errors: true
 
-- name: Clean CNI
+- name: Clean Kubelet Working directory.
   file:
-    path: "{{ kubernetes_cni_dirs }}"
-    state: absent
-  when: is_remove_cni
-  ignore_errors: true
-
-- name: Clean Haproxy
-  file:
-    path: "{{ haproxy_etc_dirs }}"
+    path: "{{ kubelet_work_dirs }}"
     state: absent
   ignore_errors: true
 
-- name: Systemd Reload
-  shell: "systemctl daemon-reload"
-
-- name: Clean Cfssl
+- name: Clean Kubelet Working directory.
   file:
-    path: "{{ kubernetes_ctl_path }}cfssl"
+    path: "{{ kubelet_work_dirs }}/pki"
     state: absent
-  when: is_remove_cfssl
+  ignore_errors: true
 
-- name: Clean Cfssljson
-  file:
-    path: "{{ kubernetes_ctl_path }}cfssljson"
-    state: absent
-  when: is_remove_cfssl
+# Clean Docker
+- name: Clean Docker Containers.
+  shell: "docker rm -f $(docker ps -f 'name=k8s*' -aq)"
+  ignore_errors: true
 
 - name: Clean Docker for Ubuntu
   apt: 
@@ -111,23 +79,58 @@
 
 - name: Clean Docker Data DIR
   file:
-    path: "/var/lib/docker"
+    path: "{{ docker_data_root }}"
     state: absent
   when: is_remove_docker_ce and is_remove_docker_dir
   ignore_errors: true
 
-- name: Clean Kubelet Working directory.
+# Clean Etcd
+- name: Clean Etcd ssl directory.
   file:
-    path: "{{ kubelet_work_dirs }}"
+    path: "{{ etcd_ssl_dirs }}"
     state: absent
   ignore_errors: true
 
-- name: Clean Kubelet Working directory.
+- name: Clean Etcd Working directory.
   file:
-    path: "{{ kubelet_work_dirs }}/pki"
+    path: "{{ etcd_data_dirs }}"
     state: absent
   ignore_errors: true
 
+# Clean CNI
+- name: Clean CNI Cluster Config
+  file:
+    path: "{{ cni_config_dir }}"
+    state: absent
+  ignore_errors: true
+
+- name: Clean CNI Dir
+  file:
+    path: "{{ kubernetes_cni_dirs }}"
+    state: absent
+  when: is_remove_cni
+  ignore_errors: true
+
+# Clean Other
+- name: Clean Haproxy
+  file:
+    path: "{{ haproxy_etc_dirs }}"
+    state: absent
+  ignore_errors: true
+
+- name: Systemd Reload
+  shell: "systemctl daemon-reload"
+
+- name: Clean Cfssl files
+  file:
+    path: "{{ kubernetes_ctl_path }}{{ item }}"
+    state: absent
+  with_items:
+    - "cfssl"
+    - "cfssljson"
+  when: is_remove_cfssl
+
+# Clean IPVS and Iptables
 - name: Clean IPVS Rules
   shell: "ipvsadm -C"
   when: is_install_ipvsadm and kube_proxy_mode == 'ipvs'
@@ -137,3 +140,7 @@
   shell: "iptables -X"
   when: is_install_ipvsadm
   ignore_errors: true
+
+- name: Clean ipvs Record
+  shell: "ipvsadm --clear | true"
+  when: kube_proxy_mode == "ipvs"

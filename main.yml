@@ -12,7 +12,7 @@
   roles:
     - { role: downloads-ssh-key, tags: [copy_ssh_private_key]}
 
-- name: Prepare the environment and install docker.
+- name: Initialize Cluster Clean
   hosts: k8s-cluster:etcd
   sudo: yes
   remote_user: "{{ ssh_connect_user }}"
@@ -20,6 +20,15 @@
     ansible_ssh_pipelining: true
   roles:
     - { role: clean-install, tags: [clean]}
+  when: is_initialize_clean
+
+- name: Prepare the environment and install docker.
+  hosts: k8s-cluster:etcd
+  sudo: yes
+  remote_user: "{{ ssh_connect_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  roles:
     - { role: system-initialize, tags: [system]}
     - { role: docker-install, tags: [docker]}
 

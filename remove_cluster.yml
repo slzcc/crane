@@ -13,7 +13,3 @@
     ansible_ssh_pipelining: true
   roles:
     - { role: clean-install, tags: [clean]}
-  tasks:
-    - name: Clean ipvs Record
-      shell: "ipvsadm --clear | true"
-      when: kube_proxy_mode == "ipvs"
