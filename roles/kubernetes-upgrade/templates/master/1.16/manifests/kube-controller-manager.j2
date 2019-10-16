@@ -40,6 +40,9 @@ spec:
     resources:
       requests:
         cpu: 200m
+    env:
+    - name: TZ
+      value: "{{ time_location }}"
     volumeMounts:
     - mountPath: {{ kubernetes_etc_dirs }}pki
       name: k8s-certs
@@ -52,10 +55,14 @@ spec:
       readOnly: true
     - mountPath: /usr/libexec/kubernetes/kubelet-plugins/volume/exec
       name: flexvolume-dir
-    env:
-    - name: TZ
-      value: "{{ time_location }}"
+    - mountPath: /usr/share/zoneinfo
+      name: usr-local-timezone
+      readOnly: true
   volumes:
+  - hostPath:
+      path: /usr/share/zoneinfo
+      type: DirectoryOrCreate
+    name: usr-local-timezone
   - hostPath:
       path: {{ kubernetes_etc_dirs }}pki
       type: DirectoryOrCreate
