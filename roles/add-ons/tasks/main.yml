@@ -1,144 +1,56 @@
 ---
 ## Install Helm
 ## ********************************************************************************************************************************
-- name: Deploy Helm Cli *
-  shell: "http_proxy={{ http_proxy }} ; https_proxy={{ https_proxy }} ; curl -s https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash"
-  when: is_deploy_helm
-
-- name: Deploy Helm Cli **
-  shell: "helm init"
+- name: Initialize Helm
+  include: roles/add-ons/includes/helm-deploy.yaml
   delegate_to: "{{ groups['kube-master'][0] }}"
   when: is_deploy_helm
 
 ## Install Nginx Ingess
 ## ********************************************************************************************************************************
-- name: Deploy Nginx Ingess *
-  template: 
-    src: ingress-nginx/ingress-nginx.j2
-    dest: "{{ temporary_dirs }}ingress-nginx.yml"
-    mode: 0644
-    owner: "{{ ssh_connect_user }}" 
+- name: Initialize Nginx Ingess
+  include: roles/add-ons/includes/nginx-ingress-deploy.yaml
   delegate_to: "{{ groups['kube-master'][0] }}"
   when: is_deploy_ingress_nginx
-
-- name: Deploy Nginx Ingess **
-  shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}ingress-nginx.yml ; do >&2 echo "Starting..." && sleep 1 ; done'
-  delegate_to: "{{ groups['kube-master'][0] }}"
-  when: is_deploy_ingress_nginx
-  ignore_errors: true
 
 ## Install Ingress Nginx Example
 ## ********************************************************************************************************************************
-- name: Deploy Ingress Nginx Example *
-  copy: 
-    src: templates/ingress-nginx/ingress-example
-    dest: "{{ temporary_dirs }}"
-    mode: 0644
-    owner: "{{ ssh_connect_user }}" 
-  delegate_to: "{{ groups['kube-master'][0] }}"
-  when: is_deploy_ingress_nginx_example
-
-- name: Deploy Ingress Nginx Example **
-  template: 
-    src: ingress-nginx/ingress-example/nginx-ingress.j2
-    dest: "{{ temporary_dirs }}ingress-example/nginx-ingress.yml"
-    mode: 0644
-    owner: "{{ ssh_connect_user }}" 
-  delegate_to: "{{ groups['kube-master'][0] }}"
-  when: is_deploy_ingress_nginx_example
-
-- name: Deploy Ingress Nginx Example ***
-  shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}ingress-example/ ; do >&2 echo "Starting..." && sleep 1 ; done'
+- name: Initialize Ingress Nginx Example
+  include: roles/add-ons/includes/ingress-nginx-example-deploy.yaml
   delegate_to: "{{ groups['kube-master'][0] }}"
   when: is_deploy_ingress_nginx_example
 
 ## Install Prometheus Operator
 ## ********************************************************************************************************************************
-- name: Deploy Prometheus Operator *
-  copy: 
-    src: templates/prometheus-operator
-    dest: "{{ temporary_dirs }}"
-    mode: 0644
-    owner: "{{ ssh_connect_user }}" 
-  delegate_to: "{{ groups['kube-master'][0] }}"
-  when: is_deploy_prometheus_operator
-
-- name: Deploy Prometheus Operator **
-  template: 
-    src: prometheus-operator/ingress.j2
-    dest: "{{ temporary_dirs }}prometheus-operator/ingress.yaml"
-    mode: 0644
-    owner: "{{ ssh_connect_user }}" 
-  delegate_to: "{{ groups['kube-master'][0] }}"
-  when: is_deploy_prometheus_operator
-
-- name: Deploy Prometheus Operator ***
-  template: 
-    src: prometheus-operator/grafana-configmap.j2
-    dest: "{{ temporary_dirs }}prometheus-operator/grafana-configmap.j2"
-    mode: 0644
-    owner: "{{ ssh_connect_user }}" 
-  delegate_to: "{{ groups['kube-master'][0] }}"
-  when: is_deploy_prometheus_operator
-
-- name: Deploy Prometheus Operator ****
-  shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}prometheus-operator/ ; do >&2 echo "Starting..." && sleep 1 ; done'
+- name: Initialize Prometheus Operator
+  include: roles/add-ons/includes/prometheus-operator-deploy.yaml
   delegate_to: "{{ groups['kube-master'][0] }}"
   when: is_deploy_prometheus_operator
 
 ## Install DNS Example
 ## ********************************************************************************************************************************
-- name: Deploy DNS Example *
-  copy: 
-    src: dns-tools/busybox-tools.yml
-    dest: "{{ temporary_dirs }}busyox-tools.yml"
-    mode: 0644
-    owner: "{{ ssh_connect_user }}" 
+- name: Initialize DNS Example
+  include: roles/add-ons/includes/dns-example-deploy.yaml
   delegate_to: "{{ groups['kube-master'][0] }}"
   when: is_deploy_busybox_example
 
-- name: Deploy DNS Example **
-  shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}busyox-tools.yml ; do >&2 echo "Starting..." && sleep 1 ; done'
-  delegate_to: "{{ groups['kube-master'][0] }}"
-  when: is_deploy_busybox_example
-  ignore_errors: true
-
-## Install ISTIO
+## Install istio
 ## ********************************************************************************************************************************
-- name: Deploy Istio *
-  shell: "cd {{ temporary_dirs }} && http_proxy={{ http_proxy }} ; https_proxy={{ https_proxy }} ; curl -sL https://git.io/getLatestIstio | ISTIO_VERSION={{ istio_version }} sh -" 
+- name: Initialize Istio
+  include: roles/add-ons/includes/istio-deploy.yaml
   delegate_to: "{{ groups['kube-master'][0] }}"
   when: is_deploy_istio
 
-- name: Deploy Istio **
-  shell: 'cd {{ temporary_dirs }}istio-{{ istio_version }} && until kubectl apply -f install/kubernetes/ ; do >&2 echo "Starting..." && sleep 1 ; done'
+## Install Upload Service
+## ********************************************************************************************************************************
+- name: Initialize Upload Service
+  include: roles/add-ons/includes/upload-service-deploy.yaml
   delegate_to: "{{ groups['kube-master'][0] }}"
-  when: is_deploy_istio
+  when: is_deploy_upload_service
 
-- name: Deploy Istio ***
-  template: 
-    src: istio/ingress.j2
-    dest: "{{ temporary_dirs }}istio-ingress.yml"
-    mode: 0644
-    owner: "{{ ssh_connect_user }}" 
+## Install Harbor
+## ********************************************************************************************************************************
+- name: Initialize Harbor
+  include: roles/add-ons/includes/harbor-deploy.yaml
   delegate_to: "{{ groups['kube-master'][0] }}"
-  when: is_deploy_istio
-
-- name: Deploy Istio ****
-  shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}istio-ingress.yml ; do >&2 echo "Starting..." && sleep 1 ; done'
-  delegate_to: "{{ groups['kube-master'][0] }}"
-  when: is_deploy_istio
-
-- name: Deploy Istio *****
-  template: 
-    src: istio/kiali-secret.j2
-    dest: "{{ temporary_dirs }}kiali-secret.yml"
-    mode: 0644
-    owner: "{{ ssh_connect_user }}" 
-  delegate_to: "{{ groups['kube-master'][0] }}"
-  when: is_deploy_istio
-
-- name: Deploy Istio ******
-  shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}kiali-secret.yml ; do >&2 echo "Starting..." && sleep 1 ; done'
-  delegate_to: "{{ groups['kube-master'][0] }}"
-  when: is_deploy_istio
+  when: is_deploy_harbor

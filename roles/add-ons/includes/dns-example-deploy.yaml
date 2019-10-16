@@ -1,0 +1,11 @@
+---
+- name: Deploy DNS Example *
+  copy: 
+    src: dns-tools/busybox-tools.yml
+    dest: "{{ temporary_dirs }}busyox-tools.yml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+
+- name: Deploy DNS Example **
+  shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}busyox-tools.yml ; do >&2 echo "Starting..." && sleep 1 ; done'
+  ignore_errors: true

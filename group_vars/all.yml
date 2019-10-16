@@ -425,17 +425,83 @@ istio_ingress_kiali_domain: 'kiali.example.com'
 istio_kiali_username: 'YWRtaW4='
 istio_kiali_password: 'YWRtaW4='
 
-# Harbor Deploy (Not Online)
+# 部署 upload service
+is_deploy_upload_service: false
+
+upload_service_ingress_domain: 'upload.example.com'
+
+## Harbor
+## ********************************************************************************************************************************
+
+# Harbor Deploy enable
 is_deploy_harbor: false
 
 # Harbor Deploy Namespace
 harbor_namespace: 'harbor'
 
+# Harbor Admin Password
+harbor_admin_password: 'Harbor12345'
+
+# Harbor PostGreSQL Password
+harbor_pg_admin_password: 'changeit'
+harbor_pg_clair_password: 'changeit'
+
+# Harbor Core Secure Key
+harbor_core_secure_key: 'not-a-secure-key' 
+harbor_core_secret: '90USoEBlROrSey6F'
+
+# Harbor Registry Secure
+harbor_registry_secure_key: 'iCELcbcIHHG4RSua'
+harbor_registry_redis_password: ''
+
+# Harbor JobService Secure
+harbor_jobservice_secure_key: 'L1Jp8tCQngTlftfO'
+
+# Harbor chartmuseum Secure
+harbor_chartmuseum_redis_password: ''
+
 # Harbor Domain
 harbor_ingress_default_domain: 'harbor.example.com'
 harbor_ingress_notary_domain: 'notary.example.com'
 
-# kubectl create secret docker-registry harbor-registry-secret -n harbor --docker-server=harbor.ops.shileizcc.com --docker-username=harbor@shileizcc.com --docker-password=harbor --docker-email=harbor@shileizcc.com
+# CFSSL 生成证书的加密方式
+tls_harbor_server_encryption_algorithm: 'rsa'
+tls_harbor_client_encryption_algorithm: 'rsa'
+
+# CFSSL 生成证书的通过加密算法生成的长度
+tls_harbor_server_encryption_algorithm_size: 2048
+tls_harbor_client_encryption_algorithm_size: 2048
+
+# 证书有效期, 默认为 5 年, 因 CA 根证书默认为 5 年, 此值改大没意义
+tls_harbor_server_validity_period: 5
+tls_harbor_client_validity_period: 5
+
+# 证书信息头, 国家信息 
+# Country Name
+tls_harbor_server_head_info_C: 'CN'
+tls_harbor_client_head_info_C: 'CN'
+
+# 证书信息头, 地区或城市 
+# Locality Name
+tls_harbor_server_head_info_L: 'BeiJing'
+tls_harbor_client_head_info_L: 'BeiJing'
+
+# 证书信息头, 组织 
+# Organization Name 
+tls_harbor_server_head_info_O: 'Harbor'
+tls_harbor_client_head_info_O: 'Harbor'
+
+# 证书信息头, 组织单位 
+# Organizational Units Name
+tls_harbor_server_head_info_OU: 'Harbor'
+tls_harbor_client_head_info_OU: 'Harbor'
+
+# 证书信息头, 州或省 
+# State or Province Name
+tls_harbor_server_head_info_ST: 'BeiJing'
+tls_harbor_client_head_info_ST: 'BeiJing'
+
+# Docs https://wiki.shileizcc.com/confluence/display/KUB/Kubernetes+Harbor
 
 ## Clean Kubernetes Cluster
 ## ********************************************************************************************************************************

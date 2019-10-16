@@ -1,20 +1,4 @@
 ---
-# Source: harbor/templates/registry/registry-secret.yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: "release-name-harbor-registry"
-  labels:
-    heritage: Tiller
-    release: release-name
-    chart: harbor
-    app: "harbor"
-type: Opaque
-data:
-  REGISTRY_HTTP_SECRET: "aUNFTGNiY0lISEc0UlN1YQ==" # iCELcbcIHHG4RSua
-  REGISTRY_REDIS_PASSWORD: ""
-
----
 # Source: harbor/templates/registry/registry-cm.yaml
 apiVersion: v1
 kind: ConfigMap
@@ -56,7 +40,7 @@ data:
     auth:
       token:
         issuer: harbor-token-issuer
-        realm: "https://harbor.shileizcc.com/service/token"
+        realm: "https://{{ harbor_ingress_default_domain }}/service/token"
         rootcertbundle: /etc/registry/root.crt
         service: harbor-registry
     validation:

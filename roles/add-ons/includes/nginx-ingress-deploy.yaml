@@ -1,0 +1,11 @@
+---
+- name: Deploy Nginx Ingess *
+  template: 
+    src: ingress-nginx/ingress-nginx.j2
+    dest: "{{ temporary_dirs }}ingress-nginx.yml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+
+- name: Deploy Nginx Ingess **
+  shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}ingress-nginx.yml ; do >&2 echo "Starting..." && sleep 1 ; done'
+  ignore_errors: true
