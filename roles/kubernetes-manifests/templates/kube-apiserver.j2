@@ -91,7 +91,14 @@ spec:
     - mountPath: /usr/share/ca-certificates
       name: usr-share-ca-certificates
       readOnly: true
+    - mountPath: /usr/share/zoneinfo
+      name: usr-local-timezone
+      readOnly: true
   volumes:
+  - hostPath:
+      path: /usr/share/zoneinfo
+      type: DirectoryOrCreate
+    name: usr-local-timezone
   - hostPath:
       path: /etc/etcd/ssl
       type: DirectoryOrCreate

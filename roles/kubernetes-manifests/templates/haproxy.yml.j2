@@ -16,14 +16,21 @@ spec:
     resources:
       requests:
         cpu: 100m
+    env:
+    - name: TZ
+      value: "{{ time_location }}"
     volumeMounts:
     - name: cfg-volume
       readOnly: true
       mountPath: "/usr/local{{ haproxy_etc_dirs }}haproxy.cfg"
-    env:
-    - name: TZ
-      value: "{{ time_location }}"
+    - mountPath: /usr/share/zoneinfo
+      name: usr-local-timezone
+      readOnly: true
   volumes:
+  - hostPath:
+      path: /usr/share/zoneinfo
+      type: DirectoryOrCreate
+    name: usr-local-timezone
   - name: cfg-volume
     hostPath:
       path: "{{ haproxy_etc_dirs }}haproxy.cfg"

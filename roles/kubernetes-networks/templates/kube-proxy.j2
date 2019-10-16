@@ -143,6 +143,9 @@ spec:
         - mountPath: /lib/modules
           name: lib-modules
           readOnly: true
+        - mountPath: /usr/share/zoneinfo
+          name: usr-local-timezone
+          readOnly: true
       dnsPolicy: ClusterFirst
       hostNetwork: true
       priorityClassName: system-node-critical
@@ -169,3 +172,7 @@ spec:
           path: /lib/modules
           type: ""
         name: lib-modules
+      - hostPath:
+          path: /usr/share/zoneinfo
+          type: DirectoryOrCreate
+        name: usr-local-timezone

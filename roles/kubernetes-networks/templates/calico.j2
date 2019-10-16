@@ -682,7 +682,14 @@ spec:
             - mountPath: /var/lib/calico
               name: var-lib-calico
               readOnly: false
+            - mountPath: /usr/share/zoneinfo
+              name: usr-local-timezone
+              readOnly: true
       volumes:
+        - hostPath:
+            path: /usr/share/zoneinfo
+            type: DirectoryOrCreate
+          name: usr-local-timezone
         # Used by calico-node.
         - name: lib-modules
           hostPath:
