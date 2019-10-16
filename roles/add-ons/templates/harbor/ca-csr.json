@@ -1,0 +1,16 @@
+{
+  "CN": "harbor",
+  "key": {
+    "algo": "{{ tls_harbor_server_encryption_algorithm }}",
+    "size": {{ tls_harbor_server_encryption_algorithm_size }}
+  },
+  "names": [
+    {
+      "C": "{{ tls_harbor_server_head_info_C }}",
+      "ST": "{{ tls_harbor_server_head_info_ST }}",
+      "L": "{{ tls_harbor_server_head_info_L }}",
+      "O": "{{ tls_harbor_server_head_info_OU }}",
+      "OU": "{{ tls_harbor_server_head_info_OU }}"
+    }
+  ]
+}

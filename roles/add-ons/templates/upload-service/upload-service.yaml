@@ -1,0 +1,152 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: upload-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: upload-service
+  template:
+    metadata:
+      labels:
+        app: upload-service
+    spec:
+      containers:
+      - name: upload
+        image: slzcc/django:upload-uwsgi-v5
+        ports:
+        - name: http
+          containerPort: 8878
+        volumeMounts:
+        - name: tmp-date
+          mountPath: "/tmp/nginx_upload"
+        - name: storage-date
+          mountPath: "/storage"
+        env:
+        - name: TZ
+          value: "Asia/Shanghai"
+        - name: UPLOAD_FILE_PATH
+          value: '/storage/'
+        - name: NGINX_MIRROR_URL
+          value: 'http://{{ upload_service_ingress_domain }}/'
+        - name: NGINX_MIRROR_STORAGE_PATH
+          value: 'firmware'
+        - name: REMOVE_SOURCE_FILE_SETUP
+          value: 'False'
+        - name: USE_TIEM_SUB_DIRECTORY
+          value: 'True'
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        imagePullPolicy: IfNotPresent
+      - name: nginx
+        image: slzcc/nginx:upload-conf-v4
+        ports:
+        - name: http
+          containerPort: 80
+        volumeMounts:
+        - name: tmp-date
+          mountPath: "/tmp/nginx_upload"
+        - name: storage-date
+          mountPath: "/mirror"
+        - name: index
+          mountPath: "/mirror/_upload/index.html"
+          subPath: index.html
+        env:
+        - name: TZ
+          value: "Asia/Shanghai"
+        - name: UPLOAD_BACKEND_ADDRESS
+          value: 'http://localhost:8878'
+        - name: NGINX_MIRROR_HOME
+          value: '/mirror'
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+      volumes:
+      - name: tmp-date
+        emptyDir: {}
+      - name: storage-date
+        emptyDir: {}
+      - name: index
+        configMap:
+          name: upload-service-index
+          items:
+          - key: index.html
+            path: index.html
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: upload-service-index
+data:
+  index.html: |-
+    <!DOCTYPE html>
+    <html lang='en'>
+    <head>
+      <meta charset='UTF-8'>
+      <title>Title</title>
+      <link rel='stylesheet' href=''>
+    </head>
+    <body>
+        <div class="row">
+        <h2>Select files to upload</h2>
+        <form name="upload" method="POST" enctype="multipart/form-data" action="/upload">
+          <input type="file" name="file1"><br>
+          <input type="submit" name="submit" value="Upload">
+          <input type="hidden" name="test" value="value">
+        </form>
+    </div>
+    <script type='text/javascript'></script>
+    <script type='text/javascript'>
+    </script>
+    </body>
+    </html>
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: upload-service
+spec:
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+    protocol: TCP
+  selector:
+    app: upload-service
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: upload-service
+spec:
+  rules:
+  - host: {{ upload_service_ingress_domain }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: upload-service
+          servicePort: http

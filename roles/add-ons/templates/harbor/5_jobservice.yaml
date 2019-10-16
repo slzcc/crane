@@ -1,19 +1,4 @@
 ---
-# Source: harbor/templates/jobservice/jobservice-secrets.yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: "release-name-harbor-jobservice"
-  labels:
-    heritage: Tiller
-    release: release-name
-    chart: harbor
-    app: "harbor"
-type: Opaque
-data:
-  secret: "TDFKcDh0Q1FuZ1RsZnRmTw=="
-
----
 # Source: harbor/templates/jobservice/jobservice-cm.yaml
 apiVersion: v1
 kind: ConfigMap

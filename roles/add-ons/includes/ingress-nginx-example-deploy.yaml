@@ -1,0 +1,17 @@
+---
+- name: Deploy Ingress Nginx Example *
+  copy: 
+    src: templates/ingress-nginx/ingress-example
+    dest: "{{ temporary_dirs }}"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+
+- name: Deploy Ingress Nginx Example **
+  template: 
+    src: ingress-nginx/ingress-example/nginx-ingress.j2
+    dest: "{{ temporary_dirs }}ingress-example/nginx-ingress.yml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+
+- name: Deploy Ingress Nginx Example ***
+  shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}ingress-example/ ; do >&2 echo "Starting..." && sleep 1 ; done'

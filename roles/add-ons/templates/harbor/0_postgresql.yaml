@@ -1,19 +1,4 @@
 ---
-# Source: harbor/templates/database/database-secret.yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: "release-name-harbor-database"
-  labels:
-    heritage: Tiller
-    release: release-name
-    chart: harbor
-    app: "harbor"
-type: Opaque
-data:
-  POSTGRES_PASSWORD: "Y2hhbmdlaXQ=" # password: changeit
-
----
 # Source: harbor/templates/database/database-svc.yaml
 apiVersion: v1
 kind: Service

@@ -1,0 +1,24 @@
+---
+- name: Deploy Prometheus Operator *
+  copy: 
+    src: roles/add-ons/templates/prometheus-operator
+    dest: "{{ temporary_dirs }}"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+
+- name: Deploy Prometheus Operator **
+  template: 
+    src: roles/add-ons/templates/prometheus-operator/ingress.j2
+    dest: "{{ temporary_dirs }}prometheus-operator/ingress.yaml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+
+- name: Deploy Prometheus Operator ***
+  template: 
+    src: roles/add-ons/templates/prometheus-operator/grafana-configmap.j2
+    dest: "{{ temporary_dirs }}prometheus-operator/grafana-configmap.j2"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+
+- name: Deploy Prometheus Operator ****
+  shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}prometheus-operator/ ; do >&2 echo "Starting..." && sleep 1 ; done'

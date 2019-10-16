@@ -10,13 +10,8 @@
 
 - name: Apt Install Dependence
   apt: 
-    name: "{{ item }}" 
+    name: ["apt-transport-https", "curl", "ca-certificates", "software-properties-common"]
     state: present
-  with_items:
-    - apt-transport-https
-    - curl
-    - ca-certificates
-    - software-properties-common
   environment:
     http_proxy: "{{ http_proxy }}"
     https_proxy: "{{ https_proxy }}"
@@ -24,12 +19,8 @@
 
 - name: Yum Install Dependence
   yum: 
-    name: "{{ item }}" 
+    name: ["wget", "curl", "yum-plugin-ovl"]
     state: present
-  with_items:
-    - wget 
-    - curl 
-    - yum-plugin-ovl
   environment:
     http_proxy: "{{ http_proxy }}"
     https_proxy: "{{ https_proxy }}"
