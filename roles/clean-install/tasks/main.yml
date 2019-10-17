@@ -59,21 +59,17 @@
 
 - name: Clean Docker for Ubuntu
   apt: 
-    name: "{{ item }}" 
+    name: ["docker-ce "]
     autoremove: yes
     purge: yes
-  with_items:
-    - docker-ce 
   when: is_remove_docker_ce and ansible_lsb.id == 'Ubuntu'
   ignore_errors: true
 
 - name: Clean Docker for Centos
   yum: 
-    name: "{{ item }}" 
+    name: ["docker-ce "]
     state: removed
     autoremove: yes
-  with_items:
-    - docker-ce 
   when: is_remove_docker_ce and ansible_lsb.id == 'Centos'
   ignore_errors: true
 
