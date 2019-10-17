@@ -160,13 +160,14 @@
 - name: Push Client TLS to Upload Service
   shell: "curl -sSfL --form 'file=@{{ kubernetes_etc_dirs }}harbor/cert/{{ harbor_ingress_default_domain }}.tar.gz' http://{{ check_upload_service_ip.stdout }}/upload -H 'Host:{{ upload_service_ingress_domain }}' | jq --raw-output '.account_url'"
   register: client_tls_upload_address
-  when: check_upload_service_ip is succeeded
+  when: check_upload_service_ip is defined and check_upload_service_ip.stdout != ""
   ignore_errors: true
 
 - debug:
-    msg: "Please download it through '{{ client_tls_upload_address.stdout }}' Client TLS. Example:
-          $ mkdir -p /etc/docker/certs.d/
-          $ wget -qO- http://{{ client_tls_upload_address.stdout }} | tar zx -C /etc/docker/certs.d/
-          $ systemctl restart docker
-          $ docker pull/push {{ harbor_ingress_default_domain }}/..."
-  when: check_upload_service_ip is succeeded
+    msg: 
+    - "Please download it through '{{ client_tls_upload_address.stdout }}' Client TLS. Example:"
+    - "$ mkdir -p /etc/docker/certs.d/"
+    - "$ wget -qO- http://{{ client_tls_upload_address.stdout }} | tar zx -C /etc/docker/certs.d/"
+    - "$ systemctl restart docker"
+    - "$ docker pull/push {{ harbor_ingress_default_domain }}/..."
+  when: check_upload_service_ip is defined and check_upload_service_ip.stdout != ""
