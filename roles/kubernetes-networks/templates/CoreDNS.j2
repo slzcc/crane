@@ -115,7 +115,6 @@ spec:
         - mountPath: /usr/share/zoneinfo
           name: usr-local-timezone
           readOnly: true
-        name: usr-local-timezone
         env:
         - name: TZ
           value: "{{ time_location }}"
@@ -160,8 +159,9 @@ spec:
             - key: Corefile
               path: Corefile
         - hostPath:
-          path: /usr/share/zoneinfo
-          type: DirectoryOrCreate
+            path: /usr/share/zoneinfo
+            type: DirectoryOrCreate
+          name: usr-local-timezone
 ---
 apiVersion: v1
 kind: Service
