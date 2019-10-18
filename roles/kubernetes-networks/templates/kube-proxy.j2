@@ -65,7 +65,8 @@ data:
     kind: KubeProxyConfiguration
     metricsBindAddress: 127.0.0.1:10249
     mode: "{{ kube_proxy_mode }}"
-    nodePortAddresses: {{ kube_proxy_node_port_addresses }}
+    nodePortAddresses: 
+      - "{{ kube_proxy_node_port_addresses }}"
     oomScoreAdj: -999
     portRange: ""
     resourceContainer: /kube-proxy
