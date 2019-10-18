@@ -418,7 +418,26 @@ $ docker run --rm -i \
 ```
 > ~~切记！不要在任何 Master 或者 Node 节点上使用 Ansible in Docker 会造成 Dockerd 被重启导致服务中断！~~
 
-> 如果实例上的 daemon.json 与部署的文件一致, 则不会导致 DockerD 重启, 可以在任意节点上使用 Ansible in Docker.
+> 如果实例上的 daemon.json 与部署的文件一致, 则不会导致 DockerD 重启, 可以在任意节点上使用 Ansible in Docker. 如果第一次部署请配置如下:
+```
+$ systemctl stop docker
+$ cat > /etc/docker/daemon.json  <<EOF
+{
+    "registry-mirrors": ["https://registry.docker-cn.com"],
+    "exec-opts": ["native.cgroupdriver=cgroupfs"],
+    "log-driver": "json-file",
+    "log-opts": {
+        "max-size": "1G"
+    },
+    "data-root": "/var/lib/docker",
+    "insecure-registry": []
+}
+EOF
+ 
+ $ systemctl start docker
+```
+
+> 通过自定义 daemin.json 来保证 Ansible in Docker 不重启 DockerD。
 
 ---
 
