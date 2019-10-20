@@ -375,8 +375,14 @@ dns_cluster_range: "{{ k8s_cluster_ip_range }}"
 # 如使用镜像方式部署, 不能修改
 dns_version: '1.6.3'
 
+## Helm
+## ********************************************************************************************************************************
+
 # 部署 Helm
 is_deploy_helm: false
+
+## Ingress Nginx
+## ********************************************************************************************************************************
 
 # 部署 Ingress Nginx
 is_deploy_ingress_nginx: false
@@ -387,6 +393,9 @@ is_deploy_ingress_nginx_example: false
 # Ingress Nginx Example Domain
 # Ingres 示例使用的域名, 如果没有自定义域名, 可配置本机 Hosts
 ingress_nginx_example: 'www.example.com'
+
+## Prometheus Operator
+## ********************************************************************************************************************************
 
 # 部署 Prometheus Operator
 is_deploy_prometheus_operator: false
@@ -403,9 +412,15 @@ prometheus_operator_grafana_smtp_server: 'smtp.126.com:465'
 prometheus_operator_grafana_smtp_user: 'shileizcc@126.com'
 prometheus_operator_grafana_smtp_from_address: 'shileizcc@126.com'
 
+## DNS Example
+## ********************************************************************************************************************************
+
 # 部署 DNS Example Tools
 # 用来测试集群内是否 DNS 可用的 Tools Pods
 is_deploy_busybox_example: false
+
+## Istio
+## ********************************************************************************************************************************
 
 # 部署 Istio
 # 注意 部署 Istio 不建议与 Prometheus Operator 一同部署, 可能会引发服务之间的冲突问题, 如需一同部署请自行解决依赖
