@@ -67,7 +67,7 @@
     mode: 0644
     owner: "{{ ssh_connect_user }}"
   when: is_kube_master or is_add_master
-
+  
 - name: Copy Haproxy conf Files
   template: 
     src: haproxy.yml.j2
