@@ -1,6 +1,6 @@
 ---
 - name: Deploy Istio *
-  shell: "cd {{ temporary_dirs }} && http_proxy={{ http_proxy }} ; https_proxy={{ https_proxy }} ; curl -sL https://git.io/getLatestIstio | ISTIO_VERSION={{ istio_version }} sh -" 
+  shell: "cd {{ temporary_dirs }} && curl -x '{{ http_proxy }}' -sL https://git.io/getLatestIstio | ISTIO_VERSION={{ istio_version }} sh -" 
 
 - name: Deploy Istio **
   shell: 'cd {{ temporary_dirs }}istio-{{ istio_version }} && until kubectl apply -f install/kubernetes/ ; do >&2 echo "Starting..." && sleep 1 ; done'

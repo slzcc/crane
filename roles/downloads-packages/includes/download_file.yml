@@ -32,10 +32,10 @@
 # CFSSL
 ## ********************************************************************************************************************************
 - name: Download CFSSL Binary Files *
-  shell: "http_proxy={{ http_proxy }} ; https_proxy={{ https_proxy }} ; curl -s -o {{ kubernetes_ctl_path }}cfssl https://pkg.cfssl.org/R1.2/cfssl_linux-amd64"
+  shell: "curl -x '{{ http_proxy }}' -s -o {{ kubernetes_ctl_path }}cfssl https://pkg.cfssl.org/R1.2/cfssl_linux-amd64"
 
 - name: Download CFSSL Binary Files **
-  shell: "http_proxy={{ http_proxy }} ; https_proxy={{ https_proxy }} ; curl -s -o {{ kubernetes_ctl_path }}cfssljson https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64"
+  shell: "curl -x '{{ http_proxy }}' -s -o {{ kubernetes_ctl_path }}cfssljson https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64"
 
 - name: Download CFSSL Binary Files ***
   shell: "chmod +x {{ kubernetes_ctl_path }}cfssl*"
