@@ -1,6 +1,6 @@
 ---
 - name: Deploy Helm Cli *
-  shell: "http_proxy={{ http_proxy }} ; https_proxy={{ https_proxy }} ; curl -s https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash"
+  shell: "curl -x '{{ http_proxy }}' -s https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash"
 
 - name: Deploy Helm Cli **
   shell: "helm init"
