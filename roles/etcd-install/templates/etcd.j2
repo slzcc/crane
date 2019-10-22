@@ -65,6 +65,9 @@ spec:
       name: etcd
     - mountPath: {{ etcd_data_dirs }}
       name: data
+    - mountPath: /usr/share/zoneinfo
+      name: usr-local-timezone
+      readOnly: true
   volumes:
   - hostPath:
       path: {{ etcd_ssl_dirs }}
@@ -74,3 +77,7 @@ spec:
       path: {{ etcd_data_dirs }}
       type: DirectoryOrCreate
     name: data
+  - hostPath:
+      path: /usr/share/zoneinfo
+      type: DirectoryOrCreate
+    name: usr-local-timezone
