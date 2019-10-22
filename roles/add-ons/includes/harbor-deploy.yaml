@@ -1,5 +1,5 @@
 ---
-- name: Clean Clean Harbor Cert Directory
+- name: Clean Harbor Cert Directory
   file:
     path: "{{ kubernetes_etc_dirs }}harbor"
     state: absent
