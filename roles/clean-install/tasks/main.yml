@@ -113,7 +113,7 @@
     path: "{{ haproxy_etc_dirs }}"
     state: absent
   ignore_errors: true
-
+  
 - name: Systemd Reload
   shell: "systemctl daemon-reload"
 
