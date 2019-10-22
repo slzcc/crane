@@ -1,13 +1,19 @@
 ---
+- name: Clean Istio Directory
+  file:
+    path: "{{ temporary_dirs }}istio-{{ istio_version }}"
+    state: absent
+  ignore_errors: true
+
 - name: Deploy Istio *
-  shell: "cd {{ temporary_dirs }} && curl -x '{{ http_proxy }}' -sL https://git.io/getLatestIstio | ISTIO_VERSION={{ istio_version }} sh -" 
+  shell: "cd {{ temporary_dirs }} && curl -x '{{ http_proxy }}' -sL https://git.io/getLatestIstio | ISTIO_VERSION={{ istio_version }} ALL_PROXY='{{ http_proxy }}' sh -" 
 
 - name: Deploy Istio **
   shell: 'cd {{ temporary_dirs }}istio-{{ istio_version }} && until kubectl apply -f install/kubernetes/ ; do >&2 echo "Starting..." && sleep 1 ; done'
 
 - name: Deploy Istio ***
   template: 
-    src: roles/add-ons/templates/istio/ingress.j2
+    src: roles/add-ons/templates/istio/ingress.yml
     dest: "{{ temporary_dirs }}istio-ingress.yml"
     mode: 0644
     owner: "{{ ssh_connect_user }}" 
@@ -17,7 +23,7 @@
 
 - name: Deploy Istio *****
   template: 
-    src: roles/add-ons/templates/stio/kiali-secret.j2
+    src: roles/add-ons/templates/istio/kiali-secret.yml
     dest: "{{ temporary_dirs }}kiali-secret.yml"
     mode: 0644
     owner: "{{ ssh_connect_user }}" 
