@@ -1,6 +1,6 @@
 ---
 - name: Do not use the RBAC
-  shell: "kubectl create clusterrolebinding serviceaccounts-cluster-admin \
+  shell: "{{ kubernetes_ctl_path }}kubectl create clusterrolebinding serviceaccounts-cluster-admin \
           --clusterrole=cluster-admin \
           --group=system:serviceaccounts"
   when: not is_rbac

@@ -74,7 +74,7 @@ k8s_pod_infra_container_image: "{{ k8s_cluster_component_registry }}/pause:{{ pa
 k8s_cluster_component_registry: 'k8s.gcr.io'
 
 # 是否使用 RBAC, 集群默认是 RBAC 认证, 但可以在部署完集群之后创建超级用户取消所有限制
-is_rbac: true
+is_rbac: false
 
 ## Kuber Network
 ## ********************************************************************************************************************************
