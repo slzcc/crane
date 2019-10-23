@@ -60,6 +60,7 @@
     name: docker
     state: stopped
   when: check_old_md5.stderr == "" and check_old_md5.stdout != check_new_md5.stdout
+  ignore_errors: true
 
 - name: mkdir Docker Config DIR
   file:
