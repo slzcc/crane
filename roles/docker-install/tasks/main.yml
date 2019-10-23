@@ -69,7 +69,6 @@
     owner: "{{ ssh_connect_user }}"
     state: directory
   ignore_errors: true
-  when: check_old_md5.stderr == "" and check_old_md5.stdout != check_new_md5.stdout
 
 - name: Copy Dockerd Daemon JSON Config
   template: 
@@ -78,17 +77,20 @@
     mode: 0644
     owner: "{{ ssh_connect_user }}"
   when: check_old_md5.stderr == "" and check_old_md5.stdout != check_new_md5.stdout
+  ignore_errors: true
   
 - name: Docker-ce Powered UP And Startd
   service: 
     name: docker
     enabled: yes
+  ignore_errors: true
 
 - name: Start DockerD
   service:
     name: docker
     state: restarted
   when: check_old_md5.stderr == "" and check_old_md5.stdout != check_new_md5.stdout
+  ignore_errors: true
   
 - debug:
     var: result['stdout_lines']
