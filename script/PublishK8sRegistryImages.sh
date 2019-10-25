@@ -13,7 +13,6 @@
 # CleanPullImage=false isImageExport=false isImagePush=false ./PublishK8sRegistryImages.sh
 #########
 
-
 k8sVersion=${k8sVersion:-'v1.14.2'}
 etcdVersion=${etcdVersion:-'3.3.10'}
 pauseVersion=${pauseVersion:-'3.1'}
@@ -28,7 +27,6 @@ sourceRegistry=${sourceRegistry:-'k8s.gcr.io'}
 
 # Custom Target Registry
 targetRegistry=${targetRegistry:-'slzcc'}
-
 
 CleanPullImage=${CleanPullImage:-'true'}
 isImageExport=${isImageExport:-'false'}
