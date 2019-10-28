@@ -185,6 +185,9 @@ docker_cgroup_drive: '{{ kubelet_cgroup_drive }}'
 # docker login file size
 docker_log_size: '1G'
 
+# 是否配置 Daemon.js 
+is_docker_daemon_config: true
+
 ## HaProxy
 ## ********************************************************************************************************************************
 

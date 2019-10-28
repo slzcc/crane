@@ -34,12 +34,13 @@
   shell: "ls /etc/docker/daemon.json"
   register: check_daemon_file
   ignore_errors: true
+  when: is_docker_daemon_config
 
 - name: Check DockerD Daemon.js MD5 **
   shell: "md5sum /etc/docker/daemon.json | awk '{print $1}'"
   register: check_old_md5
   ignore_errors: true
-  when: check_daemon_file is succeeded
+  when: is_docker_daemon_config and check_daemon_file is succeeded
 
 - name: Check DockerD Daemon.js MD5 *
   template: 
@@ -47,19 +48,19 @@
     dest: "{{ temporary_dirs }}/.daemon.json"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
-  when: check_daemon_file is succeeded
+  when: is_docker_daemon_config and check_daemon_file is succeeded
 
 - name: Check DockerD Daemon.js MD5 **
   shell: "md5sum /tmp/.daemon.json | awk '{print $1}'"
   register: check_new_md5
   ignore_errors: true
-  when: check_daemon_file is succeeded
+  when: is_docker_daemon_config and check_daemon_file is succeeded
 
 - name: Stop DockerD
   service:
     name: docker
     state: stopped
-  when: check_old_md5.stderr == "" and check_old_md5.stdout != check_new_md5.stdout
+  when: is_docker_daemon_config and check_old_md5.stderr == "" and check_old_md5.stdout != check_new_md5.stdout
   ignore_errors: true
 
 - name: mkdir Docker Config DIR
@@ -76,7 +77,7 @@
     dest: "/etc/docker/daemon.json"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
-  when: check_old_md5.stderr == "" and check_old_md5.stdout != check_new_md5.stdout
+  when: is_docker_daemon_config and check_old_md5.stderr == "" and check_old_md5.stdout != check_new_md5.stdout
   ignore_errors: true
   
 - name: Docker-ce Powered UP And Startd
@@ -89,7 +90,7 @@
   service:
     name: docker
     state: restarted
-  when: check_old_md5.stderr == "" and check_old_md5.stdout != check_new_md5.stdout
+  when: is_docker_daemon_config and check_old_md5.stderr == "" and check_old_md5.stdout != check_new_md5.stdout
   ignore_errors: true
   
 - debug:
