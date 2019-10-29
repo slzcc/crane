@@ -60,7 +60,7 @@
   service:
     name: docker
     state: stopped
-  when: is_docker_daemon_config and check_old_md5.stderr == "" and check_old_md5.stdout != check_new_md5.stdout
+  when: is_docker_daemon_config and (check_old_md5.stderr == "" and check_old_md5.stdout != check_new_md5.stdout)
   ignore_errors: true
 
 - name: mkdir Docker Config DIR
@@ -77,7 +77,7 @@
     dest: "/etc/docker/daemon.json"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
-  when: is_docker_daemon_config and check_old_md5.stderr == "" and check_old_md5.stdout != check_new_md5.stdout
+  when: is_docker_daemon_config and (check_old_md5.stderr == "" and check_old_md5.stdout != check_new_md5.stdout)
   ignore_errors: true
   
 - name: Docker-ce Powered UP And Startd
@@ -90,7 +90,7 @@
   service:
     name: docker
     state: restarted
-  when: is_docker_daemon_config and check_old_md5.stderr == "" and check_old_md5.stdout != check_new_md5.stdout
+  when: is_docker_daemon_config and (check_old_md5.stderr == "" and check_old_md5.stdout != check_new_md5.stdout)
   ignore_errors: true
   
 - debug:

@@ -116,8 +116,11 @@ kube_proxy_ipvs_scheduler: "rr"
 ## ********************************************************************************************************************************
 # Kubelet Options
 ## 不区分 Master/Nodes
+kubelet_options: "--cgroup-driver={{ kubelet_cgroup_drive }} --network-plugin=cni --cni-conf-dir={{ cni_config_dir }} --cni-bin-dir={{ kubernetes_cni_dirs }} --pod-infra-container-image={{ k8s_pod_infra_container_image }} --runtime-cgroups=/systemd/system.slice --kubelet-cgroups=/systemd/system.slice"
+
+## GC Config, (没有应用, 如需要请加入 kubelet_options 配置内, 请熟悉文档中的每一项参数功能再进行配置)
 ## GC DOCS https://kubernetes.io/docs/tasks/administer-cluster/out-of-resource/
-kubelet_options: "--cgroup-driver={{ kubelet_cgroup_drive }} --network-plugin=cni --cni-conf-dir={{ cni_config_dir }} --cni-bin-dir={{ kubernetes_cni_dirs }} --pod-infra-container-image={{ k8s_pod_infra_container_image }} --runtime-cgroups=/systemd/system.slice --kubelet-cgroups=/systemd/system.slice --eviction-hard=memory.available<500Mi,nodefs.available<1Gi,imagefs.available<50Gi --eviction-minimum-reclaim='memory.available=0Mi,nodefs.available=500Mi,imagefs.available=2Gi' --system-reserved=memory=1.5Gi"
+kubectl_gc_options: "--eviction-hard=memory.available<500Mi,nodefs.available<1Gi,imagefs.available<50Gi --eviction-minimum-reclaim='memory.available=0Mi,nodefs.available=500Mi,imagefs.available=2Gi' --system-reserved=memory=1.5Gi"
 
 ## External Proxy
 ## ********************************************************************************************************************************
