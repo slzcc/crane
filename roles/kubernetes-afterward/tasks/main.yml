@@ -4,3 +4,12 @@
           --clusterrole=cluster-admin \
           --group=system:serviceaccounts"
   when: not is_rbac
+
+# https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#noderestriction
+- name: Set Master Role Label 
+  shell: "for i in $({{ kubernetes_ctl_path }}kubectl get node -l node.kubernetes.io/master= | sed '1d' | awk  '{print $1}'); do {{ kubernetes_ctl_path }}kubectl label node $i node-role.kubernetes.io/master=''; done"
+  ignore_errors: true
+
+- name: Set Nodes Role Label 
+  shell: "for i in $({{ kubernetes_ctl_path }}kubectl get node -l node.kubernetes.io/node= | sed '1d' | awk  '{print $1}'); do {{ kubernetes_ctl_path }}kubectl label node $i node-role.kubernetes.io/node=''; done"
+  ignore_errors: true
