@@ -3,14 +3,14 @@
 # 如果需要部署到自己的私有仓库，请修改此项名称
 export targetRegistry=${targetRegistry:-'slzcc'}
 
-_cni_os_drive=`awk '/^cni_os_drive/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed -r "s/'//g"`
-_k8sVersion=`awk '/^k8s_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed -r "s/'//g"`
-_cni_version=`awk '/^cni_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed -r "s/'//g"`
-_etcdVersion=`awk '/^etcd_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed -r "s/'//g"`
-_pauseVersion=`awk '/^pause_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed -r "s/'//g"`
-_calicoVersion=`awk '/^calico_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed -r "s/'//g"`
-_haproxyVersion=`awk '/^haproxy_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed -r "s/'//g"`
-_corednsVersion=`awk '/^dns_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed -r "s/'//g"`
+_cni_os_drive=`awk '/^cni_os_drive/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_k8sVersion=`awk '/^k8s_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_cni_version=`awk '/^cni_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_etcdVersion=`awk '/^etcd_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_pauseVersion=`awk '/^pause_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_calicoVersion=`awk '/^calico_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_haproxyVersion=`awk '/^haproxy_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_corednsVersion=`awk '/^dns_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 
 # Docker Version
 export dockercliVersion=18.09
@@ -75,7 +75,7 @@ BUILD_VERSION=`awk '/^k8s_version/{print}' ../group_vars/all.yml | awk -F': ' '{
 cd ${temporaryDirs} && docker build -t ${targetRegistry}/kubernetes:${BUILD_VERSION} .
 
 # Push Images
-docker push ${targetRegistry}/kubernetes:`awk '/^k8s_version/{print}' ./group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`.`awk '/^build_k8s_version/{print}' ./group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+docker push ${targetRegistry}/kubernetes:${BUILD_VERSION}
 
 if [ $? -ne 0 ]; then
     echo 
