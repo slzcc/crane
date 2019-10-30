@@ -2,12 +2,12 @@ SHELL := /bin/bash
 
 DockerHubRepoName := "slzcc"
 ProjectName := "crane"
-VERSION := `awk '/^k8s_version/' ./group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`.`awk '/^build_k8s_version/{print}' ./group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+VERSION := `awk '/^k8s_version/' ./group_vars/all.yml | awk -F': ' '{print $$2}' | sed "s/'//g"`.`awk '/^build_k8s_version/{print}' ./group_vars/all.yml | awk -F': ' '{print $$2}' | sed "s/'//g"`
 CRANE_ENTRANCE := "main.yml"
 OPTION := "-vv"
 
 build:
-	@docker build -t ${DockerHubRepoName}/${ProjectName}:`awk '/^k8s_version/' ./group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`.`awk '/^build_k8s_version/{print}' ./group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"` . --no-cache
+	@docker build -t ${DockerHubRepoName}/${ProjectName}:${VERSION} . --no-cache
 		
 push:
 	@docker push ${DockerHubRepoName}/${ProjectName}:${VERSION}
@@ -24,6 +24,3 @@ local_load_image:
 	@docker run --name import-kubernetes-temporary -d -v /var/run/docker.sock:/var/run/docker.sock:ro slzcc/kubernetes:${VERSION} sleep 1234567
 	@until docker exec -i import-kubernetes-temporary bash /docker-image-import.sh ; do >&2 echo "Starting..." && sleep 1 ; done
 	@docker rm -f import-kubernetes-temporary
-
-echos:
-	@echo docker build -t ${DockerHubRepoName}/${ProjectName}:`awk '/^k8s_version/{print}' ./group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
