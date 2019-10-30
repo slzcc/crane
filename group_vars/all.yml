@@ -34,7 +34,7 @@ k8s_cluster_ip: '10.96.0.1'
 k8s_cluster_ip_range: '10.96.0.0/12'
 
 # Kubernetes ApiServer 的总入口地址, 可配置 SLB 等云服务商提供的地址, 但需要接入后端服务器的 80, 443 端口, 此地址可以写某个单实例的 IP 地址
-k8s_load_balance_ip: 10.146.0.12
+k8s_load_balance_ip: 10.140.0.37
 
 # Kubernetes HaProxy 监听的 apiServer 完整的 URL
 k8s_apiserver_https_bind: 'https://{{ k8s_load_balance_ip }}:{{ k8s_master_haproxy_bind_port }}'
@@ -203,7 +203,8 @@ is_docker_daemon_config: true
 
 # HaProxy Version
 # 如使用镜像方式部署, 不能修改
-haproxy_version: '2.0.5'
+# https://hub.docker.com/_/haproxy
+haproxy_version: '2.0.8'
 
 # 配置 stats 的 URI 地址
 haproxy_stats_url: '/haproxy_stats'
@@ -279,7 +280,7 @@ source_ssh_private_key_file: "{{ hostvars[inventory_hostname]['ansible_ssh_priva
 # Etcd Verions
 # https://github.com/etcd-io/etcd/releases
 # 如使用镜像方式部署, 不能修改
-etcd_version: '3.3.10'
+etcd_version: '3.3.15'
 
 # Etcd 使用的 Client 协议, 默认 HTTPS, 不能修改
 etcd_url_scheme: "https"
@@ -362,7 +363,7 @@ calico_ipv4_pool_cidr: '192.168.0.0/16'
 # Calico Verion
 # https://github.com/projectcalico/calico/releases
 # 如使用镜像方式部署, 不能修改
-calico_version: 'v3.7.2'
+calico_version: 'v3.10.0'
 
 # CNI Config Dir
 cni_config_dir: '/etc/cni/net.d'
