@@ -26,4 +26,4 @@ local_load_image:
 	@docker rm -f import-kubernetes-temporary
 
 echos:
-	@echo docker build -t ${DockerHubRepoName}/${ProjectName}:`awk '/^k8s_version/' ./group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`.`awk '/^build_k8s_version/{print}' ./group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+	@echo docker build -t ${DockerHubRepoName}/${ProjectName}:`awk '/^k8s_version/' ./group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
