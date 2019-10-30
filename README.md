@@ -90,6 +90,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [x] 修复 `docker` 安装时, 如果本地有集群外的服务(daemon.json 文件一致), 会停止服务的问题, v1.16.1.3 中修复。
 - [x] 修复 v1.16.x 中取消 `extensions/v1beta1` apiVersion 的问题, v1.16.1.1 中修复。
 - [x] 修复 `TZ` 时区问题, 由于是挂载宿主机 `/usr/share/zoneinfo` 目录所以一定要保证此目录存在, v1.16.1.4 中修复。
+- [x] 修复 `Crane` 部署版本存在服务版本问题, 统一镜像方式部署的版本强一致, v1.16.2.2 中修复。
 
 ## 获取对应的版本
 切记, 如需要安装哪个大版本的集群, 就获取相应的 tag :
