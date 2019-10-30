@@ -70,7 +70,7 @@ COPY docker-image-import.sh /docker-image-import.sh
 
 EOF
 
-cd ${temporaryDirs} && docker build -t ${targetRegistry}/kubernetes:`awk '/^k8s_version/{print}' ./group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`.`awk '/^build_k8s_version/{print}' ./group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"` .
+cd ${temporaryDirs} && docker build -t ${targetRegistry}/kubernetes:`awk '/^k8s_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`.`awk '/^build_k8s_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"` .
 
 # Push Images
 docker push ${targetRegistry}/kubernetes:`awk '/^k8s_version/{print}' ./group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`.`awk '/^build_k8s_version/{print}' ./group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
