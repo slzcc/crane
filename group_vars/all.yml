@@ -37,7 +37,7 @@ k8s_cluster_ip: '10.96.0.1'
 k8s_cluster_ip_range: '10.96.0.0/12'
 
 # Kubernetes ApiServer 的总入口地址, 可配置 SLB 等云服务商提供的地址, 但需要接入后端服务器的 80, 443 端口, 此地址可以写某个单实例的 IP 地址
-k8s_load_balance_ip: 10.140.0.37
+k8s_load_balance_ip: 10.146.0.12
 
 # Kubernetes HaProxy 监听的 apiServer 完整的 URL
 k8s_apiserver_https_bind: 'https://{{ k8s_load_balance_ip }}:{{ k8s_master_haproxy_bind_port }}'
@@ -85,7 +85,7 @@ is_rbac: false
 # 第三方网络设备绑定的网络设备配置，需要集群内绑定的网卡名称统一，也就是说所有的内部外部通信走一块网卡
 # Etcd 绑定的宿主机网卡, 此配置需要在启动 Etcd 的节点上强制网卡名称一致
 # 如果配置了 Keepalived 则 Keepalived 也会绑定到这块网卡上，暂不支持多网卡
-os_network_device_name: 'ens4'
+os_network_device_name: 'ens0'
 
 ## Keepalived
 ## ********************************************************************************************************************************
@@ -178,7 +178,7 @@ tls_k8s_head_info_ST: 'BeiJing'
 ## ********************************************************************************************************************************
 
 # 使用 https://get.docker.com 方式安装, 并默认使用 Aliyun 镜像源, 可设为空.
-docker_install_source: "Aliyun"
+docker_install_source: ""
 
 # 镜像加速, 如果为空则不设置.
 docker_registry_mirrors: '["https://registry.docker-cn.com"]'

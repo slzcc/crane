@@ -16,6 +16,7 @@
     http_proxy: "{{ http_proxy }}"
     https_proxy: "{{ https_proxy }}"
   when: ansible_distribution == 'Ubuntu'
+  ignore_errors: true
 
 - name: Yum Install Dependence
   yum: 
@@ -25,9 +26,10 @@
     http_proxy: "{{ http_proxy }}"
     https_proxy: "{{ https_proxy }}"
   when: ansible_distribution == 'CentOS'
+  ignore_errors: true
 
 - name: Install Docker-ce
-  shell: "curl -x '{{ http_proxy }}' -fsSL https://get.docker.com | ALL_PROXY='{{ http_proxy }}' sh -s -- --mirror {{ docker_install_source }}"
+  include: roles/docker-install/includes/main.yaml
   when: result.stderr
 
 - name: Check DockerD Daemon.js isFile
@@ -36,31 +38,40 @@
   ignore_errors: true
   when: is_docker_daemon_config
 
-- name: Check DockerD Daemon.js MD5 **
+- name: Check DockerD Daemon.js MD5 *
   shell: "md5sum /etc/docker/daemon.json | awk '{print $1}'"
   register: check_old_md5
   ignore_errors: true
-  when: is_docker_daemon_config and check_daemon_file is succeeded
+  when: 
+    - is_docker_daemon_config 
+    - check_daemon_file.stderr == ''
 
-- name: Check DockerD Daemon.js MD5 *
+- name: Check DockerD Daemon.js MD5 **
   template: 
     src: "daemon.j2"
     dest: "{{ temporary_dirs }}/.daemon.json"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
-  when: is_docker_daemon_config and check_daemon_file is succeeded
+  when: 
+    - is_docker_daemon_config
+    - check_daemon_file.stderr == ''
 
 - name: Check DockerD Daemon.js MD5 **
   shell: "md5sum /tmp/.daemon.json | awk '{print $1}'"
   register: check_new_md5
   ignore_errors: true
-  when: is_docker_daemon_config and check_daemon_file is succeeded
+  when: 
+    - is_docker_daemon_config 
+    - check_daemon_file.stderr == ''
 
 - name: Stop DockerD
   service:
     name: docker
     state: stopped
-  when: is_docker_daemon_config and (check_old_md5.stderr == "" and check_old_md5.stdout != check_new_md5.stdout)
+  when: 
+    - is_docker_daemon_config 
+    - check_old_md5.stderr == ''
+    - check_old_md5.stdout != check_new_md5.stdout
   ignore_errors: true
 
 - name: mkdir Docker Config DIR
@@ -77,7 +88,10 @@
     dest: "/etc/docker/daemon.json"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
-  when: is_docker_daemon_config and (check_old_md5.stderr == "" and check_old_md5.stdout != check_new_md5.stdout)
+  when: 
+    - is_docker_daemon_config
+    - result.stderr != ''
+    - check_daemon_file.stderr != ''
   ignore_errors: true
   
 - name: Docker-ce Powered UP And Startd
@@ -89,8 +103,7 @@
 - name: Start DockerD
   service:
     name: docker
-    state: restarted
-  when: is_docker_daemon_config and (check_old_md5.stderr == "" and check_old_md5.stdout != check_new_md5.stdout)
+    state: started
   ignore_errors: true
   
 - debug:
