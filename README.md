@@ -29,6 +29,10 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 * v1.10.0
 * v1.14.x >= 1.16.x
 
+目前支持的操作系统: (其他版本请自行测试)
+* Ubuntu 16.04
+* Centos7/8
+
 在 v1.14.x 开始, 可以支持动态的选择版本进行部署, 如 v1.14.1/v1.14.2 版本, 但目前只支持小版本。后续会添加集群的热更新。
 ## 推荐亮点
 
