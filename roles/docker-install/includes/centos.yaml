@@ -1,0 +1,8 @@
+---
+- name: Centos7 Install Docker-ce
+  shell: "curl -x '{{ http_proxy }}' -fsSL https://get.docker.com | ALL_PROXY='{{ http_proxy }}' sh -s -- --mirror {{ docker_install_source }}"
+  when: ansible_distribution_major_version == "7"
+
+- name: Centos8 Install Docker-ce
+  shell: "yum install -y yum-utils device-mapper-persistent-data lvm2 && yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo && yum install -y --nobest docker-ce docker-ce-cli"
+  when: ansible_distribution_major_version == "8"
