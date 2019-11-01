@@ -25,6 +25,12 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 
 > 默认 Etcd 需要跟随 Master 进行部署, 暂不支持 Etcd 部署在 Node 中 (后期会优化, 在添加  节点时支持 Node 节点部署)。
 
+# 部署说明
+
+部署示例请参照 [Crane Install](./INSTALL.md) 文件进行部署。
+
+## 发展历程
+
 目前支持的 Kubernetes 版本:
 * v1.10.0
 * v1.14.x >= 1.16.x
@@ -35,6 +41,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 * Centos7/8
 
 在 v1.14.x 开始, 可以支持动态的选择版本进行部署, 如 v1.14.1/v1.14.2 版本, 但目前只支持小版本。后续会添加集群的热更新。
+
 ## 推荐亮点
 
 - [x] 支持集群后续 Kubernetes Cluster 扩容, 支持添加 Master/None 节点。
