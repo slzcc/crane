@@ -2,7 +2,7 @@
 
 ### Crane 概念
 
-[Crane](https://github.com/slzcc/crane) 致力于敏捷部署 [Kubernetes](https://kubernetes.io/) Cluster 方案, 它的灵感在于 [Kubeadm](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/) 的部署, 但与 Kubeadm 不同的是 Crane 与 [Ansible](https://www.ansible.com/) 方式进行部署, 并实现了 Ansible in Docker 化方案(可借助于任何一台服务器借助于 Docker 启动容器方式部署 Crane.)。
+[Crane](https://github.com/slzcc/crane) 致力于敏捷部署 [Kubernetes](https://kubernetes.io/) Cluster 方案, 它的灵感在于 [Kubeadm](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/) 的部署, 但与 Kubeadm 不同的是 Crane 通过 [Ansible](https://www.ansible.com/) 方式进行部署, 并实现了 Ansible in Docker 化方案(可借助于任何一台服务器借助于 Docker 启动容器方式部署 Crane.)。
 
 Crane 是由我个人独立创作并维护的, 在使用范围上可能得不到一定的实践支持, 但是它还是通过我不停地对业务以及 Kubernetes 日常使用上的灵感进行支撑, 还希望爱好者可以通过自己的实践以及理解的程度上对 Crane 进行改进.
 
@@ -74,7 +74,46 @@ is_keepalived: false
 kube_proxy_node_port_addresses: '192.168.2.x/16'
 ```
 
-完成上述配置后, 可进行部署 Crane 命令如下:
+完成上述配置后, 可进行部署 Crane。
+
+## Ansible in Docker
+
+借助 Docker 无需本地安装 Ansible 也可进行对 Crane 的安装, 如果在需部署集群内的任意节点执行则会导致中断(如果在部署集群外执行则直接执行命令即可)，您需要配置下述说明文档配置 Dockerd 的 daemon.json 配置，如完成后然后执行下方命令进行 Crane 的安装:
+
+```
+$ docker run --rm -i \
+         -v ~/.ssh:/root/.ssh \
+         -v ${PWD}/nodes:/crane/nodes \
+         -v ${PWD}/group_vars:/carne/group_vars \
+         slzcc/crane:v1.16.2.4 \
+         -i nodes main.yml -vv
+```
+
+> 如果实例上的 daemon.json 与部署的文件一致, 则不会导致 DockerD 重启, 可以在任意节点上使用 Ansible in Docker. 如果第一次部署请配置如下:
+
+```
+$ systemctl stop docker
+$ cat > /etc/docker/daemon.json  <<EOF
+{
+    "registry-mirrors": ["https://registry.docker-cn.com"],
+    "exec-opts": ["native.cgroupdriver=cgroupfs"],
+    "log-driver": "json-file",
+    "log-opts": {
+        "max-size": "1G"
+    },
+    "data-root": "/var/lib/docker",
+    "insecure-registry": []
+}
+EOF
+ 
+ $ systemctl start docker
+```
+
+> 通过自定义 daemin.json 来保证 Ansible in Docker 不重启 DockerD。
+
+---
+
+如不想使用 Ansible in Docker 可执行命令直接进行部署:
 
 ```
 $ export ANSIBLE_HOST_KEY_CHECKING=true
@@ -86,3 +125,7 @@ $ ansible-playbook -i nodes main.yml -vv
 ```
 $ ansible-playbook -i nodes remove_cluster.yml -vv
 ```
+---
+
+如果使用后发现什么问题请及时联系我进行解决: https://wiki.shileizcc.com/confluence/display/LM/Leave+a+message, 或提出 issue。
+感谢支持!
