@@ -31,6 +31,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 
 目前支持的操作系统: (其他版本请自行测试)
 * Ubuntu 16.04
+* Ubuntu 18.04 (默认的 Ubuntu 18.04 没有 python, 只有 python3 可执行文件, 所以需要在 nodes 文件中定义 `ansible_python_interpreter` 请自行配置, 可设为全局变量.)
 * Centos7/8
 
 在 v1.14.x 开始, 可以支持动态的选择版本进行部署, 如 v1.14.1/v1.14.2 版本, 但目前只支持小版本。后续会添加集群的热更新。
@@ -95,6 +96,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [x] 修复 v1.16.x 中取消 `extensions/v1beta1` apiVersion 的问题, v1.16.1.1 中修复。
 - [x] 修复 `TZ` 时区问题, 由于是挂载宿主机 `/usr/share/zoneinfo` 目录所以一定要保证此目录存在, v1.16.1.4 中修复。
 - [x] 修复 `Crane` 部署版本存在服务版本问题, 统一镜像方式部署的版本强一致, v1.16.2.2 中修复。
+- [x] 修复 v1.16.2.3 中无法对 Kubernetes etc 目录的清除操作, 造成遗留历史配置造成无法加入新集群或重新部署集群的问题, v1.16.2.4 中修复。
 
 ## 获取对应的版本
 切记, 如需要安装哪个大版本的集群, 就获取相应的 tag :

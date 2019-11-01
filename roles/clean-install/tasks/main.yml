@@ -46,9 +46,15 @@
     state: absent
   ignore_errors: true
 
-- name: Clean Kubelet Working directory.
+- name: Clean Kubelet PKI Config directory.
   file:
-    path: "{{ kubelet_work_dirs }}/pki"
+    path: "{{ kubernetes_etc_dirs }}pki"
+    state: absent
+  ignore_errors: true
+
+- name: Clean Kubelet Config Home directory.
+  file:
+    path: "{{ kubernetes_etc_dirs }}"
     state: absent
   ignore_errors: true
 

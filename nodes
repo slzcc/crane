@@ -1,11 +1,11 @@
 [kube-master]
-35.243.68.255
+35.243.68.255 ansible_python_interpreter=/usr/bin/python3
 
 [kube-node]
-
+34.84.105.165
 
 [etcd]
-35.243.68.255
+35.243.68.255 ansible_python_interpreter=/usr/bin/python3
 
 [k8s-cluster-add-master]
 
