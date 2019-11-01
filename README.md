@@ -29,6 +29,8 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 
 部署示例请参照 [Crane Install](./INSTALL.md) 文件进行部署。
 
+---
+
 ## 发展历程
 
 目前支持的 Kubernetes 版本:
