@@ -37,25 +37,3 @@
 #           "registry-mirrors": ["https://4dyopx9i.mirror.aliyuncs.com"]
 #         }
 #         EOF'
-
-# - shell: cat < /tmp/123.txt
-#   args:
-#     executable: /bin/bash
-
-# - set_fact:
-#      one_fact: something
-
-# - debug: msg="{{ one_fact }}"
-
-# - name: Detect cluster information
-#   debug: 
-#     msg: docker run --rm -i -e ETCDCTL_API=2 -v {{ etcd_ssl_dirs }}:{{ etcd_ssl_dirs }} -w {{ etcd_ssl_dirs }} {{ k8s_cluster_component_registry }}/etcd:{{ etcd_version }} etcdctl --ca-file=./etcd-ca.pem --key-file=./etcd-key.pem --cert-file=./etcd.pem --endpoints {{ etcd_cluster_str }} member list
-# - debug:
-#     msg: "{{ k8s_upgrade_version }}"
-- name: Copy Kubernetes ApiServer Config Files
-  template: 
-    src: tests/templates/kube-apiserver.j2
-    dest: "/tmp/kube-apiserver.yml"
-    mode: 0644
-    owner: "{{ ssh_connect_user }}" 
-  delegate_to: "{{ groups['etcd'][0] }}"

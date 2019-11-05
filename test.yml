@@ -6,7 +6,7 @@
       shell: ansible --version || true
       
 - name: Test
-  hosts: all
+  hosts: localhost
   gather_facts: true
   # sudo: yes
   remote_user: "{{ ssh_connect_user }}"
