@@ -1,5 +1,6 @@
 ---
-- debug:
+- name: Use 'Crane' Deploy Kubernetes Cluster
+  debug:
     msg:
     - '                                                                                                                                         '
     - '                          ccccccccccccccccrrrrr   rrrrrrrrr   aaaaaaaaaaaaa  nnnn  nnnnnnnn        eeeeeeeeeeee                          '
