@@ -28,3 +28,6 @@
     - '                       MM                     ,V      .JMML.   MMb.`Mbod&YML.P^YbmdP&   `Mbmmd&.JMML.   .JMML  JMML.`Mbmmd&  `Mbmo  `Mbmmd& M9mmmP& '
     - '                     .JMML.                OOb&'
     - ''
+
+- name: Initialize Crane .
+  shell: "sleep 3"
