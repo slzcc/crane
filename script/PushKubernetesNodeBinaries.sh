@@ -30,7 +30,7 @@ export haproxyVersion=${_haproxyVersion:-'2.0.0'}
 # CoreDNS Version
 export corednsVersion=${_corednsVersion:-'1.5.0'}
 # Nginx Ingress
-export nginxIngressVersion=${_nginxIngressVersion:''}
+export nginxIngressVersion=${_nginxIngressVersion:-'0.26.1'}
 
 # 数据打包临时路径
 export temporaryDirs=${temporaryDirs:-'/tmp'}
