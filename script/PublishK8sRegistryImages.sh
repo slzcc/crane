@@ -19,7 +19,7 @@ pauseVersion=${pauseVersion:-'3.1'}
 calicoVersion=${calicoVersion:-'v3.7.2'}
 haproxyVersion=${haproxyVersion:-'2.0.0'}
 corednsVersion=${corednsVersion:-'1.5.0'}
-nginxIngressVersion=${nginxIngressVersion:''}
+nginxIngressVersion=${nginxIngressVersion:-''}
 
 # Calico Source Registry
 calicoRegistry=${calicoRegistry:-'calico'}
