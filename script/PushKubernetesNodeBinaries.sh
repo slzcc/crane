@@ -11,6 +11,7 @@ _pauseVersion=`awk '/^pause_version/{print}' ../group_vars/all.yml | awk -F': ' 
 _calicoVersion=`awk '/^calico_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 _haproxyVersion=`awk '/^haproxy_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 _corednsVersion=`awk '/^dns_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_nginxIngressVersion=`awk '/^ingress_nginx_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 
 # Docker Version
 export dockercliVersion=18.09
@@ -28,6 +29,8 @@ export calicoVersion=${_calicoVersion:-'v3.7.2'}
 export haproxyVersion=${_haproxyVersion:-'2.0.0'}
 # CoreDNS Version
 export corednsVersion=${_corednsVersion:-'1.5.0'}
+# Nginx Ingress
+export nginxIngressVersion=${_nginxIngressVersion:''}
 
 # 数据打包临时路径
 export temporaryDirs=${temporaryDirs:-'/tmp'}
