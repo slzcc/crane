@@ -19,9 +19,11 @@ pauseVersion=${pauseVersion:-'3.1'}
 calicoVersion=${calicoVersion:-'v3.7.2'}
 haproxyVersion=${haproxyVersion:-'2.0.0'}
 corednsVersion=${corednsVersion:-'1.5.0'}
+nginxIngressVersion=${nginxIngressVersion:''}
 
 # Calico Source Registry
 calicoRegistry=${calicoRegistry:-'calico'}
+
 # Kubernetes Source Registry
 sourceRegistry=${sourceRegistry:-'k8s.gcr.io'}
 
@@ -107,10 +109,18 @@ docker pull coredns/coredns:${corednsVersion}
 [ ${isImageExport} == 'true' ] && \
 docker save -o ${temporaryDirs}/image_coredns.tar.gz \
                coredns/coredns:${corednsVersion}
-# keepalived
+# Keepalived
 docker pull slzcc/keepalived:1.2.24
 [ ${CleanPullImage} == 'true' ] && docker rmi -f slzcc/keepalived:1.2.24
 
 [ ${isImageExport} == 'true' ] && \
 docker save -o ${temporaryDirs}/image_keeplived.tar.gz \
                slzcc/keepalived:1.2.24
+
+# Nginx Ingress
+docker pull quay.io/kubernetes-ingress-controller/nginx-ingress-controller:${nginxIngressVersion}
+[ ${CleanPullImage} == 'true' ] && docker rmi -f quay.io/kubernetes-ingress-controller/nginx-ingress-controller:${nginxIngressVersion}
+
+[ ${isImageExport} == 'true' ] && \
+docker save -o ${temporaryDirs}/image_nginxingress.tar.gz \
+               quay.io/kubernetes-ingress-controller/nginx-ingress-controller:${nginxIngressVersion}
