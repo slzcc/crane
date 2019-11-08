@@ -1,4 +1,9 @@
 ---
+- hosts: localhost
+  gather_facts: false
+  roles:
+    - { role: local-task }
+    
 - hosts: all
   sudo: yes
   remote_user: "{{ ssh_connect_user }}"
