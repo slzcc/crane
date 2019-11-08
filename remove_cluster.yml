@@ -1,9 +1,8 @@
 ---
 - hosts: localhost
   gather_facts: false
-  tasks:
-    - name: Output current Ansible Version.
-      shell: ansible --version || true
+  roles:
+    - { role: local-task }
 
 - name: Clean Kubernetes Cluster
   hosts: all
