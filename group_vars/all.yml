@@ -37,7 +37,7 @@ k8s_cluster_ip: '10.96.0.1'
 k8s_cluster_ip_range: '10.96.0.0/12'
 
 # Kubernetes ApiServer 的总入口地址, 可配置 SLB 等云服务商提供的地址, 但需要接入后端服务器的 80, 443 端口, 此地址可以写某个单实例的 IP 地址
-k8s_load_balance_ip: 10.146.0.12
+k8s_load_balance_ip: 172.17.48.104
 
 # Kubernetes HaProxy 监听的 apiServer 完整的 URL
 k8s_apiserver_https_bind: 'https://{{ k8s_load_balance_ip }}:{{ k8s_master_haproxy_bind_port }}'
@@ -85,7 +85,7 @@ is_rbac: false
 # 第三方网络设备绑定的网络设备配置，需要集群内绑定的网卡名称统一，也就是说所有的内部外部通信走一块网卡
 # Etcd 绑定的宿主机网卡, 此配置需要在启动 Etcd 的节点上强制网卡名称一致
 # 如果配置了 Keepalived 则 Keepalived 也会绑定到这块网卡上，暂不支持多网卡
-os_network_device_name: 'ens4'
+os_network_device_name: 'eth0'
 
 ## Keepalived
 ## ********************************************************************************************************************************
@@ -110,7 +110,7 @@ is_install_ipvsadm: true
 
 # 如果配置了 Keepalived 就需要配置绑定的 nodePort 的物理网段，否则 Keepalived 的流量无法到达 nodePort, 因为 Keepalived 会发送 ARP 请求到此网段内，如果不设置这个网段则会流量不可达. v1.15.3.5 中修复。
 # 如果物理网段为 10.100.21.0/24, 请把值写入下方配置即可.
-kube_proxy_node_port_addresses: ""
+kube_proxy_node_port_addresses: "172.17.48.0/24"
 
 # ipvs 调度策略.
 kube_proxy_ipvs_scheduler: "rr"
