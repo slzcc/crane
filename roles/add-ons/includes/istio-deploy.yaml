@@ -1,32 +1,35 @@
 ---
 - name: Clean Istio Directory
   file:
-    path: "{{ temporary_dirs }}istio-{{ istio_version }}"
+    path: "{{ istio_home }}"
     state: absent
   ignore_errors: true
 
 - name: Deploy Istio *
-  shell: "cd {{ temporary_dirs }} && curl -x '{{ http_proxy }}' -sL https://git.io/getLatestIstio | ISTIO_VERSION={{ istio_version }} ALL_PROXY='{{ http_proxy }}' sh -" 
+  shell: "cd {{ istio_home }} && curl -x '{{ http_proxy }}' -sL https://git.io/getLatestIstio | ISTIO_VERSION={{ istio_version }} ALL_PROXY='{{ http_proxy }}' sh -" 
 
 - name: Deploy Istio **
-  shell: 'cd {{ temporary_dirs }}istio-{{ istio_version }} && until kubectl apply -f install/kubernetes/ ; do >&2 echo "Starting..." && sleep 1 ; done'
+  shell: 'cd {{ istio_home }} && until kubectl apply -f install/kubernetes/ ; do >&2 echo "Starting..." && sleep 1 ; done'
 
 - name: Deploy Istio ***
   template: 
     src: roles/add-ons/templates/istio/ingress.yml
-    dest: "{{ temporary_dirs }}istio-ingress.yml"
+    dest: "{{ istio_home }}istio-ingress.yml"
     mode: 0644
     owner: "{{ ssh_connect_user }}" 
 
 - name: Deploy Istio ****
-  shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}istio-ingress.yml ; do >&2 echo "Starting..." && sleep 1 ; done'
+  shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ istio_home }}istio-ingress.yml ; do >&2 echo "Starting..." && sleep 1 ; done'
 
 - name: Deploy Istio *****
   template: 
     src: roles/add-ons/templates/istio/kiali-secret.yml
-    dest: "{{ temporary_dirs }}kiali-secret.yml"
+    dest: "{{ istio_home }}kiali-secret.yml"
     mode: 0644
     owner: "{{ ssh_connect_user }}" 
 
 - name: Deploy Istio ******
-  shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}kiali-secret.yml ; do >&2 echo "Starting..." && sleep 1 ; done'
+  shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ istio_home }}kiali-secret.yml ; do >&2 echo "Starting..." && sleep 1 ; done'
+
+- name: Deploy Istio *******
+  shell: 'ln -sf {{ istio_home }}/bin/istioctl /usr/bin/istioctl'
