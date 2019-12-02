@@ -181,7 +181,7 @@ tls_k8s_head_info_ST: 'BeiJing'
 docker_install_source: ""
 
 # 镜像加速, 如果为空则不设置.
-docker_registry_mirrors: '["https://registry.docker-cn.com"]'
+docker_registry_mirrors: '["https://4dyopx9i.mirror.aliyuncs.com"]'
 
 # Docker 存储路径
 docker_data_root: '/var/lib/docker'
