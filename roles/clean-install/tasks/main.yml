@@ -86,6 +86,24 @@
   when: is_remove_docker_ce and is_remove_docker_dir
   ignore_errors: true
 
+- name: Clean Docker Binary Files
+  file:
+    path: "/usr/bin/{{ item }}"
+    state: absent
+  with_items:
+    - "containerd"
+    - "containerd-shim"
+    - "ctr"
+    - "docker"
+    - "dockerd"
+    - "docker-entrypoint.sh"
+    - "docker-init"
+    - "docker-proxy"
+    - "modprobe"
+    - "runc"
+  when: is_remove_docker_ce and is_remove_docker_dir
+  ignore_errors: true
+
 # Clean Etcd
 - name: Clean Etcd ssl directory.
   file:

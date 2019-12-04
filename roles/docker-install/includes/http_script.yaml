@@ -1,0 +1,3 @@
+---
+- name: Get Docker Install Script To Command
+  shell: "curl -x '{{ http_proxy }}' -fsSL https://get.docker.com | ALL_PROXY='{{ http_proxy }}' sh -s -- --mirror {{ docker_install_source }}"
