@@ -1,0 +1,20 @@
+---
+- name: Get Docker Binary File
+  shell: "http_proxy={{ http_proxy }} ; https_proxy={{ https_proxy }} ; wget -qO- '{{ docker_install_http_binary_source }}/docker-{{ docker_version }}.tar.gz' | tar zx -C {{ docker_ctl_path }}"
+
+- name: Copy Docker Systemd Config
+  template: 
+    src: "roles/docker-install/templates/{{ item }}"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+    dest: "{{ systemd_default_dirs }}{{ item }}"
+  with_items:
+    - "containerd.service"
+    - "docker.service"
+    - "docker.socket"
+    
+- name: Systemd Reload Config Cache
+  shell: "systemctl daemon-reload"
+
+- name: System Add Docker Group
+  shell: "groupadd docker"

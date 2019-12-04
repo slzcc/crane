@@ -177,8 +177,20 @@ tls_k8s_head_info_ST: 'BeiJing'
 ## Docker
 ## ********************************************************************************************************************************
 
-# 使用 https://get.docker.com 方式安装, 并默认使用 Aliyun 镜像源, 可设为空.
-docker_install_source: ""
+# install To Docker Version
+docker_version: '19.03'
+
+# Docker 安装类型, 默认 http_binary, 其他方式: http_binary, local_binary, http_script
+# 值为 http_binary 则通过远程下载二进制文件到执行目录.
+# 值为 local_binary 则通过本地二进制文件 Copy 到远端.
+# 值为 http_script 则通过官方 https://get.docker.com 方式安装.
+docker_install_type: "http_binary"
+
+# http_binary Source Addr
+docker_install_http_binary_source: 'https://mirror.shileizcc.com/Docker/bin/'
+
+# install docker bin path
+docker_ctl_path: '/usr/bin/'
 
 # 镜像加速, 如果为空则不设置.
 docker_registry_mirrors: '["https://4dyopx9i.mirror.aliyuncs.com"]'

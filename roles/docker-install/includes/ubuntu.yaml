@@ -1,3 +1,18 @@
 ---
+- name: Apt Install Dependence
+  apt: 
+    name: ["apt-transport-https", "curl", "ca-certificates", "software-properties-common", "wget"]
+    state: present
+  environment:
+    http_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ https_proxy }}"
+  when: ansible_distribution == 'Ubuntu'
+  ignore_errors: true
+  
 - name: Ubuntu Install Docker-ce
-  shell: "curl -x '{{ http_proxy }}' -fsSL https://get.docker.com | ALL_PROXY='{{ http_proxy }}' sh -s -- --mirror {{ docker_install_source }}"
+  include: roles/docker-install/includes/http_script.yaml
+  when: docker_install_type == 'http_script'
+
+- name: Ubuntu Install Docker-ce
+  include: roles/docker-install/includes/http_binary.yaml
+  when: docker_install_type == 'http_binary'

@@ -4,29 +4,10 @@
   register: result
   ignore_errors: true
   
-- name: Apt Update Source
-  shell: apt-get update
-  when: result.stderr and ansible_distribution == 'Ubuntu'
-
-- name: Apt Install Dependence
-  apt: 
-    name: ["apt-transport-https", "curl", "ca-certificates", "software-properties-common"]
-    state: present
-  environment:
-    http_proxy: "{{ http_proxy }}"
-    https_proxy: "{{ https_proxy }}"
-  when: ansible_distribution == 'Ubuntu'
-  ignore_errors: true
-
-- name: Yum Install Dependence
-  yum: 
-    name: ["wget", "curl", "yum-plugin-ovl"]
-    state: present
-  environment:
-    http_proxy: "{{ http_proxy }}"
-    https_proxy: "{{ https_proxy }}"
-  when: ansible_distribution == 'CentOS'
-  ignore_errors: true
+# - name: Apt Update Source
+#   shell: apt-get update
+#   when: result.stderr and ansible_distribution == 'Ubuntu'
+#   ignore_errors: true
 
 - name: Install Docker-ce
   include: roles/docker-install/includes/main.yaml
