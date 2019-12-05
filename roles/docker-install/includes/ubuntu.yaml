@@ -16,3 +16,7 @@
 - name: Ubuntu Install Docker-ce
   include: roles/docker-install/includes/http_binary.yaml
   when: docker_install_type == 'http_binary'
+
+- name: Ubuntu Install Docker-ce
+  include: roles/docker-install/includes/http_binary.yaml
+  when: docker_install_type == 'local_binary'

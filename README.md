@@ -55,6 +55,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [x] 支持 Kubernetes Cluster 版本升级。
 - [x] 支持 Etcd Cluster CA 根证书更新。
 - [x] 支持 Ansible in Docker 方式进行部署。
+- [x] 支持 Dockerd 离线安装.
 
 ## 项目部署架构
 以 v1.16.x 为例：
@@ -84,6 +85,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [x] 支持 IPVS, v1.14.2.8 版本更新.
 - [x] 支持 Ansible in Docker 方式部署, 不在依赖于本地环境。v1.15.3.0 中更新。
 - [x] 支持 Kubernetes Cluster 版本更新, v1.15.0.5 中更新。
+- [x] 支持 Dockerd 离线安装, v1.16.3.2 中更新。[Dockerd install](roles/docker-install/)
 
 ## 修复
 

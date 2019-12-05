@@ -17,6 +17,10 @@
   include: roles/docker-install/includes/http_binary.yaml
   when: ansible_distribution_major_version == "7" and docker_install_type == 'http_binary'
 
+- name: Centos7 Install Docker-ce
+  include: roles/docker-install/includes/local_binary.yaml
+  when: ansible_distribution_major_version == "7" and docker_install_type == 'local_binary'
+
 - name: Centos8 Install Docker-ce
   shell: "yum install -y yum-utils device-mapper-persistent-data lvm2 && yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo && yum install -y --nobest docker-ce docker-ce-cli"
   when: ansible_distribution_major_version == "8"
