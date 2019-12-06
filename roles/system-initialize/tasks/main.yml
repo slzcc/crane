@@ -47,6 +47,8 @@
     http_proxy: "{{ http_proxy }}"
     https_proxy: "{{ https_proxy }}"
   when: ansible_distribution == 'Ubuntu'
+  async: 30
+  poll: 2
   ignore_errors: true
 
 - name: Swap Off
@@ -60,6 +62,8 @@
   environment:
     http_proxy: "{{ http_proxy }}"
     https_proxy: "{{ https_proxy }}"
+  async: 30
+  poll: 2
   when: ansible_distribution == 'CentOS'
 
 - name: Ubuntu Install IPVS Admin
@@ -67,6 +71,8 @@
     name: ipvsadm 
     state: present
   when: kube_proxy_mode == 'ipvs' and ansible_distribution == 'Ubuntu' and is_install_ipvsadm
+  async: 30
+  poll: 2
   ignore_errors: true
 
 - name: Centos Install IPVS Admin
@@ -74,6 +80,8 @@
     name: ipvsadm 
     state: present
   when: kube_proxy_mode == 'ipvs' and ansible_distribution == 'CentOS' and is_install_ipvsadm
+  async: 30
+  poll: 2
   ignore_errors: true
 
 - name: Ubuntu Install IPset
@@ -81,6 +89,8 @@
     name: ipset 
     state: present
   when: ansible_distribution == 'Ubuntu' and is_install_ipvsadm
+  async: 30
+  poll: 2
   ignore_errors: true
 
 - name: Centos Install IPset
@@ -88,6 +98,8 @@
     name: ipset 
     state: present
   when: ansible_distribution == 'CentOS' and is_install_ipvsadm
+  async: 30
+  poll: 2
   ignore_errors: true
 
 - name: IPVS initialize Module
@@ -103,6 +115,7 @@
   
 - name: Check IPVS
   shell: "lsmod | grep ip_vs"
+  ignore_errors: true
 
 - name: Copy Sysctl Files
   copy:
@@ -113,6 +126,7 @@
 
 - name: Execute Configuration Command
   shell: sysctl -p /etc/sysctl.d/k8s.conf
+  ignore_errors: true
 
 - name: Centos Stop Firewalld
   service: 
