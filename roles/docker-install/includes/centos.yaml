@@ -11,6 +11,9 @@
   poll: 2
   ignore_errors: true
 
+- name: Load Kernel Module
+  include: roles/docker-install/includes/kernel_module.yaml
+
 - name: Centos7 Install Docker-ce
   include: roles/docker-install/includes/http_script.yaml
   when: ansible_distribution_major_version == "7" and docker_install_type == 'http_script'

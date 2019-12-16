@@ -11,6 +11,13 @@
   when: result is failed
   ignore_errors: true
 
+- name: Create Binary Perform Directory
+  file:
+    path: "{{ kubernetes_ctl_path }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
 - name: Create CA WorkDir
   file:
     path: "{{ etcd_ssl_dirs }}"
