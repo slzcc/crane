@@ -1,0 +1,8 @@
+---
+- name: Load nf_contrack kernel module
+  shell: "modinfo nf_conntrack | grep nf_conntrack.ko | awk '{print $2}' | xargs -i insmod {}"
+  ignore_errors: true
+
+- name: Load iptable_nat kernel module
+  shell: "modprobe iptable_nat"
+  ignore_errors: true

@@ -13,6 +13,7 @@ Type=notify
 # for containers run by docker
 ExecStart={{ docker_ctl_path }}dockerd -H fd:// --containerd=/run/containerd/containerd.sock
 ExecReload=/bin/kill -s HUP $MAINPID
+Environment={{ docker_systemd_env_option }}
 TimeoutSec=0
 RestartSec=2
 Restart=always

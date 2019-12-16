@@ -29,7 +29,7 @@
   vars_files:
     - "roles/kubernetes-default/defaults/main.yml"
   roles:
-    - { role: clean-install, tags: [clean]}
+    - { role: clean-install, tags: [clean], when: is_initialize_clean}
     - { role: docker-install, tags: [docker]}
     - { role: system-initialize, tags: [system]}
     - { role: downloads-packages, tags: [packages]}

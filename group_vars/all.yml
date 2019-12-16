@@ -213,6 +213,10 @@ docker_log_size: '1G'
 # 是否配置 Daemon.js 
 is_docker_daemon_config: true
 
+# Docker Systemd Options:
+# Example: "HTTP_PROXY=http://{{ http_proxy }} HTTPS_PROXY=http://{{ https_proxy }} NO_PROXY=localhost,127.0.0.1"
+docker_systemd_env_option: ''
+
 ## HaProxy
 ## ********************************************************************************************************************************
 

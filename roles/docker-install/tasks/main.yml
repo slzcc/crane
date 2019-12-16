@@ -44,7 +44,7 @@
   when: 
     - is_docker_daemon_config 
     - check_daemon_file.stderr == ''
-
+    
 - name: Stop DockerD
   service:
     name: docker
