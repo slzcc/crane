@@ -169,5 +169,5 @@
   shell: "ip a flush dev {{ item }}"
   with_items:
     - "kube-ipvs0"
-    - "tunl0@NONE"
+    - "tunl0"
   when: kube_proxy_mode == "ipvs"
