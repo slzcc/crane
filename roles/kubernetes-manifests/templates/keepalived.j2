@@ -26,6 +26,8 @@ spec:
       value: "6443"
     - name: VRID
       value: "53"
+    - name: TZ
+      value: "{{ time_location }}"
     volumeMounts:
     - mountPath: /usr/share/zoneinfo
       name: usr-local-timezone
@@ -38,9 +40,6 @@ spec:
       capabilities:
         add:
         - NET_ADMIN
-    env:
-    - name: TZ
-      value: "{{ time_location }}"
   volumes:
   - hostPath:
       path: /usr/share/zoneinfo
