@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: gitlab-ops
+  namespace: gitlab
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "1024m" 
+spec:
+  rules:
+  - host: gitlab.ops.shileizcc.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: gitlab-ops
+          servicePort: http

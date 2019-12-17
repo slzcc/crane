@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: gitlab-ops
+  namespace: gitlab
+spec:
+  replicas: 1
+  serviceName: gitlab-ops
+  selector:
+    matchLabels:
+      app: "gitlab-ops"
+  template:
+    metadata:
+      labels:
+        app: "gitlab-ops"
+    spec:
+      imagePullSecrets:
+        - name: harbor-registry-secret
+      containers:
+      - name: gitlab-ops
+        image: gitlab/gitlab-ce:12.3.5-ce.0
+        env:
+          - name: TZ
+            value: Asia/Shanghai
+          - name: GITLAB_OMNIBUS_CONFIG
+            value: "external_url 'http://gitlab.ops.shileizcc.com/'; gitlab_rails['gitlab_shell_ssh_port'] = 32222 ; gitlab_rails['backup_path'] = '/var/opt/gitlab/backups' ; gitlab_rails['backup_keep_time'] = 864000"
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 80
+        - name: ssh
+          containerPort: 22
+        volumeMounts:
+        - name: gitlab-ops-storage-data
+          mountPath: /var/opt/gitlab
+          subPath: 
+        - name: gitlab-ops-storage-config
+          mountPath: /etc/gitlab
+          subPath:
+        - name: gitlab-ops-storage-log
+          mountPath: /var/log/gitlab
+          subPath:
+        - name: gitlab-config
+          mountPath: /etc/gitlab/gitlab.rb
+          subPath: gitlab.rb
+      volumes:
+      - name: gitlab-config
+        configMap:
+          name: gitlab-ops-config
+          items:
+          - key: gitlab.rb
+            path: gitlab.rb
+      - name: gitlab-ops-storage-data
+        persistentVolumeClaim:
+          claimName: gitlab-ops-storage-data
+      - name: gitlab-ops-storage-log
+        persistentVolumeClaim:
+          claimName: gitlab-ops-storage-log
+      - name: gitlab-ops-storage-config
+        persistentVolumeClaim:
+          claimName: gitlab-ops-storage-config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gitlab-ops
+  namespace: gitlab
+  labels:
+    app: "gitlab-ops"
+spec:
+  type: NodePort
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  - name: https
+    port: 443
+    protocol: TCP
+    targetPort: 443
+  - name: ssh
+    port: 32222
+    protocol: TCP
+    targetPort: 22
+    nodePort: 32222
+  selector:
+    app: "gitlab-ops"

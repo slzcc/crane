@@ -84,7 +84,7 @@ is_rbac: false
 
 # 第三方网络设备绑定的网络设备配置，需要集群内绑定的网卡名称统一，也就是说所有的内部外部通信走一块网卡
 # Etcd 绑定的宿主机网卡, 此配置需要在启动 Etcd 的节点上强制网卡名称一致
-# 如果配置了 Keepalived 则 Keepalived 也会绑定到这块网卡上，暂不支持多网卡
+# 如果配置了 Keepalived 则 Keepalived 也会绑定到这块网卡上，支持多网卡用逗号隔开
 os_network_device_name: 'eth0'
 
 ## Keepalived

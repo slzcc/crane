@@ -4,6 +4,7 @@
 export targetRegistry=${targetRegistry:-'slzcc'}
 
 _cni_os_drive=`awk '/^cni_os_drive/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_dockerVersion=`awk '/^docker_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 _k8sVersion=`awk '/^k8s_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 _cni_version=`awk '/^cni_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 _etcdVersion=`awk '/^etcd_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
@@ -14,7 +15,7 @@ _corednsVersion=`awk '/^dns_version/{print}' ../group_vars/all.yml | awk -F': ' 
 _nginxIngressVersion=`awk '/^ingress_nginx_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 
 # Docker Version
-export dockercliVersion=18.09
+export dockercliVersion=${_dockerVersion:-'19.03'}
 # Kubernetes Version
 export k8sVersion=${_k8sVersion:-'v1.14.2'}
 # CNI Version
@@ -34,6 +35,10 @@ export nginxIngressVersion=${_nginxIngressVersion:-'0.26.1'}
 
 # 数据打包临时路径
 export temporaryDirs=${temporaryDirs:-'/tmp'}
+
+# Proxy
+http_proxy=`awk '/^http_proxy/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}'`
+https_proxy=`awk '/^https_proxy/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}'`
 
 # Clean old files
 rm -rf  ${temporaryDirs}/image_*.tar.gz | true
@@ -57,6 +62,9 @@ COPY --from=DockerCli /usr/local/bin/docker /usr/local/bin
 
 RUN apt update && \
     apt install -y wget
+
+ENV http_proxy=${http_proxy} \ 
+    https_proxy=${https_proxy}
 
 RUN wget -qO- "https://dl.k8s.io/${k8sVersion}/kubernetes-node-linux-amd64.tar.gz" | tar zx -C /
 
