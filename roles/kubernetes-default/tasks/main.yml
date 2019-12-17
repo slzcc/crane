@@ -221,7 +221,7 @@
           done;
           for FILE in admin.conf controller-manager.conf scheduler.conf; do
             sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no -i {{ ssh_public_key }} \
-            -P {{ ssh_connect_port }} {{ kubernetes_etc_dirs }}${FILE} {{ ssh_connect_user }}@{{ item[0] }}:{{ kubernetes_etc_dirs }}${FILE};
+            -P {{ ssh_connect_port }} {{ kubernetes_etc_dirs }}${FILE} {{ ssh_connect_user }}@{{ item[0] }}:${FILE};
           done"
   with_nested:
     - "{{ k8s_master_ip_list }}"
