@@ -171,3 +171,4 @@
     - "kube-ipvs0"
     - "tunl0"
   when: kube_proxy_mode == "ipvs"
+  ignore_errors: true
