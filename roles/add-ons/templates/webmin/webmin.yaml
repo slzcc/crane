@@ -1,0 +1,189 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: webmin
+
+---
+apiVersion: v1
+data:
+  key: QVFEd2pvQmRRUkJ3RVJBQXZGamZ0bURUV0toNDBNaUhOVEtlTnc9PQ==
+kind: Secret
+metadata:
+  name: ceph-admin-secret
+  namespace: webmin
+type: Opaque
+
+## AUTH=`ceph auth get-key client.admin`
+### kubectl create secret generic ceph-admin-secret --from-literal=key=${AUTH} -n nextcloud
+#
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webmin
+  namespace: webmin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webmin
+  template:
+    metadata:
+      labels:
+        app: webmin
+    spec:
+      initContainers:
+      - name: data
+        image: slzcc/webmin:1.930.0
+        command:
+        - bash
+        - "/initialize.sh"
+        volumeMounts:
+        - name: datadir
+          mountPath: "/mnt/data"
+        - name: etcdir
+          mountPath: "/mnt/etc"
+        - name: vardir
+          mountPath: "/mnt/var"
+        - name: usrdir
+          mountPath: "/mnt/usr"
+        - name: script
+          mountPath: "/initialize.sh"
+          subPath: initialize.sh
+      containers:
+      - name: webmin
+        image: slzcc/webmin:1.930.0
+        ports:
+        - name: http
+          containerPort: 80
+        - name: https
+          containerPort: 443
+        - name: dns
+          containerPort: 53
+        volumeMounts:
+        - name: datadir
+          mountPath: "/data"
+        - name: etcdir
+          mountPath: "/etc"
+        - name: vardir
+          mountPath: "/var"
+        - name: usrdir
+          mountPath: "/usr"
+        env:
+        - name: TZ
+          value: "Asia/Shanghai"
+        - name: ROOT_PASSWORD
+          value: webmin.ops.shileizcc.com
+        imagePullPolicy: IfNotPresent
+      volumes:
+      - name: datadir
+        cephfs:
+          monitors:
+          - 10.100.21.93:6789
+          - 10.100.21.94:6789
+          - 10.100.21.95:6789
+          user: admin
+          secretRef:
+            name: ceph-admin-secret
+          readOnly: false
+          path: /kubernetes/webmin/data
+      - name: etcdir
+        cephfs:
+          monitors:
+          - 10.100.21.93:6789
+          - 10.100.21.94:6789
+          - 10.100.21.95:6789
+          user: admin
+          secretRef:
+            name: ceph-admin-secret
+          readOnly: false
+          path: /kubernetes/webmin/etc
+      - name: vardir
+        cephfs:
+          monitors:
+          - 10.100.21.93:6789
+          - 10.100.21.94:6789
+          - 10.100.21.95:6789
+          user: admin
+          secretRef:
+            name: ceph-admin-secret
+          readOnly: false
+          path: /kubernetes/webmin/var
+      - name: usrdir
+        cephfs:
+          monitors:
+          - 10.100.21.93:6789
+          - 10.100.21.94:6789
+          - 10.100.21.95:6789
+          user: admin
+          secretRef:
+            name: ceph-admin-secret
+          readOnly: false
+          path: /kubernetes/webmin/usr
+      - name: script
+        configMap:
+          name: webmin-initialize
+          items:
+            - key: initialize.sh
+              path: initialize.sh
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: webmin-initialize
+  namespace: webmin
+data:
+  initialize.sh: |-
+    #!/bin/bash
+    if [ "`ls /mnt/etc`" == "" ];then
+      mkdir -p /mnt/{etc,usr,var,data}
+      cp -a /etc/* /mnt/etc/
+      cp -a /usr/* /mnt/usr/
+      cp -a /var/* /mnt/var/
+      cp -a /data/* /mnt/data/
+    fi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webmin
+  namespace: webmin
+spec:
+  type: NodePort
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+    protocol: TCP
+  - name: https
+    port: 443
+    targetPort: 443
+    protocol: TCP
+  - name: tdnp
+    port: 53
+    targetPort: 53
+    protocol: TCP
+    nodePort: 53
+  - name: udns
+    port: 53
+    targetPort: 53
+    protocol: UDP
+    nodePort: 53
+  selector:
+    app: webmin
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: webmin
+  namespace: webmin
+spec:
+  rules:
+  - host: webmin.ops.shileizcc.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: webmin
+          servicePort: http

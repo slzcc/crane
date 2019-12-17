@@ -1,0 +1,34 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gitlab
+ 
+---
+apiVersion: v1
+data:
+  key: QVFEd2pvQmRRUkJ3RVJBQXZGamZ0bURUV0toNDBNaUhOVEtlTnc9PQ==
+kind: Secret
+metadata:
+  name: ceph-admin-secret
+  namespace: gitlab
+type: Opaque
+ 
+## AUTH=`ceph auth get-key client.admin`
+## kubectl create secret generic ceph-admin-secret --from-literal=key=${AUTH} -n gitlab
+
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: gitlab-ops-rbd
+provisioner: ceph.com/rbd
+parameters:
+  monitors: 10.100.21.93:6789,10.100.21.94:6789,10.100.21.95:6789
+  adminId: admin
+  adminSecretName: ceph-admin-secret
+  adminSecretNamespace: gitlab
+  pool: gitlab-ops
+  userId: admin
+  userSecretName: ceph-admin-secret
+  imageFormat: "2"
