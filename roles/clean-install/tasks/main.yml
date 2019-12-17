@@ -166,7 +166,7 @@
   when: kube_proxy_mode == "ipvs"
 
 - name: Clean Kube IPVS0
-  shell: "ip a flush dev {{ itme }}"
+  shell: "ip a flush dev {{ item }}"
   with_items:
     - "kube-ipvs0"
     - "tunl0@NONE"
