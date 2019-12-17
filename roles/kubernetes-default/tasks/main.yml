@@ -217,11 +217,11 @@
 - name: Copy CA Files in Nodes
   shell: "for FILE in $(find {{ kubernetes_pki_dirs }} -mindepth 1 -maxdepth 1); do
             sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no -i {{ ssh_public_key }} \
-            -P {{ ssh_connect_port }} {{ kubernetes_pki_dirs }}${FILE} {{ ssh_connect_user }}@{{ item[0] }}:${FILE};
+            -P {{ ssh_connect_port }} ${FILE} {{ ssh_connect_user }}@{{ item[0] }}:${FILE};
           done;
           for FILE in admin.conf controller-manager.conf scheduler.conf; do
             sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no -i {{ ssh_public_key }} \
-            -P {{ ssh_connect_port }} {{ kubernetes_etc_dirs }}${FILE} {{ ssh_connect_user }}@{{ item[0] }}:${FILE};
+            -P {{ ssh_connect_port }} {{ kubernetes_etc_dirs }}${FILE} {{ ssh_connect_user }}@{{ item[0] }}:{{ kubernetes_etc_dirs }}${FILE};
           done"
   with_nested:
     - "{{ k8s_master_ip_list }}"
