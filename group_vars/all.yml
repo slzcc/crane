@@ -4,14 +4,14 @@
 # 部署 Kubernetes 对应版本, 不建议修改, 如需修改请修改小版本进行部署测试, 大版本会引发部署参数不支持等问题.
 # 如使用镜像方式部署, 不能修改
 # https://github.com/kubernetes/kubernetes/releases
-k8s_version: 'v1.16.3'
+k8s_version: 'v1.17.0'
 
 # 避免大版本中组件的版本差异, 使用 build 版本作为差异配置项, 在项目中可以看做如下使用 '{{ k8s_version }}.{{ build_k8s_version }}'
 build_k8s_version: '3'
 
 # 部署 CNI 对应版本, 如使用镜像方式部署, 不能修改 (如果可以使用 {{ k8s_cluster_component_registry }} 中的仓库地址获取镜像则可随意修改)
 # https://github.com/containernetworking/plugins/releases/
-cni_version: 'v0.8.2'
+cni_version: 'v0.8.3'
 
 # CNI OS Type
 cni_os_drive: 'linux-amd64'
@@ -119,11 +119,11 @@ kube_proxy_ipvs_scheduler: "rr"
 ## ********************************************************************************************************************************
 # Kubelet Options
 ## 不区分 Master/Nodes
-kubelet_options: "--cgroup-driver={{ kubelet_cgroup_drive }} --network-plugin=cni --cni-conf-dir={{ cni_config_dir }} --cni-bin-dir={{ kubernetes_cni_dirs }} --pod-infra-container-image={{ k8s_pod_infra_container_image }} --runtime-cgroups=/systemd/system.slice --kubelet-cgroups=/systemd/system.slice"
+kubelet_options: "--cgroup-driver={{ kubelet_cgroup_drive }} --network-plugin=cni --cni-conf-dir={{ cni_config_dir }} --cni-bin-dir={{ kubernetes_cni_dirs }} --pod-infra-container-image={{ k8s_pod_infra_container_image }} --runtime-cgroups=/systemd/system.slice --kubelet-cgroups=/systemd/system.slice {{ kubectl_gc_options }}"
 
 ## GC Config, (没有应用, 如需要请加入 kubelet_options 配置内, 请熟悉文档中的每一项参数功能再进行配置)
 ## GC DOCS https://kubernetes.io/docs/tasks/administer-cluster/out-of-resource/
-kubectl_gc_options: "--eviction-hard=memory.available<500Mi,nodefs.available<1Gi,imagefs.available<50Gi --eviction-minimum-reclaim='memory.available=0Mi,nodefs.available=500Mi,imagefs.available=2Gi' --system-reserved=memory=1.5Gi"
+kubectl_gc_options: "--eviction-hard='memory.available<100Mi,nodefs.available<5%,imagefs.available<5%,nodefs.inodesFree<5%' --eviction-minimum-reclaim='memory.available=50Mi,nodefs.available<2%,imagefs.available=<2%,nodefs.inodesFree<2%' --system-reserved=memory<2%"
 
 ## External Proxy
 ## ********************************************************************************************************************************
@@ -216,6 +216,9 @@ is_docker_daemon_config: true
 # Docker Systemd Options:
 # Example: "HTTP_PROXY=http://{{ http_proxy }} HTTPS_PROXY=http://{{ https_proxy }} NO_PROXY=localhost,127.0.0.1"
 docker_systemd_env_option: ''
+
+# NVIDIA 驱动
+# Docs: https://github.com/NVIDIA/nvidia-docker
 
 ## HaProxy
 ## ********************************************************************************************************************************
