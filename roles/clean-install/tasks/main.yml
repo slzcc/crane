@@ -164,3 +164,10 @@
 - name: Clean ipvs Record
   shell: "ipvsadm --clear | true"
   when: kube_proxy_mode == "ipvs"
+
+- name: Clean Kube IPVS0
+  shell: "ip a flush dev {{ itme }}"
+  with_items:
+    - "kube-ipvs0"
+    - "tunl0@NONE"
+  when: kube_proxy_mode == "ipvs"
