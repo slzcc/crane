@@ -3,7 +3,7 @@ SHELL := /bin/bash
 DockerHubRepoName := "slzcc"
 ProjectName := "crane"
 VERSION := `awk '/^k8s_version/' ./group_vars/all.yml | awk -F': ' '{print $$2}' | sed "s/'//g"`.`awk '/^build_k8s_version/{print}' ./group_vars/all.yml | awk -F': ' '{print $$2}' | sed "s/'//g"`
-DOCKER_VERSION := `awk '/^docker_version/' ./group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+DOCKER_VERSION := `awk '/^docker_version/' ./group_vars/all.yml | awk -F': ' '{print $$2}' | sed "s/'//g"`
 CRANE_ENTRANCE := "main.yml"
 OPTION := "-vv"
 
@@ -15,7 +15,7 @@ push:
 
 run_main:
 	@docker rm -f crane || true
-	@docker run --name crane --rm -i -e TERM=xterm-256color -e COLUMNS=238 -e LINES=61 -v ~/.ssh:/root/.ssh -v ${PWD}:/crane ${DockerHubRepoName}/${ProjectName}:${VERSION} -i nodes ${CRANE_ENTRANCE} ${OPTION}
+	@docker run --name crane --rm -i -e ANSIBLE_HOST_KEY_CHECKING=true -e TERM=xterm-256color -e COLUMNS=238 -e LINES=61 -v ~/.ssh:/root/.ssh -v ${PWD}:/crane ${DockerHubRepoName}/${ProjectName}:${VERSION} -i nodes ${CRANE_ENTRANCE} ${OPTION}
 
 local_save_image:
 	@docker pull slzcc/kubernetes:${VERSION}
@@ -27,4 +27,4 @@ local_load_image:
 	@docker rm -f import-kubernetes-temporary
 
 local_load_dockerd:
-	@docker run --rm -i -e DOCKER_VERSION=${DOCKER_VERSION} -v ${PWD}/roles/docker-install/files:/docker_bin -w /usr/local/bin docker:${DOCKER_VERSION} sh -c 'tar zcf /docker_bin/docker-${DOCKER_VERSION}.tar.gz containerd  containerd-shim  ctr  docker  dockerd  docker-entrypoint.sh  docker-init  docker-proxy  modprobe  runc'
+	@docker run --rm -i -e DOCKER_VERSION=${DOCKER_VERSION} -v ${PWD}/roles/docker-install/files:/docker_bin -w /usr/local/bin docker:${DOCKER_VERSION} sh -c "tar zcf /docker_bin/docker-${DOCKER_VERSION}.tar.gz containerd  containerd-shim  ctr  docker  dockerd  docker-entrypoint.sh  docker-init  docker-proxy  modprobe  runc"

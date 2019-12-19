@@ -34,7 +34,7 @@
     - { role: system-initialize, tags: [system]}
     - { role: downloads-packages, tags: [packages]}
   tasks:
-    - { include: roles/kubernetes-default/includes/main.yml }
+    - { include: 'roles/kubernetes-default/includes/main.yml' }
 
 - name: Create Bootstrap Config Files to Nodes.
   hosts: kube-master[0]
