@@ -146,3 +146,7 @@
   shell: "sed -i 's#^SELINUX\\=enforcing#SELINUX\\=disabled#g' /etc/selinux/config && setenforce 0"
   when: ansible_distribution == 'CentOS' and (ansible_distribution_major_version == "7" or ansible_distribution_major_version == "8")
   ignore_errors: true
+
+- name: IPTABLE FORWARD ACCEPT
+  shell: "iptables -P FORWARD ACCEPT"
+  ignore_errors: true

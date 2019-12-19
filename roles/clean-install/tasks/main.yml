@@ -151,6 +151,10 @@
   when: is_remove_cfssl
 
 # Clean IPVS and Iptables
+- name: IPTABLES SAVE
+  shell: "iptables-save > {{ temporary_dirs }}$(date +%F-%H-%M-%S.iptables)"
+  ignore_errors: true
+
 - name: Clean IPVS Rules
   shell: "ipvsadm -C"
   when: is_install_ipvsadm and kube_proxy_mode == 'ipvs'
