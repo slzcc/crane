@@ -35,7 +35,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 
 目前支持的 Kubernetes 版本:
 * v1.10.0
-* v1.14.x >= 1.16.x
+* v1.14.x >= 1.17.x
 
 目前支持的操作系统: (其他版本请自行测试)
 * Ubuntu 16.04
@@ -59,10 +59,10 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 
 ## 项目部署架构
 以 v1.16.x 为例：
-* Kubernetes A/C/S v1.16.2
+* Kubernetes A/C/S v1.17.0
 * CoreDNS: v1.6.3
 * Calico: v3.10.0
-* Kube Proxy: v1.16.2
+* Kube Proxy: v1.17.0
 * HaProxy: v2.0.8
 * Etcd: v3.3.15
 * pause: v3.1
@@ -112,7 +112,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 ## 获取对应的版本
 切记, 如需要安装哪个大版本的集群, 就获取相应的 tag :
 ```
-$ git clone -b v1.16.x.x https://github.com/slzcc/crane.git
+$ git clone -b v1.17.x.x https://github.com/slzcc/crane.git
 ```
 
 > v1.15.x.x 最末尾一位属于编写 Ansible 脚本的迭代版本, 不属于 Kubernetes 自身版本。
@@ -441,7 +441,7 @@ $ docker run --rm -i \
 $ systemctl stop docker
 $ cat > /etc/docker/daemon.json  <<EOF
 {
-    "registry-mirrors": ["https://registry.docker-cn.com"],
+    "registry-mirrors": ["https://4dyopx9i.mirror.aliyuncs.com"],
     "exec-opts": ["native.cgroupdriver=cgroupfs"],
     "log-driver": "json-file",
     "log-opts": {
