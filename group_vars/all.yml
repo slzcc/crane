@@ -37,7 +37,7 @@ k8s_cluster_ip: '10.96.0.1'
 k8s_cluster_ip_range: '10.96.0.0/12'
 
 # Kubernetes ApiServer 的总入口地址, 可配置 SLB 等云服务商提供的地址, 但需要接入后端服务器的 80, 443 端口, 此地址可以写某个单实例的 IP 地址
-k8s_load_balance_ip: 172.17.48.104
+k8s_load_balance_ip: 172.17.145.244
 
 # Kubernetes HaProxy 监听的 apiServer 完整的 URL
 k8s_apiserver_https_bind: 'https://{{ k8s_load_balance_ip }}:{{ k8s_master_haproxy_bind_port }}'
@@ -84,7 +84,7 @@ is_rbac: false
 
 # 第三方网络设备绑定的网络设备配置，需要集群内绑定的网卡名称统一，也就是说所有的内部外部通信走一块网卡
 # Etcd 绑定的宿主机网卡, 此配置需要在启动 Etcd 的节点上强制网卡名称一致
-# 如果配置了 Keepalived 则 Keepalived 也会绑定到这块网卡上，支持多网卡用逗号隔开
+# 如果配置了 Keepalived 则 Keepalived 也会绑定到这块网卡上, 支持多网卡用逗号隔开, 使用多网卡时, 不要使用 keepalived, 因为 keepalived 只能绑定第一个网卡
 os_network_device_name: 'eth0'
 
 ## Keepalived
@@ -141,38 +141,6 @@ https_proxy: ""
 # 部署的 Cluster 中 Containers 的时区, 由于是挂载宿主机 /usr/share/zoneinfo 目录解决, 所以要保证此目录的存在。
 # 如果需要设置 UTC 时区, 请设置值为: Europe/Moscow
 time_location: "Asia/Shanghai"
-
-## Kube TLS
-## ********************************************************************************************************************************
-
-# CFSSL 生成证书的加密方式
-tls_k8s_encryption_algorithm: 'rsa'
-
-# CFSSL 生成证书的通过加密算法生成的长度
-tls_k8s_encryption_algorithm_size: 2048
-
-# 证书有效期, 默认为 5 年, 因 CA 根证书默认为 5 年, 此值改大没意义
-tls_k8s_validity_period: 5
-
-# 证书信息头, 国家信息 
-# Country Name
-tls_k8s_head_info_C: 'CN'
-
-# 证书信息头, 地区或城市 
-# Locality Name
-tls_k8s_head_info_L: 'BeiJing'
-
-# 证书信息头, 组织 
-# Organization Name 
-tls_k8s_head_info_O: 'Kubernetes'
-
-# 证书信息头, 组织单位 
-# Organizational Units Name
-tls_k8s_head_info_OU: 'Kubernetes'
-
-# 证书信息头, 州或省 
-# State or Province Name
-tls_k8s_head_info_ST: 'BeiJing'
 
 ## Docker
 ## ********************************************************************************************************************************
@@ -342,39 +310,6 @@ etcd_ssl_dirs: '{{ kubernetes_pki_dirs }}etcd/'
 
 # Etcd Data Path
 etcd_data_dirs: '/var/lib/etcd/'
-
-
-## Etcd TLS
-## ********************************************************************************************************************************
-
-# CFSSL 生成证书的加密方式
-tls_etcd_encryption_algorithm: 'rsa'
-
-# CFSSL 生成证书的通过加密算法生成的长度
-tls_etcd_encryption_algorithm_size: 2048
-
-# 证书有效期, 默认为 10 年, 因 CA 根证书默认为 5 年, 此值改大没意义
-tls_etcd_validity_period: 5
-
-# 证书信息头, 国家信息 
-# Country Name
-tls_etcd_head_info_C: 'CN'
-
-# 证书信息头, 地区或城市 
-# Locality Name
-tls_etcd_head_info_L: 'BeiJing'
-
-# 证书信息头, 组织 
-# Organization Name 
-tls_etcd_head_info_O: 'Etcd'
-
-# 证书信息头, 组织单位 
-# Organizational Units Name
-tls_etcd_head_info_OU: 'Etcd'
-
-# 证书信息头, 州或省 
-# State or Province Name
-tls_etcd_head_info_ST: 'BeiJing'
 
 ## Add Nodes
 ## ********************************************************************************************************************************

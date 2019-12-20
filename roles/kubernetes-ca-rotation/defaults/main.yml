@@ -13,3 +13,42 @@ k8s_node_name_list: >-
     '{{ hostvars[host].ansible_nodename }}'
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}]
+
+# TLS
+## ********************************************************************************************************************************
+
+admin_tls_k8s_head_info_O: 'system:masters'
+nodes_tls_k8s_head_info_O: 'system:nodes'
+controller_manager_tls_k8s_head_info_O: 'system:kube-controller-manager'
+scheduler_tls_k8s_head_info_O: 'system:kube-scheduler'
+
+tls_k8s_validity_period_hours: '{{ tls_k8s_validity_period * 365 * 24 }}'
+
+
+## Kube TLS
+## ********************************************************************************************************************************
+
+# CFSSL 生成证书的加密方式
+tls_k8s_encryption_algorithm: 'rsa'
+
+# CFSSL 生成证书的通过加密算法生成的长度
+tls_k8s_encryption_algorithm_size: 2048
+
+# 证书有效期, 默认为 5 年, 因 CA 根证书默认为 5 年, 此值改大没意义
+tls_k8s_validity_period: 5
+
+# 证书信息头, 国家信息 
+# Country Name
+tls_k8s_head_info_C: 'CN'
+
+# 证书信息头, 地区或城市 
+# Locality Name
+tls_k8s_head_info_L: 'BeiJing'
+
+# 证书信息头, 组织 
+# Organization Name 
+tls_k8s_head_info_O: 'Kubernetes'
+
+# 证书信息头, 组织单位 
+# Organizational Units Name
+tls_k8s_head_info_OU: 'Kubernetes'
