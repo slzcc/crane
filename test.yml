@@ -5,7 +5,7 @@
     - { role: local-task }
       
 - name: Test
-  hosts: localhost
+  hosts: kube-master[0]
   gather_facts: true
   # sudo: yes
   remote_user: "{{ ssh_connect_user }}"

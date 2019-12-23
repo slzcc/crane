@@ -79,6 +79,8 @@ k8s_cluster_component_registry: 'k8s.gcr.io'
 # 是否使用 RBAC, 集群默认是 RBAC 认证, 但可以在部署完集群之后创建超级用户取消所有限制
 is_rbac: false
 
+# kubernetes CA Config 请参照: roles/kubernetes-default/defaults/main.yml
+
 ## Kuber Network
 ## ********************************************************************************************************************************
 
@@ -96,7 +98,7 @@ is_keepalived: false
 # Keepalived 绑定的 IP 地址, 它在 HaProxy 的上一层
 keepalived_ip: "{{ k8s_load_balance_ip }}"
 
-# Keepalived 绑定的物理网卡名称
+# Keepalived 绑定的物理网卡名称, 这里不支持多网卡, 如果 `os_network_device_name` 的值为多网卡, 请在这里填写 VIP 需要绑定的网卡设备。只支持单个值!
 vip_bind_net_device: "{{ os_network_device_name }}"
 
 ## Kube Proxy
@@ -109,8 +111,8 @@ kube_proxy_mode: "ipvs"
 is_install_ipvsadm: true
 
 # 如果配置了 Keepalived 就需要配置绑定的 nodePort 的物理网段，否则 Keepalived 的流量无法到达 nodePort, 因为 Keepalived 会发送 ARP 请求到此网段内，如果不设置这个网段则会流量不可达. v1.15.3.5 中修复。
-# 如果物理网段为 10.100.21.0/24, 请把值写入下方配置即可.
-kube_proxy_node_port_addresses: "172.17.48.0/24"
+# 如果物理网段为 10.100.21.0/24, 请把值写入下方配置即可. 需要传入列表。
+kube_proxy_node_port_addresses: ["10.100.21.0/24", "172.17.48.0/24"]
 
 # ipvs 调度策略.
 kube_proxy_ipvs_scheduler: "rr"
@@ -311,11 +313,13 @@ etcd_ssl_dirs: '{{ kubernetes_pki_dirs }}etcd/'
 # Etcd Data Path
 etcd_data_dirs: '/var/lib/etcd/'
 
+# Etcd CA Config 请参照: roles/etcd-install/defaults/main.yml
+
 ## Add Nodes
 ## ********************************************************************************************************************************
 
 # Calico Pool CIDR
-calico_ipv4_pool_cidr: '192.168.0.0/16'
+calico_ipv4_pool_cidr: '192.167.0.0/16'
 
 # Calico Verion
 # https://github.com/projectcalico/calico/releases
@@ -328,6 +332,10 @@ cni_config_dir: '/etc/cni/net.d'
 # 判定值, 勿动
 is_add_master: "{{ inventory_hostname in groups['k8s-cluster-add-master'] }}"
 is_add_node: "{{ inventory_hostname in groups['k8s-cluster-add-node'] }}"
+
+# Calico Type 
+# Calico 使用的模式默认使用, 默认为 ipip 设置为 :Always, 如果需要使用 BGP 则设置为 :Off
+calico_type: 'Always'
 
 ## Kubernetes Add Ons
 ## ********************************************************************************************************************************
@@ -346,154 +354,9 @@ dns_cluster_range: "{{ k8s_cluster_ip_range }}"
 # 如使用镜像方式部署, 不能修改 (如果可以使用 {{ k8s_cluster_component_registry }} 中的仓库地址获取镜像则可随意修改)
 dns_version: '1.6.5'
 
-## Helm
+## Add-Ons
 ## ********************************************************************************************************************************
-
-# 部署 Helm
-is_deploy_helm: false
-
-## Ingress Nginx
-## ********************************************************************************************************************************
-
-# 部署 Ingress Nginx
-is_deploy_ingress_nginx: true
-
-# Ingress Nginx Version
-ingress_nginx_version: '0.26.1'
-
-# 部署 Ingress Nginx Example
-is_deploy_ingress_nginx_example: false
-
-# Ingress Nginx Example Domain
-# Ingres 示例使用的域名, 如果没有自定义域名, 可配置本机 Hosts
-ingress_nginx_example: 'www.example.com'
-
-## Prometheus Operator
-## ********************************************************************************************************************************
-
-# 部署 Prometheus Operator
-is_deploy_prometheus_operator: false
-
-# 部署 Prometheus Operator Ingress 所使用的 Ingress Domain
-monitoring_ingress_prometheus_domain: 'prometheus.example.com'
-monitoring_ingress_grafana_domain: 'grafana.example.com'
-monitoring_ingress_alertmanager_domain: 'alertmanager.example.com'
-
-# Prometheus Operator Grafana SMTP Configs
-prometheus_operator_grafana_smtp_enable: true
-prometheus_operator_grafana_smtp_password: ''
-prometheus_operator_grafana_smtp_server: 'smtp.126.com:465'
-prometheus_operator_grafana_smtp_user: 'shileizcc@126.com'
-prometheus_operator_grafana_smtp_from_address: 'shileizcc@126.com'
-
-## DNS Example
-## ********************************************************************************************************************************
-
-# 部署 DNS Example Tools
-# 用来测试集群内是否 DNS 可用的 Tools Pods
-is_deploy_busybox_example: false
-
-## Istio
-## ********************************************************************************************************************************
-
-# 部署 Istio
-# 注意 部署 Istio 不建议与 Prometheus Operator 一同部署, 可能会引发服务之间的冲突问题, 如需一同部署请自行解决依赖
-is_deploy_istio: false
-
-# Istio Home Path
-istio_home: '/usr/local/istio-{{ istio_version }}'
-
-# Istio Version
-# https://github.com/istio/istio/releases
-istio_version: '1.3.3'
-
-# 部署 Istio 所使用的 Ingress Domain
-istio_ingress_prometheus_domain: 'prometheus.example.com'
-istio_ingress_grafana_domain: 'grafana.example.com'
-istio_ingress_tracing_domain: 'tracing.example.com'
-istio_ingress_kiali_domain: 'kiali.example.com'
-
-# istio kiali user/pass base64 coding, default admin
-istio_kiali_username: 'YWRtaW4='
-istio_kiali_password: 'YWRtaW4='
-
-# 部署 upload service
-is_deploy_upload_service: false
-
-upload_service_ingress_domain: 'upload.example.com'
-
-## Harbor
-## ********************************************************************************************************************************
-
-# Harbor Deploy enable
-is_deploy_harbor: false
-
-# Harbor Deploy Namespace
-harbor_namespace: 'harbor'
-
-# Harbor Admin Password
-harbor_admin_password: 'Harbor12345'
-
-# Harbor PostGreSQL Password
-harbor_pg_admin_password: 'changeit'
-harbor_pg_clair_password: 'changeit'
-
-# Harbor Core Secure Key
-harbor_core_secure_key: 'not-a-secure-key' 
-harbor_core_secret: '90USoEBlROrSey6F'
-
-# Harbor Registry Secure
-harbor_registry_secure_key: 'iCELcbcIHHG4RSua'
-harbor_registry_redis_password: ''
-
-# Harbor JobService Secure
-harbor_jobservice_secure_key: 'L1Jp8tCQngTlftfO'
-
-# Harbor chartmuseum Secure
-harbor_chartmuseum_redis_password: ''
-
-# Harbor Domain
-harbor_ingress_default_domain: 'harbor.example.com'
-harbor_ingress_notary_domain: 'notary.example.com'
-
-# CFSSL 生成证书的加密方式
-tls_harbor_server_encryption_algorithm: 'rsa'
-tls_harbor_client_encryption_algorithm: 'rsa'
-
-# CFSSL 生成证书的通过加密算法生成的长度
-tls_harbor_server_encryption_algorithm_size: 2048
-tls_harbor_client_encryption_algorithm_size: 2048
-
-# 证书有效期, 默认为 5 年, 因 CA 根证书默认为 5 年, 此值改大没意义
-tls_harbor_server_validity_period: 5
-tls_harbor_client_validity_period: 5
-
-# 证书信息头, 国家信息 
-# Country Name
-tls_harbor_server_head_info_C: 'CN'
-tls_harbor_client_head_info_C: 'CN'
-
-# 证书信息头, 地区或城市 
-# Locality Name
-tls_harbor_server_head_info_L: 'BeiJing'
-tls_harbor_client_head_info_L: 'BeiJing'
-
-# 证书信息头, 组织 
-# Organization Name 
-tls_harbor_server_head_info_O: 'Harbor'
-tls_harbor_client_head_info_O: 'Harbor'
-
-# 证书信息头, 组织单位 
-# Organizational Units Name
-tls_harbor_server_head_info_OU: 'Harbor'
-tls_harbor_client_head_info_OU: 'Harbor'
-
-# 证书信息头, 州或省 
-# State or Province Name
-tls_harbor_server_head_info_ST: 'BeiJing'
-tls_harbor_client_head_info_ST: 'BeiJing'
-
-# Docs https://wiki.shileizcc.com/confluence/display/KUB/Kubernetes+Harbor
+# Add-Ons 配置 请参照 roles/add-ons/defaults/main.yml
 
 ## Clean Kubernetes Cluster
 ## ********************************************************************************************************************************

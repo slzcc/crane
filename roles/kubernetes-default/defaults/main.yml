@@ -1,39 +1,3 @@
-k8s_master_ip_list: >-
-  [{% for host in groups['kube-master'] -%}
-    '{{ hostvars[host].ansible_default_ipv4.address }}'
-    {%- if not loop.last -%},{%- endif -%}
-  {%- endfor -%}]
-
-k8s_master_name_list: >-
-  [{% for host in groups['kube-master'] -%}
-    '{{ hostvars[host].ansible_nodename }}'
-    {%- if not loop.last -%},{%- endif -%}
-  {%- endfor -%}]
-
-k8s_master_ip_str: >-
-  {% for host in groups['kube-master'] -%}
-    {{ hostvars[host].ansible_default_ipv4.address }}
-    {%- if not loop.last -%},{%- endif -%}
-  {%- endfor -%}
-
-all_hostname_str: >-
-  {% for host in groups['kube-master'] -%}
-    {{ hostvars[host]['ansible_nodename'] }}
-    {%- if not loop.last -%},{%- endif -%}
-  {%- endfor -%}
-
-
-# TLS
-## ********************************************************************************************************************************
-
-admin_tls_k8s_head_info_O: 'system:masters'
-nodes_tls_k8s_head_info_O: 'system:nodes'
-controller_manager_tls_k8s_head_info_O: 'system:kube-controller-manager'
-scheduler_tls_k8s_head_info_O: 'system:kube-scheduler'
-
-tls_k8s_validity_period_hours: '{{ tls_k8s_validity_period * 365 * 24 }}'
-
-
 ## Kube TLS
 ## ********************************************************************************************************************************
 
@@ -65,3 +29,42 @@ tls_k8s_head_info_OU: 'Kubernetes'
 # 证书信息头, 州或省 
 # State or Province Name
 tls_k8s_head_info_ST: 'BeiJing'
+
+## Deploy Kubernetes Cluster Host list
+## ********************************************************************************************************************************
+
+k8s_master_ip_list: >-
+  [{% for host in groups['kube-master'] -%}
+    '{{ hostvars[host].ansible_default_ipv4.address }}'
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}]
+
+k8s_master_name_list: >-
+  [{% for host in groups['kube-master'] -%}
+    '{{ hostvars[host].ansible_nodename }}'
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}]
+
+k8s_master_ip_str: >-
+  {% for host in groups['kube-master'] -%}
+    {{ hostvars[host].ansible_default_ipv4.address }}
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}
+
+all_hostname_str: >-
+  {% for host in groups['kube-master'] -%}
+    {{ hostvars[host]['ansible_nodename'] }}
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}
+
+# TLS
+## ********************************************************************************************************************************
+
+admin_tls_k8s_head_info_O: 'system:masters'
+nodes_tls_k8s_head_info_O: 'system:nodes'
+controller_manager_tls_k8s_head_info_O: 'system:kube-controller-manager'
+scheduler_tls_k8s_head_info_O: 'system:kube-scheduler'
+
+tls_k8s_validity_period_hours: '{{ tls_k8s_validity_period * 365 * 24 }}'
+
+
