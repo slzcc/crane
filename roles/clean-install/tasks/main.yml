@@ -178,10 +178,10 @@
   when: is_install_ipvsadm and kube_proxy_mode == 'ipvs'
   ignore_errors: true
 
-- name: Clean IPVS Rules
-  shell: "iptables -X"
-  when: is_install_ipvsadm
-  ignore_errors: true
+# - name: DELETE ALL IPTABLE CLAIN
+#   shell: "iptables -X"
+#   when: is_install_ipvsadm
+#   ignore_errors: true
 
 - name: Clean ipvs Record
   shell: "ipvsadm --clear | true"
