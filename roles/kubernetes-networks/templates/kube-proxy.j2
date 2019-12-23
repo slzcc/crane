@@ -66,8 +66,10 @@ data:
     metricsBindAddress: 127.0.0.1:10249
     mode: "{{ kube_proxy_mode }}"
 {% if kube_proxy_node_port_addresses %}
-    nodePortAddresses: 
-      - "{{ kube_proxy_node_port_addresses }}"
+    nodePortAddresses:
+{% for _list in kube_proxy_node_port_addresses %}
+      - "{{ _list }}"
+{% endfor %}
 {% endif %}
     oomScoreAdj: -999
     portRange: ""

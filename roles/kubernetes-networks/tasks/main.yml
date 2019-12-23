@@ -1,7 +1,7 @@
 ---
 - name: Copy Kubernetes DNS Config Files
   template: 
-    src: CoreDNS.j2
+    src: "roles/kubernetes-networks/templates/CoreDNS.j2"
     dest: "{{ temporary_dirs }}CoreDNS.yml"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
@@ -12,7 +12,7 @@
 
 - name: Copy Kubernetes Proxy Config Files
   template: 
-    src: kube-proxy.j2
+    src: "roles/kubernetes-networks/templates/kube-proxy.j2"
     dest: "{{ temporary_dirs }}kube-proxy.yml"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
@@ -23,7 +23,7 @@
 
 - name: Copy Calico Config Files
   template: 
-    src: calico.j2
+    src: "roles/kubernetes-networks/templates/calico.j2"
     dest: "{{ temporary_dirs }}calico.yml"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
