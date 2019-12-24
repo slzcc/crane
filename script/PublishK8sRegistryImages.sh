@@ -118,9 +118,9 @@ docker save -o ${temporaryDirs}/image_keeplived.tar.gz \
                slzcc/keepalived:1.2.24
 
 # Nginx Ingress
-docker pull quay.io/kubernetes-ingress-controller/nginx-ingress-controller:${nginxIngressVersion}
-[ ${CleanPullImage} == 'true' ] && docker rmi -f quay.io/kubernetes-ingress-controller/nginx-ingress-controller:${nginxIngressVersion}
+# docker pull quay.io/kubernetes-ingress-controller/nginx-ingress-controller:${nginxIngressVersion}
+# [ ${CleanPullImage} == 'true' ] && docker rmi -f quay.io/kubernetes-ingress-controller/nginx-ingress-controller:${nginxIngressVersion}
 
-[ ${isImageExport} == 'true' ] && \
-docker save -o ${temporaryDirs}/image_nginxingress.tar.gz \
-               quay.io/kubernetes-ingress-controller/nginx-ingress-controller:${nginxIngressVersion}
+# [ ${isImageExport} == 'true' ] && \
+# docker save -o ${temporaryDirs}/image_nginxingress.tar.gz \
+#                quay.io/kubernetes-ingress-controller/nginx-ingress-controller:${nginxIngressVersion}

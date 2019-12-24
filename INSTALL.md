@@ -95,7 +95,7 @@ $ docker run --rm -i \
 $ systemctl stop docker
 $ cat > /etc/docker/daemon.json  <<EOF
 {
-    "registry-mirrors": ["https://registry.docker-cn.com"],
+    "registry-mirrors": ["https://4dyopx9i.mirror.aliyuncs.com"],
     "exec-opts": ["native.cgroupdriver=cgroupfs"],
     "log-driver": "json-file",
     "log-opts": {

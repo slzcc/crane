@@ -8,7 +8,7 @@ is_deploy_helm: false
 ## ********************************************************************************************************************************
 
 # 部署 Ingress Nginx
-is_deploy_ingress_nginx: true
+is_deploy_ingress_nginx: false
 
 # Ingress Nginx Version
 ingress_nginx_version: '0.26.1'
