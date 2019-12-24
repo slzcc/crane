@@ -99,7 +99,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [x] 修复 `CNI` 容器部署 `Download Plugin` 位置错误。`v1.15.0.2` 中修复。(之前版本实际不受影响, `Calico` 有自己的初始化 `Plugin` 部署方式) 
 - [x] 修复 `kubelet` 重新加入集群时, 证书无效的问题, `v1.15.0.3` 中修复。
 - [x] 修复添加 `Master` 节点时, `HaProxy` 没有及时更新新节点问题, `v1.15.0.5` 中修复。
-- [x] 修复 `Add Etcd` 节点时, 没有更新 Kubu apiServer` 和 `Calico`、`Etcd` 服务的配置信息, `v1.15.0.6` 中修复。
+- [x] 修复 `Add Etcd` 节点时, 没有更新 `Kubu apiServer` 和 `Calico`、`Etcd` 服务的配置信息, `v1.15.0.6` 中修复。
 - [x] 修复 `Proxy` 中使用 `Keepalived` 通过 VIP 访问 nodePort 模式的服务时流量不可达的问题, `v1.15.3.5` 中修复。
 - [x] 修复 `Kubelet` 中的 `Cgroup` 与 `Docker` 版本兼容报错的问题, `v1.15.3.6` 中修复。
 - [x] 修复 `镜像` 部署模式中重复导入镜像/二进制文件的问题, `v1.16.1.3` 中修复。
