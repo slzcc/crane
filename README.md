@@ -58,7 +58,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [x] 支持 Dockerd 离线安装.
 
 ## 项目部署架构
-以 v1.16.x 为例：
+以 v1.17.x 为例：
 * Kubernetes A/C/S v1.17.0
 * CoreDNS: v1.6.3
 * Calico: v3.10.0
@@ -80,7 +80,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [x] 支持 Kubernetes 热更新 TLS, v1.15.0.3 版本更新。对集群中 Master/Node/Kubelet 等组件的所有 TLS 服务进行证书更新, 主要解决 CFSSL 默认申请 CA 证书 5 年时效问题, 以及后续可能存在的证书泄露问题。（Beta Version）
 - [x] 支持 Etcd 热更新 TLS, v1.15.0.6 中更新。
 - [x] 支持 Kubernetes 镜像导入方式部署, v1.14.2.1 版本更新。 默认使用镜像部署, 支持的版本请参看 [slzcc/kubernetes](https://hub.docker.com/r/slzcc/kubernetes/tags)
-- [ ] ~~支持 Proxy 方式部署 Docker Image 和 二进制应用, 已经通过容器方式部署.~~
+- [x] 支持 Proxy 方式配置部署. 并支持 Dockerd Proxy 配置.
 - [x] 支持离线方式部署 Kubernetes Cluster, 可参阅 [downloads-packages](roles/downloads-packages/files/)
 - [x] 支持 IPVS, v1.14.2.8 版本更新.
 - [x] 支持 Ansible in Docker 方式部署, 不在依赖于本地环境。v1.15.3.0 中更新。
