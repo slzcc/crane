@@ -60,7 +60,7 @@ FROM ubuntu:16.04
 
 COPY --from=DockerCli /usr/local/bin/docker /usr/local/bin
 
-ARG http_proxy=${http_proxy} \ 
+ENV http_proxy=${http_proxy} \ 
     https_proxy=${https_proxy}
 
 RUN echo "Acquire::http::Proxy \"${http_proxy}\";" > /etc/apt/apt.conf 
@@ -78,6 +78,9 @@ RUN wget -qO- "https://pkg.cfssl.org/R1.2/cfssl_linux-amd64" > /cfssl && \
     chmod +x /cfssl*
 
 RUN echo "" > /etc/apt/apt.conf
+
+ENV http_proxy= \ 
+    https_proxy=
 
 COPY ./image_*.tar.gz /
 
