@@ -60,11 +60,13 @@ FROM ubuntu:16.04
 
 COPY --from=DockerCli /usr/local/bin/docker /usr/local/bin
 
+ARG http_proxy=${http_proxy} \ 
+    https_proxy=${https_proxy}
+
+RUN echo "Acquire::http::Proxy \"${http_proxy}\";" > /etc/apt/apt.conf 
+
 RUN apt update && \
     apt install -y wget
-
-ENV http_proxy=${http_proxy} \ 
-    https_proxy=${https_proxy}
 
 RUN wget -qO- "https://dl.k8s.io/${k8sVersion}/kubernetes-node-linux-amd64.tar.gz" | tar zx -C /
 
@@ -74,6 +76,8 @@ RUN mkdir -p /cni && \
 RUN wget -qO- "https://pkg.cfssl.org/R1.2/cfssl_linux-amd64" > /cfssl && \
     wget -qO- "https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64" > /cfssljson && \
     chmod +x /cfssl*
+
+RUN echo "" > /etc/apt/apt.conf
 
 COPY ./image_*.tar.gz /
 
