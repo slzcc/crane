@@ -49,13 +49,13 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [x] 支持集群后续 `Kubernetes Cluster` 扩容, 支持添加 `Master/None` 节点。
 - [x] 支持集群后续 `Etcd Cluster` 扩容 (只添加节点, 对现有集群无感知) `v1.14.1.8` 中添加。
 - [x] 支持自定义镜像仓库地址。
-- [x] 支持 Add-Ons 等应用部署。
+- [x] 支持 `Add-Ons` 等应用部署。
 - [x] 支持自定义 TLS 。
-- [x] 支持 Kubernetes Cluster CA 根证书更新。
-- [x] 支持 Kubernetes Cluster 版本升级。
-- [x] 支持 Etcd Cluster CA 根证书更新。
-- [x] 支持 Ansible in Docker 方式进行部署。
-- [x] 支持 Dockerd 离线安装.
+- [x] 支持 `Kubernetes Cluster CA` 根证书更新。
+- [x] 支持 `Kubernetes Cluster` 版本升级。
+- [x] 支持 `Etcd Cluster CA` 根证书更新。
+- [x] 支持 `Ansible in Docker` 方式进行部署。
+- [x] 支持 `Dockerd` 离线安装.
 
 ## 项目部署架构
 以 v1.17.x 为例：
@@ -100,7 +100,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [x] 修复 `kubelet` 重新加入集群时, 证书无效的问题, `v1.15.0.3` 中修复。
 - [x] 修复添加 `Master` 节点时, `HaProxy` 没有及时更新新节点问题, `v1.15.0.5` 中修复。
 - [x] 修复 `Add Etcd` 节点时, 没有更新 `Kubu apiServer` 和 `Calico`、`Etcd` 服务的配置信息, `v1.15.0.6` 中修复。
-- [x] 修复 `Proxy` 中使用 `Keepalived` 通过 VIP 访问 nodePort 模式的服务时流量不可达的问题, `v1.15.3.5` 中修复。
+- [x] 修复 `Proxy` 中使用 `Keepalived` 通过 `VIP` 访问 `nodePort` 模式的服务时流量不可达的问题, `v1.15.3.5` 中修复。
 - [x] 修复 `Kubelet` 中的 `Cgroup` 与 `Docker` 版本兼容报错的问题, `v1.15.3.6` 中修复。
 - [x] 修复 `镜像` 部署模式中重复导入镜像/二进制文件的问题, `v1.16.1.3` 中修复。
 - [x] 修复 `docker` 安装时, 如果本地有集群外的服务(`daemon.json` 文件一致), 会停止服务的问题, `v1.16.1.3` 中修复。
