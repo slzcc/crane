@@ -71,7 +71,7 @@ os_network_device_name: 'ens4'
 is_keepalived: false
 
 # 当开启了 VIP 后需要配置 kube proxy 用于识别的物理 IP 地址网段, 否则当通过 nodePort 无法被 VIP 转发流量, 此值为 VIP 后端网络网段 (如不使用 VIP 请忽略填写)
-kube_proxy_node_port_addresses: '192.168.2.x/16'
+kube_proxy_node_port_addresses: ["10.100.21.0/24", "172.17.48.0/24"]
 ```
 
 完成上述配置后, 可进行部署 Crane。
