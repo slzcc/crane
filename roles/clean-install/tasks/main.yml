@@ -178,14 +178,12 @@
   when: is_install_ipvsadm and kube_proxy_mode == 'ipvs'
   ignore_errors: true
 
-# - name: DELETE ALL IPTABLE CLAIN
-#   shell: "iptables -X"
-#   when: is_install_ipvsadm
-#   ignore_errors: true
-
-- name: Clean ipvs Record
-  shell: "ipvsadm --clear | true"
-  when: kube_proxy_mode == "ipvs"
+- name: DELETE ALL IPTABLE CLAIN
+  shell: "iptables -F -t {{ item }}"
+  with_items:
+    - "nat"
+    - "filter"
+  ignore_errors: true
 
 - name: Clean Kube IPVS0
   shell: "ip a flush dev {{ item }}"
