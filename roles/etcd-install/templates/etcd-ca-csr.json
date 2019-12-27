@@ -12,5 +12,8 @@
       "O": "{{ tls_etcd_head_info_OU }}",
       "OU": "{{ tls_etcd_head_info_OU }}"
     }
-  ]
+  ],
+  "ca": {
+    "expiry": "{{ tls_etcd_validity_period_hours }}h"
+  }
 }

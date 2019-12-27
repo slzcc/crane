@@ -12,5 +12,8 @@
       "O": "{{ tls_k8s_head_info_OU }}",
       "OU": "{{ tls_k8s_head_info_OU }}"
     }
-  ]
+  ],
+  "ca": {
+    "expiry": "{{ tls_k8s_validity_period_hours }}h"
+  }
 }

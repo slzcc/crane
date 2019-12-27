@@ -12,5 +12,8 @@
       "O": "{{ tls_harbor_server_head_info_OU }}",
       "OU": "{{ tls_harbor_server_head_info_OU }}"
     }
-  ]
+  ],
+  "ca": {
+    "expiry": "{{ tls_harbor_validity_period_hours }}h"
+  }
 }
