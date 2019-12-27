@@ -149,7 +149,7 @@ time_location: "Asia/Shanghai"
 ## ********************************************************************************************************************************
 
 # install To Docker Version
-docker_version: '19.03'
+docker_version: '19.03.1'
 
 # Docker 安装类型, 默认 http_binary, 其他方式: http_binary, local_binary, http_script
 # 值为 http_binary 则通过远程下载二进制文件到执行目录.
