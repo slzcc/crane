@@ -3,5 +3,8 @@
   "key": {
     "algo": "{{ tls_k8s_encryption_algorithm }}",
     "size": {{ tls_k8s_encryption_algorithm_size }}
+  },
+  "ca": {
+    "expiry": "{{ tls_k8s_validity_period_hours }}h"
   }
 }

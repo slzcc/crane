@@ -7,8 +7,8 @@ tls_etcd_encryption_algorithm: 'rsa'
 # CFSSL 生成证书的通过加密算法生成的长度
 tls_etcd_encryption_algorithm_size: 2048
 
-# 证书有效期, 默认为 10 年, 因 CA 根证书默认为 5 年, 此值改大没意义
-tls_etcd_validity_period: 5
+# 证书有效期, 默认为 5 年, CA 根证书与 server 证书使用一个时间
+tls_etcd_validity_period: 20
 
 # 证书信息头, 国家信息 
 # Country Name
