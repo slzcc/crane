@@ -125,6 +125,9 @@ $ ansible-playbook -i nodes main.yml -vv
 ```
 $ ansible-playbook -i nodes remove_cluster.yml -vv
 ```
+
+> 在 group_vars/all.yml 中适配需要清除的选项。默认只清除工作目录, 不清除二进制、镜像文件。
+
 ---
 
 如果使用后发现什么问题请及时联系我进行解决: https://wiki.shileizcc.com/confluence/display/LM/Leave+a+message, 或提出 issue。

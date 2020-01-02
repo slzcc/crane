@@ -378,7 +378,7 @@ is_remove_cfssl: false
 is_remove_cni: false
 
 # 是否清除 Kubelet Kubectl 可执行文件
-is_remove_k8s_binary: true
+is_remove_k8s_binary: false
 
 # 是否清除 Kubernetes Images
 is_remove_k8s_images: false
