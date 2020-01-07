@@ -2,6 +2,5 @@ roles/downloads-packages/files/*.tar.gz
 roles/docker-install/files/*.tar.gz
 **/*.retry
 **/nodes
-tags
-nodes
 *.DS_Store
+tags
