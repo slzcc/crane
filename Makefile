@@ -28,3 +28,7 @@ local_load_image:
 
 local_load_dockerd:
 	@docker run --rm -i -e DOCKER_VERSION=${DOCKER_VERSION} -v ${PWD}/roles/docker-install/files:/docker_bin -w /usr/local/bin docker:${DOCKER_VERSION} sh -c "tar zcf /docker_bin/docker-${DOCKER_VERSION}.tar.gz containerd  containerd-shim  ctr  docker  dockerd  docker-entrypoint.sh  docker-init  docker-proxy  modprobe  runc"
+
+run_simple:
+	@docker rm -f crane || true
+	@docker run --name crane --rm -i -e ANSIBLE_HOST_KEY_CHECKING=true -e TERM=xterm-256color -e COLUMNS=238 -e LINES=61 -v ~/.ssh:/root/.ssh -v ${PWD}:/crane ${DockerHubRepoName}/${ProjectName}:${VERSION} -i kube-simple/nodes ${CRANE_ENTRANCE} ${OPTION}
