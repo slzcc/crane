@@ -1,7 +1,7 @@
 FROM ubuntu:18.04
 
 RUN apt update && \
-    apt install -y git unzip vim python3 python3-pip curl wget lrzsz python python-pip dnsutils inetutils-ping ethtool telnet inetutils-traceroute traceroute tcpdump dbus inetutils-ping net-tools openssh-server netcat-traditional && \
+    apt install -y git unzip vim python3 python3-pip curl wget lrzsz python python-pip dnsutils inetutils-ping ethtool telnet inetutils-traceroute traceroute tcpdump dbus inetutils-ping net-tools openssh-server iptables ipset netcat-traditional && \
     apt install -y fonts-baekmuk fonts-nanum language-pack-zh-hans && \
     rm -rf  /var/cache/apt/archives/* && \
     apt clean
