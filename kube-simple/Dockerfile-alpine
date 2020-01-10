@@ -1,0 +1,40 @@
+FROM alpine:3.11
+
+RUN apk update && \
+    apk add --no-cache \
+        bash git unzip vim python3 curl wget ethtool tcpdump dbus net-tools openssh-server iptables ipset bash-doc bash-completion
+
+RUN cd /tmp && git clone https://github.com/systemd/systemd
+
+RUN echo "unicode=\"YES\"" >> /etc/rc.conf && \
+    apk add --no-cache --virtual .build_deps \
+        autoconf file g++ gcc libc-dev make pkgconf python3 ninja \
+        util-linux pciutils usbutils coreutils binutils findutils grep \
+        build-base gcc abuild binutils binutils-doc gcc-doc gperf \
+        libcap libcap-dev valgrind-dev \
+        udisks2 fuse-exfat zfs s6-linux-init archivemount-doc \
+        libimobiledevice mtools open-vm-tools fuse3 directfb cifs-utils util-linux-dev libewf \
+        archivemount py3-libmount unionfs-fuse udisks fuse libmount nfs-utils gnome-disk-utility \
+        && rm -rf /var/cache/apk/* \
+
+RUN pip3 install meson
+
+RUN cd /tmp/systemd && \
+    meson build && \
+    ninja build
+
+RUN service ssh start && \
+    ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa && \
+    cat ~/.ssh/id_rsa.pub > ~/.ssh/authorized_keys && \
+    chmod 600 -R ~/.ssh/authorized_keys && \
+    ssh-keyscan -t rsa 127.0.0.1 -p 22 > ~/.ssh/known_hosts && \
+    ssh-keygen -H -f ~/.ssh/known_hosts
+
+RUN update-rc.d ssh defaults 98 && \
+    echo 'root:root' |chpasswd && \
+    sed -ri 's/^#?PermitRootLogin\s+.*/PermitRootLogin yes/' /etc/ssh/sshd_config && \
+    sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config
+
+EXPOSE 22
+
+CMD ["/sbin/init"]
