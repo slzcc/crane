@@ -7,7 +7,7 @@ RUN apt update && \
     apt clean
 
 RUN service ssh start && \
-   ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa && \
+    ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa && \
     cat ~/.ssh/id_rsa.pub > ~/.ssh/authorized_keys && \
     chmod 600 -R ~/.ssh/authorized_keys && \
     ssh-keyscan -t rsa 127.0.0.1 -p 22 > ~/.ssh/known_hosts && \

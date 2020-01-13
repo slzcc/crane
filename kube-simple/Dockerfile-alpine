@@ -17,7 +17,7 @@ RUN echo "unicode=\"YES\"" >> /etc/rc.conf && \
         archivemount py3-libmount unionfs-fuse udisks fuse libmount nfs-utils gnome-disk-utility \
         && rm -rf /var/cache/apk/*
 
-RUN http_proxy=59.151.100.24:44551 https_proxy=59.151.100.24:44551 ; pip3 install meson
+RUN pip3 install meson
 
 RUN cd /tmp/systemd && \
     meson build && \
