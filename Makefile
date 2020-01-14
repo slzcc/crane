@@ -31,4 +31,4 @@ local_load_dockerd:
 
 run_simple:
 	@docker rm -f crane || true
-	@docker run --name crane --rm -i -e ANSIBLE_HOST_KEY_CHECKING=true -e TERM=xterm-256color -e COLUMNS=238 -e LINES=61 -v ~/.ssh:/root/.ssh -v ${PWD}:/crane ${DockerHubRepoName}/${ProjectName}:${VERSION} -i kube-simple/nodes ${CRANE_ENTRANCE} ${OPTION}
+	@docker run --name crane --net host --rm -i -e ANSIBLE_HOST_KEY_CHECKING=true -e TERM=xterm-256color -e COLUMNS=238 -e LINES=61 -v ~/.ssh:/root/.ssh -v ${PWD}:/crane ${DockerHubRepoName}/${ProjectName}:${VERSION} -i kube-simple/nodes ${CRANE_ENTRANCE} ${OPTION}

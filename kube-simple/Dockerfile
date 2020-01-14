@@ -6,6 +6,8 @@ RUN apt update && \
     rm -rf  /var/cache/apt/archives/* && \
     apt clean
 
+RUN apt install -7 kernel*
+
 RUN service ssh start && \
     ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa && \
     cat ~/.ssh/id_rsa.pub > ~/.ssh/authorized_keys && \

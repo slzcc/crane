@@ -1,8 +1,8 @@
-FROM alpine:3.11
+FROM alpine:3.6
 
 RUN apk update && apk add --no-cache \
       bash \
-      git bash-doc bash-completion
+      git
 
 RUN cd /tmp && git clone https://github.com/systemd/systemd
 
@@ -11,18 +11,10 @@ RUN echo "unicode=\"YES\"" >> /etc/rc.conf && \
         autoconf file g++ gcc libc-dev make pkgconf python3 ninja \
         util-linux pciutils usbutils coreutils binutils findutils grep \
         build-base gcc abuild binutils binutils-doc gcc-doc gperf libcap libcap-dev \
-        valgrind-dev 
-
-RUN ALL_PROXY=59.151.100.24:44551 pip3 install meson
+        valgrind-dev \
+    && \
+    pip3 install meson
 
 RUN cd /tmp/systemd && \
     meson build && \
     ninja build
-
-RUN apk update && \
-    apk add --no-cache \
-        git unzip vim python3 curl wget ethtool tcpdump dbus net-tools openssh-server iptables ipset
-
-EXPOSE 22
-
-CMD ["/sbin/init"]
