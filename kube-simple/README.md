@@ -74,8 +74,8 @@ etcd
 etcd-cluster-add-node
 
 [all:vars]
-ansible_ssh_public_key_file='~/.ssh/simple.pub'
-ansible_ssh_private_key_file='~/.ssh/simple'
+ansible_ssh_public_key_file='~/.ssh/kube-simple.pub'
+ansible_ssh_private_key_file='~/.ssh/kube-simple'
 ansible_ssh_port=1220
 ansible_ssh_user=root
 ```
@@ -90,6 +90,6 @@ $ docker inspect kube-simple --format '{{ .NetworkSettings.IPAddress }}'
 然后执行部署命令:
 
 ```
-$ docker inspect kube-simple --format '{{ .NetworkSettings.IPAddress }}'
+$ make run_simple
 
 ```
