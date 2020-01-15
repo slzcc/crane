@@ -37,7 +37,7 @@ k8s_cluster_ip: '10.96.0.1'
 k8s_cluster_ip_range: '10.96.0.0/12'
 
 # Kubernetes ApiServer 的总入口地址, 可配置 SLB 等云服务商提供的地址, 但需要接入后端服务器的 80, 443 端口, 此地址可以写某个单实例的 IP 地址
-k8s_load_balance_ip: 172.17.0.2
+k8s_load_balance_ip: 172.19.0.2
 
 # Kubernetes HaProxy 监听的 apiServer 完整的 URL
 k8s_apiserver_https_bind: 'https://{{ k8s_load_balance_ip }}:{{ k8s_master_haproxy_bind_port }}'
@@ -122,7 +122,7 @@ kube_proxy_ipvs_scheduler: "rr"
 ## ********************************************************************************************************************************
 # Kubelet Options
 ## 不区分 Master/Nodes
-kubelet_options: "--cgroup-driver={{ kubelet_cgroup_drive }} --network-plugin=cni --cni-conf-dir={{ cni_config_dir }} --cni-bin-dir={{ kubernetes_cni_dirs }} --pod-infra-container-image={{ k8s_pod_infra_container_image }} --runtime-cgroups=/systemd/system.slice --kubelet-cgroups=/systemd/system.slice {{ kubectl_gc_options }}"
+kubelet_options: "--cgroup-driver={{ kubelet_cgroup_drive }} --network-plugin=cni --cni-conf-dir={{ cni_config_dir }} --cni-bin-dir={{ kubernetes_cni_dirs }} --pod-infra-container-image={{ k8s_pod_infra_container_image }} --runtime-cgroups=/systemd/system.slice --kubelet-cgroups=/systemd/system.slice --fail-swap-on=false {{ kubectl_gc_options }}"
 
 ## GC Config, (没有应用, 如需要请加入 kubelet_options 配置内, 请熟悉文档中的每一项参数功能再进行配置)
 ## GC DOCS https://kubernetes.io/docs/tasks/administer-cluster/out-of-resource/
@@ -169,9 +169,9 @@ docker_registry_mirrors: '["https://4dyopx9i.mirror.aliyuncs.com"]'
 # Docker 存储路径
 docker_data_root: '/var/lib/docker'
 
-# Docker Image 存储驱动 (此配置对 Centos 无效)
+# Docker Image 存储驱动, 默认系统自识别
 # 因部分 xfs 底层存储 ftype=0, 会造成 overlay2 无法正常使用, 请自行解决.
-docker_storage_driver: "overlay2"
+docker_storage_driver: ""
 
 # 允许的不安全 Registry 地址
 docker_insecure_registry: '[]'

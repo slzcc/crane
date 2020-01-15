@@ -1,12 +1,17 @@
 FROM ubuntu:18.04
 
 RUN apt update && \
-    apt install -y git unzip vim python3 python3-pip curl wget lrzsz python python-pip dnsutils inetutils-ping ethtool telnet inetutils-traceroute traceroute tcpdump dbus inetutils-ping net-tools openssh-server iptables ipset netcat-traditional && \
-    apt install -y fonts-baekmuk fonts-nanum language-pack-zh-hans && \
+    echo "Asia/Shanghai" > /etc/timezone && \
+    apt install -y tzdata && \
+    dpkg-reconfigure -f noninteractive tzdata && \
+    apt install -y git unzip vim python3 python3-pip curl wget lrzsz \
+    dnsutils inetutils-ping ethtool telnet iproute2 iotop jq ctop \
+    inetutils-traceroute traceroute tcpdump dbus inetutils-ping \
+    net-tools openssh-server iptables ipset netcat-traditional \
+    fonts-baekmuk fonts-nanum language-pack-zh-hans dstat \
+    kernel-common kernel-package kernel-patch-scripts kernel-wedge && \
     rm -rf  /var/cache/apt/archives/* && \
     apt clean
-
-RUN apt install -7 kernel*
 
 RUN service ssh start && \
     ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa && \
@@ -19,6 +24,10 @@ RUN update-rc.d ssh defaults 98 && \
     echo 'root:root' |chpasswd && \
     sed -ri 's/^#?PermitRootLogin\s+.*/PermitRootLogin yes/' /etc/ssh/sshd_config && \
     sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config
+
+RUN apt install -y sudo
+
+ENV TZ=Asia/Shanghai
 
 EXPOSE 22
 
