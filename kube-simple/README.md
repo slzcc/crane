@@ -2,7 +2,7 @@
 
 为了方便测试, 准备 Simple 方式测试部署 Crane .
 
-通过启动一个容器模拟 虚拟机/物理机 部署单点的 Kubernetes Master 实例.
+通过启动一个容器模拟 虚拟机/物理机 部署单点或集群的 Kubernetes Cluster 实例.
 
 # 环境准备
 
