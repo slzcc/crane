@@ -12,7 +12,7 @@
   ignore_errors: true
  
 - name: Ubuntu Install Docker-ce
-  include: roles/docker-install/includes/http_binary.yaml
+  include: roles/docker-install/includes/local_binary.yaml
   when: docker_install_type == 'local_binary'
 
 - name: Ubuntu Install Docker-ce

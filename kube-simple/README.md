@@ -9,7 +9,9 @@
 启动 Simple 容器实例:
 
 ```
-$ docker run -d --name kube-simple -p 1220:22 -p 2379:2379 -p 2380:2380 -p 5443:5443 -p 6443:6443 -p 9090:9090 -p 10256:10256 -p 10257:10257 -p 10259:10259 --privileged --cap-add=ALL slzcc/ubuntu:18.04-systemd
+$ docker network create kube-simple
+
+$ docker run -d --name kube-simple -p 22:22 -p 2379:2379 -p 2380:2380 -p 5443:5443 -p 6443:6443 -p 9090:9090 -p 10256:10256 -p 10257:10257 -p 10259:10259 --privileged --cap-add=ALL --memory 4G --memory-swap 0 slzcc/ubuntu:18.04-systemd-kernel
 ```
 
 获取容器的 SSH 秘钥:
@@ -22,12 +24,12 @@ $ docker cp kube-simple:/root/.ssh/id_rsa.pub ~/.ssh/kube-simple.pub
 测试连接:（如果是本机则填写回环地址，如果非本机则填写远程机器地址）
 
 ```
-$ ssh -p 1220 -i ~/.ssh/kube-simple root@127.0.0.1
+$ ssh -p 22 -i ~/.ssh/kube-simple root@127.0.0.1
 ```
 
 > 如发现类似问题:
 ```
-$ ssh -p 1220 -i ~/.ssh/kube-simple root@127.0.0.1
+$ ssh -p 22 -i ~/.ssh/kube-simple root@127.0.0.1
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -39,22 +41,30 @@ SHA256:zYcKdEqIF7nH/R/YJVxjpMmIHFlCAVaR8UuKQIhKqwo.
 Please contact your system administrator.
 Add correct host key in /Users/shilei/.ssh/known_hosts to get rid of this message.
 Offending ECDSA key in /Users/shilei/.ssh/known_hosts:65
-ECDSA host key for [127.0.0.1]:1220 has changed and you have requested strict checking.
+ECDSA host key for [127.0.0.1]:22 has changed and you have requested strict checking.
 Host key verification failed.
 ```
 
 > 请自行解决.
 
+修改 group_vars/all.yml 中的 k8s_load_balance_ip 为容器内的 IP 地址, 通过如下命令获取:
+
+```
+$ docker inspect kube-simple --format '{{ .NetworkSettings.IPAddress }}'
+172.19.0.2
+
+```
+
 可以正常启动后，修改 nodes 对应的地址信息。（如果是本机则填写回环地址，如果非本机则填写远程机器地址）
 
 ```
 [kube-master]
-127.0.0.1
+172.19.0.2
 
 [kube-node]
 
 [etcd]
-127.0.0.1
+172.19.0.2
 
 [k8s-cluster-add-master]
 
@@ -76,20 +86,26 @@ etcd-cluster-add-node
 [all:vars]
 ansible_ssh_public_key_file='~/.ssh/kube-simple.pub'
 ansible_ssh_private_key_file='~/.ssh/kube-simple'
-ansible_ssh_port=1220
+ansible_ssh_port=22
 ansible_ssh_user=root
 ```
 
-修改 group_vars/all.yml 中的 k8s_load_balance_ip 为容器内的 IP 地址, 通过如下命令获取:
-
-```
-$ docker inspect kube-simple --format '{{ .NetworkSettings.IPAddress }}'
-
-```
 
 然后执行部署命令:
 
 ```
 $ make run_simple
 
+```
+
+# 销毁
+
+部署完成后通过如下方式销毁数据:
+
+```
+$ docker rm -f kube-simple
+
+$ rm -rf ~/.ssh/kube-simple*
+
+$ docker network rm kube-simple
 ```

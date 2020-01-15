@@ -1,10 +1,10 @@
 [kube-master]
-127.0.0.1
+172.19.0.2
 
 [kube-node]
 
 [etcd]
-127.0.0.1
+172.19.0.2
 
 [k8s-cluster-add-master]
 
@@ -26,5 +26,5 @@ etcd-cluster-add-node
 [all:vars]
 ansible_ssh_public_key_file='~/.ssh/kube-simple.pub'
 ansible_ssh_private_key_file='~/.ssh/kube-simple'
-ansible_ssh_port=1220
+ansible_ssh_port=22
 ansible_ssh_user=root
