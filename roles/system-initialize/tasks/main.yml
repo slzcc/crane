@@ -60,6 +60,7 @@
 
 - name: Swap Off
   shell: "for i in `cat /proc/swaps | sed -n '2,$p' | awk '{print $1}'`; do swapoff $i;done"
+  when: not is_Swap
   ignore_errors: true
 
 - name: Centos Initialize Plugins
