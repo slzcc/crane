@@ -7,7 +7,7 @@
 k8s_version: 'v1.17.1'
 
 # 避免大版本中组件的版本差异, 使用 build 版本作为差异配置项, 在项目中可以看做如下使用 '{{ k8s_version }}.{{ build_k8s_version }}'
-build_k8s_version: '2'
+build_k8s_version: '3'
 
 # 部署 CNI 对应版本, 如使用镜像方式部署, 不能修改 (如果可以使用 {{ k8s_cluster_component_registry }} 中的仓库地址获取镜像则可随意修改)
 # https://github.com/containernetworking/plugins/releases/
@@ -50,7 +50,7 @@ is_kube_master: "{{ inventory_hostname in groups['kube-master'] }}"
 is_kube_node: "{{ inventory_hostname in groups['kube-node'] }}"
 
 # 是否使用本地文件, 例如 kubectl, image 方式部署, 此项只能适用于容器方式部署, 但与 is_using_image_deploy 参数有冲突关系, 此值为本地镜像打包方式部署, is_using_image_deploy 为远程镜像方式部署。
-is_using_local_files_deploy: true
+is_using_local_files_deploy: false
 
 # 是否使用远程镜像部署, 例如 kubectl, image 默认为 true
 # 如果使用镜像部署需要保证 Ansible 中 *_version 未被修改的情况下才可使用, 否则版本不一致造成的问题自行解决.
@@ -159,7 +159,7 @@ docker_version: '19.03.1'
 # 值为 http_binary 则通过远程下载二进制文件到执行目录.
 # 值为 local_binary 则通过本地二进制文件 Copy 到远端.
 # 值为 http_script 则通过官方 https://get.docker.com 方式安装.
-docker_install_type: "local_binary"
+docker_install_type: "http_binary"
 
 # http_binary Source Addr
 docker_install_http_binary_source: 'https://mirror.shileizcc.com/Docker/bin/'
