@@ -34,7 +34,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 ## 发展历程
 
 目前支持的 Kubernetes 版本:
-* v1.10.0
+* v1.17.1
 * v1.14.x >= 1.17.x
 
 目前支持的操作系统: (其他版本请自行测试, 这里支持版本目的只是安装 Docker, 其他不受影响)
@@ -81,11 +81,11 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [x] 支持 `Etcd` 热更新 `TLS`, `v1.15.0.6` 中更新。
 - [x] 支持 `Kubernetes` 镜像导入方式部署, `v1.14.2.1` 版本更新。 默认使用镜像部署, 支持的版本请参看 [slzcc/kubernetes](https://hub.docker.com/r/slzcc/kubernetes/tags)
 - [x] 支持 `Proxy` 方式配置部署. 并支持 `Dockerd Proxy` 配置.
-- [x] 支持离线方式部署 `Kubernetes Cluster`, 可参阅 [downloads-packages](roles/downloads-packages/files/)
+- [x] 支持离线方式部署 `Kubernetes Cluster`, 可参阅 [downloads-packages](crane/roles/downloads-packages/files/)
 - [x] 支持 `IPVS`, `v1.14.2.8` 版本更新。
 - [x] 支持 `Ansible in Docker` 方式部署, 不在依赖于本地环境。`v1.15.3.0` 中更新。
 - [x] 支持 `Kubernetes Cluster` 版本更新, `v1.15.0.5` 中更新。
-- [x] 支持 `Dockerd` 离线安装, `v1.16.3.2` 中更新。[Dockerd install](roles/docker-install/)
+- [x] 支持 `Dockerd` 离线安装, `v1.16.3.2` 中更新。[Dockerd install](crane/roles/docker-install/)
 - [x] 支持 `Kubernetes for Docker` Simple 方式部署。（主要解决部署前的测试） , `v1.17.0.6` 中更新。[Kubernetes Simple](kube-simple/)
 
 ## 修复
@@ -171,10 +171,18 @@ os_network_device_name: < NetWork Name >
 > 普通用户需要具有 Sudo 组, 并且配置 Sudo 免密。
 
 ## Deploy Kubernetes Cluster
-如上述修改完成后, 可执行命令（v1.10.0 部署版本为例）：
+如上述修改完成后, 可执行命令（v1.17.1 部署版本为例）：
 ```
-$ export ANSIBLE_HOST_KEY_CHECKING=true
-$ ansible-playbook -i nodes main.yml -vv
+$ export ANSIBLE_HOST_KEY_CHECKING=false
+$ docker run --name crane --rm -i \
+         -e ANSIBLE_HOST_KEY_CHECKING=false \
+         -e TERM=xterm-256color \
+         -e COLUMNS=238 \
+         -e LINES=61 \
+         -v ~/.ssh:/root/.ssh \
+         -v ${PWD}:/crane \
+         slzcc/crane:v1.17.1.3 \
+         -i nodes main.yml -vv
 ```
 Cluster Status
 ```
@@ -189,12 +197,12 @@ node-csr-GJqCuRzlL6KzLvxLRgNo1fEswguU6RLaETPjw2SNzs4   10m       system:bootstra
 
 $ kubectl get nodes
 NAME         STATUS     ROLES     AGE       VERSION
-instance-2   Ready      master    11m       v1.10.0
-instance-3   Ready      master    11m       v1.10.0
-instance-4   Ready      master    11m       v1.10.0
-instance-5   NotReady   node      10m       v1.10.0
-instance-6   NotReady   node      10m       v1.10.0
-instance-7   NotReady   node      10m       v1.10.0
+instance-2   Ready      master    11m       v1.17.1
+instance-3   Ready      master    11m       v1.17.1
+instance-4   Ready      master    11m       v1.17.1
+instance-5   NotReady   node      10m       v1.17.1
+instance-6   NotReady   node      10m       v1.17.1
+instance-7   NotReady   node      10m       v1.17.1
 
 $ kubectl -n kube-system get pod -o wide
 NAME                                       READY     STATUS              RESTARTS   AGE       IP            NODE
@@ -242,19 +250,27 @@ kube-scheduler-instance-4                  1/1       Running             0      
 
 部署安装:
 ```
-$ ansible-playbook -i nodes add_master.yml -vv
+$ docker run --name crane --rm -i \
+        -e ANSIBLE_HOST_KEY_CHECKING=false \
+        -e TERM=xterm-256color \
+        -e COLUMNS=238 \
+        -e LINES=61 \
+        -v ~/.ssh:/root/.ssh \
+        -v ${PWD}:/crane \
+        slzcc/crane:v1.17.1.3 \
+        -i nodes add_master.yml -vv
 ```
 查看 Cluster Status:
 ```
 $ kubectl get node
 NAME         STATUS     ROLES     AGE       VERSION
-instance-2   Ready      master    46m       v1.10.0
-instance-3   Ready      master    46m       v1.10.0
-instance-4   Ready      master    46m       v1.10.0
-instance-5   Ready      node      45m       v1.10.0
-instance-6   Ready      node      45m       v1.10.0
-instance-7   Ready      node      45m       v1.10.0
-instance-8   Ready      master    7m        v1.10.0
+instance-2   Ready      master    46m       v1.17.1
+instance-3   Ready      master    46m       v1.17.1
+instance-4   Ready      master    46m       v1.17.1
+instance-5   Ready      node      45m       v1.17.1
+instance-6   Ready      node      45m       v1.17.1
+instance-7   Ready      node      45m       v1.17.1
+instance-8   Ready      master    7m        v1.17.1
 
 $ kubectl get csr
 NAME                                                   AGE       REQUESTOR                 CONDITION
@@ -279,20 +295,28 @@ node-csr-xk3fBmT4OOHNAtbYJq4IXtLLpFlfyXLeX2PWFMNsrjk   45m       system:bootstra
 
 部署安装:
 ```
-$ ansible-playbook -i nodes add_nodes.yml -vv
+$ docker run --name crane --rm -i \
+        -e ANSIBLE_HOST_KEY_CHECKING=false \
+        -e TERM=xterm-256color \
+        -e COLUMNS=238 \
+        -e LINES=61 \
+        -v ~/.ssh:/root/.ssh \
+        -v ${PWD}:/crane \
+        slzcc/crane:v1.17.1.3 \
+        -i nodes add_nodes.yml -vv
 ```
 Cluster Status
 ```
 $ kubectl get node
 NAME         STATUS     ROLES     AGE       VERSION
-instance-2   Ready      master    46m       v1.10.0
-instance-3   Ready      master    46m       v1.10.0
-instance-4   Ready      master    46m       v1.10.0
-instance-5   Ready      node      45m       v1.10.0
-instance-6   Ready      node      45m       v1.10.0
-instance-7   Ready      node      45m       v1.10.0
-instance-8   Ready      master    7m        v1.10.0
-instance-9   NotReady   node      10s       v1.10.0
+instance-2   Ready      master    46m       v1.17.1
+instance-3   Ready      master    46m       v1.17.1
+instance-4   Ready      master    46m       v1.17.1
+instance-5   Ready      node      45m       v1.17.1
+instance-6   Ready      node      45m       v1.17.1
+instance-7   Ready      node      45m       v1.17.1
+instance-8   Ready      master    7m        v1.17.1
+instance-9   NotReady   node      10s       v1.17.1
 
 $ kubectl get csr
 NAME                                                   AGE       REQUESTOR                 CONDITION
@@ -311,7 +335,15 @@ node-csr-xk3fBmT4OOHNAtbYJq4IXtLLpFlfyXLeX2PWFMNsrjk   46m       system:bootstra
 ## Clean Kubernetes Cluster
 清除集群所有部署的数据信息:
 ```
-$ ansible-playbook -i nodes remove_cluster.yml -vv
+$ docker run --name crane --rm -i \
+        -e ANSIBLE_HOST_KEY_CHECKING=false \
+        -e TERM=xterm-256color \
+        -e COLUMNS=238 \
+        -e LINES=61 \
+        -v ~/.ssh:/root/.ssh \
+        -v ${PWD}:/crane \
+        slzcc/crane:v1.17.1.3 \
+        -i nodes remove_cluster.yml -vv
 ```
 
 > 移除集群是对集群中所有节点来说的, 它会销毁集群中的所有安装过的应用以及配置。但不包含 docker、cfssl 等可供后续使用的应用。
@@ -333,7 +365,15 @@ $ ansible-playbook -i nodes remove_cluster.yml -vv
 
 部署安装:
 ```
-$ ansible-playbook -i nodes add_etcd.yml -vv
+$ docker run --name crane --rm -i \
+        -e ANSIBLE_HOST_KEY_CHECKING=false \
+        -e TERM=xterm-256color \
+        -e COLUMNS=238 \
+        -e LINES=61 \
+        -v ~/.ssh:/root/.ssh \
+        -v ${PWD}:/crane \
+        slzcc/crane:v1.17.1.3 \
+        -i nodes add_etcd.yml -vv
 ```
 > 添加的节点在现有的集群中不会被直接识别到, 因为 Etcd Endpoints 还是之前使用的, 如需要修改目前只支持手动更新, 因为牵扯太多目前不支持热更新服务配置, 否则会引起 apiServer、Calico 等应用的使用。
 
@@ -342,7 +382,15 @@ $ ansible-playbook -i nodes add_etcd.yml -vv
 ## Add Ons
 默认创建集群时, 是可以直接部署 Add-Ons 的, 如果后续进行部署, 则直接通过 tags 方式进行部署即可:
 ```
-$ ansible-playbook -i nodes main.yml --tags k8s-addons -vv
+$ docker run --name crane --rm -i \
+        -e ANSIBLE_HOST_KEY_CHECKING=false \
+        -e TERM=xterm-256color \
+        -e COLUMNS=238 \
+        -e LINES=61 \
+        -v ~/.ssh:/root/.ssh \
+        -v ${PWD}:/crane \
+        slzcc/crane:v1.17.1.3 \ 
+        -i nodes main.yml --tags k8s-addons -vv
 ```
 
 ## K8s TLS Rotation
@@ -353,7 +401,15 @@ $ ansible-playbook -i nodes main.yml --tags k8s-addons -vv
 
 部署安装:
 ```
-$ ansible-playbook -i nodes k8s_certificate_rotation.yml -vv
+$ docker run --name crane --rm -i \
+        -e ANSIBLE_HOST_KEY_CHECKING=false \
+        -e TERM=xterm-256color \
+        -e COLUMNS=238 \
+        -e LINES=61 \
+        -v ~/.ssh:/root/.ssh \
+        -v ${PWD}:/crane \
+        slzcc/crane:v1.17.1.3 \
+        -i nodes k8s_certificate_rotation.yml -vv
 ```
 
 此方式会让 kubelet 重新加入到集群中, 所以可能会大面积的看到 csr 状态:
@@ -391,7 +447,15 @@ csr-zp7tr   75m   system:node:instance-template-1   Approved,Issued
 
 部署安装:
 ```
-$ ansible-playbook -i nodes upgrade_version.yml -vv
+$ docker run --name crane --rm -i \
+        -e ANSIBLE_HOST_KEY_CHECKING=false \
+        -e TERM=xterm-256color \
+        -e COLUMNS=238 \
+        -e LINES=61 \
+        -v ~/.ssh:/root/.ssh \
+        -v ${PWD}:/crane \
+        slzcc/crane:v1.15.x \
+        -i nodes upgrade_version.yml -vv
 ```
 
 执行结果如下:
@@ -418,7 +482,15 @@ Server Version: version.Info{Major:"1", Minor:"15", GitVersion:"v1.15.0", GitCom
 
 部署安装:
 ```
-$ ansible-playbook -i nodes etcd_certificate_rotation.yml -vv
+$ docker run --name crane --rm -i \
+        -e ANSIBLE_HOST_KEY_CHECKING=false \
+        -e TERM=xterm-256color \
+        -e COLUMNS=238 \
+        -e LINES=61 \
+        -v ~/.ssh:/root/.ssh \
+        -v ${PWD}:/crane \
+        slzcc/crane:v1.17.1.3 \
+        -i nodes etcd_certificate_rotation.yml -vv
 ```
 
 ## Ansible in Docker
@@ -426,12 +498,15 @@ $ ansible-playbook -i nodes etcd_certificate_rotation.yml -vv
 
 部署安装: (版本请自己根据需求查看 [slzcc/crane](https://cloud.docker.com/u/slzcc/repository/docker/slzcc/crane) 获取)
 ```
-$ docker run --rm -i \
-         -v ~/.ssh:/root/.ssh \
-         -v ${PWD}/nodes:/crane/nodes \
-         -v ${PWD}/group_vars:/carne/group_vars \
-         slzcc/crane:v1.15.x.x \
-         -i nodes main.yml -vv
+$ docker run --name crane --rm -i \
+        -e ANSIBLE_HOST_KEY_CHECKING=false \
+        -e TERM=xterm-256color \
+        -e COLUMNS=238 \
+        -e LINES=61 \
+        -v ~/.ssh:/root/.ssh \
+        -v ${PWD}:/crane \
+        slzcc/crane:v1.17.1.3 \
+        -i nodes main.yml -vv
 ```
 > ~~切记！不要在任何 Master 或者 Node 节点上使用 Ansible in Docker 会造成 Dockerd 被重启导致服务中断！~~
 
