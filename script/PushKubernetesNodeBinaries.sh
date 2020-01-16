@@ -3,16 +3,16 @@
 # 如果需要部署到自己的私有仓库，请修改此项名称
 export targetRegistry=${targetRegistry:-'slzcc'}
 
-_cni_os_drive=`awk '/^cni_os_drive/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
-_dockerVersion=`awk '/^docker_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
-_k8sVersion=`awk '/^k8s_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
-_cni_version=`awk '/^cni_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
-_etcdVersion=`awk '/^etcd_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
-_pauseVersion=`awk '/^pause_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
-_calicoVersion=`awk '/^calico_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
-_haproxyVersion=`awk '/^haproxy_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
-_corednsVersion=`awk '/^dns_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
-_nginxIngressVersion=`awk '/^ingress_nginx_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_cni_os_drive=`awk '/^cni_os_drive/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_dockerVersion=`awk '/^docker_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_k8sVersion=`awk '/^k8s_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_cni_version=`awk '/^cni_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_etcdVersion=`awk '/^etcd_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_pauseVersion=`awk '/^pause_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_calicoVersion=`awk '/^calico_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_haproxyVersion=`awk '/^haproxy_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_corednsVersion=`awk '/^dns_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_nginxIngressVersion=`awk '/^ingress_nginx_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 
 # Docker Version
 export dockercliVersion=${_dockerVersion:-'19.03'}
@@ -37,8 +37,8 @@ export nginxIngressVersion=${_nginxIngressVersion:-'0.26.1'}
 export temporaryDirs=${temporaryDirs:-'/tmp'}
 
 # Proxy
-http_proxy=`awk '/^http_proxy/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}'`
-https_proxy=`awk '/^https_proxy/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}'`
+http_proxy=`awk '/^http_proxy/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}'`
+https_proxy=`awk '/^https_proxy/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}'`
 
 # Clean old files
 rm -rf  ${temporaryDirs}/image_*.tar.gz | true
@@ -84,7 +84,7 @@ COPY docker-image-import.sh /docker-image-import.sh
 
 EOF
 
-BUILD_VERSION=`awk '/^k8s_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`.`awk '/^build_k8s_version/{print}' ../group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+BUILD_VERSION=`awk '/^k8s_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`.`awk '/^build_k8s_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 
 cd ${temporaryDirs} && docker build -t ${targetRegistry}/kubernetes:${BUILD_VERSION} .
 

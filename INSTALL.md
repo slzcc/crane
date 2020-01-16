@@ -11,7 +11,7 @@ Crane 是由我个人独立创作并维护的, 在使用范围上可能得不到
 使用 Crane 很简单, 有可能在一定程度上比 Kubeadm 都简单(国内源问题), 可以通过如下方式获取源码进行安装:
 
 ```
-$ git clone -b v1.16.2.4 https://github.com/slzcc/crane.git
+$ git clone -b v1.17.1.2 https://github.com/slzcc/crane.git
 ```
 
 然后进入 crane 目录后, 首先修改 nodes 文件列表:
@@ -81,12 +81,15 @@ kube_proxy_node_port_addresses: ["10.100.21.0/24", "172.17.48.0/24"]
 借助 Docker 无需本地安装 Ansible 也可进行对 Crane 的安装, 如果在需部署集群内的任意节点执行则会导致中断(如果在部署集群外执行则直接执行命令即可)，您需要配置下述说明文档配置 Dockerd 的 daemon.json 配置，如完成后然后执行下方命令进行 Crane 的安装:
 
 ```
-$ docker run --rm -i \
-         -v ~/.ssh:/root/.ssh \
-         -v ${PWD}/nodes:/crane/nodes \
-         -v ${PWD}/group_vars:/carne/group_vars \
-         slzcc/crane:v1.16.2.4 \
-         -i nodes main.yml -vv
+$ docker run --name crane --rm -i \
+        -e ANSIBLE_HOST_KEY_CHECKING=false \
+        -e TERM=xterm-256color \
+        -e COLUMNS=238 \
+        -e LINES=61 \
+        -v ~/.ssh:/root/.ssh \
+        -v ${PWD}:/crane \
+        slzcc/crane:v1.17.1.2 \
+        -i nodes main.yml -vv
 ```
 
 > 如果实例上的 daemon.json 与部署的文件一致, 则不会导致 DockerD 重启, 可以在任意节点上使用 Ansible in Docker. 如果第一次部署请配置如下:
@@ -116,14 +119,29 @@ EOF
 如不想使用 Ansible in Docker 可执行命令直接进行部署:
 
 ```
-$ export ANSIBLE_HOST_KEY_CHECKING=true
-$ ansible-playbook -i nodes main.yml -vv
+$ docker run --name crane --rm -i \
+        -e ANSIBLE_HOST_KEY_CHECKING=false \
+        -e TERM=xterm-256color \
+        -e COLUMNS=238 \
+        -e LINES=61 \
+        -v ~/.ssh:/root/.ssh \
+        -v ${PWD}:/crane \
+        slzcc/crane:v1.17.1.2 \
+        -i nodes main.yml -vv
 ```
 
 如在部署过程中想销毁 Crane 则通过命令:
 
 ```
-$ ansible-playbook -i nodes remove_cluster.yml -vv
+$ docker run --name crane --rm -i \
+        -e ANSIBLE_HOST_KEY_CHECKING=false \
+        -e TERM=xterm-256color \
+        -e COLUMNS=238 \
+        -e LINES=61 \
+        -v ~/.ssh:/root/.ssh \
+        -v ${PWD}:/crane \
+        slzcc/crane:v1.17.1.2 \
+        -i nodes remove_cluster.yml -vv
 ```
 
 > 在 group_vars/all.yml 中适配需要清除的选项。默认只清除工作目录, 不清除二进制、镜像文件。
