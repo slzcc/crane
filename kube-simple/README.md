@@ -14,7 +14,7 @@
 ```
 $ docker network create --subnet 172.20.0.0/24 kube-simple
 
-$ docker run -d --net kube-simple --name kube-simple -p 22:22 -p 2379:2379 -p 2380:2380 -p 5443:5443 -p 6443:6443 -p 9090:9090 -p 10256:10256 -p 10257:10257 -p 10259:10259 --privileged --cap-add=ALL --memory 4G --memory-swap 0 slzcc/ubuntu:18.04-generic-4.15.0-74
+$ docker run -d --net kube-simple --name kube-simple -p 22:22 -p 2379:2379 -p 2380:2380 -p 5443:5443 -p 6443:6443 -p 9090:9090 -p 10256:10256 -p 10257:10257 -p 10259:10259 --privileged --cap-add=ALL --memory 4G --memory-swap 0 slzcc/ubuntu:18.04-linuxkit-4.9.184
 ```
 
 获取容器的 SSH 秘钥:
@@ -36,7 +36,7 @@ $ docker inspect kube-simple --format '{{ .NetworkSettings.IPAddress }}'
 测试连接:（如果是本机则填写回环地址，如果非本机则填写远程机器地址）
 
 ```
-$ docker run --name crane-test --net kube-simple --rm -it -v ~/.ssh:/root/.ssh slzcc/ubuntu:18.04-generic-4.15.0-74 bash
+$ docker run --name crane-test --net kube-simple --rm -it -v ~/.ssh:/root/.ssh slzcc/ubuntu:18.04-linuxkit-4.9.184 bash
 
 $ ssh -p 22 -i ~/.ssh/kube-simple root@172.20.0.2
 
