@@ -59,12 +59,12 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 
 ## 项目部署架构
 以 v1.17.x 为例：
-* Kubernetes A/C/S v1.17.0
-* CoreDNS: v1.6.3
-* Calico: v3.10.0
-* Kube Proxy: v1.17.0
-* HaProxy: v2.0.8
-* Etcd: v3.3.15
+* Kubernetes A/C/S v1.17.1
+* CoreDNS: v1.6.6
+* Calico: v3.11.1
+* Kube Proxy: v1.17.1
+* HaProxy: v2.1.2
+* Etcd: v3.3.17
 * pause: v3.1
 
 ## 代办项目
