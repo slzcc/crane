@@ -12,7 +12,7 @@
 启动 Simple 容器实例:
 
 ```
-$ docker network create kube-simple
+$ docker network create --subnet 172.20.0.0/24 kube-simple
 
 $ docker run -d --net kube-simple --name kube-simple -p 22:22 -p 2379:2379 -p 2380:2380 -p 5443:5443 -p 6443:6443 -p 9090:9090 -p 10256:10256 -p 10257:10257 -p 10259:10259 --privileged --cap-add=ALL --memory 4G --memory-swap 0 slzcc/ubuntu:18.04-generic-4.15.0-74
 ```
@@ -106,6 +106,36 @@ ansible_ssh_user=root
 ```
 $ make run_simple
 
+```
+
+部署完成后查看集群信息:
+
+```
+$ kubectl get csr
+NAME        AGE     REQUESTOR                  CONDITION
+csr-5lv28   9m37s   system:node:7ffa79cdabb0   Approved,Issued
+
+$ kubectl get nodes
+NAME           STATUS   ROLES    AGE   VERSION
+7ffa79cdabb0   Ready    master   10m   v1.17.1
+
+$ kubectl get cs
+NAME                 STATUS    MESSAGE             ERROR
+controller-manager   Healthy   ok
+scheduler            Healthy   ok
+etcd-0               Healthy   {"health":"true"}
+
+$ kubectl get pod --all-namespaces -o wide
+NAMESPACE     NAME                                   READY   STATUS    RESTARTS   AGE     IP              NODE           NOMINATED NODE   READINESS GATES
+kube-system   calico-node-2cv6j                      1/1     Running   4          10m     172.20.0.2      7ffa79cdabb0   <none>           <none>
+kube-system   coredns-67dcdb578f-67gzw               1/1     Running   0          10m     192.167.145.2   7ffa79cdabb0   <none>           <none>
+kube-system   coredns-67dcdb578f-jqdkf               1/1     Running   0          10m     192.167.145.1   7ffa79cdabb0   <none>           <none>
+kube-system   etcd-7ffa79cdabb0                      1/1     Running   0          10m     172.20.0.2      7ffa79cdabb0   <none>           <none>
+kube-system   haproxy-7ffa79cdabb0                   1/1     Running   0          9m39s   172.20.0.2      7ffa79cdabb0   <none>           <none>
+kube-system   kube-apiserver-7ffa79cdabb0            1/1     Running   0          9m39s   172.20.0.2      7ffa79cdabb0   <none>           <none>
+kube-system   kube-controller-manager-7ffa79cdabb0   1/1     Running   0          10m     172.20.0.2      7ffa79cdabb0   <none>           <none>
+kube-system   kube-proxy-sqscs                       1/1     Running   0          10m     172.20.0.2      7ffa79cdabb0   <none>           <none>
+kube-system   kube-scheduler-7ffa79cdabb0            1/1     Running   0          9m49s   172.20.0.2      7ffa79cdabb0   <none>           <none>
 ```
 
 # 销毁
