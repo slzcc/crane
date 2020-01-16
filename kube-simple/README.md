@@ -3,6 +3,7 @@
 为了方便测试, 准备 Simple 方式测试部署 Crane . 如在 MacOS 等系统中可以直接进行部署。只需要安装 Docker for Mac 且不依赖其他环境即可进行部署。
 
 > kube Simple 镜像中包含 System Kernel Module, 请自行编译安装 Kernel 所需模块。
+> 因为是模拟内核驱动, 所以绝大部分的模块是无法加载的, 会造成 Kube-Proxy 等服务无法正常启动, 所以如此问题请忽略。
 
 通过启动一个容器模拟 虚拟机/物理机 部署单点或集群的 Kubernetes Cluster 实例.
 
