@@ -17,6 +17,10 @@ run_main:
 	@docker rm -f crane || true
 	@docker run --name crane --rm -i -e ANSIBLE_HOST_KEY_CHECKING=true -e TERM=xterm-256color -e COLUMNS=238 -e LINES=61 -v ~/.ssh:/root/.ssh -v ${PWD}:/crane ${DockerHubRepoName}/${ProjectName}:${VERSION} -i nodes ${CRANE_ENTRANCE} ${OPTION}
 
+clean_main:
+	@docker rm -f crane || true
+	@docker run --name crane --rm -i -e ANSIBLE_HOST_KEY_CHECKING=true -e TERM=xterm-256color -e COLUMNS=238 -e LINES=61 -v ~/.ssh:/root/.ssh -v ${PWD}:/crane ${DockerHubRepoName}/${ProjectName}:${VERSION} -i nodes remove_cluster.yml -vv
+
 local_save_image:
 	@docker pull slzcc/kubernetes:${VERSION}
 	@docker save -o roles/downloads-packages/files/kubernetes.tar.gz slzcc/kubernetes:${VERSION}
@@ -33,5 +37,6 @@ run_simple:
 	@docker rm -f crane || true
 	@docker run --name crane --net kube-simple --rm -i -e ANSIBLE_HOST_KEY_CHECKING=true -e TERM=xterm-256color -e COLUMNS=238 -e LINES=61 -v ~/.ssh:/root/.ssh -v ${PWD}:/crane ${DockerHubRepoName}/${ProjectName}:${VERSION} -i kube-simple/nodes ${CRANE_ENTRANCE} ${OPTION}
 
-run_simple_cp_docker:
-	@docker cp roles/docker-install/files/docker-19.03.1.tar.gz kube-simple:/
+clean_simple:
+	@docker rm -f crane || true
+	@docker run --name crane --net kube-simple --rm -i -e ANSIBLE_HOST_KEY_CHECKING=true -e TERM=xterm-256color -e COLUMNS=238 -e LINES=61 -v ~/.ssh:/root/.ssh -v ${PWD}:/crane ${DockerHubRepoName}/${ProjectName}:${VERSION} -i kube-simple/nodes remove_cluster.yml -vv
