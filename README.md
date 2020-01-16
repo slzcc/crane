@@ -173,7 +173,6 @@ os_network_device_name: < NetWork Name >
 ## Deploy Kubernetes Cluster
 如上述修改完成后, 可执行命令（v1.17.1 部署版本为例）：
 ```
-$ export ANSIBLE_HOST_KEY_CHECKING=false
 $ docker run --name crane --rm -i \
          -e ANSIBLE_HOST_KEY_CHECKING=false \
          -e TERM=xterm-256color \
