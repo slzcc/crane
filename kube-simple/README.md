@@ -2,7 +2,7 @@
 
 为了方便测试, 准备 Simple 方式测试部署 Crane . 如在 MacOS 等系统中可以直接进行部署。只需要安装 Docker for Mac 且不依赖其他环境即可进行部署。
 
-> kube Simple 镜像中并不包含 System Kernel Module, 所以无法使用 modporbe 加载任何内核模块, 所以不建议使用多点进行集群部署, 以免出现不必要的问题.
+> kube Simple 镜像中包含 System Kernel Module, 请自行编译安装 Kernel 所需模块。
 
 通过启动一个容器模拟 虚拟机/物理机 部署单点或集群的 Kubernetes Cluster 实例.
 
@@ -20,18 +20,33 @@ $ docker run -d --name kube-simple -p 22:22 -p 2379:2379 -p 2380:2380 -p 5443:54
 
 ```
 $ docker cp kube-simple:/root/.ssh/id_rsa ~/.ssh/kube-simple
+
 $ docker cp kube-simple:/root/.ssh/id_rsa.pub ~/.ssh/kube-simple.pub
+```
+
+修改 group_vars/all.yml 中的 k8s_load_balance_ip 为容器内的 IP 地址, 通过如下命令获取:
+
+```
+$ docker inspect kube-simple --format '{{ .NetworkSettings.IPAddress }}'
+172.19.0.2
+
 ```
 
 测试连接:（如果是本机则填写回环地址，如果非本机则填写远程机器地址）
 
 ```
-$ ssh -p 22 -i ~/.ssh/kube-simple root@127.0.0.1
+$ docker run --name crane-test --net kube-simple --rm -it -v ~/.ssh:/root/.ssh ubuntu:18.04-systemd-kernel bash
+
+$ ssh -p 22 -i ~/.ssh/kube-simple root@172.19.0.2
+
+# or
+$ ssh-keyscan -t rsa -p 22 172.19.0.2  >> ~/.ssh/known_hosts
+
 ```
 
 > 如发现类似问题:
 ```
-$ ssh -p 22 -i ~/.ssh/kube-simple root@127.0.0.1
+$ ssh -p 22 -i ~/.ssh/kube-simple root@172.19.0.2
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -43,19 +58,11 @@ SHA256:zYcKdEqIF7nH/R/YJVxjpMmIHFlCAVaR8UuKQIhKqwo.
 Please contact your system administrator.
 Add correct host key in /Users/shilei/.ssh/known_hosts to get rid of this message.
 Offending ECDSA key in /Users/shilei/.ssh/known_hosts:65
-ECDSA host key for [127.0.0.1]:22 has changed and you have requested strict checking.
+ECDSA host key for [172.19.0.2]:22 has changed and you have requested strict checking.
 Host key verification failed.
 ```
 
 > 请自行解决.
-
-修改 group_vars/all.yml 中的 k8s_load_balance_ip 为容器内的 IP 地址, 通过如下命令获取:
-
-```
-$ docker inspect kube-simple --format '{{ .NetworkSettings.IPAddress }}'
-172.19.0.2
-
-```
 
 可以正常启动后，修改 nodes 对应的地址信息。（如果是本机则填写回环地址，如果非本机则填写远程机器地址）
 

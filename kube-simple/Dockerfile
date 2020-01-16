@@ -1,5 +1,17 @@
+FROM linuxkit/kernel:4.9.184 AS ksrc
+# https://github.com/linuxkit/linuxkit/blob/master/docs/kernels.md
+
 FROM ubuntu:18.04
 
+COPY --from=ksrc /kernel.tar /mnt
+COPY --from=ksrc /kernel-dev.tar /mnt
+COPY --from=ksrc /kernel-headers.tar /mnt
+
+RUN tar xf /mnt/kernel-dev.tar -C / && \
+    tar xf /mnt/kernel.tar -C / && \
+    tar xf /mnt/kernel-headers.tar -C / && \
+    rm -rf /mnt/*
+    
 RUN apt update && \
     echo "Asia/Shanghai" > /etc/timezone && \
     apt install -y tzdata && \
@@ -8,7 +20,7 @@ RUN apt update && \
     dnsutils inetutils-ping ethtool telnet iproute2 iotop jq ctop \
     inetutils-traceroute traceroute tcpdump dbus inetutils-ping \
     net-tools openssh-server iptables ipset netcat-traditional \
-    fonts-baekmuk fonts-nanum language-pack-zh-hans dstat \
+    fonts-baekmuk fonts-nanum language-pack-zh-hans dstat sudo \
     kernel-common kernel-package kernel-patch-scripts kernel-wedge && \
     rm -rf  /var/cache/apt/archives/* && \
     apt clean
@@ -25,9 +37,11 @@ RUN update-rc.d ssh defaults 98 && \
     sed -ri 's/^#?PermitRootLogin\s+.*/PermitRootLogin yes/' /etc/ssh/sshd_config && \
     sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config
 
-RUN apt install -y sudo
+#RUN apt install -y linux-headers-generic linux-image-generic && \
+#    for i in $(ls /lib/modules/); do ln -sf /lib/modules/${i} /lib/modules/$(uname -r); done
 
-ENV TZ=Asia/Shanghai
+ENV TZ=Asia/Shanghai \
+    LANG=zh_CN.utf8 
 
 EXPOSE 22
 
