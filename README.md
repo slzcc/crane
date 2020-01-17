@@ -111,12 +111,20 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [x] 修复 `v1.16.2.3` 中无法对 `Kubernetes etc` 目录的清除操作, 造成遗留历史配置造成无法加入新集群或重新部署集群的问题, `v1.16.2.4` 中修复。
 
 ## 获取对应的版本
+
 切记, 如需要安装哪个大版本的集群, 就获取相应的 tag :
+
 ```
 $ git clone -b v1.17.x.x https://github.com/slzcc/crane.git
 ```
 
 > v1.15.x.x 最末尾一位属于编写 Ansible 脚本的迭代版本, 不属于 Kubernetes 自身版本。
+
+## Docker 安装
+
+默认会检测是否有 Docker 可执行文件，如果没有则可以通过三种方式安装 Docker, 参见 [Docker install](crane/roles/docker-install)
+
+安装 Docker 时会添加 `daemon.json` 配置, 如果不需要可设置 `is_docker_daemon_config` 进行关闭。
 
 ## 使用说明
 在 nodes 文件中, 分为三大块:
