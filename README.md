@@ -126,6 +126,8 @@ $ git clone -b v1.17.x.x https://github.com/slzcc/crane.git
 
 安装 Docker 时会添加 `daemon.json` 配置, 如果不需要可设置 `is_docker_daemon_config` 进行关闭。
 
+> Docker 19.03 中默认支持 GPU 驱动不需要额外添加，[Nvidia-Docker](https://github.com/NVIDIA/nvidia-docker#quickstart)
+
 ## 使用说明
 在 nodes 文件中, 分为三大块:
 ```
