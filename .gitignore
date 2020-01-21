@@ -1,5 +1,5 @@
 *.tar.gz
-**/*.retry
+*.retry
 *.DS_Store
-tags
 *.swp
+tags
