@@ -32,7 +32,7 @@
     src: "roles/docker-install/templates/{{ item }}"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
-    dest: "/etc/containerd/config.toml "
+    dest: "/etc/containerd/config.toml"
   with_items:
     - "containerd_config.toml"
 

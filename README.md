@@ -31,6 +31,14 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 
 ---
 
+# 模拟部署
+
+通过 Kubernetes in Docker 方式测试演练，所有操作都包含在 Docker 镜像中，不会涉及其他环境依赖，方便快捷进行测试.
+
+部署示例请参照 [Kube Simple](./kube-simple/README.md) 文件进行部署。
+
+---
+
 ## 发展历程
 
 目前支持的 Kubernetes 版本:
