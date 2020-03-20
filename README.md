@@ -1,29 +1,18 @@
 # Crane
 ![language](https://img.shields.io/badge/language-Ansible-green.svg) [![Wiki](https://img.shields.io/badge/docs-94%25-green.svg)](https://wiki.shileizcc.com/display/CASE/Ansible+Kubernetes+Cluster)
 
-![logo](doc/logo_size6_w200_h200.jpeg)
+![logo](logo/logo_size6_w200_h200.jpeg)
 
 ---
 
 Please refer to the documentation for detailed configuration: [Wiki Docs URL](https://wiki.shileizcc.com/display/CASE/Ansible+Kubernetes+Cluster)。
 
-> Wiki 文档内容为 1.14.x 版本
+使用 Ansible 基于容器化部署 Kubernetes Cluster（非 Kubeadm）, 并支持 Master/Node/Etcd 节点的添加。
 
-> 以下所有的部署全部使用 Ubuntu 16.04 为环境进行示例演练。个人部署时请使用最新版进行尝试。
+部署全局基于 TLS, 并区分 K8s Cluster CA、Etcd CA 证书, 并支持证书轮转。
 
-使用 Ansible 基于容器化部署 Kubernetes Cluster（非 Kubeadm）, 并支持 Master/Node 节点的添加。（旧版本的 HaProxy 需要自己更新新节点的上游配置）
+部署时支持离线、在线 kubernetes 和 Docker 的安装。
 
-部署全局基于 TLS, 并区分 K8s Cluster CA、Etcd CA 证书。
-
-部署时支持离线、在线和镜像方式部署, 默认使用在线和镜像方式部署, 在线方式相当于主动 Pull 获取包(如果基于镜像则下载镜像, 如非镜像部署则下载二进制), 镜像方式基于 `image in image` 策略方式部署, 离线则只适用于镜像方式部署, 把 `image in image` 镜像放置在本地推送到目标机进行部署。参看文档: [Docs](script)
-
-> 不支持单独使用 tag 方式部署, 因全部使用 Kubelet 的静态方式部署启动 Pod, 如删除集群某一批次的节点时 tag 比较有用。
-
-> 目前还暂不支持国内服务器直接进行部署, 如果不使用镜像方式部署, 则部署时镜像基于 `k8s.gcr.io` 地址进行下载, 国内访问时可能会被墙。受影响的应用 `etcd`、`kube-apiserver-amd64`、`kube-controller-manager`、`kube-scheduler`、`kube-proxy`、`pause` 。
-
-> 可修改参数 `k8s_cluster_component_registry` 值为 `slzcc` 自定义镜像仓库地址, 在使用自定义镜像仓库时, 请确保已经执行过 `script/PublishK8sRegistryImages.sh` 脚本。(可支持的镜像版本参阅 [slzcc/kubernetes](https://hub.docker.com/r/slzcc/kubernetes))
-
-> 默认 Etcd 需要跟随 Master 进行部署, 暂不支持 Etcd 部署在 Node 中 (后期会优化, 在添加  节点时支持 Node 节点部署)。
 
 # 部署说明
 
@@ -39,19 +28,6 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 
 ---
 
-## 发展历程
-
-目前支持的 Kubernetes 版本:
-* v1.17.4
-* v1.14.x >= 1.17.x
-
-目前支持的操作系统: (其他版本请自行测试, 这里支持版本目的只是安装 Docker, 其他不受影响)
-* Ubuntu 16.04
-* Ubuntu 18.04 (默认的 `Ubuntu 18.04` 没有 `python`, 只有 `python3` 可执行文件, 所以需要在 `nodes` 文件中定义 `ansible_python_interpreter` 请自行配置, 可设为全局变量.)
-* Centos7/8
-
-在 v1.14.x 开始, 可以支持动态的选择版本进行部署, 如 v1.14.1/v1.14.2 版本, 但目前只支持小版本。后续会添加集群的热更新。
-
 ## 推荐亮点
 
 - [x] 支持集群后续 `Kubernetes Cluster` 扩容, 支持添加 `Master/None` 节点。
@@ -64,59 +40,6 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [x] 支持 `Etcd Cluster CA` 根证书更新。
 - [x] 支持 `Ansible in Docker` 方式进行部署。
 - [x] 支持 `Dockerd` 离线安装.
-
-## 项目部署架构
-以 v1.17.x 为例：
-* Kubernetes A/C/S v1.17.4
-* CoreDNS: v1.6.7
-* Calico: v3.13.1
-* Kube Proxy: v1.17.4
-* HaProxy: v2.1.3
-* Etcd: v3.4.3
-* pause: v3.1
-
-## 代办项目
-
-- [x] 支持自定义远程镜像仓库地址, 默认 `k8s.gcr.io`, 可修改为 `slzcc` 自定义镜像仓库, 在使用自定义镜像仓库时, 请确保已经执行过 `script/PublishK8sRegistryImages.sh` 脚本。
-- [x] 支持 `Etcd` 热添加节点。
-- [x] 支持 `Add Ons` 其他 `Tools` 部署, 包括 `Helm`、`Prometheus`、`Ingress-Nginx`、`Ingress-Example`、`DNS-Tools`。
-- [x] 支持 `Istio`。在 `roles/add-ons/defaults/main.yml` 中开启配置项。
-- [x] 支持操作系统预判部署 `Ubuntu/Centos` 更合理的安装即优化, `v1.14.2.6` 中优化.
-- [x] 支持 `Harbor HTTPS` 部署, `v1.16.1.7` 中添加。(暂支持空数据卷,请自行修改挂载点)
-- [x] 支持 `TLS` 证书自定义。`v1.15.0.2` 中更新。在 `roles/kubernetes-default/defaults/main.yml` 中自定义配置。
-- [ ] 支持 `OpenResty` 入口流量的灰度发布。
-- [x] 支持 `Kubernetes` 热更新 `TLS`, `v1.15.0.3` 版本更新。对集群中 `Master/Node/Kubelet` 等组件的所有 `TLS` 服务进行证书更新, 主要解决 `CFSSL` 默认申请 `CA` 证书 5 年时效问题, 以及后续可能存在的证书泄露问题。（Beta Version）
-- [x] 支持 `Etcd` 热更新 `TLS`, `v1.15.0.6` 中更新。
-- [x] 支持 `Kubernetes` 镜像导入方式部署, `v1.14.2.1` 版本更新。 默认使用镜像部署, 支持的版本请参看 [slzcc/kubernetes](https://hub.docker.com/r/slzcc/kubernetes/tags)
-- [x] 支持 `Proxy` 方式配置部署. 并支持 `Dockerd Proxy` 配置.
-- [x] 支持离线方式部署 `Kubernetes Cluster`, 可参阅 [downloads-packages](crane/roles/downloads-packages/files/)
-- [x] 支持 `IPVS`, `v1.14.2.8` 版本更新。
-- [x] 支持 `Ansible in Docker` 方式部署, 不在依赖于本地环境。`v1.15.3.0` 中更新。
-- [x] 支持 `Kubernetes Cluster` 版本更新, `v1.15.0.5` 中更新。
-- [x] 支持 `Dockerd` 离线安装, `v1.16.3.2` 中更新。[Dockerd install](crane/roles/docker-install/)
-- [x] 支持 `Kubernetes for Docker` Simple 方式部署。（主要解决部署前的测试） , `v1.17.0.6` 中更新。[Kubernetes Simple](kube-simple/)
-
-## 修复
-
-- [x] 修复 `Calico` 在使用时, 无法与 `Etcd` 进行通信。
-- [x] 脚本绝大部分使用 `Shell` 执行, 后期重构统一使用模块解决跨平台执行。
-- [x] 修复 `Calico` 在使用时, 无法识别宿主机网卡, 造成无法通信的问题。
-- [x] 修复 `Bootstrap` 无法创建凭证的问题。
-- [x] 修复 `Swap` 如果打开情况下的优化配置, `v1.14.2.5` 中修复。
-- [x] 修复 `Ubuntu IPVS` 模式下无法跨主机访问问。`v1.14.2.9` 中修复。
-- [x] 修复 `Kubernetes` 添加节点时, 无法获取真实的宿主机 IP 地址, `v1.15.0.1` 中修复。
-- [x] 修复 `CNI` 容器部署 `Download Plugin` 位置错误。`v1.15.0.2` 中修复。(之前版本实际不受影响, `Calico` 有自己的初始化 `Plugin` 部署方式) 
-- [x] 修复 `kubelet` 重新加入集群时, 证书无效的问题, `v1.15.0.3` 中修复。
-- [x] 修复添加 `Master` 节点时, `HaProxy` 没有及时更新新节点问题, `v1.15.0.5` 中修复。
-- [x] 修复 `Add Etcd` 节点时, 没有更新 `Kubu apiServer` 和 `Calico`、`Etcd` 服务的配置信息, `v1.15.0.6` 中修复。
-- [x] 修复 `Proxy` 中使用 `Keepalived` 通过 `VIP` 访问 `nodePort` 模式的服务时流量不可达的问题, `v1.15.3.5` 中修复。
-- [x] 修复 `Kubelet` 中的 `Cgroup` 与 `Docker` 版本兼容报错的问题, `v1.15.3.6` 中修复。
-- [x] 修复 `镜像` 部署模式中重复导入镜像/二进制文件的问题, `v1.16.1.3` 中修复。
-- [x] 修复 `docker` 安装时, 如果本地有集群外的服务(`daemon.json` 文件一致), 会停止服务的问题, `v1.16.1.3` 中修复。
-- [x] 修复 `v1.16.x` 中取消 `apiVersion: extensions/v1beta1`  的问题, `v1.16.1.1` 中修复。
-- [x] 修复 `TZ` 时区问题, 由于是挂载宿主机 `/usr/share/zoneinfo` 目录所以一定要保证此目录存在, `v1.16.1.4` 中修复。
-- [x] 修复 `Crane` 部署版本存在服务版本问题, 统一镜像方式部署的版本强一致, `v1.16.2.2` 中修复。
-- [x] 修复 `v1.16.2.3` 中无法对 `Kubernetes etc` 目录的清除操作, 造成遗留历史配置造成无法加入新集群或重新部署集群的问题, `v1.16.2.4` 中修复。
 
 ## 获取对应的版本
 
@@ -135,6 +58,8 @@ $ git clone -b v1.17.x.x https://github.com/slzcc/crane.git
 安装 Docker 时会添加 `daemon.json` 配置, 如果不需要可设置 `is_docker_daemon_config` 进行关闭。
 
 > Docker 19.03 中默认支持 GPU 驱动不需要额外添加，[Nvidia-Docker](https://github.com/NVIDIA/nvidia-docker#quickstart)
+
+> 以下所有的部署全部使用 Ubuntu 16.04 为环境进行示例演练。个人部署时请使用最新版进行尝试。
 
 ## 使用说明
 在 nodes 文件中, 分为三大块:
