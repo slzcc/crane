@@ -6,6 +6,20 @@
 
 Crane 是由我个人独立创作并维护的, 在使用范围上可能得不到一定的实践支持, 但是它还是通过我不停地对业务以及 Kubernetes 日常使用上的灵感进行支撑, 还希望爱好者可以通过自己的实践以及理解的程度上对 Crane 进行改进.
 
+目前支持的操作系统: (其他版本请自行测试, 这里支持版本目的只是安装 Docker, 其他不受影响)
+* Ubuntu 16.04
+* Ubuntu 18.04 (默认的 `Ubuntu 18.04` 没有 `python`, 只有 `python3` 可执行文件, 所以需要在 `nodes` 文件中定义 `ansible_python_interpreter` 请自行配置, 可设为全局变量.)
+* Centos7/8
+
+以 v1.17.x 为例：
+* Kubernetes A/C/S v1.17.4
+* CoreDNS: v1.6.7
+* Calico: v3.13.1
+* Kube Proxy: v1.17.4
+* HaProxy: v2.1.3
+* Etcd: v3.4.3
+* pause: v3.1
+
 ### 开始使用 Crane
 
 使用 Crane 很简单, 有可能在一定程度上比 Kubeadm 都简单(国内源问题), 可以通过如下方式获取源码进行安装:
