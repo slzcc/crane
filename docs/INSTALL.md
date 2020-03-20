@@ -11,7 +11,7 @@ Crane 是由我个人独立创作并维护的, 在使用范围上可能得不到
 * Ubuntu 18.04 (默认的 `Ubuntu 18.04` 没有 `python`, 只有 `python3` 可执行文件, 所以需要在 `nodes` 文件中定义 `ansible_python_interpreter` 请自行配置, 可设为全局变量.)
 * Centos7/8
 
-以 v1.17.x 为例：
+以 v1.17.4 为例, 支持版本：
 * Kubernetes A/C/S v1.17.4
 * CoreDNS: v1.6.7
 * Calico: v3.13.1
