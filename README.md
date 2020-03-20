@@ -42,7 +42,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 ## 发展历程
 
 目前支持的 Kubernetes 版本:
-* v1.17.1
+* v1.17.4
 * v1.14.x >= 1.17.x
 
 目前支持的操作系统: (其他版本请自行测试, 这里支持版本目的只是安装 Docker, 其他不受影响)
@@ -67,12 +67,12 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 
 ## 项目部署架构
 以 v1.17.x 为例：
-* Kubernetes A/C/S v1.17.1
-* CoreDNS: v1.6.6
-* Calico: v3.11.1
-* Kube Proxy: v1.17.1
-* HaProxy: v2.1.2
-* Etcd: v3.3.17
+* Kubernetes A/C/S v1.17.4
+* CoreDNS: v1.6.7
+* Calico: v3.13.1
+* Kube Proxy: v1.17.4
+* HaProxy: v2.1.3
+* Etcd: v3.4.5
 * pause: v3.1
 
 ## 代办项目

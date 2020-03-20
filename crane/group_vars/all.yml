@@ -7,11 +7,11 @@
 k8s_version: 'v1.17.4'
 
 # 避免大版本中组件的版本差异, 使用 build 版本作为差异配置项, 在项目中可以看做如下使用 '{{ k8s_version }}.{{ build_k8s_version }}'
-build_k8s_version: '0'
+build_k8s_version: '1'
 
 # 部署 CNI 对应版本, 如使用镜像方式部署, 不能修改 (如果可以使用 {{ k8s_cluster_component_registry }} 中的仓库地址获取镜像则可随意修改)
 # https://github.com/containernetworking/plugins/releases/
-cni_version: 'v0.8.4'
+cni_version: 'v0.8.5'
 
 # CNI OS Type
 cni_os_drive: 'linux-amd64'
@@ -202,7 +202,7 @@ docker_systemd_env_option: ''
 # HaProxy Version
 # 如使用镜像方式部署, 不能修改 (如果可以使用 {{ k8s_cluster_component_registry }} 中的仓库地址获取镜像则可随意修改)
 # https://hub.docker.com/_/haproxy
-haproxy_version: '2.1.2'
+haproxy_version: '2.1.3'
 
 # 配置 stats 的 URI 地址
 haproxy_stats_url: '/haproxy_stats'
@@ -278,7 +278,7 @@ source_ssh_private_key_file: "{{ hostvars[inventory_hostname]['ansible_ssh_priva
 # Etcd Verions
 # https://github.com/etcd-io/etcd/releases
 # 如使用镜像方式部署, 不能修改 (如果可以使用 {{ k8s_cluster_component_registry }} 中的仓库地址获取镜像则可随意修改)
-etcd_version: '3.3.17'
+etcd_version: '3.4.5'
 
 # Etcd 使用的 Client 协议, 默认 HTTPS, 不能修改
 etcd_url_scheme: "https"
@@ -330,7 +330,7 @@ calico_ipv4_pool_cidr: '192.167.0.0/16'
 # Calico Verion
 # https://github.com/projectcalico/calico/releases
 # 如使用镜像方式部署, 不能修改 (如果可以使用 {{ k8s_cluster_component_registry }} 中的仓库地址获取镜像则可随意修改)
-calico_version: 'v3.11.1'
+calico_version: 'v3.13.1'
 
 # CNI Config Dir
 cni_config_dir: '/etc/cni/net.d'
@@ -358,7 +358,7 @@ dns_cluster_range: "{{ k8s_cluster_ip_range }}"
 # CoreDNS Version
 # https://github.com/coredns/coredns/releases
 # 如使用镜像方式部署, 不能修改 (如果可以使用 {{ k8s_cluster_component_registry }} 中的仓库地址获取镜像则可随意修改)
-dns_version: '1.6.6'
+dns_version: '1.6.7'
 
 ## Add-Ons
 ## ********************************************************************************************************************************
@@ -370,20 +370,23 @@ dns_version: '1.6.6'
 # 应避免部署时影响效率
 is_initialize_clean: false
 
-# 清除集群时是否删除 Docker
+# 清除集群时是否删除 Docker.
 is_remove_docker_ce: false
 
-# 清除 Docker CE 时清除数据目录
+# 清除 Docker CE 时清除数据目录.
 is_remove_docker_dir: false
 
-# 清除集群时是否删除 CFSSL 可执行文件
+# 清除集群时是否删除 CFSSL 可执行文件.
 is_remove_cfssl: false
 
-# 清除集群时是否删除 CNI 插件
+# 清除集群时是否删除 CNI 插件.
 is_remove_cni: false
 
-# 是否清除 Kubelet Kubectl 可执行文件
+# 是否清除 Kubelet Kubectl 可执行文件.
 is_remove_k8s_binary: false
 
-# 是否清除 Kubernetes Images
+# 是否清除 Kubernetes Images.
 is_remove_k8s_images: false
+
+# 是否关闭 Swap, 当值为 false 时, 则表示不作任何操作, 当为 true 时, 会关闭服务器上所有的 Swap.
+is_swap_off: false
