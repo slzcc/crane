@@ -72,7 +72,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 * Calico: v3.13.1
 * Kube Proxy: v1.17.4
 * HaProxy: v2.1.3
-* Etcd: v3.4.5
+* Etcd: v3.4.3
 * pause: v3.1
 
 ## 代办项目
