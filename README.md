@@ -18,7 +18,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 
 部署示例请参照 [Crane Install](./docs/INSTALL.md) 文件进行部署。
 
-各功能示例参照 [Crane Other Features] (./docs/FunctionalSpecifications.md) 文件进行部署。
+各功能示例参照 [Crane Other Features](./docs/FunctionalSpecifications.md) 文件进行部署。
 
 ---
 
