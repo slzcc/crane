@@ -12,9 +12,9 @@
 - [x] 支持 `Etcd` 热更新 `TLS`, `v1.15.0.6` 中更新。
 - [x] 支持 `Kubernetes` 镜像导入方式部署, `v1.14.2.1` 版本更新。 默认使用镜像部署, 支持的版本请参看 [slzcc/kubernetes](https://hub.docker.com/r/slzcc/kubernetes/tags)
 - [x] 支持 `Proxy` 方式配置部署. 并支持 `Dockerd Proxy` 配置.
-- [x] 支持离线方式部署 `Kubernetes Cluster`, 可参阅 [downloads-packages](crane/roles/downloads-packages/files/)
+- [x] 支持离线方式部署 `Kubernetes Cluster`, 可参阅 [downloads-packages](../crane/roles/downloads-packages/files/)
 - [x] 支持 `IPVS`, `v1.14.2.8` 版本更新。
 - [x] 支持 `Ansible in Docker` 方式部署, 不在依赖于本地环境。`v1.15.3.0` 中更新。
 - [x] 支持 `Kubernetes Cluster` 版本更新, `v1.15.0.5` 中更新。
-- [x] 支持 `Dockerd` 离线安装, `v1.16.3.2` 中更新。[Dockerd install](crane/roles/docker-install/)
-- [x] 支持 `Kubernetes for Docker` Simple 方式部署。（主要解决部署前的测试） , `v1.17.0.6` 中更新。[Kubernetes Simple](kube-simple/)
+- [x] 支持 `Dockerd` 离线安装, `v1.16.3.2` 中更新。[Dockerd install](../crane/roles/docker-install/)
+- [x] 支持 `Kubernetes for Docker` Simple 方式部署。（主要解决部署前的测试） , `v1.17.0.6` 中更新。[Kubernetes Simple](../kube-simple/)

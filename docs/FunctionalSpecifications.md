@@ -10,7 +10,7 @@ $ git clone -b v1.17.x.x https://github.com/slzcc/crane.git
 
 ## Docker 安装
 
-默认会检测是否有 Docker 可执行文件, 如果没有则可以通过三种方式安装 Docker, 参见 [Docker install](crane/roles/docker-install)
+默认会检测是否有 Docker 可执行文件, 如果没有则可以通过三种方式安装 Docker, 参见 [Docker install](../crane/roles/docker-install)
 
 安装 Docker 时会添加 `daemon.json` 配置, 如果不需要可设置 `is_docker_daemon_config` 进行关闭。
 
