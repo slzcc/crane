@@ -42,6 +42,13 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [x] 支持 `Etcd Cluster CA` 根证书更新。
 - [x] 支持 `Ansible in Docker` 方式进行部署。
 - [x] 支持 `Dockerd` 离线安装.
+- [x] 支持 `Kubernetes` 离线安装.
+
+## 视频安装实例
+
+通过 [Kube Simple](./kube-simple/README.md) 部署演练安装过程.
+
+[![asciicast](https://asciinema.org/a/YmsEIXZ20vzBDGPniA8KLRMF1.svg)](https://asciinema.org/a/YmsEIXZ20vzBDGPniA8KLRMF1)
 
 ---
 
