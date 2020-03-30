@@ -44,7 +44,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 - [x] 支持 `Dockerd` 离线安装.
 - [x] 支持 `Kubernetes` 离线安装.
 
-## 视频安装实例
+## 安装过程示例
 
 通过 [Kube Simple](./kube-simple/README.md) 部署演练安装过程.
 
