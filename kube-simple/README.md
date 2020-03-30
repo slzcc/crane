@@ -31,6 +31,9 @@ $ docker cp kube-simple:/root/.ssh/id_rsa.pub ~/.ssh/kube-simple.pub
 $ docker inspect kube-simple --format '{{ .NetworkSettings.IPAddress }}'
 172.20.0.2
 
+# or
+$ docker exec -it kube-simple ifconfig eth0 | grep "inet" | awk '{print $2}'
+
 ```
 
 测试连接:（如果是本机则填写回环地址，如果非本机则填写远程机器地址）
@@ -111,6 +114,8 @@ $ make run_simple
 部署完成后查看集群信息:
 
 ```
+$ kubectl exec -it kube-simple bash
+ 
 $ kubectl get csr
 NAME        AGE     REQUESTOR                  CONDITION
 csr-5lv28   9m37s   system:node:7ffa79cdabb0   Approved,Issued
