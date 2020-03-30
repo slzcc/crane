@@ -46,9 +46,11 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 
 ## 安装过程示例
 
-通过 [Kube Simple](./kube-simple/README.md) 部署演练安装过程.
+通过[Kube Simple](./kube-simple/README.md) 部署演练安装过程.
 
 [![asciicast](https://asciinema.org/a/YmsEIXZ20vzBDGPniA8KLRMF1.svg)](https://asciinema.org/a/YmsEIXZ20vzBDGPniA8KLRMF1)
+
+> 视频中漏掉了 Copy `Kube-Simple` 容器中的 SSH 秘钥到本地的操作，请参照 [Kube Simple](./kube-simple/README.md) 文档进行补充.
 
 ---
 
