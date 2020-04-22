@@ -6,7 +6,7 @@ RUN apt update && \
     dpkg-reconfigure -f noninteractive tzdata && \
     apt install -y git unzip vim python3 python3-pip curl wget lrzsz \
     dnsutils inetutils-ping ethtool telnet iproute2 iotop jq ctop \
-    inetutils-traceroute traceroute tcpdump dbus inetutils-ping \
+    inetutils-traceroute traceroute tcpdump dbus \
     net-tools openssh-server iptables ipset netcat-traditional \
     fonts-baekmuk fonts-nanum language-pack-zh-hans dstat sudo \
     kernel-common kernel-package kernel-patch-scripts kernel-wedge && \
