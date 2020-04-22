@@ -15,7 +15,7 @@ DOCKER_VERSION := `awk '/^docker_version/' ./crane/group_vars/all.yml | awk -F':
 #        main.yml
 #        test.yml
 CRANE_ENTRANCE := "main.yml"
-OPTION := "-vv"
+OPTION := ""
 
 build:
 	@docker build -t ${DockerHubRepoName}/${ProjectName}:${VERSION} . --no-cache
@@ -36,11 +36,11 @@ run_simple:
 
 clean_simple:
 	@docker rm -f crane || true
-	@docker run --name crane --net kube-simple --rm -i -e ANSIBLE_HOST_KEY_CHECKING=false -e TERM=xterm-256color -e COLUMNS=238 -e LINES=61 -v ~/.ssh:/root/.ssh -v ${PWD}:/crane -w /crane/crane  ${DockerHubRepoName}/${ProjectName}:${VERSION} -i ../kube-simple/nodes remove_cluster.yml -vv
+	@docker run --name crane --net kube-simple --rm -i -e ANSIBLE_HOST_KEY_CHECKING=false -e TERM=xterm-256color -e COLUMNS=238 -e LINES=61 -v ~/.ssh:/root/.ssh -v ${PWD}:/crane -w /crane/crane  ${DockerHubRepoName}/${ProjectName}:${VERSION} -i ../kube-simple/nodes remove_cluster.yml ${OPTION}
 
 clean_main:
 	@docker rm -f crane || true
-	@docker run --name crane --rm -i -e ANSIBLE_HOST_KEY_CHECKING=false -e TERM=xterm-256color -e COLUMNS=238 -e LINES=61 -v ~/.ssh:/root/.ssh -v ${PWD}:/crane -w /crane/crane  ${DockerHubRepoName}/${ProjectName}:${VERSION} -i nodes remove_cluster.yml -vv
+	@docker run --name crane --rm -i -e ANSIBLE_HOST_KEY_CHECKING=false -e TERM=xterm-256color -e COLUMNS=238 -e LINES=61 -v ~/.ssh:/root/.ssh -v ${PWD}:/crane -w /crane/crane  ${DockerHubRepoName}/${ProjectName}:${VERSION} -i nodes remove_cluster.yml ${OPTION}
 
 local_save_image:
 	@docker pull slzcc/kubernetes:${VERSION}
