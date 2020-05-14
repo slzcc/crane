@@ -5,7 +5,8 @@
     - { role: local-task }
     
 - hosts: all
-  sudo: yes
+  become: yes
+  become_method: sudo
   remote_user: "{{ ssh_connect_user }}"
   vars:
     ansible_ssh_pipelining: true
@@ -15,14 +16,16 @@
 
 - hosts: k8s-cluster:etcd
   gather_facts: false
-  sudo: yes
+  become: yes
+  become_method: sudo
   remote_user: "{{ ssh_connect_user }}"
   roles:
     - { role: downloads-ssh-key, tags: [copy_ssh_private_key]}
 
 - name: Create New CA
   hosts: etcd[0]
-  sudo: yes
+  become: yes
+  become_method: sudo
   remote_user: "{{ ssh_connect_user }}"
   vars:
     ansible_ssh_pipelining: true
@@ -33,7 +36,8 @@
 
 - name: Update Etcd Cluster Server Config
   hosts: etcd-cluster
-  sudo: yes
+  become: yes
+  become_method: sudo
   remote_user: "{{ ssh_connect_user }}"
   vars:
     ansible_ssh_pipelining: true
@@ -42,7 +46,8 @@
 
 - name: Update Kubernetes Cluster ApiServer Server Config
   hosts: k8s-master
-  sudo: yes
+  become: yes
+  become_method: sudo
   remote_user: "{{ ssh_connect_user }}"
   vars:
     ansible_ssh_pipelining: true
@@ -51,7 +56,8 @@
 
 - name: Update Kubernetes Cluster Network Server Config
   hosts: k8s-cluster
-  sudo: yes
+  become: yes
+  become_method: sudo
   remote_user: "{{ ssh_connect_user }}"
   vars:
     ansible_ssh_pipelining: true
