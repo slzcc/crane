@@ -73,6 +73,7 @@
   async: 30
   poll: 2
   when: ansible_distribution == 'CentOS'
+  ignore_errors: true
 
 - name: Ubuntu Install IPVS Admin
   apt: 

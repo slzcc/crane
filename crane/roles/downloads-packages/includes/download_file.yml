@@ -1,7 +1,8 @@
 ---
 # Kubernetes
 ## ********************************************************************************************************************************
-- shell: "ls {{ temporary_dirs }}kubernetes/node/bin"
+- name: Check Kubernetes Package
+  shell: "ls {{ temporary_dirs }}kubernetes/node/bin"
   register: CHECK_KUBE_BIN_PACKAGE
   ignore_errors: true
 
@@ -10,11 +11,14 @@
   changed_when: true
   when: CHECK_KUBE_BIN_PACKAGE is failed
 
-- shell: "cp -rf {{ temporary_dirs }}kubernetes/node/bin/kubectl {{ kubernetes_ctl_path }}"
+- name: Copy Kubectl
+  shell: "cp -rf {{ temporary_dirs }}kubernetes/node/bin/kubectl {{ kubernetes_ctl_path }}"
 
-- shell: "cp -rf {{ temporary_dirs }}kubernetes/node/bin/kubelet {{ kubernetes_ctl_path }}"
+- name: Copy Kubelet
+  shell: "cp -rf {{ temporary_dirs }}kubernetes/node/bin/kubelet {{ kubernetes_ctl_path }}"
 
-- shell: "ls {{ kubernetes_cni_dirs }}"
+- name: Check CNI Dir
+  shell: "ls {{ kubernetes_cni_dirs }}"
   register: CHECK_CNI_BIN_PACKAGE
   ignore_errors: true
 
@@ -26,7 +30,8 @@
     state: directory
   when: CHECK_CNI_BIN_PACKAGE is failed
 
-- shell: "http_proxy={{ http_proxy }} ; https_proxy={{ https_proxy }} ; wget -qO- 'https://github.com/containernetworking/plugins/releases/download/{{ cni_version }}/cni-plugins-{{ cni_os_drive }}-{{ cni_version }}.tgz' | tar -zx -C {{ kubernetes_cni_dirs }}"
+- name: Download CNI Package
+  shell: "http_proxy={{ http_proxy }} ; https_proxy={{ https_proxy }} ; wget -qO- 'https://github.com/containernetworking/plugins/releases/download/{{ cni_version }}/cni-plugins-{{ cni_os_drive }}-{{ cni_version }}.tgz' | tar -zx -C {{ kubernetes_cni_dirs }}"
   when: CHECK_CNI_BIN_PACKAGE is failed
   
 # CFSSL
