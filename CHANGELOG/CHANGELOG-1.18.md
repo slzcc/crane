@@ -24,6 +24,7 @@ Kubernetes 更新内容请参照 [Kubernetes Update Content](https://raw.githubu
 ### v1.18.0.1 更新内容
 
 添加 kubernetes upgrade v1.18 版本。
+
 添加 Kube-Simple 视频安装过程示例
 
 ### v1.18.1.0 更新内容
@@ -37,10 +38,13 @@ Kubernetes 更新内容请参照 [Kubernetes Update Content](https://raw.githubu
 ### v1.18.2.1 更新内容
 
 更新 calico 启动配置项与官方一致。
+
 更新 haproxy version 为 2.1.4。
+
 添加 nf_conntrack kernel 参数。
 
 ### v1.18.2.2 更新内容
 
 修改 ansible sudo 配置为 become。
+
 修改 Makefile option 自定义参数选项。
