@@ -159,7 +159,7 @@ docker_version: '19.03.1'
 # 值为 http_binary 则通过远程下载二进制文件到执行目录.
 # 值为 local_binary 则通过本地二进制文件 Copy 到远端.
 # 值为 http_script 则通过官方 https://get.docker.com 方式安装.
-docker_install_type: "local_binary"
+docker_install_type: "http_binary"
 
 # http_binary Source Addr
 docker_install_http_binary_source: 'https://mirror.shileizcc.com/Docker/bin/'
