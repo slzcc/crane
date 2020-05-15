@@ -5,7 +5,8 @@
     - { role: local-task }
     
 - hosts: all
-  sudo: yes
+  become: yes
+  become_method: sudo
   remote_user: "{{ ssh_connect_user }}"
   vars:
     ansible_ssh_pipelining: true
@@ -15,14 +16,16 @@
 
 - hosts: kube-master
   gather_facts: false
-  sudo: yes
+  become: yes
+  become_method: sudo
   remote_user: "{{ ssh_connect_user }}"
   roles:
     - { role: downloads-ssh-key, tags: [copy_ssh_private_key]}
 
 - name: Nodes Initialize
   hosts: k8s-cluster-add-node
-  sudo: yes
+  become: yes
+  become_method: sudo
   remote_user: "{{ ssh_connect_user }}"
   vars:
     ansible_ssh_pipelining: true
@@ -38,7 +41,8 @@
 
 - name: Create Bootstrap Config Files to Nodes.
   hosts: kube-master[0]
-  sudo: yes
+  become: yes
+  become_method: sudo
   remote_user: "{{ ssh_connect_user }}"
   vars:
     ansible_ssh_pipelining: true
@@ -49,7 +53,8 @@
 
 - name: Copy Cluster CA Files to Nodes.
   hosts: kube-master[0]
-  sudo: yes
+  become: yes
+  become_method: sudo
   remote_user: "{{ ssh_connect_user }}"
   vars:
     ansible_ssh_pipelining: true
@@ -58,7 +63,8 @@
 
 - name: Add Nodes
   hosts: k8s-cluster-add-node
-  sudo: yes
+  become: yes
+  become_method: sudo
   remote_user: "{{ ssh_connect_user }}"
   vars:
     ansible_ssh_pipelining: true
