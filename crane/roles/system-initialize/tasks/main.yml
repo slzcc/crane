@@ -138,6 +138,10 @@
   shell: sysctl -p /etc/sysctl.d/k8s.conf
   ignore_errors: true
 
+- name: Set nf_conntrack_buckets
+  shell: "echo {{ kernel_nf_conntrack_buckets }} > /sys/module/nf_conntrack/parameters/hashsize"
+  ignore_errors: true
+
 - name: Centos Stop Firewalld
   service: 
     name: firewalld
