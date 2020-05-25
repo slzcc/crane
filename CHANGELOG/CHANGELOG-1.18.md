@@ -6,6 +6,7 @@
     - [v1.18.2.0 更新内容](#v11820-更新内容)
     - [v1.18.2.1 更新内容](#v11821-更新内容)
     - [v1.18.2.2 更新内容](#v11822-更新内容)
+    - [v1.18.3.0 更新内容](#v11830-更新内容)
 
 # v1.18.0.0
 
@@ -48,3 +49,8 @@ Kubernetes 更新内容请参照 [Kubernetes Update Content](https://raw.githubu
 修改 ansible sudo 配置为 become。
 
 修改 Makefile option 自定义参数选项。
+
+### v1.18.3.0 更新内容
+
+添加 kubernetes v1.18.3.0 版本支持。
+
