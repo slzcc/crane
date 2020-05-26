@@ -63,6 +63,9 @@ Kubernetes 更新内容请参照 [Kubernetes Update Content](https://raw.githubu
 ### v1.18.3.2 更新内容
 
 修改 CNI v0.8.6 版本支持。
+
 修改 Etcd 3.4.7 版本支持。
+
 修改 Calico v3.14.0 版本支持。
+
 修改 CoreDNS 1.6.9 版本支持。
