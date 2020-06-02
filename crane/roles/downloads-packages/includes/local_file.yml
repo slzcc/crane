@@ -9,7 +9,7 @@
 
 - name: Copy Kubernetes Image
   copy:
-    src: kubernetes.tar.gz
+    src: roles/downloads-packages/files/kubernetes.tar.gz
     dest: "{{ temporary_dirs }}kubernetes.tar.gz"
     owner: "{{ ssh_connect_user }}"
     mode: 0755
