@@ -7,7 +7,6 @@
 - hosts: all
   become: yes
   become_method: sudo
-  remote_user: "{{ ssh_connect_user }}"
   vars:
     ansible_ssh_pipelining: true
   tasks:
@@ -18,7 +17,6 @@
   gather_facts: false
   become: yes
   become_method: sudo
-  remote_user: "{{ ssh_connect_user }}"
   roles:
     - { role: downloads-ssh-key, tags: [copy_ssh_private_key]}
 
@@ -26,7 +24,6 @@
   gather_facts: false
   become: yes
   become_method: sudo
-  remote_user: "{{ ssh_connect_user }}"
   tasks:
     - { include: 'roles/etcd-add-node/includes/clean.yml' }
 
@@ -34,7 +31,6 @@
   hosts: etcd[0]
   become: yes
   become_method: sudo
-  remote_user: "{{ ssh_connect_user }}"
   vars:
     ansible_ssh_pipelining: true
   vars_files:
@@ -46,7 +42,6 @@
   hosts: etcd-cluster-add-node
   become: yes
   become_method: sudo
-  remote_user: "{{ ssh_connect_user }}"
   vars:
     ansible_ssh_pipelining: true
   vars_files:
@@ -58,7 +53,6 @@
   hosts: kube-master
   become: yes
   become_method: sudo
-  remote_user: "{{ ssh_connect_user }}"
   vars:
     ansible_ssh_pipelining: true
   tasks:
@@ -68,7 +62,6 @@
   hosts: etcd
   become: yes
   become_method: sudo
-  remote_user: "{{ ssh_connect_user }}"
   vars:
     ansible_ssh_pipelining: true
   tasks:
@@ -78,7 +71,6 @@
   hosts: kube-master[0]
   become: yes
   become_method: sudo
-  remote_user: "{{ ssh_connect_user }}"
   vars:
     ansible_ssh_pipelining: true
   vars_files:
