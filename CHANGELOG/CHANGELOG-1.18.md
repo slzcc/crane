@@ -12,6 +12,7 @@
     - [v1.18.3.3 更新内容](#v11833-更新内容)
     - [v1.18.3.4 更新内容](#v11834-更新内容)
     - [v1.18.3.5 更新内容](#v11835-更新内容)
+    - [v1.18.3.6 更新内容](#v11836-更新内容)
 
 # v1.18.0.0
 
@@ -85,3 +86,10 @@ Kubernetes 更新内容请参照 [Kubernetes Update Content](https://raw.githubu
 
 修复 *。yml 部分存在用户权限问题（sudo）无法执行的问题。
 
+### v1.18.3.6 更新内容
+
+修复 calico 中 controllers 为 hostNetwork 模式，否则可能会造成 controllers 无法找到 etcd 的问题。
+
+修复 Clean Cluster 中删除 modprobe 操作。
+
+1.17.x 升级至 1.18.3.1 中一定要确认使用的 pause 版本，如果版本不止一次会造成原始 Pod 的重启。
