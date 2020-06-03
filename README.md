@@ -13,6 +13,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 
 部署时支持离线、在线 kubernetes 和 Docker 的安装。
 
+> [Kubernetes 使用注意事项](docs/MattersNeedingAttention.md)
 
 # 部署说明
 
