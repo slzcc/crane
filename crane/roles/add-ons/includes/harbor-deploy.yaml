@@ -134,10 +134,12 @@
   shell: "{{ kubernetes_ctl_path }}kubectl apply -f {{ kubernetes_etc_dirs }}harbor/ -n {{ harbor_namespace }}"
   ignore_errors: true
 
-- name: Check is Upload Service
-  shell: "kubectl get pods -l app=upload-service -o jsonpath='{.items[*].status.podIP}'"
+- name: Check is Upload Service (Wait for 180s ...)
+  shell: "until {{ kubernetes_ctl_path }}kubectl get pods -l app=upload-service -o jsonpath='{.items[*].status.podIP}' ; do >&2 echo 'Starting...' && sleep 1 ; done"
   register: check_upload_service_ip
   ignore_errors: true
+  async: 180
+  poll: 2
 
 - name: Yum Install JQ
   yum: 
@@ -155,7 +157,7 @@
   environment:
     http_proxy: "{{ http_proxy }}"
     https_proxy: "{{ https_proxy }}"
-  when: ansible_distribution == 'Ubuntu'
+  when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
 
 - name: Push Client TLS to Upload Service
   shell: "curl -sSfL --form 'file=@{{ kubernetes_etc_dirs }}harbor/cert/{{ harbor_ingress_default_domain }}.tar.gz' http://{{ check_upload_service_ip.stdout }}/upload -H 'Host:{{ upload_service_ingress_domain }}' | jq --raw-output '.account_url'"

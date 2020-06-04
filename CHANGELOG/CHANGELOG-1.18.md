@@ -13,6 +13,7 @@
     - [v1.18.3.4 更新内容](#v11834-更新内容)
     - [v1.18.3.5 更新内容](#v11835-更新内容)
     - [v1.18.3.6 更新内容](#v11836-更新内容)
+    - [v1.18.3.7 更新内容](#v11837-更新内容)
 
 # v1.18.0.0
 
@@ -93,3 +94,13 @@ Kubernetes 更新内容请参照 [Kubernetes Update Content](https://raw.githubu
 修复 Clean Cluster 中删除 modprobe 操作。
 
 1.17.x 升级至 1.18.3.1 中一定要确认使用的 pause 版本，如果版本不止一次会造成原始 Pod 的重启。
+
+### v1.18.3.7 更新内容
+
+修复 Centos 8 只能 Script 方式安装 Dockerd。
+
+添加 Debian 支持。
+
+修复 Centos x 中安装 `yum-plugin-ovl` 报错的问题。
+
+同步安装 Harbor 时默认安装 UploadServer 这样可以让其他 Node 可以远程下载 TLS 证书。（但需要自行解决 Dockerd 识别非法 HTTPS 问题）
