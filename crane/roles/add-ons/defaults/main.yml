@@ -70,7 +70,8 @@ istio_kiali_username: 'YWRtaW4='
 istio_kiali_password: 'YWRtaW4='
 
 # 部署 upload service
-is_deploy_upload_service: false
+# 如果部署 Harbor 则此服务默认开启，因为需要提供 TLS 证书的下载，如果机器网络等因素不稳定则会跳过。
+is_deploy_upload_service: "{{ is_deploy_harbor }}"
 
 upload_service_ingress_domain: 'upload.example.com'
 
@@ -78,7 +79,7 @@ upload_service_ingress_domain: 'upload.example.com'
 ## ********************************************************************************************************************************
 
 # Harbor Deploy enable
-is_deploy_harbor: false
+is_deploy_harbor: true
 
 # Harbor Deploy Namespace
 harbor_namespace: 'harbor'

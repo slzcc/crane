@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: upload
-        image: slzcc/django:upload-uwsgi-v5
+        image: slzcc/uploadserver:backend-v2
         ports:
         - name: http
           containerPort: 8878
@@ -51,7 +51,7 @@ spec:
               fieldPath: status.podIP
         imagePullPolicy: IfNotPresent
       - name: nginx
-        image: slzcc/nginx:upload-conf-v4
+        image: slzcc/uploadserver:frontend-v2
         ports:
         - name: http
           containerPort: 80
@@ -60,9 +60,6 @@ spec:
           mountPath: "/tmp/nginx_upload"
         - name: storage-date
           mountPath: "/mirror"
-        - name: index
-          mountPath: "/mirror/_upload/index.html"
-          subPath: index.html
         env:
         - name: TZ
           value: "Asia/Shanghai"
@@ -94,34 +91,6 @@ spec:
           - key: index.html
             path: index.html
 
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: upload-service-index
-data:
-  index.html: |-
-    <!DOCTYPE html>
-    <html lang='en'>
-    <head>
-      <meta charset='UTF-8'>
-      <title>Title</title>
-      <link rel='stylesheet' href=''>
-    </head>
-    <body>
-        <div class="row">
-        <h2>Select files to upload</h2>
-        <form name="upload" method="POST" enctype="multipart/form-data" action="/upload">
-          <input type="file" name="file1"><br>
-          <input type="submit" name="submit" value="Upload">
-          <input type="hidden" name="test" value="value">
-        </form>
-    </div>
-    <script type='text/javascript'></script>
-    <script type='text/javascript'>
-    </script>
-    </body>
-    </html>
 ---
 apiVersion: v1
 kind: Service
