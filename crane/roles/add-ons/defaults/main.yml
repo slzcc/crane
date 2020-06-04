@@ -79,7 +79,7 @@ upload_service_ingress_domain: 'upload.example.com'
 ## ********************************************************************************************************************************
 
 # Harbor Deploy enable
-is_deploy_harbor: true
+is_deploy_harbor: false
 
 # Harbor Deploy Namespace
 harbor_namespace: 'harbor'
