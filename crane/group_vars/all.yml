@@ -357,7 +357,7 @@ calico_cni_version: '0.3.1'
 dns_domain: 'cluster.local'
 
 # DNS 服务的 ClusterIP 地址, 依赖集群 ClusterIP 网段
-dns_cluster_ip: '10.96.0.10'
+dns_cluster_ip: '10.9.0.10'
 
 # DNS 集群 ClusterIP 网段
 dns_cluster_range: "{{ k8s_cluster_ip_range }}"
