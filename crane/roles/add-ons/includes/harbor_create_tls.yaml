@@ -12,7 +12,7 @@
     - "client-csr.json"
 
 - name: Create Harbor CA
-  shell: "cd {{ kubernetes_etc_dirs }}harbor/cert && {{ kubernetes_ctl_path }}cfssl gencert -initca ca-csr.json | cfssljson -bare ca"
+  shell: "cd {{ kubernetes_etc_dirs }}harbor/cert && {{ kubernetes_ctl_path }}cfssl gencert -initca ca-csr.json | {{ kubernetes_ctl_path }}cfssljson -bare ca"
 
 - name: Create Harbor Server TLS
   shell: "cd {{ kubernetes_etc_dirs }}harbor/cert && \
@@ -21,11 +21,11 @@
                 -ca-key=ca-key.pem \
                 -config=ca-config.json \
                 -hostname=127.0.0.1,{{ k8s_cluster_ip }},{{ k8s_load_balance_ip }},kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.default.svc.{{ dns_domain }},{{ all_hostname_str }},{{ harbor_ingress_default_domain }},{{ harbor_ingress_notary_domain }} \
-                -profile=harbor harbor-csr.json | cfssljson -bare harbor"
+                -profile=harbor harbor-csr.json | {{ kubernetes_ctl_path }}cfssljson -bare harbor"
 
 - name: Create Harbor Client TLS
   shell: "cd {{ kubernetes_etc_dirs }}harbor/cert && \
-          {{ kubernetes_ctl_path }}cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=harbor client-csr.json | cfssljson -bare client"
+          {{ kubernetes_ctl_path }}cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=harbor client-csr.json | {{ kubernetes_ctl_path }}cfssljson -bare client"
 
 - name: Redirect New TLS Files
   shell: "cd {{ kubernetes_etc_dirs }}harbor/cert && \
