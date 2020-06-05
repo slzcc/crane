@@ -120,4 +120,8 @@ Kubernetes 更新内容请参照 [Kubernetes Update Content](https://raw.githubu
 
 修改 k8s_cluster_ip_pool 默认地址池 10.9.0.0/12。
 
-修改 k8s dns address 为 10.9.0.1 地址。
+修改 k8s_cluster_ip 为 10.9.0.1 地址。
+
+修改 k8s dns address 为 10.9.0.10 地址。
+
+添加 nf_conntrack_buckets 开机启动配置。
