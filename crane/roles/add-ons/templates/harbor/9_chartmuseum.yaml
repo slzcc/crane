@@ -87,8 +87,6 @@ spec:
         checksum/secret: f854a2a0fc0067507c97ae856d61bbe3e74c8b8498778f18d856126adef4a11b
         checksum/secret-core: a9907bceec7b276e25d1716477db697e02e7c150a4a4ba450013f3992e7a1672
     spec:
-      imagePullSecrets:
-        - name: harbor-registry-secret
       containers:
       - name: chartmuseum
         image: slzcc/chartmuseum-photon:v0.9.0-v1.8.2

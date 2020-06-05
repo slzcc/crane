@@ -27,8 +27,6 @@ spec:
         app: "harbor"
         component: redis
     spec:
-      imagePullSecrets:
-        - name: harbor-registry-secret
       securityContext:
         fsGroup: 999
       containers:

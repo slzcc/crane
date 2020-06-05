@@ -50,8 +50,6 @@ spec:
     spec:
       securityContext:
         fsGroup: 10000
-      imagePullSecrets:
-        - name: harbor-registry-secret
       containers:
       - name: notary-server
         image: slzcc/notary-server-photon:v0.6.1-v1.8.2
@@ -132,8 +130,6 @@ spec:
     spec:
       securityContext:
         fsGroup: 10000
-      imagePullSecrets:
-        - name: harbor-registry-secret
       containers:
       - name: notary-signer
         image: slzcc/notary-signer-photon:v0.6.1-v1.8.2

@@ -129,8 +129,8 @@
   ignore_errors: true
 
 - name: Copy Sysctl Files
-  copy:
-    src: k8s.conf
+  template:
+    src: "roles/system-initialize/templates/k8s.conf"
     dest: /etc/sysctl.d/k8s.conf
     owner: "{{ ssh_connect_user }}"
     mode: 0644

@@ -45,8 +45,6 @@ spec:
         component: portal
       annotations:
     spec:
-      imagePullSecrets:
-        - name: harbor-registry-secret
       containers:
       - name: portal
         image: slzcc/harbor-portal:v1.8.2
