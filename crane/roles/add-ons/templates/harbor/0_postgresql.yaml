@@ -48,8 +48,6 @@ spec:
       annotations:
         checksum/secret: 4af16722d680eab69b7513431158cc43c015ebf3e6f6e0cfff8bcd3191c12ed0
     spec:
-      imagePullSecrets:
-        - name: harbor-registry-secret
       initContainers:
       - name: "change-permission-of-directory"
         image: "slzcc/busybox:latest"
@@ -60,7 +58,7 @@ spec:
         - name: database-data
           mountPath: /var/lib/postgresql/data
       - name: "remove-lost-found"
-        image: goharbor/harbor-db:dev
+        image: slzcc/harbor-db:dev
         imagePullPolicy: IfNotPresent
         command: ["rm", "-Rf", "/var/lib/postgresql/data/lost+found"]
         volumeMounts:

@@ -87,8 +87,6 @@ spec:
     spec:
       securityContext:
         fsGroup: 10000
-      imagePullSecrets:
-        - name: harbor-registry-secret
       containers:
       - name: jobservice
         image: slzcc/harbor-jobservice:v1.8.2

@@ -14,6 +14,7 @@
     - [v1.18.3.5 更新内容](#v11835-更新内容)
     - [v1.18.3.6 更新内容](#v11836-更新内容)
     - [v1.18.3.7 更新内容](#v11837-更新内容)
+    - [v1.18.3.8 更新内容](#v11838-更新内容)
 
 # v1.18.0.0
 
@@ -104,3 +105,23 @@ Kubernetes 更新内容请参照 [Kubernetes Update Content](https://raw.githubu
 修复 Centos x 中安装 `yum-plugin-ovl` 报错的问题。
 
 同步安装 Harbor 时默认安装 UploadServer 这样可以让其他 Node 可以远程下载 TLS 证书。（但需要自行解决 Dockerd 识别非法 HTTPS 问题）
+
+### v1.18.3.8 更新内容
+
+修复 harbor 创建 TLS 证书时 cfssljson 无法找到的问题。
+
+修复 harbor 中存在的 imagePullSecrets 配置异常报错。
+
+修复 harbor 中 0_postgresql.yaml 镜像配置错误问题。
+
+修复 添加 kernel 参数所使用的 k8s.conf 文件，没有成功添加变量的问题。
+
+修改 cni 默认地址池为 172.200.0.0/12。
+
+修改 k8s_cluster_ip_pool 默认地址池 10.9.0.0/12。
+
+修改 k8s_cluster_ip 为 10.9.0.1 地址。
+
+修改 k8s dns address 为 10.9.0.10 地址。
+
+添加 nf_conntrack_buckets 开机启动配置。

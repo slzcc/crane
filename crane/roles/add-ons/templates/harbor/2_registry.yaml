@@ -113,8 +113,6 @@ spec:
         checksum/secret-jobservice: 0359c82ef1e69328e6952003debcf6303ce6f49711d936441d154fd6c29bc464
         checksum/secret-core: 7745b7b8c5c82cfad7ad077902022082285e095158000de55342efa537c1c8db
     spec:
-      imagePullSecrets:
-        - name: harbor-registry-secret
       containers:
       - name: registry
         image: slzcc/registry-photon:v2.7.1-patch-2819-v1.8.2
