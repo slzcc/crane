@@ -15,3 +15,21 @@
 使用 Calico 时默认是 IPIP 协议，如果需要修改 BGP 只需要对 Crane 的 calico_type 改为 Off 即可生效。
 
 > 但如果是正在使用的集群，启动后删除 tunl0 网卡后才会生效，这里面存在网络冲突。
+
+
+### CNI/ClusterIP 变更
+
+CNI 变更修改 Calico 中的 CALICO_IPV4POOL_CIDR 后重启所有 Pod 生效，或者不重启因 iptables 等规则已经生效且等待下一次更新即可。
+
+ClusterIP 地址变更需要对所有的 Kube-apiServer 的 service-cluster-ip-range 参数进行变更，然后重启 apiServer 即可生效。
+
+ClustarIP 变更后需要对 DNS 进行地址变更，首先修改 DNS Service 的 ClusterIP, 然后变更所有 kubelet 配置，执行如下：
+
+```
+$ sed -i 's/10.96.0.10/10.9.0.10/g' /etc/systemd/system/kubelet.service.d/10-kubelet.conf
+$ sed -i 's/10.96.0.10/10.9.0.10/g' /var/lib/kubelet/config.yaml
+$ systemctl daemon-reload
+$ systemctl restart kubelet
+```
+
+执行完毕后整个变更成功。

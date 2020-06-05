@@ -14,8 +14,6 @@ spec:
       labels:
         app: "gitlab-ops"
     spec:
-      imagePullSecrets:
-        - name: harbor-registry-secret
       containers:
       - name: gitlab-ops
         image: gitlab/gitlab-ce:12.3.5-ce.0

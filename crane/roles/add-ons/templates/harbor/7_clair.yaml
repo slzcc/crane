@@ -50,8 +50,6 @@ spec:
       annotations:
         checksum/secret: 21c8ad5cfd35d17b8340951740c7e85e42150d34848fc0be1cc8a2629303b087
     spec:
-      imagePullSecrets:
-        - name: harbor-registry-secret
       containers:
       - name: clair
         image: slzcc/clair-photon:v2.0.8-v1.8.2
