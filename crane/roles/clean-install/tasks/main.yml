@@ -174,7 +174,7 @@
 
 - name: Clean IPVS Rules
   shell: "ipvsadm -C"
-  when: is_install_ipvsadm and kube_proxy_mode == 'ipvs'
+  when: is_install_ipvsadm and kube_proxy_mode == 'ipvs' and is_remove_iptables_rule
   ignore_errors: true
 
 - name: DELETE ALL IPTABLE CLAIN
@@ -183,6 +183,7 @@
     - "nat"
     - "filter"
   ignore_errors: true
+  when: is_remove_iptables_rule
 
 - name: Clean Kube IPVS0
   shell: "ip a flush dev {{ item }}"
