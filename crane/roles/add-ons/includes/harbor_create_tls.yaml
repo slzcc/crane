@@ -38,5 +38,5 @@
           mkdir -p {{ harbor_ingress_default_domain }} && \
           cp -a ca.pem {{ harbor_ingress_default_domain }}/ca.crt && \
           cp -a client.pem {{ harbor_ingress_default_domain }}/client.cert && \
-          cp -a client-key.pem {{ harbor_ingress_default_domain }}/client.ket && \
+          cp -a client-key.pem {{ harbor_ingress_default_domain }}/client.key && \
           tar zcf {{ harbor_ingress_default_domain }}.tar.gz {{ harbor_ingress_default_domain }}"

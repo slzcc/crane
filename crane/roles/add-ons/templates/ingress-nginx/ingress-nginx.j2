@@ -208,6 +208,8 @@ spec:
         prometheus.io/scrape: "true"
     spec:
       serviceAccountName: nginx-ingress-serviceaccount
+      nodeSelector:
+        node-role.kubernetes.io/master: ""
       containers:
       - name: nginx-ingress-controller
         image: quay.io/kubernetes-ingress-controller/nginx-ingress-controller:{{ ingress_nginx_version }}
