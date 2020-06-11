@@ -133,3 +133,10 @@ Kubernetes 更新内容请参照 [Kubernetes Update Content](https://raw.githubu
 
 修改 Calico 启动默认 BGP 模式。
 
+### v1.18.3.10 更新内容
+
+修复 Deploy Harbor 生成客户端秘钥时命名错误（client.ket 改为 client.key）
+
+添加 Deploy Harbor 执行 Create Secret 时的命令到 secret.sh 。
+
+添加 Deploy Ingress 时 nodeSelector 参数只能 master 节点进行启动。
