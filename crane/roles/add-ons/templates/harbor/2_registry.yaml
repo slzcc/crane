@@ -166,6 +166,8 @@ spec:
         - secretRef:
             name: "release-name-harbor-registry"
         env:
+          - name: TZ
+            value: "{{ time_location }}"
           - name: CORE_SECRET
             valueFrom:
               secretKeyRef:
@@ -188,7 +190,14 @@ spec:
         - name: registry-config
           mountPath: /etc/registryctl/config.yml
           subPath: ctl-config.yml
+        - mountPath: /usr/share/zoneinfo
+          name: usr-local-timezone
+          readOnly: true
       volumes:
+      - hostPath:
+        name: usr-local-timezone
+          path: /usr/share/zoneinfo
+          type: DirectoryOrCreate
       - name: registry-root-certificate
         secret:
           secretName: release-name-harbor-core

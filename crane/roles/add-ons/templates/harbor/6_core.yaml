@@ -131,6 +131,8 @@ spec:
         - secretRef:
             name: "release-name-harbor-core"
         env:
+          - name: TZ
+            value: "{{ time_location }}"
           - name: CORE_SECRET
             valueFrom:
               secretKeyRef:
@@ -158,7 +160,14 @@ spec:
           subPath: ca.crt
         - name: psc
           mountPath: /etc/core/token
+        - mountPath: /usr/share/zoneinfo
+          name: usr-local-timezone
+          readOnly: true
       volumes:
+      - hostPath:
+        name: usr-local-timezone
+          path: /usr/share/zoneinfo
+          type: DirectoryOrCreate
       - name: config
         configMap:
           name: release-name-harbor-core

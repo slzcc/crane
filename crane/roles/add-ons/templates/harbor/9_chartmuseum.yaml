@@ -109,6 +109,8 @@ spec:
         - secretRef:
             name: "release-name-harbor-chartmuseum"
         env:
+          - name: TZ
+            value: "{{ time_location }}"
           - name: BASIC_AUTH_PASS
             valueFrom:
               secretKeyRef:
@@ -120,6 +122,13 @@ spec:
         - name: chartmuseum-data
           mountPath: /chart_storage
           subPath: 
+        - mountPath: /usr/share/zoneinfo
+          name: usr-local-timezone
+          readOnly: true
       volumes:
+      - hostPath:
+        name: usr-local-timezone
+          path: /usr/share/zoneinfo
+          type: DirectoryOrCreate
       - name: chartmuseum-data
         emptyDir: {}

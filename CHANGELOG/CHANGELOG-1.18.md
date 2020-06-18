@@ -17,6 +17,7 @@
     - [v1.18.3.8 更新内容](#v11838-更新内容)
     - [v1.18.3.9 更新内容](#v11839-更新内容)
     - [v1.18.3.10 更新内容](#v118310-更新内容)
+    - [v1.18.4.0 更新内容](#v118400-更新内容)
 
 # v1.18.0.0
 
@@ -141,3 +142,16 @@ Kubernetes 更新内容请参照 [Kubernetes Update Content](https://raw.githubu
 添加 Deploy Harbor 执行 Create Secret 时的命令到 secret.sh 。
 
 添加 Deploy Ingress 时 nodeSelector 参数只能 master 节点进行启动。
+
+### v1.18.4.0 更新内容
+
+添加 kubernetes v1.18.4.0 版本支持。
+
+Crane 以更新至 1.18.0.0 版本。
+
+修改 ingress-nginx version 0.33.0 版本。
+
+修改 istio version 1.6.0 版本。
+
+修改 harbor 时区问题。
+
