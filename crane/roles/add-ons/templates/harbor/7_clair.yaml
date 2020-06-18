@@ -68,6 +68,8 @@ spec:
           periodSeconds: 10
         args: ["-log-level", "debug"]
         env:
+        - name: TZ
+          value: "{{ time_location }}"
         - name: HTTP_PROXY
           value: ""
         - name: HTTPS_PROXY
@@ -80,7 +82,14 @@ spec:
         - name: config
           mountPath: /etc/clair/config.yaml
           subPath: config.yaml
+        - mountPath: /usr/share/zoneinfo
+          name: usr-local-timezone
+          readOnly: true
       volumes:
+      - hostPath:
+        name: usr-local-timezone
+          path: /usr/share/zoneinfo
+          type: DirectoryOrCreate
       - name: config
         secret:
           secretName: "release-name-harbor-clair"

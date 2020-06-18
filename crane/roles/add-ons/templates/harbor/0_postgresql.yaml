@@ -68,6 +68,9 @@ spec:
       - name: database
         image: slzcc/harbor-db:v1.8.2
         imagePullPolicy: IfNotPresent
+        env:
+          - name: TZ
+            value: "{{ time_location }}"
         livenessProbe:
           exec:
             command:
@@ -87,6 +90,13 @@ spec:
         - name: database-data
           mountPath: /var/lib/postgresql/data
           subPath: 
+        - mountPath: /usr/share/zoneinfo
+          name: usr-local-timezone
+          readOnly: true
       volumes:
       - name: database-data
         emptyDir: {}
+      - hostPath:
+        name: usr-local-timezone
+          path: /usr/share/zoneinfo
+          type: DirectoryOrCreate

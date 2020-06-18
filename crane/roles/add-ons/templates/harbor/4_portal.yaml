@@ -49,6 +49,9 @@ spec:
       - name: portal
         image: slzcc/harbor-portal:v1.8.2
         imagePullPolicy: IfNotPresent
+        env:
+          - name: TZ
+            value: "{{ time_location }}"
         livenessProbe:
           httpGet:
             path: /
@@ -63,3 +66,12 @@ spec:
           periodSeconds: 10
         ports:
         - containerPort: 80
+        volumeMounts:
+        - mountPath: /usr/share/zoneinfo
+          name: usr-local-timezone
+          readOnly: true
+      volumes:
+      - hostPath:
+        name: usr-local-timezone
+          path: /usr/share/zoneinfo
+          type: DirectoryOrCreate

@@ -104,6 +104,8 @@ spec:
           initialDelaySeconds: 20
           periodSeconds: 10
         env:
+          - name: TZ
+            value: "{{ time_location }}"
           - name: CORE_SECRET
             valueFrom:
               secretKeyRef:
@@ -135,7 +137,14 @@ spec:
         - name: job-logs
           mountPath: /var/log/jobs
           subPath: 
+        - mountPath: /usr/share/zoneinfo
+          name: usr-local-timezone
+          readOnly: true
       volumes:
+      - hostPath:
+        name: usr-local-timezone
+          path: /usr/share/zoneinfo
+          type: DirectoryOrCreate
       - name: jobservice-config
         configMap:
           name: "release-name-harbor-jobservice"
