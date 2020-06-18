@@ -43,13 +43,23 @@ spec:
             port: 6379
           initialDelaySeconds: 1
           periodSeconds: 10
+        env:
+          - name: TZ
+            value: "{{ time_location }}"
         volumeMounts:
         - name: data
           mountPath: /var/lib/redis
           subPath: 
+        - mountPath: /usr/share/zoneinfo
+          name: usr-local-timezone
+          readOnly: true
       volumes:
       - name: data
         emptyDir: {}
+      - hostPath:
+        name: usr-local-timezone
+          path: /usr/share/zoneinfo
+          type: DirectoryOrCreate
 
 ---
 # Source: harbor/templates/redis/service.yaml

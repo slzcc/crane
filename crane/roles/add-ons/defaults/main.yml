@@ -11,7 +11,7 @@ is_deploy_helm: false
 is_deploy_ingress_nginx: false
 
 # Ingress Nginx Version
-ingress_nginx_version: '0.26.1'
+ingress_nginx_version: '0.33.0'
 
 # 部署 Ingress Nginx Example
 is_deploy_ingress_nginx_example: false
@@ -57,7 +57,7 @@ istio_home: '/usr/local/istio-{{ istio_version }}'
 
 # Istio Version
 # https://github.com/istio/istio/releases
-istio_version: '1.3.3'
+istio_version: '1.6.0'
 
 # 部署 Istio 所使用的 Ingress Domain
 istio_ingress_prometheus_domain: 'prometheus.example.com'
@@ -71,7 +71,7 @@ istio_kiali_password: 'YWRtaW4='
 
 # 部署 upload service
 # 如果部署 Harbor 则此服务默认开启，因为需要提供 TLS 证书的下载，如果机器网络等因素不稳定则会跳过。
-is_deploy_upload_service: "{{ is_deploy_harbor }}"
+is_deploy_upload_service: false
 
 upload_service_ingress_domain: 'upload.example.com'
 
