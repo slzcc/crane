@@ -4,7 +4,7 @@
 # 部署 Kubernetes 对应版本, 不建议修改, 如需修改请修改小版本进行部署测试, 大版本会引发部署参数不支持等问题.
 # 如使用镜像方式部署, 不能修改
 # https://github.com/kubernetes/kubernetes/releases
-k8s_version: 'v1.18.4'
+k8s_version: 'v1.18.5'
 
 # 避免大版本中组件的版本差异, 使用 build 版本作为差异配置项, 在项目中可以看做如下使用 '{{ k8s_version }}.{{ build_k8s_version }}'
 build_k8s_version: '0'
