@@ -100,12 +100,12 @@ node-csr-GJqCuRzlL6KzLvxLRgNo1fEswguU6RLaETPjw2SNzs4   10m       system:bootstra
 
 $ kubectl get nodes
 NAME         STATUS     ROLES     AGE       VERSION
-instance-2   Ready      master    11m       v1.18.5.0
-instance-3   Ready      master    11m       v1.18.5.0
-instance-4   Ready      master    11m       v1.18.5.0
-instance-5   NotReady   node      10m       v1.18.5.0
-instance-6   NotReady   node      10m       v1.18.5.0
-instance-7   NotReady   node      10m       v1.18.5.0
+instance-2   Ready      master    11m       v1.18.5
+instance-3   Ready      master    11m       v1.18.5
+instance-4   Ready      master    11m       v1.18.5
+instance-5   NotReady   node      10m       v1.18.5
+instance-6   NotReady   node      10m       v1.18.5
+instance-7   NotReady   node      10m       v1.18.5
 
 $ kubectl -n kube-system get pod -o wide
 NAME                                       READY     STATUS              RESTARTS   AGE       IP            NODE
@@ -169,13 +169,13 @@ $ docker run --name crane --rm -i \
 ```
 $ kubectl get node
 NAME         STATUS     ROLES     AGE       VERSION
-instance-2   Ready      master    46m       v1.18.5.0
-instance-3   Ready      master    46m       v1.18.5.0
-instance-4   Ready      master    46m       v1.18.5.0
-instance-5   Ready      node      45m       v1.18.5.0
-instance-6   Ready      node      45m       v1.18.5.0
-instance-7   Ready      node      45m       v1.18.5.0
-instance-8   Ready      master    7m        v1.18.5.0
+instance-2   Ready      master    46m       v1.18.5
+instance-3   Ready      master    46m       v1.18.5
+instance-4   Ready      master    46m       v1.18.5
+instance-5   Ready      node      45m       v1.18.5
+instance-6   Ready      node      45m       v1.18.5
+instance-7   Ready      node      45m       v1.18.5
+instance-8   Ready      master    7m        v1.18.5
 
 $ kubectl get csr
 NAME                                                   AGE       REQUESTOR                 CONDITION
@@ -219,14 +219,14 @@ Cluster Status
 ```
 $ kubectl get node
 NAME         STATUS     ROLES     AGE       VERSION
-instance-2   Ready      master    46m       v1.18.5.0
-instance-3   Ready      master    46m       v1.18.5.0
-instance-4   Ready      master    46m       v1.18.5.0
-instance-5   Ready      node      45m       v1.18.5.0
-instance-6   Ready      node      45m       v1.18.5.0
-instance-7   Ready      node      45m       v1.18.5.0
-instance-8   Ready      master    7m        v1.18.5.0
-instance-9   NotReady   node      10s       v1.18.5.0
+instance-2   Ready      master    46m       v1.18.5
+instance-3   Ready      master    46m       v1.18.5
+instance-4   Ready      master    46m       v1.18.5
+instance-5   Ready      node      45m       v1.18.5
+instance-6   Ready      node      45m       v1.18.5
+instance-7   Ready      node      45m       v1.18.5
+instance-8   Ready      master    7m        v1.18.5
+instance-9   NotReady   node      10s       v1.18.5
 
 $ kubectl get csr
 NAME                                                   AGE       REQUESTOR                 CONDITION
