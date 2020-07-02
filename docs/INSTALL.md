@@ -25,7 +25,7 @@ Crane 是由我个人独立创作并维护的, 在使用范围上可能得不到
 使用 Crane 很简单, 有可能在一定程度上比 Kubeadm 都简单(国内源问题), 可以通过如下方式获取源码进行安装:
 
 ```
-$ git clone -b v1.17.1.2 https://github.com/slzcc/crane.git
+$ git clone -b v1.18.5.0 https://github.com/slzcc/crane.git
 ```
 
 然后进入 crane 目录后, 首先修改 nodes 文件列表:
@@ -92,7 +92,10 @@ kube_proxy_node_port_addresses: ["10.100.21.0/24", "172.17.48.0/24"]
 
 ## Ansible in Docker
 
-借助 Docker 无需本地安装 Ansible 也可进行对 Crane 的安装, 如果在需部署集群内的任意节点执行则会导致中断(如果在部署集群外执行则直接执行命令即可)，您需要配置下述说明文档配置 Dockerd 的 daemon.json 配置，如完成后然后执行下方命令进行 Crane 的安装:
+借助 Docker 无需本地安装 Ansible 也可进行对 Crane 的安装, 如果在需部署集群内的任意节点执行则会导致`中断`(如果在部署集群外执行则直接执行命令即可)，您需要配置下述说明文档配置 Dockerd 的 daemon.json 配置，如完成后然后执行下方命令进行 Crane 的安装: 
+
+> 建议: 从创建集群之外的机器执行如下命令, 如过能保证本地有 docker 并且配置下面的配置后则可以在同一台机器执行。
+> 如果本地机器有 ansible, 则可以使用 ansible-playbook 直接执行, 但不建议。
 
 ```
 $ docker run --name crane --rm -i \
@@ -102,7 +105,7 @@ $ docker run --name crane --rm -i \
         -e LINES=61 \
         -v ~/.ssh:/root/.ssh \
         -v ${PWD}:/crane \
-        slzcc/crane:v1.17.1.2 \
+        slzcc/crane:v1.18.5.0 \
         -i nodes main.yml -vv
 ```
 
@@ -140,7 +143,7 @@ $ docker run --name crane --rm -i \
         -e LINES=61 \
         -v ~/.ssh:/root/.ssh \
         -v ${PWD}:/crane \
-        slzcc/crane:v1.17.1.2 \
+        slzcc/crane:v1.18.5.0 \
         -i nodes main.yml -vv
 ```
 
@@ -154,7 +157,7 @@ $ docker run --name crane --rm -i \
         -e LINES=61 \
         -v ~/.ssh:/root/.ssh \
         -v ${PWD}:/crane \
-        slzcc/crane:v1.17.1.2 \
+        slzcc/crane:v1.18.5.0 \
         -i nodes remove_cluster.yml -vv
 ```
 
