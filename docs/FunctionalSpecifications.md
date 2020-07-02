@@ -3,7 +3,7 @@
 切记, 如需要安装哪个大版本的集群, 就获取相应的 tag :
 
 ```
-$ git clone -b v1.17.x.x https://github.com/slzcc/crane.git
+$ git clone -b v1.18.x.x https://github.com/slzcc/crane.git
 ```
 
 > v1.15.x.x 最末尾一位属于编写 Ansible 脚本的迭代版本, 不属于 Kubernetes 自身版本。
@@ -19,7 +19,9 @@ $ git clone -b v1.17.x.x https://github.com/slzcc/crane.git
 > 以下所有的部署全部使用 Ubuntu 16.04 为环境进行示例演练。个人部署时请使用最新版进行尝试。
 
 ## 使用说明
+
 在 nodes 文件中, 分为三大块:
+
 ```
 [kube-master]
 35.236.167.32
@@ -71,7 +73,9 @@ os_network_device_name: < NetWork Name >
 > 普通用户需要具有 Sudo 组, 并且配置 Sudo 免密。
 
 ## Deploy Kubernetes Cluster
-如上述修改完成后, 可执行命令（v1.17.1 部署版本为例）：
+
+如上述修改完成后, 可执行命令（v1.18.5.0 部署版本为例）：
+
 ```
 $ docker run --name crane --rm -i \
          -e ANSIBLE_HOST_KEY_CHECKING=false \
@@ -80,7 +84,7 @@ $ docker run --name crane --rm -i \
          -e LINES=61 \
          -v ~/.ssh:/root/.ssh \
          -v ${PWD}:/crane \
-         slzcc/crane:v1.17.1.3 \
+         slzcc/crane:v1.18.5.0 \
          -i nodes main.yml -vv
 ```
 Cluster Status
@@ -96,12 +100,12 @@ node-csr-GJqCuRzlL6KzLvxLRgNo1fEswguU6RLaETPjw2SNzs4   10m       system:bootstra
 
 $ kubectl get nodes
 NAME         STATUS     ROLES     AGE       VERSION
-instance-2   Ready      master    11m       v1.17.1
-instance-3   Ready      master    11m       v1.17.1
-instance-4   Ready      master    11m       v1.17.1
-instance-5   NotReady   node      10m       v1.17.1
-instance-6   NotReady   node      10m       v1.17.1
-instance-7   NotReady   node      10m       v1.17.1
+instance-2   Ready      master    11m       v1.18.5.0
+instance-3   Ready      master    11m       v1.18.5.0
+instance-4   Ready      master    11m       v1.18.5.0
+instance-5   NotReady   node      10m       v1.18.5.0
+instance-6   NotReady   node      10m       v1.18.5.0
+instance-7   NotReady   node      10m       v1.18.5.0
 
 $ kubectl -n kube-system get pod -o wide
 NAME                                       READY     STATUS              RESTARTS   AGE       IP            NODE
@@ -140,7 +144,9 @@ kube-scheduler-instance-4                  1/1       Running             0      
 ```
 
 ## Add K8s Cluster Manager Node.
+
 批量添加 Master 节点到集群, 首先在 `nodes` 文件中 `k8s-cluster-add-master` 下添加需要添加的节点: (支持批量)
+
 ```
 [k8s-cluster-add-master]
 130.211.245.55
@@ -156,20 +162,20 @@ $ docker run --name crane --rm -i \
         -e LINES=61 \
         -v ~/.ssh:/root/.ssh \
         -v ${PWD}:/crane \
-        slzcc/crane:v1.17.1.3 \
+        slzcc/crane:v1.18.5.0 \
         -i nodes add_master.yml -vv
 ```
 查看 Cluster Status:
 ```
 $ kubectl get node
 NAME         STATUS     ROLES     AGE       VERSION
-instance-2   Ready      master    46m       v1.17.1
-instance-3   Ready      master    46m       v1.17.1
-instance-4   Ready      master    46m       v1.17.1
-instance-5   Ready      node      45m       v1.17.1
-instance-6   Ready      node      45m       v1.17.1
-instance-7   Ready      node      45m       v1.17.1
-instance-8   Ready      master    7m        v1.17.1
+instance-2   Ready      master    46m       v1.18.5.0
+instance-3   Ready      master    46m       v1.18.5.0
+instance-4   Ready      master    46m       v1.18.5.0
+instance-5   Ready      node      45m       v1.18.5.0
+instance-6   Ready      node      45m       v1.18.5.0
+instance-7   Ready      node      45m       v1.18.5.0
+instance-8   Ready      master    7m        v1.18.5.0
 
 $ kubectl get csr
 NAME                                                   AGE       REQUESTOR                 CONDITION
@@ -185,7 +191,12 @@ node-csr-xk3fBmT4OOHNAtbYJq4IXtLLpFlfyXLeX2PWFMNsrjk   45m       system:bootstra
 > 在添加完相应的类型节点后, 请把 nodes 文件中对应添加节点的地址, 移动至 master/node 中, 以防止后续操作时遗漏。
 
 ## Add K8s Cluster Worker Node.
+
+> 重要说明：
+> 降低风险操作, nodes.kube-master 只保留第一个其余全部注释, 避免误操作执行其他的模式导致集群不可用。
+
 批量添加 Node 节点到集群, 首先在 `nodes` 文件中 `k8s-cluster-add-node` 下添加需要添加的节点: (支持批量)
+
 ```
 [k8s-cluster-add-node]
 34.80.142.147
@@ -201,21 +212,21 @@ $ docker run --name crane --rm -i \
         -e LINES=61 \
         -v ~/.ssh:/root/.ssh \
         -v ${PWD}:/crane \
-        slzcc/crane:v1.17.1.3 \
+        slzcc/crane:v1.18.5.0 \
         -i nodes add_nodes.yml -vv
 ```
 Cluster Status
 ```
 $ kubectl get node
 NAME         STATUS     ROLES     AGE       VERSION
-instance-2   Ready      master    46m       v1.17.1
-instance-3   Ready      master    46m       v1.17.1
-instance-4   Ready      master    46m       v1.17.1
-instance-5   Ready      node      45m       v1.17.1
-instance-6   Ready      node      45m       v1.17.1
-instance-7   Ready      node      45m       v1.17.1
-instance-8   Ready      master    7m        v1.17.1
-instance-9   NotReady   node      10s       v1.17.1
+instance-2   Ready      master    46m       v1.18.5.0
+instance-3   Ready      master    46m       v1.18.5.0
+instance-4   Ready      master    46m       v1.18.5.0
+instance-5   Ready      node      45m       v1.18.5.0
+instance-6   Ready      node      45m       v1.18.5.0
+instance-7   Ready      node      45m       v1.18.5.0
+instance-8   Ready      master    7m        v1.18.5.0
+instance-9   NotReady   node      10s       v1.18.5.0
 
 $ kubectl get csr
 NAME                                                   AGE       REQUESTOR                 CONDITION
@@ -232,7 +243,9 @@ node-csr-xk3fBmT4OOHNAtbYJq4IXtLLpFlfyXLeX2PWFMNsrjk   46m       system:bootstra
 > 在添加完相应的类型节点后, 请把 nodes 文件中对应添加节点的地址, 移动至 master/node 中, 以防止后续操作时遗漏。
 
 ## Clean Kubernetes Cluster
+
 清除集群所有部署的数据信息:
+
 ```
 $ docker run --name crane --rm -i \
         -e ANSIBLE_HOST_KEY_CHECKING=false \
@@ -241,7 +254,7 @@ $ docker run --name crane --rm -i \
         -e LINES=61 \
         -v ~/.ssh:/root/.ssh \
         -v ${PWD}:/crane \
-        slzcc/crane:v1.17.1.3 \
+        slzcc/crane:v1.18.5.0 \
         -i nodes remove_cluster.yml -vv
 ```
 
@@ -250,6 +263,7 @@ $ docker run --name crane --rm -i \
 > 清除集群时 IPVS 默认不会清除规则, 所以需要自己执行 `ipvsadm -C` 来解决.
 
 ## Add Etcd Cluster Node
+
 对现有集群添加支持 TLS 的 Etcd 节点, 批量添加 Node 节点到集群, 首先在 `nodes` 文件中 `etcd-cluster-add-node` 下添加需要添加的节点: (支持批量)
 
 > 添加 Etcd 需要保证 Etcd 节点数在 2 个以上, 否则会出现没有 Leader 而无法加入集群的问题。
@@ -271,7 +285,7 @@ $ docker run --name crane --rm -i \
         -e LINES=61 \
         -v ~/.ssh:/root/.ssh \
         -v ${PWD}:/crane \
-        slzcc/crane:v1.17.1.3 \
+        slzcc/crane:v1.18.5.0 \
         -i nodes add_etcd.yml -vv
 ```
 > 添加的节点在现有的集群中不会被直接识别到, 因为 Etcd Endpoints 还是之前使用的, 如需要修改目前只支持手动更新, 因为牵扯太多目前不支持热更新服务配置, 否则会引起 apiServer、Calico 等应用的使用。
@@ -279,7 +293,9 @@ $ docker run --name crane --rm -i \
 > 在添加完相应的类型节点后, 请把 nodes 文件中对应添加节点的地址, 移动至 etcd 中, 以防止后续操作时遗漏。
 
 ## Add Ons
+
 默认创建集群时, 是可以直接部署 Add-Ons 的, 如果后续进行部署, 则直接通过 tags 方式进行部署即可:
+
 ```
 $ docker run --name crane --rm -i \
         -e ANSIBLE_HOST_KEY_CHECKING=false \
@@ -288,11 +304,12 @@ $ docker run --name crane --rm -i \
         -e LINES=61 \
         -v ~/.ssh:/root/.ssh \
         -v ${PWD}:/crane \
-        slzcc/crane:v1.17.1.3 \ 
+        slzcc/crane:v1.18.5.0 \ 
         -i nodes main.yml --tags k8s-addons -vv
 ```
 
 ## K8s TLS Rotation
+
 默认通过 CFSSL 创建出的 CA 根证书只有 5 年时效, 如果更新根证书不当可能会涉及到 Master/Node 上大面积的应用不可用的问题, 下面的集群证书更新方式只适用于通过上述安装部署的集群使用, 其他服务集群请自行尝试, 目前没有发现问题:
 > 需要保证 nodes 文件中不要有 add.* 开头的 Group, 在部署时会重新启动 Calico 网络, 但经过大量测试没有发现对集群访问的影响.
 
@@ -307,7 +324,7 @@ $ docker run --name crane --rm -i \
         -e LINES=61 \
         -v ~/.ssh:/root/.ssh \
         -v ${PWD}:/crane \
-        slzcc/crane:v1.17.1.3 \
+        slzcc/crane:v1.18.5.0 \
         -i nodes k8s_certificate_rotation.yml -vv
 ```
 
@@ -340,6 +357,7 @@ csr-zp7tr   75m   system:node:instance-template-1   Approved,Issued
 > 上述集群只有几个节点, 所以有重复的添加状态。
 
 ## Upgrade Version
+
 支持集群版本升级, 执行命令如下: (目前支持 1.14.x 升级 1.15.x 其他版本请自行尝试)
 
 只需要配置 `k8s_version` 参数指定版本即可。
@@ -377,6 +395,7 @@ Server Version: version.Info{Major:"1", Minor:"15", GitVersion:"v1.15.0", GitCom
 ```
 
 ## Etcd TLS Rotation
+
 与 K8s TLS Rotation 方式类似, 当更换证书时, 则集群中的 Etcd 需要重启服务, 可能会造成一定范围时间内的服务不可用, 启动完成时会对 Master 中的 apiServer 以及 Calico 进行重新配置并启动的过程.
 
 部署安装:
@@ -388,11 +407,12 @@ $ docker run --name crane --rm -i \
         -e LINES=61 \
         -v ~/.ssh:/root/.ssh \
         -v ${PWD}:/crane \
-        slzcc/crane:v1.17.1.3 \
+        slzcc/crane:v1.18.5.0 \
         -i nodes etcd_certificate_rotation.yml -vv
 ```
 
 ## Ansible in Docker
+
 在 Docker 内使用 Ansible 进行部署, 使用时挂载本地的 nodes 文件和 group_vars/all.yml 文件进行部署。
 
 部署安装: (版本请自己根据需求查看 [slzcc/crane](https://cloud.docker.com/u/slzcc/repository/docker/slzcc/crane) 获取)
@@ -404,7 +424,7 @@ $ docker run --name crane --rm -i \
         -e LINES=61 \
         -v ~/.ssh:/root/.ssh \
         -v ${PWD}:/crane \
-        slzcc/crane:v1.17.1.3 \
+        slzcc/crane:v1.18.5.0 \
         -i nodes main.yml -vv
 ```
 > ~~切记！不要在任何 Master 或者 Node 节点上使用 Ansible in Docker 会造成 Dockerd 被重启导致服务中断！~~
