@@ -1,2 +1,2 @@
-1kernel_nf_conntrack_buckets: 262144
+kernel_nf_conntrack_buckets: 262144
 kernel_nf_conntrack_max: 1048576
