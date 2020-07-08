@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: upload
-        image: slzcc/uploadserver:backend-v2
+        image: slzcc/uploadserver:backend-v4
         ports:
         - name: http
           containerPort: 8878
@@ -51,7 +51,7 @@ spec:
               fieldPath: status.podIP
         imagePullPolicy: IfNotPresent
       - name: nginx
-        image: slzcc/uploadserver:frontend-v2
+        image: slzcc/uploadserver:frontend-v4
         ports:
         - name: http
           containerPort: 80
