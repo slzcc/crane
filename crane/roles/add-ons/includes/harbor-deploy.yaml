@@ -240,3 +240,6 @@
     - "$ systemctl restart docker"
     - "$ docker pull/push {{ harbor_ingress_default_domain }}/..."
   when: check_upload_service_ip is defined and check_upload_service_ip.stdout != ""
+
+- name: Copy Client CA Files in All K8s Nodes
+  include: roles/add-ons/includes/harbor-deploy-client-cert.yaml
