@@ -5,13 +5,13 @@
   shell: "sudo ssh -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no -i {{ ssh_public_key }} \
             -p {{ ssh_connect_port }} {{ ssh_connect_user }}@{{ item[0] }} 'sudo mkdir -p /etc/docker/certs.d'"
   with_nested:
-    - "{{ k8s_master_ip_list }}"
+    - "{{ k8s_all_ip_list }}"
     - "-"
 
 ## Copy Client CA Files in All K8s Nodes
 - name: Copy Client CA Files in All K8s Nodes
   shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no -i {{ ssh_public_key }} \
-            -P {{ ssh_connect_port }} {{ kubernetes_etc_dirs }}harbor/cert/{{ item[1] }}  {{ ssh_connect_user }}@{{ item[0] }}:{{ kubernetes_etc_dirs }}harbor/cert"
+            -P {{ ssh_connect_port }} {{ kubernetes_etc_dirs }}harbor/cert/{{ item[1] }}  {{ ssh_connect_user }}@{{ item[0] }}:/etc/docker/certs.d"
   with_nested:
     - "{{ k8s_all_ip_list }}"
     - "{{ harbor_ingress_default_domain }}"
