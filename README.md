@@ -21,6 +21,8 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 
 各功能示例参照 [Crane Other Features](./docs/FunctionalSpecifications.md) 文件进行部署。
 
+Add-Ons 参照 [Add-Ons Install](./crane/roles/add-ons) 文件进行部署。
+
 ---
 
 # 模拟部署

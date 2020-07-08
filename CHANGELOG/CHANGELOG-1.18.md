@@ -163,7 +163,7 @@ Crane 以更新至 1.18.0.0 版本。
 
 ### v1.18.5.1 更新内容
 
-添加 [Add-One](crane/roles/add-ons) 说明.
+添加 [Add-One](/crane/crane/roles/add-ons) 说明.
 
 添加 Harbor Client Cert 部署所有集群 Nodes 配置项。
 
