@@ -146,6 +146,9 @@ tls_harbor_client_head_info_OU: 'Harbor'
 tls_harbor_server_head_info_ST: 'BeiJing'
 tls_harbor_client_head_info_ST: 'BeiJing'
 
+# 把 Clent 证书 Copy 到所有的集群节点中
+is_harbor_client_cert_copy_to_nodes: false
+
 # Docs https://wiki.shileizcc.com/confluence/display/KUB/Kubernetes+Harbor
 
 # Deploy Cluster Host List
@@ -176,6 +179,11 @@ all_hostname_str: >-
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}
 
+k8s_all_ip_list: >-
+  [{% for host in groups['k8s-cluster'] -%}
+    '{{ hostvars[host].ansible_default_ipv4.address }}'
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}]
 
 # TLS
 ## ********************************************************************************************************************************
