@@ -1,6 +1,6 @@
 # Harbor Deploy
 
-安装 Harbor 需要注意 [main.yml](/crane/crane/roles/add-ons/defaults/main.yml) 中 `is_deploy_harbor` 为 `true`, 并且修改 Domain:
+安装 Harbor 需要注意 [main.yml](../../defaults/main.yml) 中 `is_deploy_harbor` 为 `true`, 并且修改 Domain:
 
 ```
 is_deploy_harbor: true
