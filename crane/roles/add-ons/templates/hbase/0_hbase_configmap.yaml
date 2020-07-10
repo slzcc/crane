@@ -1,0 +1,159 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hbase-config
+data:
+  hbase-site.xml: |-
+    <configuration>
+
+        <property>
+          <name>hbase.cluster.distributed</name>
+          <value>true</value>
+        </property>
+
+        <property>
+          <name>hbase.zookeeper.quorum</name>
+          <value>{{ hbase_set_config_zookeeper }}</value>
+        </property>
+
+        <property>
+          <name>hbase.zookeeper.property.dataDir</name>
+          <value>{{ hbase_hdfs_dir }}/zookeeperData</value>
+        </property>
+
+        <property>
+          <name>hbase.zookeeper.property.clientPort</name>
+          <value>2181</value>
+        </property>
+
+        <property>
+          <name>hbase.tmp.dir</name>
+          <value>{{ hbase_hdfs_dir }}/tmp</value>
+        </property>
+
+        <property>
+          <name>hbase.rootdir</name>
+          <value>hdfs://hdfs-cluster/hbase</value>
+        </property>
+
+        <property>
+          <name>hbase.master.info.port</name>
+          <value>60010</value>
+        </property>
+
+        <property>
+          <name>hbase.regionserver.info.port</name>
+          <value>60030</value>
+        </property>
+
+        <property>
+          <name>zookeeper.session.timeout</name>
+          <value>120000</value>
+        </property>
+
+        <property>
+          <name>hbase.regionserver.restart.on.zk.expire</name>
+          <value>true</value>
+        </property>
+
+    </configuration>
+
+  regionservers: |-
+{% for host in hbase_all_hostname %}
+    {{ host }}
+{% endfor %}
+
+  hdfs-site.xml: |-
+    <configuration>
+
+      <property>
+        <name>dfs.nameservices</name>
+        <value>hdfs-cluster</value>
+      </property>
+
+      <property>
+        <name>dfs.ha.namenodes.hdfs-cluster</name>
+        <value>nn1,nn2</value>
+      </property>
+
+      <property>
+        <name>dfs.namenode.rpc-address.hdfs-cluster.nn1</name>
+        <value>{{ hadoop_set_config_namespace_host01 }}:8020</value>
+      </property>
+
+      <property>
+        <name>dfs.namenode.rpc-address.hdfs-cluster.nn2</name>
+        <value>{{ hadoop_set_config_namespace_host02 }}:8020</value>
+      </property>
+
+      <property>
+        <name>dfs.namenode.http-address.hdfs-cluster.nn1</name>
+        <value>{{ hadoop_set_config_namespace_host01 }}:50070</value>
+      </property>
+
+      <property>
+        <name>dfs.namenode.http-address.hdfs-cluster.nn2</name>
+        <value>{{ hadoop_set_config_namespace_host02 }}:50070</value>
+      </property>
+
+      <property>
+        <name>dfs.namenode.shared.edits.dir</name>
+        <value>qjournal://{{ hadoop_dfs_edits_dir_str }}/hdfs-cluster</value>
+      </property>
+
+      <property>
+        <name>dfs.client.failover.proxy.provider.hdfs-cluster</name>
+        <value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
+      </property>
+
+      <property>
+        <name>dfs.ha.fencing.methods</name>
+        <value>sshfence</value>
+      </property>
+
+      <property>
+        <name>dfs.ha.fencing.ssh.private-key-files</name>
+        <value>/root/.ssh/id_rsa</value>
+      </property>
+
+      <property>
+        <name>dfs.replication</name>
+        <value>{{ hadoop_deploy_replicas }}</value>
+      </property>
+
+      <property>
+        <name>dfs.permissions.enabled</name>
+        <value>false</value>
+      </property>
+
+      <property>
+        <name>dfs.ha.automatic-failover.enabled</name>
+        <value>true</value>
+      </property>
+
+      <property>
+        <name>ha.zookeeper.quorum</name>
+        <value>{{ hbase_set_config_zookeeper }}</value>
+      </property>
+
+      <property>
+        <name>dfs.journalnode.edits.dir</name>
+        <value>/data/jn/edits</value>
+      </property>
+
+      <property>
+        <name>dfs.namenode.name.dir</name>
+        <value>/data/nn/name</value>
+      </property>
+
+      <property>
+        <name>dfs.datanode.data.dir</name>
+        <value>/data/dn/data</value>
+      </property>
+
+      <property>
+        <name>dfs.namenode.checkpoint.dir</name>
+        <value>/data/nn/checkpoint</value>
+      </property>
+
+    </configuration>

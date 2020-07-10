@@ -1,0 +1,53 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  labels:
+    app: nexus-ops
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nexus-ops
+  template:
+    metadata:
+      labels:
+        app: nexus-ops
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+        - name: nexus-ops
+          image: harbor.ops.zhangyue-ops.com/public/nexus3:3.24.0
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: TZ
+              value: Asia/Shanghai
+            - name: LIMITS_MEMORY
+              valueFrom:
+                resourceFieldRef:
+                  resource: limits.memory
+                  divisor: 1Mi
+            - name: JAVA_OPTS
+              value: -Xmx$(LIMITS_MEMORY)m -XshowSettings:vm -Dhudson.slaves.NodeProvisioner.initialDelay=0 -Dhudson.slaves.NodeProvisioner.MARGIN=50 -Dhudson.slaves.NodeProvisioner.MARGIN0=0.85 -Duser.timezone=GMT+08
+          ports:
+          - containerPort: 8081
+            protocol: TCP
+          volumeMounts:
+          - name: nexus-ops-storage-data
+            mountPath: /nexus-data
+      volumes:
+        - name: nexus-ops-storage-data
+          emptyDir: {}
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    app: nexus-ops
+spec:
+  ports:
+    - port: 8081
+      targetPort: 8081
+  selector:
+    app: nexus-ops

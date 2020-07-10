@@ -1,0 +1,26 @@
+---
+- name: Deploy Gitlab Service *
+  file:
+    path: "{{ item }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+  with_items:
+  - "{{ temporary_dirs }}gitlab"
+  ignore_errors: true
+
+- name: Deploy Gitlab Service **
+  template: 
+    src: "roles/add-ons/templates/gitlab/{{ item }}"
+    dest: "{{ temporary_dirs }}gitlab/{{ item }}"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+  with_items:
+    - "00_namespace.yaml"
+    - "1_configmap.yaml"
+    - "2_gitlab.yaml"
+    - "3_gitlab-ingress.yaml"
+    - "4_backup-jobs.yaml"
+
+- name: Deploy Gitlab Service ***
+  shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}gitlab/ ; do >&2 echo "Starting..." && sleep 1 ; done'

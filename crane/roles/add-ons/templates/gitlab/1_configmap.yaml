@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: "gitlab-ops-config"
-  namespace: gitlab
+  namespace: {{ gitlab_deploy_namespace }}
 data:
   gitlab.rb: |
     ## GitLab configuration settings

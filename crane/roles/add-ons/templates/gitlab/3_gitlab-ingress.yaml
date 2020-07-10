@@ -2,12 +2,12 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: gitlab-ops
-  namespace: gitlab
+  namespace: {{ gitlab_deploy_namespace }}
   annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: "1024m" 
 spec:
   rules:
-  - host: gitlab.ops.shileizcc.com
+  - host: {{ gitlab_ingress_domain }}
     http:
       paths:
       - path: /

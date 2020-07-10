@@ -1,0 +1,97 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openldap
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "openldap"
+  template:
+    metadata:
+      labels:
+        app: "openldap"
+    spec:
+      restartPolicy: Always
+      containers:
+      - name: openldap
+        image: slzcc/openldap:0.1.4
+        env:
+          - name: TZ
+            value: "Asia/Shanghai"
+          - name: LDAP_DOMAIN
+            value: "{{ openldap_ingress_domain }}"
+          - name: LDAP_ADMIN_PASSWORD
+            value: "{{ openldap_admin_password }}"
+          - name: LDAP_CONFIG_PASSWORD
+            value: "{{ openldap_config_password }}"
+          - name: LDAP_TLS
+            value: "false"
+        ports:
+        - name: http
+          containerPort: 389
+        - name: https
+          containerPort: 639
+        livenessProbe:
+          tcpSocket:
+            port: 389
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        readinessProbe:
+          tcpSocket:
+            port: 389
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            memory: "200Mi"
+            cpu: "128m"
+          limits:
+            memory: "600Mi"
+            cpu: "256m"
+        volumeMounts:
+        - name: openldap-storage-data
+          mountPath: /var/lib/ldap
+        - name: openldap-storage-config
+          mountPath: /etc/openldap
+        - name: openldap-storage-certs
+          mountPath: /container/service/slapd/certs
+        - mountPath: /usr/share/zoneinfo
+          name: usr-local-timezone
+          readOnly: true
+      volumes:
+      - hostPath:
+        name: usr-local-timezone
+          path: /usr/share/zoneinfo
+          type: DirectoryOrCreate
+      - name: openldap-storage-data
+        emptyDir: {}
+      - name: openldap-storage-config
+        emptyDir: {}
+      - name: openldap-storage-certs
+        emptyDir: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ldap
+  labels:
+    app: "openldap"
+spec:
+  type: NodePort
+  ports:
+  - name: http
+    port: 389
+    protocol: TCP
+    targetPort: 389
+    nodePort: 389
+  - name: https
+    port: 639
+    protocol: TCP
+    targetPort: 639
+    nodePort: 639
+  selector:
+    app: "openldap"
