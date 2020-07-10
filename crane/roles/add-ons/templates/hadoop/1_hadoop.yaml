@@ -30,7 +30,7 @@ spec:
     spec:
       hostNetwork: true
       # nodeSelector:
-      #   zhangyue-ops.com/schedule-hbase-01: "true"
+      #   shileizcc.com/schedule-hbase-01: "true"
       # tolerations:
       # - key: "special"
       #   operator: "Equal"
