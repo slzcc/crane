@@ -1,0 +1,13 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nexus-ops
+spec:
+  rules:
+  - host: {{ nexus_ingress_domain }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: nexus-ops
+          servicePort: 8081

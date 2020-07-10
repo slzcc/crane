@@ -11,14 +11,14 @@ is_deploy_helm: false
 is_deploy_ingress_nginx: false
 
 # Ingress Nginx Version
-ingress_nginx_version: '0.33.0'
+ingress_nginx_version: "0.33.0"
 
 # 部署 Ingress Nginx Example
 is_deploy_ingress_nginx_example: false
 
 # Ingress Nginx Example Domain
 # Ingres 示例使用的域名, 如果没有自定义域名, 可配置本机 Hosts
-ingress_nginx_example: 'www.example.com'
+ingress_nginx_example: "www.example.com"
 
 ## Prometheus Operator
 ## ********************************************************************************************************************************
@@ -27,16 +27,16 @@ ingress_nginx_example: 'www.example.com'
 is_deploy_prometheus_operator: false
 
 # 部署 Prometheus Operator Ingress 所使用的 Ingress Domain
-monitoring_ingress_prometheus_domain: 'prometheus.example.com'
-monitoring_ingress_grafana_domain: 'grafana.example.com'
-monitoring_ingress_alertmanager_domain: 'alertmanager.example.com'
+monitoring_ingress_prometheus_domain: "prometheus.example.com"
+monitoring_ingress_grafana_domain: "grafana.example.com"
+monitoring_ingress_alertmanager_domain: "alertmanager.example.com"
 
 # Prometheus Operator Grafana SMTP Configs
-prometheus_operator_grafana_smtp_enable: true
-prometheus_operator_grafana_smtp_password: ''
-prometheus_operator_grafana_smtp_server: 'smtp.126.com:465'
-prometheus_operator_grafana_smtp_user: 'shileizcc@126.com'
-prometheus_operator_grafana_smtp_from_address: 'shileizcc@126.com'
+prometheus_operator_grafana_smtp_Enable: true
+prometheus_operator_grafana_smtp_password: ""
+prometheus_operator_grafana_smtp_server: "smtp.126.com:465"
+prometheus_operator_grafana_smtp_user: "shileizcc@126.com"
+prometheus_operator_grafana_smtp_from_address: "shileizcc@126.com"
 
 ## DNS Example
 ## ********************************************************************************************************************************
@@ -53,65 +53,65 @@ is_deploy_busybox_example: false
 is_deploy_istio: false
 
 # Istio Home Path
-istio_home: '/usr/local/istio-{{ istio_version }}'
+istio_home: "/usr/local/istio-{{ istio_version }}"
 
 # Istio Version
 # https://github.com/istio/istio/releases
-istio_version: '1.6.0'
+istio_version: "1.6.0"
 
 # 部署 Istio 所使用的 Ingress Domain
-istio_ingress_prometheus_domain: 'prometheus.example.com'
-istio_ingress_grafana_domain: 'grafana.example.com'
-istio_ingress_tracing_domain: 'tracing.example.com'
-istio_ingress_kiali_domain: 'kiali.example.com'
+istio_ingress_prometheus_domain: "prometheus.example.com"
+istio_ingress_grafana_domain: "grafana.example.com"
+istio_ingress_tracing_domain: "tracing.example.com"
+istio_ingress_kiali_domain: "kiali.example.com"
 
 # istio kiali user/pass base64 coding, default admin
-istio_kiali_username: 'YWRtaW4='
-istio_kiali_password: 'YWRtaW4='
+istio_kiali_username: "YWRtaW4="
+istio_kiali_password: "YWRtaW4="
 
 # 部署 upload service
 # 如果部署 Harbor 则此服务默认开启，因为需要提供 TLS 证书的下载，如果机器网络等因素不稳定则会跳过。
 is_deploy_upload_service: false
 
-upload_service_ingress_domain: 'upload.example.com'
+upload_service_ingress_domain: "upload.example.com"
 
 ## Harbor
 ## ********************************************************************************************************************************
 
-# Harbor Deploy enable
+# Harbor Deploy Enable
 is_deploy_harbor: false
 
 # Harbor Deploy Namespace
-harbor_namespace: 'harbor'
+harbor_namespace: "harbor"
 
 # Harbor Admin Password
-harbor_admin_password: 'Harbor12345'
+harbor_admin_password: "Harbor12345"
 
 # Harbor PostGreSQL Password
-harbor_pg_admin_password: 'changeit'
-harbor_pg_clair_password: 'changeit'
+harbor_pg_admin_password: "changeit"
+harbor_pg_clair_password: "changeit"
 
 # Harbor Core Secure Key
-harbor_core_secure_key: 'not-a-secure-key' 
-harbor_core_secret: '90USoEBlROrSey6F'
+harbor_core_secure_key: "not-a-secure-key" 
+harbor_core_secret: "90USoEBlROrSey6F"
 
 # Harbor Registry Secure
-harbor_registry_secure_key: 'iCELcbcIHHG4RSua'
-harbor_registry_redis_password: ''
+harbor_registry_secure_key: "iCELcbcIHHG4RSua"
+harbor_registry_redis_password: ""
 
 # Harbor JobService Secure
-harbor_jobservice_secure_key: 'L1Jp8tCQngTlftfO'
+harbor_jobservice_secure_key: "L1Jp8tCQngTlftfO"
 
 # Harbor chartmuseum Secure
-harbor_chartmuseum_redis_password: ''
+harbor_chartmuseum_redis_password: ""
 
 # Harbor Domain
-harbor_ingress_default_domain: 'harbor.example.com'
-harbor_ingress_notary_domain: 'notary.example.com'
+harbor_ingress_default_domain: "harbor.example.com"
+harbor_ingress_notary_domain: "notary.example.com"
 
 # CFSSL 生成证书的加密方式
-tls_harbor_server_encryption_algorithm: 'rsa'
-tls_harbor_client_encryption_algorithm: 'rsa'
+tls_harbor_server_encryption_algorithm: "rsa"
+tls_harbor_client_encryption_algorithm: "rsa"
 
 # CFSSL 生成证书的通过加密算法生成的长度
 tls_harbor_server_encryption_algorithm_size: 2048
@@ -123,33 +123,212 @@ tls_harbor_client_validity_period: 20
 
 # 证书信息头, 国家信息 
 # Country Name
-tls_harbor_server_head_info_C: 'CN'
-tls_harbor_client_head_info_C: 'CN'
+tls_harbor_server_head_info_C: "CN"
+tls_harbor_client_head_info_C: "CN"
 
 # 证书信息头, 地区或城市 
 # Locality Name
-tls_harbor_server_head_info_L: 'BeiJing'
-tls_harbor_client_head_info_L: 'BeiJing'
+tls_harbor_server_head_info_L: "BeiJing"
+tls_harbor_client_head_info_L: "BeiJing"
 
 # 证书信息头, 组织 
 # Organization Name 
-tls_harbor_server_head_info_O: 'Harbor'
-tls_harbor_client_head_info_O: 'Harbor'
+tls_harbor_server_head_info_O: "Harbor"
+tls_harbor_client_head_info_O: "Harbor"
 
 # 证书信息头, 组织单位 
 # Organizational Units Name
-tls_harbor_server_head_info_OU: 'Harbor'
-tls_harbor_client_head_info_OU: 'Harbor'
+tls_harbor_server_head_info_OU: "Harbor"
+tls_harbor_client_head_info_OU: "Harbor"
 
 # 证书信息头, 州或省 
 # State or Province Name
-tls_harbor_server_head_info_ST: 'BeiJing'
-tls_harbor_client_head_info_ST: 'BeiJing'
+tls_harbor_server_head_info_ST: "BeiJing"
+tls_harbor_client_head_info_ST: "BeiJing"
 
 # 把 Clent 证书 Copy 到所有的集群节点中
 is_harbor_client_cert_copy_to_nodes: false
 
 # Docs https://wiki.shileizcc.com/confluence/display/KUB/Kubernetes+Harbor
+
+# Harbor TLS 时间换算
+tls_harbor_validity_period_hours: "{{ tls_harbor_server_validity_period * 365 * 24 }}"
+
+
+# OpenLDAP
+## ********************************************************************************************************************************
+
+# OpenLDAP Deploy Enable
+is_deploy_openldap: false
+
+# OpenLDAP admin 的密码
+openldap_admin_password: "ldap.password"
+
+# OpenLDAP config 的密码
+openldap_config_password: "iFWAS81qjF9r3f+wEpJL/Hjq9qkLmomK9qFDWp2Dnek"
+
+# OpenLDAP 识别 Domain 初始化数据, 必要时请设置 DNS
+openldap_domain: "ldap.example.com"
+
+# OpenLDAP Ingress Domain
+openldap_ingress_domain: "{{ openldap_domain }}"
+
+
+# Webmin
+## ********************************************************************************************************************************
+
+# Webmin Deploy Enable
+is_deploy_webmin: false
+
+# Webmin Root 密码
+webmin_root_password: "webmin.password"
+
+# Webmin Ingress Domain
+webmin_ingress_domain: "webmin.example.com"
+
+
+# Gitlab
+## ********************************************************************************************************************************
+
+# Gitlab Deploy Enable
+is_deploy_gitlab: false
+
+# Gitlab deploy namespace
+gitlab_deploy_namespace: "gitlab"
+
+# Gitlab Ingress Domain
+gitlab_ingress_domain: "gitlab.example.com"
+
+
+# Nexus
+## ********************************************************************************************************************************
+
+# Nexus Deploy Enable
+is_deploy_nexus: false
+
+# Nexus Ingress Domain
+nexus_ingress_domain: "nexus.example.com"
+
+
+# Jenkins
+## ********************************************************************************************************************************
+
+# Jenkins Deploy Enable
+is_deploy_jenkins: false
+
+# Jenkins Deploy Version
+jenkins_version: "2.238"
+
+# Jenkins Ingress Domain
+jenkins_ingress_domain: "jenkins.example.com"
+
+
+# NextCloud
+## ********************************************************************************************************************************
+
+# NextCloud Deploy Enable
+is_deploy_nextcloud: false
+
+# MySQL Root 密码
+nextcloud_mysql_root_password: "nextcloud"
+
+# NextCloud Host
+nextcloud_mysql_host: "mysql-0.default.svc"
+
+# NextCloud DB User and Pass
+nextcloud_mysql_user: "nextcloud"
+nextcloud_mysql_pass: "nextcloud"
+
+# NextCloud DB Database
+nextcloud_mysql_database: "nextcloud"
+
+# NextCloud Ingress Domain
+nextcloud_ingress_domain: "nextcloud.example.com"
+
+# NextCloud Admin Username
+nextcloud_admin_user: "admin"
+
+# NextCloud Admin Password
+nextcloud_admin_pass: "nextcloud"
+
+
+# Zookeeper
+## ********************************************************************************************************************************
+
+# Zookeeper Deploy Enable
+is_deploy_zookeeper: false
+
+# Zookeeper Deploy Size
+zookeeper_deploy_replicas: 3
+
+
+# Kafka
+## ********************************************************************************************************************************
+
+# Kafka Deploy Enable
+is_deploy_kafka: false
+
+# Kafka Deploy Version
+kafka_version: "2.2.0"
+
+# Kafka Manage Ingress Domain
+kafka_manage_ingress_domain: "km.example.com"
+
+# Kafka Deploy Size
+kafka_deploy_replicas: 3
+
+
+# Hadoop
+## ********************************************************************************************************************************
+
+# Hadoop Deploy Enable
+is_deploy_hadoop: false
+
+# Hadoop Deploy Size
+hadoop_deploy_replicas: 3
+
+# 部署 Hadoop 方式比较简单, 默认是通过 hostNetwork 方式进行部署
+# 并且需要实现开启内部 SSH 方式进行互相识别才可以启动, 请按照下方的配置进行修改
+## 所有节点的 hostname 并且可通过 hostname 可以 ping 通.
+hadoop_all_hostname: "BJ-M5-K8S-21-87 BJ-M5-K8S-21-88 BJ-M5-K8S-21-89"
+
+## 容器内部开启的端口，如果不冲突请忽略
+hadoop_local_ssh: "23312"
+
+## hdfs set zookeeper addr
+## 按照上述配置进行部署是, 则应配置如下
+hadoop_set_config_zookeeper: "zk-0.zk-hs.cdh.svc.cluster.local:2181,zk-1.zk-hs.cdh.svc.cluster.local:2181,zk-2.zk-hs.cdh.svc.cluster.local:2181"
+
+## 选择前两个节点部署 namespace
+hadoop_set_config_namespace_host01: "{{" ".join(hadoop_all_hostname.split()[0:1])}}"
+hadoop_set_config_namespace_host02: "{{" ".join(hadoop_all_hostname.split()[1:2])}}"
+
+
+# Hbase
+## ********************************************************************************************************************************
+
+# Hbase Deploy Enable
+is_deploy_hbase: false
+
+# Hbase Deploy Size
+hbase_deploy_replicas: 3
+
+# 部署 hbase 方式比较简单, 默认是通过 hostNetwork 方式进行部署
+# 并且需要实现开启内部 SSH 方式进行互相识别才可以启动, 请按照下方的配置进行修改
+## 所有节点的 hostname 并且可通过 hostname 可以 ping 通.
+hbase_all_hostname: "BJ-M5-K8S-21-87 BJ-M5-K8S-21-88 BJ-M5-K8S-21-89"
+
+## 容器内部开启的端口，如果不冲突请忽略
+## 不要与 hadoop 重复
+hbase_local_ssh: "23313"
+
+## hbase 数据目录路径
+hbase_hdfs_dir: "/data/hbase"
+
+## hbase set zookeeper addr
+## 按照上述配置进行部署是, 则应配置如下
+hbase_set_config_zookeeper: "zk-0.zk-hs.cdh.svc.cluster.local:2181,zk-1.zk-hs.cdh.svc.cluster.local:2181,zk-2.zk-hs.cdh.svc.cluster.local:2181"
+
 
 # Deploy Cluster Host List
 ## ********************************************************************************************************************************
@@ -185,9 +364,8 @@ k8s_all_ip_list: >-
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}]
 
-# TLS
-## ********************************************************************************************************************************
-
-tls_harbor_validity_period_hours: '{{ tls_harbor_server_validity_period * 365 * 24 }}'
-
-
+hadoop_dfs_edits_dir_str: >-
+  [{% for host in hadoop_all_hostname -%}
+    '{{ host }}:8485'
+    {%- if not loop.last -%};{%- endif -%}
+  {%- endfor -%}]
