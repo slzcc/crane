@@ -17,7 +17,7 @@ spec:
         fsGroup: 1000
       containers:
         - name: nexus-ops
-          image: harbor.ops.zhangyue-ops.com/public/nexus3:3.24.0
+          image: nexus3:3.24.0
           imagePullPolicy: IfNotPresent
           env:
             - name: TZ
