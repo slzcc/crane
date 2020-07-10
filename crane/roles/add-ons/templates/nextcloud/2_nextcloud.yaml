@@ -1,0 +1,77 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nextcloud
+  labels:
+    app: nextcloud
+spec:
+  replicas: 1
+  serviceName: "nextcloud"
+  selector:
+    matchLabels:
+      app: nextcloud
+  template:
+    metadata:
+      labels:
+        app: nextcloud
+    spec:
+      containers:
+      - name: nextcloud
+        image: nextcloud:15.0.12
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 80
+        volumeMounts:
+          - mountPath: "/var/www/html"
+            name: nextcloud-storage-data
+        env:
+        - name: TZ
+          value: "Asia/Shanghai"
+        - name: NEXTCLOUD_TRUSTED_DOMAINS
+          value: "{{ nextcloud_ingress_domain }}"
+        - name: MYSQL_DATABASE
+          value: "{{ nextcloud_mysql_database }}"
+        - name: MYSQL_USERNAME
+          value: "{{ nextcloud_mysql_user }}"
+        - name: MYSQL_PASSWORD
+          value: "{{ nextcloud_mysql_pass }}"
+        - name: MYSQL_HOST
+          value: "{{ nextcloud_mysql_host }}"
+        - name: NEXTCLOUD_ADMIN_USER
+          value: "{{ nextcloud_admin_user }}"
+        - name: NEXTCLOUD_ADMIN_PASSWORD
+          value: "{{ nextcloud_admin_pass }}"
+      volumes:
+      - name: nextcloud-storage-data
+        emptyDir: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nextcloud
+spec:
+  ports:
+   - name: http
+     port: 80
+     targetPort: 80
+     protocol: TCP
+  selector:
+    app: nextcloud
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nextcloud
+spec:
+  rules:
+  - host: {{ nextcloud_ingress_domain }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: nextcloud
+          servicePort: http

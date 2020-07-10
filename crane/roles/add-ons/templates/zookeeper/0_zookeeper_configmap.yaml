@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zk-config
+data:
+  zoo.cfg: |-
+    clientPort=2181
+    dataDir=/var/lib/zookeeper/data
+    dataLogDir=/var/lib/zookeeper/data/log
+    tickTime=2000
+    initLimit=10
+    syncLimit=5
+    maxClientCnxns=60
+    minSessionTimeout=4000
+    maxSessionTimeout=40000
+    autopurge.snapRetainCount=3
+    autopurge.purgeInteval=12
+    server.1=BJ-M5-K8S-21-87:2888:3888
+    server.2=BJ-M5-K8S-21-88:2888:3888
+    server.3=BJ-M5-K8S-21-89:2888:3888

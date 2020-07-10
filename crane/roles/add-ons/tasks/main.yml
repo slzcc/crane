@@ -54,3 +54,73 @@
   include: roles/add-ons/includes/harbor-deploy.yaml
   delegate_to: "{{ groups['kube-master'][0] }}"
   when: is_deploy_harbor
+
+## Install OpenLDAP
+## ********************************************************************************************************************************
+- name: Initialize OpenLDAP
+  include: roles/add-ons/includes/openldap-deploy.yaml
+  delegate_to: "{{ groups['kube-master'][0] }}"
+  when: is_deploy_openldap
+
+## Install Webmin
+## ********************************************************************************************************************************
+- name: Initialize Webmin
+  include: roles/add-ons/includes/webmin-deploy.yaml
+  delegate_to: "{{ groups['kube-master'][0] }}"
+  when: is_deploy_webmin
+
+## Install Gitlab
+## ********************************************************************************************************************************
+- name: Initialize Gitlab
+  include: roles/add-ons/includes/gitlab-deploy.yaml
+  delegate_to: "{{ groups['kube-master'][0] }}"
+  when: is_deploy_gitlab
+
+## Install Jenkins
+## ********************************************************************************************************************************
+- name: Initialize Jenkins
+  include: roles/add-ons/includes/jenkins-deploy.yaml
+  delegate_to: "{{ groups['kube-master'][0] }}"
+  when: is_deploy_jenkins
+
+## Install Nexus
+## ********************************************************************************************************************************
+- name: Initialize Nexus
+  include: roles/add-ons/includes/nexus-deploy.yaml
+  delegate_to: "{{ groups['kube-master'][0] }}"
+  when: is_deploy_nexus
+
+## Install NextCloud
+## ********************************************************************************************************************************
+- name: Initialize NextCloud
+  include: roles/add-ons/includes/nextcloud-deploy.yaml
+  delegate_to: "{{ groups['kube-master'][0] }}"
+  when: is_deploy_nextcloud
+
+## Install Zookeeper
+## ********************************************************************************************************************************
+- name: Initialize Zookeeper
+  include: roles/add-ons/includes/zookeeper-deploy.yaml
+  delegate_to: "{{ groups['kube-master'][0] }}"
+  when: is_deploy_zookeeper
+
+## Install Kafka
+## ********************************************************************************************************************************
+- name: Initialize Kafka
+  include: roles/add-ons/includes/kafka-deploy.yaml
+  delegate_to: "{{ groups['kube-master'][0] }}"
+  when: is_deploy_kafka
+
+## Install Hadoop
+## ********************************************************************************************************************************
+- name: Initialize Hadoop
+  include: roles/add-ons/includes/hadoop-deploy.yaml
+  delegate_to: "{{ groups['kube-master'][0] }}"
+  when: is_deploy_hadoop
+
+## Install Hbase
+## ********************************************************************************************************************************
+- name: Initialize Hbase
+  include: roles/add-ons/includes/hbase-deploy.yaml
+  delegate_to: "{{ groups['kube-master'][0] }}"
+  when: is_deploy_hbase

@@ -1,0 +1,119 @@
+---
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: hdfs-pdb
+spec:
+  selector:
+    matchLabels:
+      app: hdfs
+  maxUnavailable: 1
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: hadoop
+spec:
+  selector:
+    matchLabels:
+      app: hadoop
+  serviceName: hadoop-hdfs
+  replicas: {{ hadoop_deploy_replicas }}
+  updateStrategy:
+    type: RollingUpdate
+  podManagementPolicy: Parallel
+  template:
+    metadata:
+      labels:
+        app: hadoop
+    spec:
+      hostNetwork: true
+      # nodeSelector:
+      #   zhangyue-ops.com/schedule-hbase-01: "true"
+      # tolerations:
+      # - key: "special"
+      #   operator: "Equal"
+      #   value: "true"
+      #   effect: "NoSchedule"
+      # - key: "organization"
+      #   operator: "Equal"
+      #   value: "user"
+      #   effect: "NoSchedule"
+      # - key: "application"
+      #   operator: "Equal"
+      #   value: "bigdata"
+      #   effect: "NoSchedule"
+      # affinity:
+      #   podAntiAffinity:
+      #     requiredDuringSchedulingIgnoredDuringExecution:
+      #       - labelSelector:
+      #           matchExpressions:
+      #             - key: "app"
+      #               operator: In
+      #               values:
+      #               - hadoop
+      #         topologyKey: "kubernetes.io/hostname"
+      containers:
+      - name: hdfs
+        imagePullPolicy: Always
+        image: slzcc/hadoop:3.2.1-supervisord-v5
+        ports:
+        - containerPort: 8485
+          name: p8485
+        - containerPort: 8020
+          name: p8020
+        - containerPort: 8480
+          name: p8480
+        - containerPort: 50070
+          name: p50070
+        - containerPort: 50020
+          name: p50020
+        - containerPort: 50075
+          name: p50075
+        volumeMounts:
+        - name: datadir
+          mountPath: /data
+        - name: hdfs-config
+          mountPath: /opt/hadoop-3.2.1/etc/hadoop/hdfs-site.xml
+          subPath: hdfs-site.xml
+        - name: hdfs-config
+          mountPath: /opt/hadoop-3.2.1/etc/hadoop/core-site.xml
+          subPath: core-site.xml
+        - mountPath: /usr/share/zoneinfo
+          name: usr-local-timezone
+          readOnly: true
+        command:
+        - sh
+        - -c
+        - "/start-supervisord"
+        securityContext:
+          runAsUser: 0
+        env:
+        - name: HADOOP_NAMENODE_DIR
+          value: '/data/nn'
+        - name: isCUSTOM
+          value: 'false'
+        - name: TZ
+          value: Asia/Shanghai
+        - name: SSH_PORT
+          value: "{{ hadoop_local_ssh }}"
+        - name: HOSTNAMEs
+          value: '{{ hadoop_all_hostname }}'
+        - name: isCheckHOSTNAME
+          value: 'false'
+      volumes:
+      - hostPath:
+          path: /usr/share/zoneinfo
+          type: DirectoryOrCreate
+        name: usr-local-timezone
+      - name: datadir
+        emptyDir: {}
+      - name: hdfs-config
+        configMap:
+          name: hadoop-hdfs-config
+          items:
+          - key: core-site.xml
+            path: core-site.xml
+          - key: hdfs-site.xml
+            path: hdfs-site.xml
