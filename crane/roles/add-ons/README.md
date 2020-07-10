@@ -8,13 +8,3 @@ gitlab    | [upload-server]((/crane/crane/roles/add-ons/templates/upload-service
 jenkins   | openldap       | istio  |  nexus
 metrics-server | prometheus-operator | nextcloud | webmin  
 kafka | zookeeper | hadoop         | hbase
-
-
-
-
-
-
-
-
-
-
