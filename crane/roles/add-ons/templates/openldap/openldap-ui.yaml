@@ -1,0 +1,97 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openldap-ui
+  namespace: openldap
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openldap-ui
+  template:
+    metadata:
+      labels:
+        app: openldap-ui
+    spec:
+      containers:
+      - image: osixia/phpldapadmin:latest
+        name: openldap-ui
+        env:
+        - name: TZ
+          value: "Asia/Shanghai"
+        - name: PHPLDAPADMIN_LDAP_HOSTS
+          value: "openldap"
+        - name: PHPLDAPADMIN_HTTPS
+          value: "false"
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        ports:
+        - name: http
+          containerPort: 80
+        - name: https
+          containerPort: 443
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            memory: "320Mi"
+            cpu: "512m"
+          limits:
+            memory: "640Mi"
+            cpu: "1024m"
+        volumeMounts:
+        - mountPath: /usr/share/zoneinfo
+          name: usr-local-timezone
+          readOnly: true
+      volumes:
+      - hostPath:
+        name: usr-local-timezone
+          path: /usr/share/zoneinfo
+          type: DirectoryOrCreate
+      restartPolicy: Always
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: openldap-ui
+  labels:
+    app: "openldap-ui"
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  - name: https
+    port: 443
+    protocol: TCP
+    targetPort: 443
+  selector:
+    app: "openldap-ui"
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: openldap-ui
+spec:
+  rules:
+  - host: {{ openldap_ingress_domain }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: openldap-ui
+          servicePort: http

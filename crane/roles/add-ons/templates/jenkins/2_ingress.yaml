@@ -1,0 +1,14 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: jenkins
+  namespace: jenkins
+spec:
+  rules:
+  - host: {{ jenkins_ingress_domain }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: jenkins
+          servicePort: http

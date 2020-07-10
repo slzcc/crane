@@ -2,7 +2,7 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: gitlab-backup-schedule
-  namespace: gitlab
+  namespace: {{ gitlab_deploy_namespace }}
 spec:
   schedule: "0 1 * * *"
   successfulJobsHistoryLimit: 0

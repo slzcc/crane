@@ -20,6 +20,7 @@
     - [v1.18.4.0 更新内容](#v11840-更新内容)
     - [v1.18.5.0 更新内容](#v11850-更新内容)
     - [v1.18.5.1 更新内容](#v11851-更新内容)
+    - [v1.18.5.2 更新内容](#v11852-更新内容)
 
 # v1.18.0.0
 
@@ -168,3 +169,17 @@ Crane 以更新至 1.18.0.0 版本。
 添加 Harbor Client Cert 部署所有集群 Nodes 配置项。
 
 添加 Harbor Client Cert 便捷获取方式.
+
+### v1.18.5.2 更新内容
+
+添加 add-ons:
+  * gitlab
+  * jenkins
+  * nexus
+  * nextcloud
+  * webmin
+  * openldap
+  * kafka
+  * hadoop
+  * zookeeper
+  * hbase

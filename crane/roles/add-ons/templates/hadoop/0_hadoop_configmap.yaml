@@ -1,0 +1,115 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hadoop-hdfs-config
+data:
+  hdfs-site.xml: |-
+    <configuration>
+
+      <property>
+        <name>dfs.nameservices</name>
+        <value>hdfs-cluster</value>
+      </property>
+
+      <property>
+        <name>dfs.ha.namenodes.hdfs-cluster</name>
+        <value>nn1,nn2</value>
+      </property>
+
+      <property>
+        <name>dfs.namenode.rpc-address.hdfs-cluster.nn1</name>
+        <value>{{ hadoop_set_config_namespace_host01 }}:8020</value>
+      </property>
+
+      <property>
+        <name>dfs.namenode.rpc-address.hdfs-cluster.nn2</name>
+        <value>{{ hadoop_set_config_namespace_host02 }}:8020</value>
+      </property>
+
+      <property>
+        <name>dfs.namenode.http-address.hdfs-cluster.nn1</name>
+        <value>{{ hadoop_set_config_namespace_host01 }}:50070</value>
+      </property>
+
+      <property>
+        <name>dfs.namenode.http-address.hdfs-cluster.nn2</name>
+        <value>{{ hadoop_set_config_namespace_host02 }}:50070</value>
+      </property>
+
+      <property>
+        <name>dfs.namenode.shared.edits.dir</name>
+        <value>qjournal://{{ hadoop_dfs_edits_dir_str }}/hdfs-cluster</value>
+      </property>
+
+      <property>
+        <name>dfs.client.failover.proxy.provider.hdfs-cluster</name>
+        <value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
+      </property>
+
+      <property>
+        <name>dfs.ha.fencing.methods</name>
+        <value>sshfence</value>
+      </property>
+
+      <property>
+        <name>dfs.ha.fencing.ssh.private-key-files</name>
+        <value>/root/.ssh/id_rsa</value>
+      </property>
+
+      <property>
+        <name>dfs.replication</name>
+        <value>{{ hadoop_deploy_replicas }}</value>
+      </property>
+
+      <property>
+        <name>dfs.permissions.enabled</name>
+        <value>false</value>
+      </property>
+
+      <property>
+        <name>dfs.ha.automatic-failover.enabled</name>
+        <value>true</value>
+      </property>
+
+      <property>
+        <name>ha.zookeeper.quorum</name>
+        <value>{{ hadoop_set_config_zookeeper }}</value>
+      </property>
+
+      <property>
+        <name>dfs.journalnode.edits.dir</name>
+        <value>/data/jn/edits</value>
+      </property>
+
+      <property>
+        <name>dfs.namenode.name.dir</name>
+        <value>/data/nn/name</value>
+      </property>
+
+      <property>
+        <name>dfs.datanode.data.dir</name>
+        <value>/data/dn/data</value>
+      </property>
+
+      <property>
+        <name>dfs.namenode.checkpoint.dir</name>
+        <value>/data/nn/checkpoint</value>
+      </property>
+
+    </configuration>
+
+
+  core-site.xml: |-
+    <configuration>
+
+      <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://hdfs-cluster</value>
+      </property>
+
+      <property>
+        <name>hadoop.tmp.dir</name>
+        <value>/data/hadoop/tmp</value>
+      </property>
+
+    </configuration>
