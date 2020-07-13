@@ -38,3 +38,15 @@ $ systemctl restart kubelet
 ### Jenkins Build 403 Error
 
 部署 Jenkins 后通过 Ingress 暴露服务访问并构建时，存在 403 错误，请使用 Calico 的 BGP 模式解决。
+
+
+### CoreDNS Error
+
+部署 CoreDNS 是报错如下:
+
+```
+$ docker logs -f f028ba22151a
+plugin/forward: no nameservers found
+```
+
+配置本机 `/etc/resolv.conf` 添加一条 `nameserver` 解决。
