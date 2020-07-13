@@ -111,7 +111,7 @@ docker save -o ${temporaryDirs}/image_coredns.tar.gz \
                coredns/coredns:${corednsVersion}
 # Keepalived
 docker pull slzcc/keepalived:1.2.24
-[ ${CleanPullImage} == 'true' ] && docker rmi -f slzcc/keepalived:1.2.24
+[ ${CleanPullImage} == 'true' ] && docker rmi -f slzcc/keepalived:1.2.25
 
 [ ${isImageExport} == 'true' ] && \
 docker save -o ${temporaryDirs}/image_keeplived.tar.gz \
