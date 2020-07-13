@@ -187,6 +187,6 @@ Crane 以更新至 1.18.0.0 版本。
 
 ### v1.18.5.3 更新内容
 
-修复 keepalived:1.2.24 为 keepalived:1.2.25:
+修复 keepalived:1.2.24 为 keepalived:1.2.24.1:
   * 检测 VIP 存在不合理问题，部分 IP 无法进行识别
 
