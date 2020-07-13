@@ -217,7 +217,7 @@
 - name: Copy CA Files in Nodes
   shell: "for FILE in $(ls {{ kubernetes_pki_dirs }}); do
             sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no -i {{ ssh_public_key }} \
-            -P {{ ssh_connect_port }} ${FILE} {{ ssh_connect_user }}@{{ item[0] }}:{{ kubernetes_pki_dirs }}${FILE};
+            -P {{ ssh_connect_port }} {{ kubernetes_pki_dirs }}${FILE} {{ ssh_connect_user }}@{{ item[0] }}:{{ kubernetes_pki_dirs }}${FILE};
           done;
           for FILE in admin.conf controller-manager.conf scheduler.conf; do
             sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no -i {{ ssh_public_key }} \
