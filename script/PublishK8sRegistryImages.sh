@@ -110,12 +110,12 @@ docker pull coredns/coredns:${corednsVersion}
 docker save -o ${temporaryDirs}/image_coredns.tar.gz \
                coredns/coredns:${corednsVersion}
 # Keepalived
-docker pull slzcc/keepalived:1.2.24
-[ ${CleanPullImage} == 'true' ] && docker rmi -f slzcc/keepalived:1.2.24
+docker pull slzcc/keepalived:1.2.24.1
+[ ${CleanPullImage} == 'true' ] && docker rmi -f slzcc/keepalived:1.2.24.1
 
 [ ${isImageExport} == 'true' ] && \
 docker save -o ${temporaryDirs}/image_keeplived.tar.gz \
-               slzcc/keepalived:1.2.24
+               slzcc/keepalived:1.2.24.1
 
 # Nginx Ingress
 # docker pull quay.io/kubernetes-ingress-controller/nginx-ingress-controller:${nginxIngressVersion}

@@ -12,7 +12,7 @@ spec:
   hostNetwork: true
   containers:
   - name: keepalived
-    image: slzcc/keepalived:1.2.24
+    image: slzcc/keepalived:1.2.24.1
     env:
     - name: VIRTUAL_IP
       value: {{ k8s_load_balance_ip }}
