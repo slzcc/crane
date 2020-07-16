@@ -24,6 +24,7 @@
     - [v1.18.5.3 更新内容](#v11853-更新内容)
     - [v1.18.5.4 更新内容](#v11854-更新内容)
     - [v1.18.6.0 更新内容](#v11860-更新内容)
+    - [v1.18.6.1 更新内容](#v11861-更新内容)
 
 # v1.18.0.0
 
@@ -213,3 +214,21 @@ Crane 以更新至 1.18.0.0 版本。
 修复 dockerd env 配置项格式问题，没有标准的双引号。
 
 添加 harbor 多域名证书申请，目的解决多机房共用证书问题。
+
+### v1.18.6.1 更新内容
+
+所需组件升级:
+  * Haproxy 2.2.0
+  * Docker  19.03.12
+  * Calico  3.15.1
+  * CoreDNS 1.7.0
+
+废弃参数:
+
+```
+# 获取当前需要部署的 Kubernetes Master 总数量, 配置数量在 nodes 文件中获取
+k8s_master_counts: "{{ groups['kube-master'] | length }}"
+
+# 获取当前需要部署的 Kubernetes Node 总数量, 配置数量在 nodes 文件中获取
+all_nodes_counts: "{{ groups['all'] | length }}"
+```
