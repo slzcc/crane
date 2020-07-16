@@ -7,7 +7,7 @@
 k8s_version: 'v1.18.6'
 
 # 避免大版本中组件的版本差异, 使用 build 版本作为差异配置项, 在项目中可以看做如下使用 '{{ k8s_version }}.{{ build_k8s_version }}'
-build_k8s_version: '0'
+build_k8s_version: '1'
 
 # 部署 CNI 对应版本, 如使用镜像方式部署, 不能修改 (如果可以使用 {{ k8s_cluster_component_registry }} 中的仓库地址获取镜像则可随意修改)
 # https://github.com/containernetworking/plugins/releases/
@@ -15,12 +15,6 @@ cni_version: 'v0.8.6'
 
 # CNI OS Type
 cni_os_drive: 'linux-amd64'
-
-# 获取当前需要部署的 Kubernetes Master 总数量, 配置数量在 nodes 文件中获取
-k8s_master_counts: "{{ groups['kube-master'] | length }}"
-
-# 获取当前需要部署的 Kubernetes Node 总数量, 配置数量在 nodes 文件中获取
-all_nodes_counts: "{{ groups['all'] | length }}"
 
 # Kubernetes ApiServer 监听的端口号
 k8s_master_apiservice_bind_port: 5443
@@ -31,9 +25,12 @@ k8s_master_apiservice_bind_port: 5443
 k8s_master_haproxy_bind_port: 6443
 
 # Kubernetes 在集群中使用的 ClusterIP, 此地址依赖 k8s_cluster_ip_range 的网段
+# Kubernetes Default Service 值, 实际由 apiServer 自动进行创建
+# apiServer 选择会使用合理的掩码计算出 k8s_cluster_ip_range 的第一个 IP 地址进行使用
 k8s_cluster_ip: '10.16.0.1'
 
 # Kubernetes 集群使用的 ClusterIP 网段
+# 如需修改时, 请设计合理的掩码
 k8s_cluster_ip_range: '10.16.0.0/12'
 
 # Kubernetes ApiServer 的总入口地址, 可配置 SLB 等云服务商提供的地址, 但需要接入后端服务器的 80, 443 端口, 此地址可以写某个单实例的 IP 地址
@@ -87,7 +84,8 @@ is_rbac: false
 
 # 第三方网络设备绑定的网络设备配置，需要集群内绑定的网卡名称统一，也就是说所有的内部外部通信走一块网卡
 # Etcd 绑定的宿主机网卡, 此配置需要在启动 Etcd 的节点上强制网卡名称一致
-# 如果配置了 Keepalived 则 Keepalived 也会绑定到这块网卡上, 支持多网卡用逗号隔开, 使用多网卡时, 不要使用 keepalived, 因为 keepalived 只能绑定第一个网卡
+# 如果配置了 Keepalived 则 Keepalived 也会绑定到这块网卡上, 支持多网卡用逗号隔开
+# 使用多网卡时, 不要使用 keepalived, 因为 keepalived 只能绑定第一个网卡, 如需要使用时请单独修改 vip_bind_net_device 参数
 os_network_device_name: 'eth0'
 
 ## Keepalived
@@ -99,7 +97,8 @@ is_keepalived: false
 # Keepalived 绑定的 IP 地址, 它在 HaProxy 的上一层
 keepalived_ip: "{{ k8s_load_balance_ip }}"
 
-# Keepalived 绑定的物理网卡名称, 这里不支持多网卡, 如果 `os_network_device_name` 的值为多网卡, 请在这里填写 VIP 需要绑定的网卡设备。只支持单个值!
+# Keepalived 绑定的物理网卡名称, 这里不支持多网卡, 如果 `os_network_device_name` 的值为多网卡
+# 请在这里填写 VIP 需要绑定的网卡设备。只支持单个值!
 vip_bind_net_device: "{{ os_network_device_name }}"
 
 ## Kube Proxy
@@ -153,7 +152,7 @@ is_swap: true
 ## ********************************************************************************************************************************
 
 # install To Docker Version
-docker_version: '19.03.1'
+docker_version: '19.03.12'
 
 # Docker 安装类型, 默认 http_binary, 其他方式: http_binary, local_binary, http_script
 # 值为 http_binary 则通过远程下载二进制文件到执行目录.
@@ -202,7 +201,7 @@ docker_systemd_env_option: ''
 # HaProxy Version
 # 如使用镜像方式部署, 不能修改 (如果可以使用 {{ k8s_cluster_component_registry }} 中的仓库地址获取镜像则可随意修改)
 # https://hub.docker.com/_/haproxy
-haproxy_version: '2.1.4'
+haproxy_version: '2.2.0'
 
 # 配置 stats 的 URI 地址
 haproxy_stats_url: '/haproxy_stats'
@@ -331,7 +330,7 @@ calico_ipv4_pool_cidr: '172.208.0.0/12'
 # Calico Verion
 # https://github.com/projectcalico/calico/releases
 # 如使用镜像方式部署, 不能修改 (如果可以使用 {{ k8s_cluster_component_registry }} 中的仓库地址获取镜像则可随意修改)
-calico_version: 'v3.14.0'
+calico_version: 'v3.15.1'
 
 # CNI Config Dir
 cni_config_dir: '/etc/cni/net.d'
@@ -365,7 +364,7 @@ dns_cluster_range: "{{ k8s_cluster_ip_range }}"
 # CoreDNS Version
 # https://github.com/coredns/coredns/releases
 # 如使用镜像方式部署, 不能修改 (如果可以使用 {{ k8s_cluster_component_registry }} 中的仓库地址获取镜像则可随意修改)
-dns_version: '1.6.9'
+dns_version: '1.7.0'
 
 ## Add-Ons
 ## ********************************************************************************************************************************
