@@ -23,6 +23,7 @@
     - [v1.18.5.2 更新内容](#v11852-更新内容)
     - [v1.18.5.3 更新内容](#v11853-更新内容)
     - [v1.18.5.4 更新内容](#v11854-更新内容)
+    - [v1.18.6.0 更新内容](#v11860-更新内容)
 
 # v1.18.0.0
 
@@ -150,7 +151,7 @@ Kubernetes 更新内容请参照 [Kubernetes Update Content](https://raw.githubu
 
 ### v1.18.4.0 更新内容
 
-添加 kubernetes v1.18.4.0 版本支持。
+添加 kubernetes v1.18.4 版本支持。
 
 Crane 以更新至 1.18.0.0 版本。
 
@@ -162,7 +163,7 @@ Crane 以更新至 1.18.0.0 版本。
 
 ### v1.18.5.0 更新内容
 
-添加 kubernetes v1.18.5.0 版本支持。
+添加 kubernetes v1.18.5 版本支持。
 
 ### v1.18.5.1 更新内容
 
@@ -203,4 +204,12 @@ Crane 以更新至 1.18.0.0 版本。
 
 修改 k8s dns address 为 10.9.0.10 地址。
 
-> 重新修改以上 掩码 是为了保证准确性，在自己设计掩码是，一定要按照掩码的第一个网段设置 apiServer 的 clusterIP，否则它会自己计算第一个网段的第一个 IP 为 default kubernetes 的 clusterIP，在生成证书时如果错误的写入了其他值则会引起无法访问 kubernetes.default x509 问题。
+> 重新修改以上 掩码 是为了保证准确性，在自己设计掩码时一定要按照掩码的第一个网段设置 apiServer 的 clusterIP，否则它会自己计算第一个网段的第一个 IP 为 default kubernetes 的 clusterIP，在生成证书时如果错误的写入了其他值则会引起无法访问 kubernetes.default x509 问题。
+
+### v1.18.6.0 更新内容
+
+添加 kubernetes v1.18.6 版本支持。
+
+修复 dockerd env 配置项格式问题，没有标准的双引号。
+
+添加 harbor 多域名证书申请，目的解决多机房共用证书问题。
