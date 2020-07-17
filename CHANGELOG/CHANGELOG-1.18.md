@@ -234,7 +234,7 @@ k8s_master_counts: "{{ groups['kube-master'] | length }}"
 all_nodes_counts: "{{ groups['all'] | length }}"
 ```
 
-# v1.18.6.2
+### v1.18.6.2 更新内容
 
 由于发现 v1.18.5.2 版本中存在渲染报错，对以下版本在 git 中剔除，但不影响版本使用:
   * v1.18.5.2
