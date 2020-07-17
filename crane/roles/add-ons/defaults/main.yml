@@ -305,8 +305,8 @@ hadoop_local_ssh: "23312"
 hadoop_set_config_zookeeper: "zk-0.zk-hs.cdh.svc.cluster.local:2181,zk-1.zk-hs.cdh.svc.cluster.local:2181,zk-2.zk-hs.cdh.svc.cluster.local:2181"
 
 ## 选择前两个节点部署 namespace
-hadoop_set_config_namespace_host01: "{{" ".join(hadoop_all_hostname.split()[0:1])}}"
-hadoop_set_config_namespace_host02: "{{" ".join(hadoop_all_hostname.split()[1:2])}}"
+hadoop_set_config_namespace_host01: "{{' '.join(hadoop_all_hostname.split()[0:1])}}"
+hadoop_set_config_namespace_host02: "{{' '.join(hadoop_all_hostname.split()[1:2])}}"
 
 
 # Hbase
