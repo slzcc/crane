@@ -9,6 +9,7 @@ Crane 是由我个人独立创作并维护的, 在使用范围上可能得不到
 目前支持的操作系统: (其他版本请自行测试, 这里支持版本目的只是安装 Docker, 其他不受影响)
 * Ubuntu 16.04
 * Ubuntu 18.04 (默认的 `Ubuntu 18.04` 没有 `python`, 只有 `python3` 可执行文件, 所以需要在 `nodes` 文件中定义 `ansible_python_interpreter` 请自行配置, 可设为全局变量.)
+* Ubuntu 20.04
 * Centos7/8
 
 以 v1.18.5 为例, 支持版本：
