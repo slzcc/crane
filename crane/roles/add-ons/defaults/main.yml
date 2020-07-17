@@ -109,10 +109,11 @@ harbor_chartmuseum_redis_password: ""
 harbor_ingress_default_domain: "harbor.example.com"
 harbor_ingress_notary_domain: "notary.example.com"
 
+# 此配置主要为了申请 TLS 使用
 # 增加证书中 DNS 项, 目的是此证书可能被其他域名公用，比如有双机房多机房对等服务
 # 在 DNS 切换服务时多机房可通过一个域名即可实现切换而不用替换证书
 # example: "domain1,domain2,..."
-harbor_tls_option_domain: ""
+harbor_tls_option_domain: "{{ harbor_ingress_default_domain }},{{ harbor_ingress_notary_domain }}"
 
 # CFSSL 生成证书的加密方式
 tls_harbor_server_encryption_algorithm: "rsa"
