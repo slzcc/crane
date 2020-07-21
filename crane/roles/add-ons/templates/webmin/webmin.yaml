@@ -55,6 +55,7 @@ spec:
           value: "Asia/Shanghai"
         - name: ROOT_PASSWORD
           value: "{{ webmin_root_password }}"
+        volumeMounts:
         - mountPath: /usr/share/zoneinfo
           name: usr-local-timezone
           readOnly: true
@@ -74,8 +75,8 @@ spec:
           items:
             - key: initialize.sh
               path: initialize.sh
-      - hostPath:
-        name: usr-local-timezone
+      - name: usr-local-timezone
+        hostPath:
           path: /usr/share/zoneinfo
           type: DirectoryOrCreate
 ---

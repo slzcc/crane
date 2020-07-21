@@ -26,6 +26,7 @@
     - [v1.18.6.0 更新内容](#v11860-更新内容)
     - [v1.18.6.1 更新内容](#v11861-更新内容)
     - [v1.18.6.2 更新内容](#v11862-更新内容)
+    - [v1.18.6.3 更新内容](#v11863-更新内容)
 
 # v1.18.0.0
 
@@ -200,11 +201,11 @@ Crane 以更新至 1.18.0.0 版本。
 
 修改 cni 默认地址池为 172.208.0.0/12。
 
-修改 k8s_cluster_ip_pool 默认地址池 10.9.0.0/12。
+修改 k8s_cluster_ip_pool 默认地址池 10.16.0.0/12。
 
-修改 k8s_cluster_ip 为 10.9.0.1 地址。
+修改 k8s_cluster_ip 为 10.16.0.1 地址。
 
-修改 k8s dns address 为 10.9.0.10 地址。
+修改 k8s dns address 为 10.16.0.10 地址。
 
 > 重新修改以上 掩码 是为了保证准确性，在自己设计掩码时一定要按照掩码的第一个网段设置 apiServer 的 clusterIP，否则它会自己计算第一个网段的第一个 IP 为 default kubernetes 的 clusterIP，在生成证书时如果错误的写入了其他值则会引起无法访问 kubernetes.default x509 问题。
 
@@ -244,3 +245,17 @@ all_nodes_counts: "{{ groups['all'] | length }}"
   * v1.18.6.1
 
 经测试 Ubuntu 20.04 可以使用。
+
+### v1.18.6.3 更新内容
+
+修复 Copy PKI Files 时存在 bug 的问题, 会造成重复写入 etcd 目录而造成死循环的问题。
+
+修复 addons 部分因版本造成的无法部署的问题。
+
+Dockerd 加入强制安装项。
+
+修复 Harbor 时区加载时配置项不识别的问题。
+
+修复 Harbor Copy PEM 时存在权限问题。
+
+修改 ansible.cfg SSH 连接超时 600 改为 1800.

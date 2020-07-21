@@ -71,7 +71,7 @@ spec:
           name: usr-local-timezone
           readOnly: true
       volumes:
-      - hostPath:
-        name: usr-local-timezone
+      - name: usr-local-timezone
+        hostPath:
           path: /usr/share/zoneinfo
           type: DirectoryOrCreate

@@ -3,15 +3,11 @@
   shell: "docker -v | awk '{print $3}' | awk -F',' '{print $1}'"
   register: result
   ignore_errors: true
-  
-# - name: Apt Update Source
-#   shell: apt-get update
-#   when: result.stderr and ansible_distribution == 'Ubuntu'
-#   ignore_errors: true
+  when: is_mandatory_docker_install
 
 - name: Install Docker-ce
   include: roles/docker-install/includes/main.yaml
-  when: result.stderr
+  when: result.stderr or is_mandatory_docker_install
 
 - name: Check DockerD Daemon.js isFile
   shell: "ls /etc/docker/daemon.json"
