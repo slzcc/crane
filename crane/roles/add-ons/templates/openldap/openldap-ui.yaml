@@ -3,7 +3,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: openldap-ui
-  namespace: openldap
 spec:
   replicas: 1
   selector:
@@ -54,8 +53,8 @@ spec:
           name: usr-local-timezone
           readOnly: true
       volumes:
-      - hostPath:
-        name: usr-local-timezone
+      - name: usr-local-timezone
+        hostPath:
           path: /usr/share/zoneinfo
           type: DirectoryOrCreate
       restartPolicy: Always

@@ -197,6 +197,10 @@
           {{ kubernetes_ctl_path }}kubectl label secret release-name-harbor-clair heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}' >> {{ kubernetes_etc_dirs }}/harbor/secret.sh"
   ignore_errors: true
 
+- name: Set Harbor Dir Permissions
+  shell: "chown {{ ssh_connect_user }} -R {{ kubernetes_etc_dirs }}harbor"
+  ignore_errors: true
+  
 - name: Deploy Harbor
   shell: "{{ kubernetes_ctl_path }}kubectl apply -f {{ kubernetes_etc_dirs }}harbor/ -n {{ harbor_namespace }}"
   ignore_errors: true
@@ -216,6 +220,7 @@
     http_proxy: "{{ http_proxy }}"
     https_proxy: "{{ https_proxy }}"
   when: ansible_distribution == 'CentOS'
+  ignore_errors: true
 
 - name: Apt Install JQ
   apt: 
@@ -225,7 +230,8 @@
     http_proxy: "{{ http_proxy }}"
     https_proxy: "{{ https_proxy }}"
   when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
-
+  ignore_errors: true
+  
 - name: Push Client TLS to Upload Service
   shell: "curl -sSfL --form 'file=@{{ kubernetes_etc_dirs }}harbor/cert/{{ harbor_ingress_default_domain }}.tar.gz' http://{{ check_upload_service_ip.stdout }}/upload -H 'Host:{{ upload_service_ingress_domain }}' | jq --raw-output '.account_url'"
   register: client_tls_upload_address
