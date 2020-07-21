@@ -32,7 +32,7 @@ monitoring_ingress_grafana_domain: "grafana.example.com"
 monitoring_ingress_alertmanager_domain: "alertmanager.example.com"
 
 # Prometheus Operator Grafana SMTP Configs
-prometheus_operator_grafana_smtp_Enable: true
+prometheus_operator_grafana_smtp_enable: true
 prometheus_operator_grafana_smtp_password: ""
 prometheus_operator_grafana_smtp_server: "smtp.126.com:465"
 prometheus_operator_grafana_smtp_user: "shileizcc@126.com"
@@ -153,7 +153,7 @@ tls_harbor_server_head_info_ST: "BeiJing"
 tls_harbor_client_head_info_ST: "BeiJing"
 
 # 把 Clent 证书 Copy 到所有的集群节点中
-is_harbor_client_cert_copy_to_nodes: false
+is_harbor_client_cert_copy_to_nodes: true
 
 # Docs https://wiki.shileizcc.com/confluence/display/KUB/Kubernetes+Harbor
 

@@ -5,6 +5,13 @@
     state: absent
   ignore_errors: true
 
+- name: Create Istio Directory
+  file:
+    path: "{{ istio_home }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
 - name: Deploy Istio *
   shell: "cd {{ istio_home }} && curl -x '{{ http_proxy }}' -sL https://git.io/getLatestIstio | ISTIO_VERSION={{ istio_version }} ALL_PROXY='{{ http_proxy }}' sh -" 
 
