@@ -1,6 +1,7 @@
-kind: Deployment
 apiVersion: apps/v1
+kind: Deployment
 metadata:
+  name: nexus-aps
   labels:
     app: nexus-ops
 spec:
@@ -36,13 +37,14 @@ spec:
           - name: nexus-ops-storage-data
             mountPath: /nexus-data
       volumes:
-        - name: nexus-ops-storage-data
-          emptyDir: {}
+      - name: nexus-ops-storage-data
+        emptyDir: {}
 
 ---
-kind: Service
 apiVersion: v1
+kind: Service
 metadata:
+  name: nexus-aps
   labels:
     app: nexus-ops
 spec:

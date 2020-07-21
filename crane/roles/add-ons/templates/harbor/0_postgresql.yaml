@@ -96,7 +96,7 @@ spec:
       volumes:
       - name: database-data
         emptyDir: {}
-      - hostPath:
-        name: usr-local-timezone
+      - name: usr-local-timezone
+        hostPath:
           path: /usr/share/zoneinfo
           type: DirectoryOrCreate
