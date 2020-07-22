@@ -54,11 +54,15 @@ plugin/forward: no nameservers found
 
 ### Ansible in Docker
 
-ansible in docker 如果使用部署机器中的某一个实例如果使用离线安装，则需要规避两个问题：
+ansible in docker 如果使用部署机器中的某一个实例并使用离线安装，则需要规避两个问题：
 
 1) 执行的节点不要在 nodes 第一个节点上。
 
 2) 执行 make local_save_image 后一定要删除当前的 image, 否则会出现无法执行的命令。
+
+不使用离线安装请忽略。
+
+> Crane 会判断当前机器是否存在 image，如果判断生效则不会 load 镜像数据到本地，可能会造成第一次部署时丢失执行文件。
 
 
 ### apiServer

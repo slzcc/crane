@@ -298,6 +298,6 @@ is_swap: true
 
 修复 ingress-nginx 可能存在获取 ssl 没有权限的问题:
 
-```
+``` crane/roles/add-ons/templates/ingress-nginx/ingress-nginx.j2
 runAsUser: 33 => runAsUser: 101
 ```
