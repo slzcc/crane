@@ -25,14 +25,8 @@ push:
 
 push_other:
 	@docker tag ${DockerHubRepoName}/${ProjectName}:${VERSION} docker.pkg.github.com/${DockerHubRepoName}/${ProjectName}/${ProjectName}:${VERSION}
-	@docker tag ${DockerHubRepoName}/${ProjectName}:${VERSION} registry.cn-beijing.aliyuncs.com/${DockerHubRepoName}/${ProjectName}:${VERSION}
-	@docker tag ${DockerHubRepoName}/${ProjectName}:${VERSION} registry.cn-hangzhou.aliyuncs.com/${DockerHubRepoName}/${ProjectName}:${VERSION}
 	@docker push docker.pkg.github.com/${DockerHubRepoName}/${ProjectName}/${ProjectName}:${VERSION}
-	@docker push registry.cn-beijing.aliyuncs.com/${DockerHubRepoName}/${ProjectName}:${VERSION}
-	@docker push registry.cn-hangzhou.aliyuncs.com/${DockerHubRepoName}/${ProjectName}:${VERSION}
 	@docker rmi -f docker.pkg.github.com/${DockerHubRepoName}/${ProjectName}/${ProjectName}:${VERSION}
-	@docker rmi -f registry.cn-beijing.aliyuncs.com/${DockerHubRepoName}/${ProjectName}:${VERSION}
-	@docker rmi -f registry.cn-hangzhou.aliyuncs.com/${DockerHubRepoName}/${ProjectName}:${VERSION}
 
 run_main:
 	@docker rm -f crane > /dev/null 2>&1 || true
