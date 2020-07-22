@@ -7,7 +7,7 @@
 k8s_version: 'v1.18.6'
 
 # 避免大版本中组件的版本差异, 使用 build 版本作为差异配置项, 在项目中可以看做如下使用 '{{ k8s_version }}.{{ build_k8s_version }}'
-build_k8s_version: '3'
+build_k8s_version: '4'
 
 # 部署 CNI 对应版本, 如使用镜像方式部署, 不能修改 (如果可以使用 {{ k8s_cluster_component_registry }} 中的仓库地址获取镜像则可随意修改)
 # https://github.com/containernetworking/plugins/releases/
@@ -55,8 +55,10 @@ is_using_local_files_deploy: false
 is_using_image_deploy: true
 
 # 此值为镜像仓库部署时, 使用的镜像仓库地址, 如果需要自定义, 请把指定镜像放置在自定义仓库内, 并指定相同的 tag
-# 默认使用 hub 官方源, 如果有网络问题, 可以使用 github 源: (目前需要 docker login docker.pkg.github.com 才可以使用)
-# k8s_image_deploy_repo: 'docker.pkg.github.com/slzcc/crane/kubernetes'
+# 默认使用 hub 官方源, 如果有网络问题, 可以使用 github 和 aliyun 源: (目前 github 需要 docker login docker.pkg.github.com 才可以使用)
+# github: 'docker.pkg.github.com/slzcc/crane/kubernetes'
+# aliyun-beijing: 'registry.cn-beijing.aliyuncs.com/slzcc/kubernetes'
+# aliyun-hangzhou: 'registry.cn-hangzhou.aliyuncs.com/slzcc/kubernetes'
 k8s_image_deploy_repo: 'slzcc/kubernetes'
 
 # 是否开启 Master 节点调度, 默认为 true. 
@@ -145,10 +147,6 @@ https_proxy: ""
 # 部署的 Cluster 中 Containers 的时区, 由于是挂载宿主机 /usr/share/zoneinfo 目录解决, 所以要保证此目录的存在。
 # 如果需要设置 UTC 时区, 请设置值为: Europe/Moscow
 time_location: "Asia/Shanghai"
-
-# 如果系统开启了 Swap, 此只为 true 的情况下不做任何操作, 如果为 false 则强制关闭系统的 Swap, 不等同于 vm.swappiness = 0
-# 这是关闭系统所有已经开启的 Swap 项, 如果使用 Swap 请谨慎操作.
-is_swap: true
 
 ## Docker
 ## ********************************************************************************************************************************
