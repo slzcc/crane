@@ -274,3 +274,5 @@ is_swap: true
 修改 Makefile 增加 -t 参数，主要目的通过 tty 让其显示颜色输出。
 
 添加 Aliyun Registry，可以修改 `k8s_image_deploy_repo` 使用任意镜像仓库获取镜像。
+
+修复 v1.18.6.3 中加入强制安装 Dockerd 选项的 bug。
