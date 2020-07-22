@@ -21,7 +21,7 @@ if [ "${PUSH_OTHER_REGISTRY_CHECK_PERFORM}" == "true" ]; then
 
     docker rmi -f docker.pkg.github.com/${targetRegistry}/crane/kubernetes:${BUILD_VERSION}
 
-    docker rmi -f registry.cn-beijing.aliyuncs.com/{targetRegistry}/kubernetes:${BUILD_VERSION}
+    docker rmi -f registry.cn-beijing.aliyuncs.com/${targetRegistry}/kubernetes:${BUILD_VERSION}
 
     docker rmi -f registry.cn-hangzhou.aliyuncs.com/${targetRegistry}/kubernetes:${BUILD_VERSION}
 fi
