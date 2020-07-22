@@ -295,3 +295,9 @@ is_swap: true
 支持 AWS ELB 的 DNS 方式进行部署。
 
 > ELB 通过 DNS 解析到两个 IP 地址进行使用保证物理上的高可用。
+
+修复 ingress-nginx 可能存在获取 ssl 没有权限的问题:
+
+```
+runAsUser: 33 => runAsUser: 101
+```
