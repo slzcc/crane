@@ -98,3 +98,7 @@ if [ $? -ne 0 ]; then
     echo "docker login ..."
     echo
 fi
+
+# Push Other Registry
+export PUSH_OTHER_REGISTRY_CHECK_PERFORM=true
+nohup ./PushOtherWarehouse.sh >> /dev/null &
