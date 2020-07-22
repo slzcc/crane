@@ -3,7 +3,6 @@
   shell: "docker -v | awk '{print $3}' | awk -F',' '{print $1}'"
   register: result
   ignore_errors: true
-  when: is_mandatory_docker_install
 
 - name: Install Docker-ce
   include: roles/docker-install/includes/main.yaml
