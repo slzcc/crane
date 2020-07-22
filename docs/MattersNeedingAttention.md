@@ -50,3 +50,24 @@ plugin/forward: no nameservers found
 ```
 
 配置本机 `/etc/resolv.conf` 添加一条 `nameserver` 解决。
+
+
+### Ansible in Docker
+
+ansible in docker 如果使用部署机器中的某一个实例如果使用离线安装，则需要规避两个问题：
+
+1) 执行的节点不要在 nodes 第一个节点上。
+
+2) 执行 make local_save_image 后一定要删除当前的 image, 否则会出现无法执行的命令。
+
+
+### apiServer
+
+如果发现 aoiServer 日志输出如下:
+
+```
+I0722 20:27:25.279953       1 log.go:172] http: TLS handshake error from 10.200.1.127:47606: read tcp 10.200.1.127:5443->10.200.1.127:47606: read: connection reset by peer
+I0722 20:27:43.031841       1 log.go:172] http: TLS handshake error from 10.200.1.127:47718: read tcp 10.200.1.127:5443->10.200.1.127:47718: read: connection reset by peer
+```
+
+请忽略，这是 kubelet 进行健康检查时无法通过 https 校验报错，可以通过 nc 模拟请求进行查看。

@@ -28,6 +28,7 @@
     - [v1.18.6.2 更新内容](#v11862-更新内容)
     - [v1.18.6.3 更新内容](#v11863-更新内容)
     - [v1.18.6.4 更新内容](#v11864-更新内容)
+    - [v1.18.6.5 更新内容](#v11865-更新内容)
 
 # v1.18.0.0
 
@@ -276,3 +277,21 @@ is_swap: true
 添加 Aliyun Registry，可以修改 `k8s_image_deploy_repo` 使用任意镜像仓库获取镜像。
 
 修复 v1.18.6.3 中加入强制安装 Dockerd 选项的 bug。
+
+### v1.18.6.5 更新内容
+
+废弃:
+
+``` kube-apiserver
+--advertise-address={{ k8s_load_balance_ip }}
+```
+
+新增:
+
+``` kube-apiserver
+--bind-address=0.0.0.0
+```
+
+支持 AWS ELB 的 DNS 方式进行部署。
+
+> ELB 通过 DNS 解析到两个 IP 地址进行使用保证物理上的高可用。
