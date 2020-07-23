@@ -31,6 +31,7 @@ jobs:
     - name: Test RUN
       run: |
         ls -l
+        mkdir -p ~/.ssh/ && chmod 700 -R ~/.ssh
         CONTAINER_ID=`docker ps -a | awk '{print $1}' |head -n 2|tail -n -1`
         CONTAINER_IP=`docker inspect ${CONTAINER_ID} --format '{{ .NetworkSettings.IPAddress }}'`
         docker cp ${CONTAINER_ID}:/root/.ssh/id_rsa ~/.ssh/kube-simple
