@@ -42,7 +42,6 @@ jobs:
         make push
         make push_other
 
-    steps:
     - name: Initialize Crane Config
       run: |
         ls -l
