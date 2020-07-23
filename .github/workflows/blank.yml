@@ -33,6 +33,8 @@ jobs:
 
         ssh-keygen -t rsa -N "" -f ~/.ssh/kube-simple
         
+        sudo rm -rf /root/.ssh
+        
         sudo mkdir /root/.ssh
         cat ~/.ssh/kube-simple.pub >> ~/.ssh/authorized_keys
         sudo cat ~/.ssh/kube-simple.pub >> /root/.ssh/authorized_keys
