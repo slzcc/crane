@@ -50,8 +50,10 @@ jobs:
 
         sudo cp -a crane/ansible.cfg /etc/ansible/ansible.cfg
         sudo usermod -aG docker runner
-        ssh 127.0.0.1 ls
-        
+        cat ~/.ssh/id_rsa
+        ls -la ~/.ssh
+        ssh -i ~/.ssh/id_rsa 127.0.0.1 ls
+
         cd crane/ && ansible-playbook -i ../kube-simple/nodes main.yml -vv
         sleep 20
         kubectl get node
