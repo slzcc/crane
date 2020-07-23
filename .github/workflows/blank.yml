@@ -21,7 +21,6 @@ jobs:
     - name: Initialize Crane Config
       run: |
         ls -l
-        sudo apt install ansible -y
         ps aux|grep ssh
         netstat -lnput
 
@@ -47,9 +46,9 @@ jobs:
         
         ssh -i ~/.ssh/kube-simple ${INSTANCE_IP}
 
-        sed -i "s/os_network_device_name:\ .*/os_network_device_name:\ ${INSTANCE_NET_NAME}/g" crane/group_vars/all.yml
-        sed -i "s/k8s_load_balance_ip:\ .*/k8s_load_balance_ip:\ ${INSTANCE_IP}/g" crane/group_vars/all.yml
-        sed -i "s/172.20.0.2/${INSTANCE_IP}/g" kube-simple/nodes
+        sed -i "s/os_network_device_name:\ .*/os_network_device_name:\ lo/g" crane/group_vars/all.yml
+        sed -i "s/k8s_load_balance_ip:\ .*/k8s_load_balance_ip:\ localhost/g" crane/group_vars/all.yml
+        sed -i "s/172.20.0.2/localhost/g" kube-simple/nodes
         
         cat kube-simple/nodes
 
