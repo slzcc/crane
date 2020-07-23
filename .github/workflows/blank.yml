@@ -25,10 +25,12 @@ jobs:
 
         mkdir -p ~/.ssh/ && chmod 700 -R ~/.ssh
         ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
-        cat ~/.ssh/id_rsa.pub > ~/.ssh/authorized_keys
+        cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
         chmod 600 -R ~/.ssh/authorized_keys
         ssh-keyscan -t rsa 127.0.0.1 -p 22 > ~/.ssh/known_hosts
         ssh-keygen -H -f ~/.ssh/known_hosts
+
+        cat ~/.ssh/authorized_keys
         
         INSTANCE_IP=`ip a | grep 'scope global eth0' | grep -v 127.0.0.1 | grep -v inet6 | awk '{print $2}' | awk -F/ '{print $1}'`
         INSTANCE_NET_NAME=`ifconfig | egrep ^eth0 | awk -F: '{print $1}'`
