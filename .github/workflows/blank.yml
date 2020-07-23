@@ -10,6 +10,10 @@ jobs:
 
     runs-on: ubuntu-18.04
     
+    services:
+      simple:
+        image: slzcc/sshd:latest
+
     steps:
     - uses: actions/checkout@v2
     
@@ -38,16 +42,7 @@ jobs:
         make push
         make push_other
 
-  deploy:
-    
-    runs-on: ubuntu-18.04
-
-    services:
-      simple:
-        image: slzcc/sshd:latest
-
     steps:
-    - uses: actions/checkout@v2
     - name: Initialize Crane Config
       run: |
         ls -l
