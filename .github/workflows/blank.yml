@@ -13,35 +13,49 @@ jobs:
     runs-on: ubuntu-18.04
 
     services:
-      simple:
-        image: slzcc/sshd:latest
+      kube_simple:
+        image: slzcc/ubuntu:18.04-linuxkit-4.9.184
+        ports:
+          - 23:22 
+          - 2379:2379 
+          - 2380:2380 
+          - 5443:5443 
+          - 6443:6443 
+          - 9090:9090 
+          - 10256:10256 
+          - 10257:10257 
+          - 10259:10259
+        options: --privileged --cap-add=ALL --memory 4G --memory-swap 0
 
     steps:
     - uses: actions/checkout@v2
     - name: Initialize Crane Config
       run: |
         ls -l
-        sudo apt install ansible -y
+        sudo apt install -y ansible
 
-        sudo ssh-keygen -t rsa -N "" -f ~/.ssh/kube-simple
-        sudo cat ~/.ssh/kube-simple.pub >> ~/.ssh/authorized_keys
-        sudo chmod 600 -R ~/.ssh/authorized_keys
+        ssh-keygen -t rsa -N "" -f ~/.ssh/kube-simple
+        cat ~/.ssh/kube-simple.pub >> ~/.ssh/authorized_keys
+        chmod 600 -R ~/.ssh/authorized_keys
         
-        INSTANCE_IP=`ip a | grep 'scope global eth0' | grep -v 127.0.0.1 | grep -v inet6 | awk '{print $2}' | awk -F/ '{print $1}'`
-        INSTANCE_NET_NAME=`ifconfig | egrep ^eth0 | awk -F: '{print $1}'`
+        export CONTAINER_ID=`docker ps -a | awk '{print $1}' |head -n 2|tail -n -1`
+        export CONTAINER_NET_NAME=`docker network ls --filter "name=github*" |head -n 2|tail -n -1|awk '{print $2}'`
+        export CONTAINER_IP=`docker inspect ${CONTAINER_ID} --format "{{ .NetworkSettings.Networks.${CONTAINER_NET_NAME}.IPAddress }}"`
         
-        sed -i "s/os_network_device_name:\ .*/os_network_device_name:\ ${INSTANCE_NET_NAME}/g" crane/group_vars/all.yml
-        sed -i "s/k8s_load_balance_ip:\ .*/k8s_load_balance_ip:\ 127.0.0.1/g" crane/group_vars/all.yml
-        sed -i "s/172.20.0.2/127.0.0.1/g" kube-simple/nodes
+        docker cp ${CONTAINER_ID}:/root/.ssh/id_rsa ~/.ssh/kube-simple
+        docker cp ${CONTAINER_ID}:/root/.ssh/id_rsa.pub ~/.ssh/kube-simple.pub
         
-        sed -i "s/root/runner/g" kube-simple/nodes
-
-        cat kube-simple/nodes
-
+        sed -i "s/docker_storage_driver:\ \"\"/docker_storage_driver:\ \"overlay2\"/g" crane/group_vars/all.yml
+        sed -i "s/docker_install_type:\ \"http_binary\"/docker_install_type:\ \"http_script\"/g" crane/group_vars/all.yml
+        sed -i "s/k8s_load_balance_ip:\ .*/k8s_load_balance_ip:\ ${CONTAINER_IP}/g" crane/group_vars/all.yml
+        sed -i "s/172.20.0.2/${CONTAINER_IP}/g" kube-simple/nodes
+        
         sudo cp -a crane/ansible.cfg /etc/ansible/ansible.cfg
         sudo usermod -aG docker runner
-
+        make local_load_dockerd
+        
         cd crane/ && ansible-playbook -i ../kube-simple/nodes main.yml -vv
+        
         sleep 20
-        kubectl get node
-        kubectl get pods --all-namespaces
+        docker exec -i ${CONTAINER_ID} kubectl get node
+        docker exec -i ${CONTAINER_ID} kubectl get pods --all-namespaces
