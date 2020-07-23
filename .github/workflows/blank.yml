@@ -46,7 +46,7 @@ jobs:
         docker cp ${CONTAINER_ID}:/root/.ssh/id_rsa.pub ~/.ssh/kube-simple.pub
         
         sed -i "s/docker_storage_driver:\ \"\"/docker_storage_driver:\ \"overlay2\"/g" crane/group_vars/all.yml
-        sed -i "s/docker_install_type:\ \"http_binary\"/docker_install_type:\ \"http_script\"/g" crane/group_vars/all.yml
+        sed -i "s/docker_install_type:\ \"http_binary\"/docker_install_type:\ \"local_binary\"/g" crane/group_vars/all.yml
         sed -i "s/k8s_load_balance_ip:\ .*/k8s_load_balance_ip:\ ${CONTAINER_IP}/g" crane/group_vars/all.yml
         sed -i "s/172.20.0.2/${CONTAINER_IP}/g" kube-simple/nodes
         
