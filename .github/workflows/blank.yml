@@ -23,11 +23,11 @@ jobs:
         ls -l
         sudo apt install ansible -y
 
-        sudo ls -la /root/
-        sudo find /root
-        sudo cat /root/.ssh/authorized_keys
-        sudo echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config
+        sudo chmod 777 /etc/ssh/sshd_config
+        sudo sed -i 's/#PermitRootLogin\ .*/PermitRootLogin\ yes/g' /etc/ssh/sshd_config
         sudo systemctl restart sshd
+        ps aux|grep ssh
+        netstat -lnput
         
         ssh-keygen -t rsa -N "" -f ~/.ssh/kube-simple
         cat ~/.ssh/kube-simple.pub >> ~/.ssh/authorized_keys
