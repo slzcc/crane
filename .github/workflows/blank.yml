@@ -29,17 +29,17 @@ jobs:
         sudo systemctl restart sshd
         ps aux|grep ssh
         netstat -lnput
+        sudo cat /etc/hosts.deny
 
         ssh-keygen -t rsa -N "" -f ~/.ssh/kube-simple
-        sudo chmod 777 /root/.ssh
-        sudo chmod 777 /root/.ssh/authorized_keys
+        
+        sudo mkdir /root/.ssh
         cat ~/.ssh/kube-simple.pub >> ~/.ssh/authorized_keys
         sudo cat ~/.ssh/kube-simple.pub >> /root/.ssh/authorized_keys
         
         chmod 600 -R ~/.ssh/authorized_keys
-        sudo chmod 700 /root/.ssh
-        sudo chmod 644 /root/.ssh/authorized_keys
-        
+        sudo chown root:root -R /root/.ssh
+
         INSTANCE_IP=`ip a | grep 'scope global eth0' | grep -v 127.0.0.1 | grep -v inet6 | awk '{print $2}' | awk -F/ '{print $1}'`
         INSTANCE_NET_NAME=`ifconfig | egrep ^eth0 | awk -F: '{print $1}'`
         
