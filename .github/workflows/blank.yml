@@ -20,7 +20,7 @@ jobs:
         ALIYUN_USERS: ${{ secrets.ALIYUNREGISTRYUSER }}
       run: |
         echo ${ALIYUN_TOKEN} | docker login -u ${ALIYUN_USERS} registry.cn-beijing.aliyuncs.com --password-stdin
-        echo ${ALIYUN_TOKEN} | docker login -u ${ALIYUN_USERS} registry.cn-beijing.aliyuncs.com --password-stdin
+        echo ${ALIYUN_TOKEN} | docker login -u ${ALIYUN_USERS} registry.cn-hangzhou.aliyuncs.com --password-stdin
         echo ${GITHUB_TOKEN} | docker login docker.pkg.github.com -u slzcc --password-stdin
         echo ${ALIYUN_TOKEN} | docker login -u slzcc --password-stdin
     
@@ -36,7 +36,7 @@ jobs:
         make build
         make push
         make push_other
-        
+
   deploy:
     
     runs-on: ubuntu-18.04
