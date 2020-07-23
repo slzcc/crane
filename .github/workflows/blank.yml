@@ -11,12 +11,24 @@ jobs:
   build:
     container:
       image: slzcc/ubuntu:18.04-linuxkit-4.9.184
+      ports:
+        - 22
+        - 2379
+        - 2380
+        - 5443
+        - 6443
+        - 9090
+        - 10256
+        - 10257
+        - 10259
+      options: --privileged --cap-add=ALL --memory 4G --memory-swap 0
 
     runs-on: ubuntu-18.04
-    
+
     steps:
     - name: Test RUN
       run: |
+        docker ps -a
         ls
         env
         date
