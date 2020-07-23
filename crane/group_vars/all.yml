@@ -178,7 +178,7 @@ docker_data_root: '/var/lib/docker'
 
 # Docker Image 存储驱动, 默认系统自识别
 # 因部分 xfs 底层存储 ftype=0, 会造成 overlay2 无法正常使用, 请自行解决.
-docker_storage_driver: ""
+docker_storage_driver: "overlay2"
 
 # 允许的不安全 Registry 地址
 # 默认需要加入 Harbor 配置项, 请设置为:
