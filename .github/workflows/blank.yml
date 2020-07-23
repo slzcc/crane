@@ -28,6 +28,7 @@ jobs:
         options: --privileged --cap-add=ALL --memory 4G --memory-swap 0
 
     steps:
+    - uses: actions/checkout@v2
     - name: Test RUN
       run: |
         ls -l
