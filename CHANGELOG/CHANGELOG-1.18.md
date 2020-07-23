@@ -301,3 +301,5 @@ is_swap: true
 ``` crane/roles/add-ons/templates/ingress-nginx/ingress-nginx.j2
 runAsUser: 33 => runAsUser: 101
 ```
+
+修复通过 wget 下载 package 时 proxy 执行异常报错问题。

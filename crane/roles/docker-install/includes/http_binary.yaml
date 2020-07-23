@@ -1,6 +1,6 @@
 ---
 - name: Get Docker Binary File
-  shell: "http_proxy={{ http_proxy }} ; https_proxy={{ https_proxy }} ; wget -qO- '{{ docker_install_http_binary_source }}/docker-{{ docker_version }}.tar.gz' | tar zx -C {{ docker_ctl_path }}"
+  shell: "export http_proxy={{ http_proxy }} ; export https_proxy={{ https_proxy }} ; wget -qO- '{{ docker_install_http_binary_source }}/docker-{{ docker_version }}.tar.gz' | tar zx -C {{ docker_ctl_path }}"
 
 - name: Copy Docker Systemd Config
   template: 
