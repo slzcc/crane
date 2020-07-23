@@ -32,7 +32,7 @@ jobs:
     - name: Initialize Crane Config
       run: |
         ls -l
-        apt install -y ansible
+        sudo apt install -y ansible
         mkdir -p ~/.ssh/ && chmod 700 -R ~/.ssh
         CONTAINER_ID=`docker ps -a | awk '{print $1}' |head -n 2|tail -n -1`
         CONTAINER_IP=`docker inspect ${CONTAINER_ID} --format '{{ .NetworkSettings.IPAddress }}'`
