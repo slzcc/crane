@@ -24,11 +24,12 @@ jobs:
         sudo chmod 777 /etc/ssh/sshd_config
         sudo sed -i 's/#PermitRootLogin\ .*/PermitRootLogin\ yes/g' /etc/ssh/sshd_config
         sudo systemctl restart sshd
-        ssh-keygen -t rsa -N "" -f ~/.ssh/kube-simple
-        
-        sudo rm -rf /root/.ssh
 
+        ssh-keygen -t rsa -N "" -f ~/.ssh/kube-simple
+        sudo rm -rf /root/.ssh
         sudo mkdir /root/.ssh
+
+        cat ~/.ssh/kube-simple.pub >> ~/.ssh/authorized_keys
         sudo cp -a ~/.ssh/authorized_keys /root/.ssh/authorized_keys
         chmod 600 -R ~/.ssh/authorized_keys
         sudo chown root:root -R /root/.ssh
