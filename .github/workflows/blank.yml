@@ -31,12 +31,15 @@ jobs:
         netstat -lnput
 
         ssh-keygen -t rsa -N "" -f ~/.ssh/kube-simple
+        sudo chmod 777 /root/.ssh
         sudo chmod 777 /root/.ssh/authorized_keys
         cat ~/.ssh/kube-simple.pub >> ~/.ssh/authorized_keys
         sudo cat ~/.ssh/kube-simple.pub >> /root/.ssh/authorized_keys
-        sudo chmod 644 /root/.ssh/authorized_keys
+        
         chmod 600 -R ~/.ssh/authorized_keys
-
+        sudo chmod 700 /root/.ssh
+        sudo chmod 644 /root/.ssh/authorized_keys
+        
         INSTANCE_IP=`ip a | grep 'scope global eth0' | grep -v 127.0.0.1 | grep -v inet6 | awk '{print $2}' | awk -F/ '{print $1}'`
         INSTANCE_NET_NAME=`ifconfig | egrep ^eth0 | awk -F: '{print $1}'`
         
@@ -46,7 +49,7 @@ jobs:
         
         cat kube-simple/nodes
         cat /etc/ssh/sshd_config
-        
+
         sudo cp -a crane/ansible.cfg /etc/ansible/ansible.cfg
         sudo usermod -aG docker runner
 
