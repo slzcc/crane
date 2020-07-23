@@ -26,7 +26,6 @@ jobs:
         mkdir -p ~/.ssh/ && chmod 700 -R ~/.ssh
         ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
         cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
-        chmod 600 -R ~/.ssh/authorized_keys
         ssh-keyscan -t rsa 127.0.0.1 -p 22 > ~/.ssh/known_hosts
         ssh-keygen -H -f ~/.ssh/known_hosts
 
@@ -48,10 +47,11 @@ jobs:
         sudo cat /etc/ssh/sshd_config
         sudo cat /etc/hosts.allow
         sudo cat /etc/sudoers
-        
+
         sudo cp -a crane/ansible.cfg /etc/ansible/ansible.cfg
         sudo usermod -aG docker runner
-
+        ssh 127.0.0.1 ls
+        
         cd crane/ && ansible-playbook -i ../kube-simple/nodes main.yml -vv
         sleep 20
         kubectl get node
