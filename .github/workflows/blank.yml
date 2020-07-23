@@ -31,24 +31,22 @@ jobs:
         netstat -lnput
 
         ssh-keygen -t rsa -N "" -f ~/.ssh/kube-simple
+        sudo chmod 777 /root/.ssh/authorized_keys
         cat ~/.ssh/kube-simple.pub >> ~/.ssh/authorized_keys
+        sudo cat ~/.ssh/kube-simple.pub >> /root/.ssh/authorized_keys
+        sudo chmod 644 /root/.ssh/authorized_keys
         chmod 600 -R ~/.ssh/authorized_keys
-
-        sudo rm -rf /root/.ssh
-        sudo ln -sf /home/runner/.ssh /root/.ssh
-        
-        sudo ls -la /root
-        sudo find /root
 
         INSTANCE_IP=`ip a | grep 'scope global eth0' | grep -v 127.0.0.1 | grep -v inet6 | awk '{print $2}' | awk -F/ '{print $1}'`
         INSTANCE_NET_NAME=`ifconfig | egrep ^eth0 | awk -F: '{print $1}'`
         
-        sed -i "s/os_network_device_name:\ .*/os_network_device_name:\ lo/g" crane/group_vars/all.yml
-        sed -i "s/k8s_load_balance_ip:\ .*/k8s_load_balance_ip:\ localhost/g" crane/group_vars/all.yml
-        sed -i "s/172.20.0.2/localhost/g" kube-simple/nodes
+        sed -i "s/os_network_device_name:\ .*/os_network_device_name:\ ${INSTANCE_NET_NAME}/g" crane/group_vars/all.yml
+        sed -i "s/k8s_load_balance_ip:\ .*/k8s_load_balance_ip:\ ${INSTANCE_IP}/g" crane/group_vars/all.yml
+        sed -i "s/172.20.0.2/${INSTANCE_IP}/g" kube-simple/nodes
         
         cat kube-simple/nodes
-
+        cat /etc/ssh/sshd_config
+        
         sudo cp -a crane/ansible.cfg /etc/ansible/ansible.cfg
         sudo usermod -aG docker runner
 
