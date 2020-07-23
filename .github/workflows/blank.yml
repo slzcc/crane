@@ -51,3 +51,4 @@ jobs:
         sleep 20
         kubectl get node
         kubectl get pods --all-namespaces
+      shell: bash
