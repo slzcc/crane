@@ -22,24 +22,30 @@ jobs:
       run: |
         ls -l
         sudo apt install ansible -y
+        ps aux|grep ssh
+        netstat -lnput
 
         sudo chmod 777 /etc/ssh/sshd_config
         sudo sed -i 's/#PermitRootLogin\ .*/PermitRootLogin\ yes/g' /etc/ssh/sshd_config
         sudo systemctl restart sshd
         ps aux|grep ssh
         netstat -lnput
-        
+
         ssh-keygen -t rsa -N "" -f ~/.ssh/kube-simple
         cat ~/.ssh/kube-simple.pub >> ~/.ssh/authorized_keys
         chmod 600 -R ~/.ssh/authorized_keys
 
         sudo rm -rf /root/.ssh
-
         sudo ln -sf /home/runner/.ssh /root/.ssh
         
+        sudo ls -la /root
+        sudo find /root
+
         INSTANCE_IP=`ip a | grep 'scope global eth0' | grep -v 127.0.0.1 | grep -v inet6 | awk '{print $2}' | awk -F/ '{print $1}'`
         INSTANCE_NET_NAME=`ifconfig | egrep ^eth0 | awk -F: '{print $1}'`
         
+        ssh -i ~/.ssh/kube-simple ${INSTANCE_IP}
+
         sed -i "s/os_network_device_name:\ .*/os_network_device_name:\ ${INSTANCE_NET_NAME}/g" crane/group_vars/all.yml
         sed -i "s/k8s_load_balance_ip:\ .*/k8s_load_balance_ip:\ ${INSTANCE_IP}/g" crane/group_vars/all.yml
         sed -i "s/172.20.0.2/${INSTANCE_IP}/g" kube-simple/nodes
