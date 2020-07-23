@@ -37,4 +37,5 @@ jobs:
         netstat -lnput
         ip a
         ls -l /usr/bin/
-      shell: docker ps -a
+        docker ps -a
+      shell: bash
