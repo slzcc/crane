@@ -37,7 +37,7 @@ jobs:
         export CONTAINER_ID=`docker ps -a | awk '{print $1}' |head -n 2|tail -n -1`
         docker network inspect $(docker network ls --filter "name=github*" -q)
         docker inspect ${CONTAINER_ID}
-        export CONTAINER_IP=`docker inspect ${CONTAINER_ID} --format '{{ .NetworkSettings.IPAddress }}'`
+        export CONTAINER_IP=`docker inspect ${CONTAINER_ID} --format '{{ .NetworkSettings.Networks.IPAddress }}'`
         export CONTAINER_NET=`docker network ls --filter "name=github*" -q`
         docker cp ${CONTAINER_ID}:/root/.ssh/id_rsa ~/.ssh/kube-simple
         docker cp ${CONTAINER_ID}:/root/.ssh/id_rsa.pub ~/.ssh/kube-simple.pub
