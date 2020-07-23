@@ -33,6 +33,7 @@ jobs:
         cat ~/.ssh/authorized_keys
         ip a
         ifconfig
+        sudo cat /etc/passwd
 
         INSTANCE_IP=`ip a | grep 'scope global eth0' | grep -v 127.0.0.1 | grep -v inet6 | awk '{print $2}' | awk -F/ '{print $1}'`
         INSTANCE_NET_NAME=`ifconfig | egrep ^eth0 | awk -F: '{print $1}'`
@@ -41,10 +42,12 @@ jobs:
         sed -i "s/k8s_load_balance_ip:\ .*/k8s_load_balance_ip:\ ${INSTANCE_IP}/g" crane/group_vars/all.yml
         sed -i "s/172.20.0.2/${INSTANCE_IP}/g" kube-simple/nodes
         sed -i "s/kube-simple/id_rsa/g" kube-simple/nodes
-        sed -i "s/root/${whoami}/g" kube-simple/nodes
+        sed -i "s/root/runner/g" kube-simple/nodes
 
         cat kube-simple/nodes
         sudo cat /etc/ssh/sshd_config
+        sudo cat /etc/hosts.allow
+        sudo cat /etc/sudoers
         
         sudo cp -a crane/ansible.cfg /etc/ansible/ansible.cfg
         sudo usermod -aG docker runner
