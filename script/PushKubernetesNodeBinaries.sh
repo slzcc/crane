@@ -86,7 +86,7 @@ EOF
 
 BUILD_VERSION=`awk '/^k8s_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`.`awk '/^build_k8s_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 
-cd ${temporaryDirs} && docker build -t ${targetRegistry}/kubernetes:${BUILD_VERSION} .
+docker build -t ${targetRegistry}/kubernetes:${BUILD_VERSION} ${temporaryDirs}
 
 # Push Images
 docker push ${targetRegistry}/kubernetes:${BUILD_VERSION}
@@ -101,4 +101,4 @@ fi
 
 # Push Other Registry
 export PUSH_OTHER_REGISTRY_CHECK_PERFORM=true
-nohup ./PushOtherWarehouse.sh >> /dev/null &
+./PushOtherWarehouse.sh
