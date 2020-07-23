@@ -12,6 +12,8 @@ jobs:
     container:
       image: slzcc/ubuntu:18.04-linuxkit-4.9.184
 
+    runs-on: ubuntu-18.04
+    
     steps:
     - name: Test RUN
       run: |
