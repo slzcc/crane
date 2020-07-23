@@ -33,7 +33,8 @@ jobs:
       run: |
         ls -l
         sudo apt install -y ansible
-        
+        sudo curl -sSfL https://get.docker.com | bash
+
         ssh-keygen -t rsa -N "" -f ~/.ssh/kube-simple
         cat ~/.ssh/kube-simple.pub >> ~/.ssh/authorized_keys
         chmod 600 -R ~/.ssh/authorized_keys
