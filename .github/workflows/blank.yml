@@ -37,8 +37,9 @@ jobs:
         export CONTAINER_ID=`docker ps -a | awk '{print $1}' |head -n 2|tail -n -1`
         docker network inspect $(docker network ls --filter "name=github*" -q)
         docker inspect ${CONTAINER_ID}
-        export CONTAINER_IP=`docker inspect ${CONTAINER_ID} --format '{{ .NetworkSettings.Networks.IPAddress }}'`
-        export CONTAINER_NET=`docker network ls --filter "name=github*" -q`
+        export CONTAINER_NET_NAME=`docker network ls --filter "name=github*" |head -n 2|tail -n -1|awk '{print $2}'`
+        export CONTAINER_IP=`docker inspect ${CONTAINER_ID} --format '{{ .NetworkSettings.Networks.${CONTAINER_NET_NAME}.IPAddress }}'`
+        export CONTAINER_NET_ID=`docker network ls --filter "name=github*" -q`
         docker cp ${CONTAINER_ID}:/root/.ssh/id_rsa ~/.ssh/kube-simple
         docker cp ${CONTAINER_ID}:/root/.ssh/id_rsa.pub ~/.ssh/kube-simple.pub
         sed -i "s/k8s_load_balance_ip:\ .*/k8s_load_balance_ip:\ ${CONTAINER_IP}/g" crane/group_vars/all.yml
