@@ -42,8 +42,8 @@ jobs:
         sed -i "s/k8s_load_balance_ip:\ .*/k8s_load_balance_ip:\ ${CONTAINER_IP}/g" crane/group_vars/all.yml
         sed -i "s/172.20.0.2/${CONTAINER_IP}/g" kube-simple/nodes
         
-        cp -a crane/ansible.cfg /etc/ansible/ansible.cfg
-        cd crane/  && ansible-playbook -i ../kube-simple/nodes main.yml -vv
+        sudo cp -a crane/ansible.cfg /etc/ansible/ansible.cfg
+        cd crane/ && ansible-playbook -i ../kube-simple/nodes main.yml -vv
         sleep 20
         docker exec -i ${CONTAINER_ID} kubectl get node
       shell: bash
