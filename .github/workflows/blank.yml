@@ -21,22 +21,14 @@ jobs:
     - name: Initialize Crane Config
       run: |
         ls -l
-        ps aux|grep ssh
-        netstat -lnput
-
         sudo chmod 777 /etc/ssh/sshd_config
         sudo sed -i 's/#PermitRootLogin\ .*/PermitRootLogin\ yes/g' /etc/ssh/sshd_config
         sudo systemctl restart sshd
-        ps aux|grep ssh
-        netstat -lnput
-        sudo cat /etc/hosts.deny
-
         ssh-keygen -t rsa -N "" -f ~/.ssh/kube-simple
         
         sudo rm -rf /root/.ssh
 
         sudo mkdir /root/.ssh
-        cat ~/.ssh/kube-simple.pub >> ~/.ssh/authorized_keys
         sudo cp -a ~/.ssh/authorized_keys /root/.ssh/authorized_keys
         chmod 600 -R ~/.ssh/authorized_keys
         sudo chown root:root -R /root/.ssh
@@ -47,15 +39,13 @@ jobs:
         sed -i "s/os_network_device_name:\ .*/os_network_device_name:\ ${INSTANCE_NET_NAME}/g" crane/group_vars/all.yml
         sed -i "s/k8s_load_balance_ip:\ .*/k8s_load_balance_ip:\ ${INSTANCE_IP}/g" crane/group_vars/all.yml
         sed -i "s/172.20.0.2/${INSTANCE_IP}/g" kube-simple/nodes
-        
-        cat kube-simple/nodes
-        cat /etc/ssh/sshd_config
+        sed -i 's/false/true/g' crane/roles/add-ons/defaults/main.yml
 
         sudo cp -a crane/ansible.cfg /etc/ansible/ansible.cfg
         sudo usermod -aG docker runner
 
         cd crane/ && ansible-playbook -i ../kube-simple/nodes main.yml -vv
-        sleep 20
-        kubectl get node
-        kubectl get pods --all-namespaces
+        sleep 120
+        kubectl get node --kubeconfig=/etc/kubernetes/admin.conf
+        kubectl get pods --all-namespaces --kubeconfig=/etc/kubernetes/admin.conf
       shell: bash
