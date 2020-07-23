@@ -31,7 +31,9 @@ jobs:
         ssh-keygen -H -f ~/.ssh/known_hosts
 
         cat ~/.ssh/authorized_keys
-        
+        ip a
+        ifconfig
+
         INSTANCE_IP=`ip a | grep 'scope global eth0' | grep -v 127.0.0.1 | grep -v inet6 | awk '{print $2}' | awk -F/ '{print $1}'`
         INSTANCE_NET_NAME=`ifconfig | egrep ^eth0 | awk -F: '{print $1}'`
         
@@ -41,6 +43,8 @@ jobs:
         sed -i "s/kube-simple/id_rsa/g" kube-simple/nodes
         sed -i "s/root/runner/g" kube-simple/nodes
 
+        cat kube-simple/nodes
+        
         sudo cp -a crane/ansible.cfg /etc/ansible/ansible.cfg
         sudo usermod -aG docker runner
 
