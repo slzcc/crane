@@ -35,12 +35,14 @@ jobs:
         mkdir -p ~/.ssh/ && chmod 700 -R ~/.ssh
         CONTAINER_ID=`docker ps -a | awk '{print $1}' |head -n 2|tail -n -1`
         CONTAINER_IP=`docker inspect ${CONTAINER_ID} --format '{{ .NetworkSettings.IPAddress }}'`
+        CONTAUNER_NET=`docker network ls --filter "name=github*" -q`
         docker cp ${CONTAINER_ID}:/root/.ssh/id_rsa ~/.ssh/kube-simple
         docker cp ${CONTAINER_ID}:/root/.ssh/id_rsa.pub ~/.ssh/kube-simple.pub
         sed -i "s/k8s_load_balance_ip:\ .*/k8s_load_balance_ip:\ ${CONTAINER_IP}/g" crane/group_vars/all.yml
         sed -i "s/172.20.0.2/${CONTAINER_IP}/g" kube-simple/nodes
         sed -i "s/ansible_ssh_port=22/ansible_ssh_port=23/g" kube-simple/nodes
         make run_simple
+        docker run --name crane --net ${CONTAUNER_NET} --rm -i -e ANSIBLE_HOST_KEY_CHECKING=false -e TERM=xterm-256color -e COLUMNS=238 -e LINES=61 -v ~/.ssh:/root/.ssh -v ${PWD}:/crane -w /crane/crane -v ${PWD}/crane/ansible.cfg:/etc/ansible/ansible.cfg slzcc/ansible:2.8 -i ../kube-simple/nodes main.yml -vv
         sleep 20
         docker exec -i ${CONTAINER_ID} kubectl get node
       shell: bash
