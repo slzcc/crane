@@ -26,8 +26,7 @@ jobs:
 
         sudo chmod 777 /etc/ssh/sshd_config
         sudo sed -i 's/#PermitRootLogin\ .*/PermitRootLogin\ yes/g' /etc/ssh/sshd_config
-        sudo ps aux|grep sshd |grep -v grep|awk '{print $2}' |xargs -i kill -9 {}
-        sudo /usr/sbin/sshd -D
+        sudo systemctl restart sshd
         ps aux|grep ssh
         netstat -lnput
 
