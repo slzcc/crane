@@ -11,3 +11,11 @@ jobs:
   build:
     container:
       image: slzcc/ubuntu:18.04-linuxkit-4.9.184
+
+    steps:
+    - name: Test RUN
+      run: |
+        ls
+        env
+        date
+        uname -a
