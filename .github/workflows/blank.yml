@@ -27,9 +27,9 @@ jobs:
         sudo find /root
         sudo cat /root/.ssh/authorized_keys
 
-        sudo ssh-keygen -t rsa -N "" -f ~/.ssh/kube-simple
-        sudo cat /root/.ssh/kube-simple.pub >> ~/.ssh/authorized_keys
-        sudo chmod 600 -R ~/.ssh/authorized_keys
+        ssh-keygen -t rsa -N "" -f ~/.ssh/kube-simple
+        cat /root/.ssh/kube-simple.pub >> ~/.ssh/authorized_keys
+        chmod 600 -R ~/.ssh/authorized_keys
 
         sudo rm -rf /root/.ssh
 
