@@ -16,7 +16,7 @@ jobs:
       kube_simple:
         image: slzcc/ubuntu:18.04-linuxkit-4.9.184
         ports:
-          - 22:22 
+          - 23:22 
           - 2379:2379 
           - 2380:2380 
           - 5443:5443 
