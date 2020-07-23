@@ -28,8 +28,9 @@ jobs:
     steps:
     - name: Test RUN
       run: |
-        docker ps -a
         ls
         env
         date
         uname -a
+        netstat -lnput
+        ip a
