@@ -4,12 +4,41 @@ name: CI
 on:
   push:
     branches: [ develop ]
-  pull_request:
-    branches: [ master ]
 
 jobs:
   build:
 
+    runs-on: ubuntu-18.04
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Docker Logins
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUBTOKEN }}
+        ALIYUN_TOKEN: ${{ secrets.ALIYUNREGISTRYPASS }}
+        ALIYUN_USERS: ${{ secrets.ALIYUNREGISTRYUSER }}
+      run: |
+        echo ${ALIYUN_TOKEN} | docker login -u ${ALIYUN_USERS} registry.cn-beijing.aliyuncs.com --password-stdin
+        echo ${ALIYUN_TOKEN} | docker login -u ${ALIYUN_USERS} registry.cn-beijing.aliyuncs.com --password-stdin
+        echo ${GITHUB_TOKEN} | docker login docker.pkg.github.com -u slzcc --password-stdin
+        echo ${ALIYUN_TOKEN} | docker login -u slzcc --password-stdin
+    
+    - name: Create Images and Push
+      run: |
+        sudo usermod -aG docker runner
+        cd script && \
+           ./PushKubernetesNodeBinaries.sh
+
+    - name: Deploy Crane Image
+      run: |
+        sudo usermod -aG docker runner
+        make build
+        make push
+        make push_other
+        
+  deploy:
+    
     runs-on: ubuntu-18.04
 
     services:
@@ -41,13 +70,13 @@ jobs:
         sed -i "s/k8s_load_balance_ip:\ .*/k8s_load_balance_ip:\ ${INSTANCE_IP}/g" crane/group_vars/all.yml
         sed -i "s/172.20.0.2/${INSTANCE_IP}/g" kube-simple/nodes
         sed -i 's/false/true/g' crane/roles/add-ons/defaults/main.yml
-        sed -i 's/is_deploy_istio:\ .*/is_deploy_istio: false/g' crane/roles/add-ons/defaults/main.yml
+        sed -i 's/is_deploy_istio:\ . */is_deploy_istio: false/g' crane/roles/add-ons/defaults/main.yml
 
         sudo cp -a crane/ansible.cfg /etc/ansible/ansible.cfg
         sudo usermod -aG docker runner
 
         cd crane/ && ansible-playbook -i ../kube-simple/nodes main.yml -vv
         sleep 120
-        kubectl get node --kubeconfig=/etc/kubernetes/admin.conf
-        kubectl get pods --all-namespaces --kubeconfig=/etc/kubernetes/admin.conf
+        sudo kubectl get node --kubeconfig=/etc/kubernetes/admin.conf
+        sudo kubectl get pods --all-namespaces --kubeconfig=/etc/kubernetes/admin.conf
       shell: bash
