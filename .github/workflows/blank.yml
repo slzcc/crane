@@ -9,7 +9,7 @@ jobs:
   
   buildKubernetesImages:
     
-    if: github.ref == 'develop'
+    if: github.ref == 'refs/heads/develop'
 
     runs-on: ubuntu-18.04
 
@@ -47,7 +47,7 @@ jobs:
 
   deployCrane:
 
-    if: github.ref == 'staging'
+    if: github.ref == 'refs/heads/staging'
 
     runs-on: ubuntu-18.04
 
