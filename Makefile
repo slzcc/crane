@@ -14,7 +14,7 @@ DOCKER_VERSION := `awk '/^docker_version/' ./crane/group_vars/all.yml | awk -F':
 #        etcd_certificate_rotation.yml
 #        main.yml
 #        test.yml
-CRANE_ENTRANCE := "main.yml"
+CRANE_ENTRANCE := main.yml
 OPTION :=
 
 build:
