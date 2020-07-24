@@ -3,61 +3,87 @@ name: CI
 
 on:
   push:
-    branches: [ develop ]
-  pull_request:
-    branches: [ master ]
+    branches: [ develop , staging ]
 
 jobs:
-  build:
+  
+  buildKubernetesImages:
+    
+    if: github.ref == 'refs/heads/develop'
+
+    runs-on: ubuntu-18.04
+
+    services:
+      simple:
+        image: slzcc/sshd:latest
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Docker Logins
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUBTOKEN }}
+        ALIYUN_TOKEN: ${{ secrets.ALIYUNREGISTRYPASS }}
+        ALIYUN_USERS: ${{ secrets.ALIYUNREGISTRYUSER }}
+        DOCKER_TOKEN: ${{ secrets.DOCKERHUBTOKEN }}
+      run: |
+        echo ${ALIYUN_TOKEN} | docker login -u ${ALIYUN_USERS} registry.cn-beijing.aliyuncs.com --password-stdin
+        echo ${ALIYUN_TOKEN} | docker login -u ${ALIYUN_USERS} registry.cn-hangzhou.aliyuncs.com --password-stdin
+        echo ${GITHUB_TOKEN} | docker login docker.pkg.github.com -u slzcc --password-stdin
+        echo ${DOCKER_TOKEN} | docker login -u slzcc --password-stdin
+    
+    - name: Create Images and Push
+      run: |
+        sudo usermod -aG docker runner
+        cd script && \
+           bash -x ./PushKubernetesNodeBinaries.sh
+
+    - name: Deploy Crane Image
+      run: |
+        sudo usermod -aG docker runner
+        make build
+        make push
+        make push_other
+
+  deployCrane:
+
+    if: github.ref == 'refs/heads/staging'
+
     runs-on: ubuntu-18.04
 
     steps:
     - uses: actions/checkout@v2
-    - name: Set ENV
-      env:
-        GITHUB_TOKEN: ${{ secrets.ACTIONSBUILD }}
-        TZ: Asia/Shanghai
-        LANG: zh_CN.utf8
     
-    - name: Install Init Packages
+    - name: Initialize Crane Config
       run: |
-        apt update
-        echo "Asia/Shanghai" > /etc/timezone
-        apt install -y tzdata
-        dpkg-reconfigure -f noninteractive tzdata
-        apt install -y make git unzip vim python3 python3-pip curl wget lrzsz \
-          dnsutils inetutils-ping ethtool telnet iproute2 iotop jq ctop \
-          inetutils-traceroute traceroute tcpdump dbus \
-          net-tools openssh-server iptables ipset netcat-traditional \
-          fonts-baekmuk fonts-nanum language-pack-zh-hans dstat sudo \
-          kernel-common kernel-package kernel-patch-scripts kernel-wedge
-        
-    - name: Create SSH Keys
-      run: |
-        service ssh start
-        ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
-        cat ~/.ssh/id_rsa.pub > ~/.ssh/authorized_keys
-        chmod 600 -R ~/.ssh/authorized_keys
-        ssh-keyscan -t rsa 127.0.0.1 -p 22 > ~/.ssh/known_hosts
-        ssh-keygen -H -f ~/.ssh/known_hosts
+        ls -l
+        sudo chmod 777 /etc/ssh/sshd_config
+        sudo sed -i 's/#PermitRootLogin\ .*/PermitRootLogin\ yes/g' /etc/ssh/sshd_config
+        sudo systemctl restart sshd
 
-    - name: Install Kernel
-      run: |
-        apt install -y linux-headers-generic linux-image-generic
-        for i in $(ls /lib/modules/); do ln -sf /lib/modules/${i} /lib/modules/$(uname -r); done
-    
-    - name: Start SSHD
-      run: |
-        systemctl start sshd
-    
-    - name: Init Crane
-      run: |
-        export HOST_IP=`ifconfig eth0 | grep "inet" | awk '{print $2}'`
-        sed -i "s/k8s_load_balance_ip:\ .*/k8s_load_balance_ip:\ ${HOST_IP}/g" crane/group_vars/all.yml
-        sed -i "s/172.20.0.2/${HOST_IP}/g" kube-simple/nodes
-    
-    - name: Run Crane
-      run: run_simple
-    
-    - name: Get Kube-Simple Cluster Status
-      run: kubectl get node
+        ssh-keygen -t rsa -N "" -f ~/.ssh/kube-simple
+        sudo rm -rf /root/.ssh
+        sudo mkdir /root/.ssh
+
+        cat ~/.ssh/kube-simple.pub >> ~/.ssh/authorized_keys
+        sudo cp -a ~/.ssh/authorized_keys /root/.ssh/authorized_keys
+        chmod 600 -R ~/.ssh/authorized_keys
+        sudo chown root:root -R /root/.ssh
+
+        INSTANCE_IP=`ip a | grep 'scope global eth0' | grep -v 127.0.0.1 | grep -v inet6 | awk '{print $2}' | awk -F/ '{print $1}'`
+        INSTANCE_NET_NAME=`ifconfig | egrep ^eth0 | awk -F: '{print $1}'`
+        
+        sed -i "s/os_network_device_name:\ .*/os_network_device_name:\ ${INSTANCE_NET_NAME}/g" crane/group_vars/all.yml
+        sed -i "s/k8s_load_balance_ip:\ .*/k8s_load_balance_ip:\ ${INSTANCE_IP}/g" crane/group_vars/all.yml
+        sed -i "s/172.20.0.2/${INSTANCE_IP}/g" kube-simple/nodes
+        sed -i 's/false/true/g' crane/roles/add-ons/defaults/main.yml
+        sed -i 's/is_deploy_istio:\ .*/is_deploy_istio: false/g' crane/roles/add-ons/defaults/main.yml
+
+        sudo cp -a crane/ansible.cfg /etc/ansible/ansible.cfg
+        sudo usermod -aG docker runner
+
+        cd crane/ && ansible-playbook -i ../kube-simple/nodes main.yml -vv
+        sleep 120
+        sudo kubectl get node --kubeconfig=/etc/kubernetes/admin.conf
+        sudo kubectl get pods --all-namespaces --kubeconfig=/etc/kubernetes/admin.conf
+      shell: bash

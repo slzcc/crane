@@ -28,7 +28,7 @@ $ docker cp kube-simple:/root/.ssh/id_rsa.pub ~/.ssh/kube-simple.pub
 修改 group_vars/all.yml 中的 k8s_load_balance_ip 为容器内的 IP 地址, 通过如下命令获取:
 
 ```
-$ docker inspect kube-simple --format '{{ .NetworkSettings.IPAddress }}'
+$ docker inspect kube-simple --format '{{ .NetworkSettings.kube-simple.IPAddress }}'
 172.20.0.2
 
 # or

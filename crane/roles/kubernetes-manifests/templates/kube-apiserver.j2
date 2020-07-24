@@ -25,7 +25,7 @@ spec:
   containers:
   - command:
     - kube-apiserver
-    - --advertise-address={{ k8s_load_balance_ip }}
+    - --bind-address=0.0.0.0
     - --allow-privileged=true
     - --authorization-mode=Node,RBAC
     - --client-ca-file={{ kubernetes_pki_dirs }}ca.pem
