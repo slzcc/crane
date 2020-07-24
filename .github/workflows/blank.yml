@@ -51,6 +51,9 @@ jobs:
 
     runs-on: ubuntu-18.04
 
+    steps:
+    - uses: actions/checkout@v2
+    
     - name: Initialize Crane Config
       run: |
         ls -l
