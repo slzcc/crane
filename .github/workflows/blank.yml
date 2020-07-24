@@ -33,7 +33,7 @@ jobs:
       run: |
         sudo usermod -aG docker runner
         cd script && \
-           ./PushKubernetesNodeBinaries.sh
+           bash -x ./PushKubernetesNodeBinaries.sh
 
     - name: Deploy Crane Image
       run: |
