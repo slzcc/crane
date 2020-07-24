@@ -3,13 +3,16 @@ name: CI
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ develop , staging ]
 
 jobs:
-  build:
+  
+  buildKubernetesImages:
+    
+    if: github.ref == 'develop'
 
     runs-on: ubuntu-18.04
-    
+
     services:
       simple:
         image: slzcc/sshd:latest
@@ -41,6 +44,12 @@ jobs:
         make build
         make push
         make push_other
+
+  deployCrane:
+
+    if: github.ref == 'staging'
+
+    runs-on: ubuntu-18.04
 
     - name: Initialize Crane Config
       run: |
