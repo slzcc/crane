@@ -29,6 +29,7 @@
     - [v1.18.6.3 更新内容](#v11863-更新内容)
     - [v1.18.6.4 更新内容](#v11864-更新内容)
     - [v1.18.6.5 更新内容](#v11865-更新内容)
+    - [v1.18.6.6 更新内容](#v11866-更新内容)
 
 # v1.18.0.0
 
@@ -305,3 +306,13 @@ runAsUser: 33 => runAsUser: 101
 修复通过 wget 下载 package 时 proxy 执行异常报错问题。
 
 加入 [Github Actions](https://github.com/slzcc/crane/actions) CI 测试。
+
+### v1.18.6.6 更新内容
+
+修复 docker install 时, 强制写入 daemon.json 文件时无法写入的 bug。
+
+修复 dockerd 配置文件:
+
+``` crane/roles/docker-install/tasks/main.yml
+"insecure-registry": {{ docker_insecure_registry }} => "insecure-registries": {{ docker_insecure_registry }}
+```
