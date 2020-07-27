@@ -35,7 +35,7 @@ tls_k8s_head_info_ST: 'BeiJing'
 
 k8s_master_ip_list: >-
   [{% for host in groups['kube-master'] -%}
-    '{{ hostvars[host].ansible_default_ipv4.address }}'
+    '{{ host }}'
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}]
 
@@ -47,7 +47,7 @@ k8s_master_name_list: >-
 
 k8s_master_ip_str: >-
   {% for host in groups['kube-master'] -%}
-    {{ hostvars[host].ansible_default_ipv4.address }}
+    {{ host }}
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}
 

@@ -6,12 +6,12 @@ k8s_master_name_list: >-
 
 all_ip_str: >-
   {% for host in groups['all'] -%}
-    {{ hostvars[host].ansible_default_ipv4.address }}
+    {{ host }}
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}
 
 etcd_master_ip_str: >-
   {% for host in groups['etcd'] -%}
-    {{ hostvars[host].ansible_default_ipv4.address }}
+    {{ host }}
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}
