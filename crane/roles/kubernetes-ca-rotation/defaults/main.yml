@@ -4,7 +4,7 @@ deploy_new_ca_retation_dirs: '{{ temporary_dirs }}kubernetes-ca-retation'
 
 k8s_node_ip_list: >-
   [{% for host in groups['kube-node'] -%}
-    '{{ hostvars[host].ansible_default_ipv4.address }}'
+    '{{ host }}'
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}]
 

@@ -3,13 +3,13 @@ etcd_cluster_type: 'existing'
 
 etcd_add_node_ip_str: >-
   {% for host in groups['etcd-cluster-add-node'] -%}
-    {{ hostvars[host].ansible_default_ipv4.address }}
+    {{ host }}
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}
 
 etcd_add_node_ip_list: >-
   [{% for host in groups['etcd-cluster-add-node'] -%}
-    '{{ hostvars[host].ansible_default_ipv4.address }}'
+    '{{ host }}'
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}]
 
@@ -27,6 +27,6 @@ etcd_cluster_str: >-
 
 etcd_master_ip_list: >-
   [{% for host in groups['etcd'] -%}
-    '{{ hostvars[host].ansible_default_ipv4.address }}'
+    '{{ host }}'
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}]
