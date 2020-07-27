@@ -57,8 +57,7 @@ jobs:
     - name: Initialize Crane Config
       run: |
         ls -l
-        export WORKDIR=~/work
-        pwd
+        export WORKDIR=~/work/crane/crane
         sudo chmod 777 /etc/ssh/sshd_config
         sudo sed -i 's/#PermitRootLogin\ .*/PermitRootLogin\ yes/g' /etc/ssh/sshd_config
         sudo systemctl restart sshd
