@@ -342,7 +342,7 @@ hbase_set_config_zookeeper: "zk-0.zk-hs.cdh.svc.cluster.local:2181,zk-1.zk-hs.cd
 
 k8s_master_ip_list: >-
   [{% for host in groups['kube-master'] -%}
-    '{{ hostvars[host].ansible_default_ipv4.address }}'
+    '{{ host }}'
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}]
 
@@ -354,7 +354,7 @@ k8s_master_name_list: >-
 
 k8s_master_ip_str: >-
   {% for host in groups['kube-master'] -%}
-    {{ hostvars[host].ansible_default_ipv4.address }}
+    {{ host }}
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}
 
@@ -366,7 +366,7 @@ all_hostname_str: >-
 
 k8s_all_ip_list: >-
   [{% for host in groups['k8s-cluster'] -%}
-    '{{ hostvars[host].ansible_default_ipv4.address }}'
+    '{{ host }}'
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}]
 
