@@ -82,8 +82,66 @@ jobs:
         sudo cp -a crane/ansible.cfg /etc/ansible/ansible.cfg
         sudo usermod -aG docker runner
 
+        # Deploy crane
         cd crane/ && ansible-playbook -i ../kube-simple/nodes main.yml -vv
         sleep 120
         sudo kubectl get node --kubeconfig=/etc/kubernetes/admin.conf
-        sudo kubectl get pods --all-namespaces --kubeconfig=/etc/kubernetes/admin.conf
+        sudo kubectl get pods --all-namespaces -o wide --kubeconfig=/etc/kubernetes/admin.conf
+
+        # Create Public Network
+        sudo docker network create --subnet 172.20.0.0/24 kube-simple
+
+        # Start Add Master Kube-Simple
+        sudo docker run -d --name add-master \
+                           --net kube-simple \
+                           --privileged \
+                           --cap-add=ALL \
+                           --memory 4G \
+                           --memory-swap 0 \
+                           slzcc/ubuntu:18.04-linuxkit-4.9.184
+
+        export CONTAINER_IP=`docker inspect add-master --format "{{ .NetworkSettings.Networks.kube-simple.IPAddress }}"`
+        sed -i '/k8s-cluster-add-master/a ${CONTAINER_IP}' kube-simple/nodes
+        
+        # Add Master
+        cd crane/ && ansible-playbook -i ../kube-simple/nodes add_master.yml -vv
+
+        # Start Add Node Kube-Simple
+        sudo docker run -d --name add-node \
+                           --net kube-simple \
+                           --privileged \
+                           --cap-add=ALL \
+                           --memory 4G \
+                           --memory-swap 0 \
+                           slzcc/ubuntu:18.04-linuxkit-4.9.184
+
+        export CONTAINER_IP=`docker inspect add-node --format "{{ .NetworkSettings.Networks.kube-simple.IPAddress }}"`
+        sed -i '/k8s-cluster-add-node/a ${CONTAINER_IP}' kube-simple/nodes
+        
+        # Add Node
+        cd crane/ && ansible-playbook -i ../kube-simple/nodes add_node.yml -vv
+
+        # Start Add Etcd Kube-Simple
+        sudo docker run -d --name add-etcd \
+                           --net kube-simple \
+                           --privileged \
+                           --cap-add=ALL \
+                           --memory 4G \
+                           --memory-swap 0 \
+                           slzcc/ubuntu:18.04-linuxkit-4.9.184
+
+        export CONTAINER_IP=`docker inspect add-etcd --format "{{ .NetworkSettings.Networks.kube-simple.IPAddress }}"`
+        sed -i '/etcd-cluster-add-node/a ${CONTAINER_IP}' kube-simple/nodes
+        
+        # Add Etcd
+        cd crane/ && ansible-playbook -i ../kube-simple/nodes add_etcd.yml -vv
+
+        # Kubernetes Certificate Rotation
+        cd crane/ && ansible-playbook -i ../kube-simple/nodes k8s_certificate_rotation.yml -vv
+
+        # Etcd Certificate Rotation
+        cd crane/ && ansible-playbook -i ../kube-simple/nodes etcd_certificate_rotation.yml -vv
+
+        # clean crane
+        cd crane/ && ansible-playbook -i ../kube-simple/nodes remove_cluster.yml -vv
       shell: bash
