@@ -57,7 +57,7 @@ jobs:
     - name: Initialize Crane Config
       run: |
         ls -l
-        export WORKDIR=${PWD}
+        export WORKDIR=~/work/crane
         sudo chmod 777 /etc/ssh/sshd_config
         sudo sed -i 's/#PermitRootLogin\ .*/PermitRootLogin\ yes/g' /etc/ssh/sshd_config
         sudo systemctl restart sshd
@@ -74,34 +74,34 @@ jobs:
         INSTANCE_IP=`ip a | grep 'scope global eth0' | grep -v 127.0.0.1 | grep -v inet6 | awk '{print $2}' | awk -F/ '{print $1}'`
         INSTANCE_NET_NAME=`ifconfig | egrep ^eth0 | awk -F: '{print $1}'`
         
-        sed -i "s/os_network_device_name:\ .*/os_network_device_name:\ ${INSTANCE_NET_NAME}/g" crane/group_vars/all.yml
-        sed -i "s/k8s_load_balance_ip:\ .*/k8s_load_balance_ip:\ ${INSTANCE_IP}/g" crane/group_vars/all.yml
-        sed -i "s/172.20.0.2/${INSTANCE_IP}/g" kube-simple/nodes
-        sed -i 's/false/true/g' crane/roles/add-ons/defaults/main.yml
-        sed -i 's/is_deploy_istio:\ .*/is_deploy_istio: false/g' crane/roles/add-ons/defaults/main.yml
+        sed -i "s/os_network_device_name:\ .*/os_network_device_name:\ ${INSTANCE_NET_NAME}/g" ${WORKDIR}/crane/group_vars/all.yml
+        sed -i "s/k8s_load_balance_ip:\ .*/k8s_load_balance_ip:\ ${INSTANCE_IP}/g" ${WORKDIR}/crane/group_vars/all.yml
+        sed -i "s/172.20.0.2/${INSTANCE_IP}/g" ${WORKDIR}/kube-simple/nodes
+        sed -i 's/false/true/g' ${WORKDIR}/crane/roles/add-ons/defaults/main.yml
+        sed -i 's/is_deploy_istio:\ .*/is_deploy_istio: false/g' ${WORKDIR}/crane/roles/add-ons/defaults/main.yml
 
         sudo cp -a crane/ansible.cfg /etc/ansible/ansible.cfg
         sudo usermod -aG docker runner
 
         # Deploy crane
-        cd crane/ && ansible-playbook -i ../kube-simple/nodes main.yml -vv
+        cd ${WORKDIR}/crane/ && ansible-playbook -i ../kube-simple/nodes main.yml -vv
         sleep 120
         sudo kubectl get node --kubeconfig=/etc/kubernetes/admin.conf
         sudo kubectl get pods --all-namespaces -o wide --kubeconfig=/etc/kubernetes/admin.conf
 
         # Create Public Network
-        sudo docker network create --subnet 172.20.0.0/24 kube-simple
+        sudo docker network create --subnet 172.20.0.0/24 kube_simple
 
         # Start Add Master Kube-Simple
         sudo docker run -d --name add-master \
-                           --net kube-simple \
+                           --net kube_simple \
                            --privileged \
                            --cap-add=ALL \
                            --memory 4G \
                            --memory-swap 0 \
                            slzcc/ubuntu:18.04-linuxkit-4.9.184
 
-        export CONTAINER_IP=`docker inspect add-master --format "{{ .NetworkSettings.Networks.kube-simple.IPAddress }}"`
+        export CONTAINER_IP=`docker inspect add-master --format "{{ .NetworkSettings.Networks.kube_simple.IPAddress }}"`
         echo ${CONTAINER_IP} ${WORKDIR}
         sed -i "/k8s-cluster-add-master/a ${CONTAINER_IP}" ${WORKDIR}/kube-simple/nodes
         
@@ -111,14 +111,14 @@ jobs:
 
         # Start Add Node Kube-Simple
         sudo docker run -d --name add-node \
-                           --net kube-simple \
+                           --net kube_simple \
                            --privileged \
                            --cap-add=ALL \
                            --memory 4G \
                            --memory-swap 0 \
                            slzcc/ubuntu:18.04-linuxkit-4.9.184
 
-        export CONTAINER_IP=`docker inspect add-node --format "{{ .NetworkSettings.Networks.kube-simple.IPAddress }}"`
+        export CONTAINER_IP=`docker inspect add-node --format "{{ .NetworkSettings.Networks.kube_simple.IPAddress }}"`
         sed -i "/k8s-cluster-add-node/a ${CONTAINER_IP}" ${WORKDIR}/kube-simple/nodes
         
         # Add Node
