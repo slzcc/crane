@@ -102,6 +102,7 @@ jobs:
                            slzcc/ubuntu:18.04-linuxkit-4.9.184
 
         export CONTAINER_IP=`docker inspect add-master --format "{{ .NetworkSettings.Networks.kube-simple.IPAddress }}"`
+        echo ${CONTAINER_IP} ${WORKDIR}
         sed -i "/k8s-cluster-add-master/a ${CONTAINER_IP}" ${WORKDIR}/kube-simple/nodes
         
         # Add Master
