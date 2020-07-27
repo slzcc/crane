@@ -318,7 +318,7 @@ runAsUser: 33 => runAsUser: 101
 "insecure-registry": {{ docker_insecure_registry }} => "insecure-registries": {{ docker_insecure_registry }}
 ```
 
-### v1.18.6.6 更新内容
+### v1.18.6.7 更新内容
 
 修复: ( 23 余个 )
 
