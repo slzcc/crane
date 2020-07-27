@@ -101,6 +101,7 @@ jobs:
                            --memory-swap 0 \
                            slzcc/ubuntu:18.04-linuxkit-4.9.184
 
+        sudo docker cp ~/.ssh/authorized_keys add-master:/root/.ssh/authorized_keys
         export CONTAINER_IP=`docker inspect add-master --format "{{ .NetworkSettings.Networks.kube_simple.IPAddress }}"`
         echo ${CONTAINER_IP} ${WORKDIR}
         sed -i "/k8s-cluster-add-master/a ${CONTAINER_IP}" ${WORKDIR}/kube-simple/nodes
@@ -118,6 +119,7 @@ jobs:
                            --memory-swap 0 \
                            slzcc/ubuntu:18.04-linuxkit-4.9.184
 
+        sudo docker cp ~/.ssh/authorized_keys add-node:/root/.ssh/authorized_keys
         export CONTAINER_IP=`docker inspect add-node --format "{{ .NetworkSettings.Networks.kube_simple.IPAddress }}"`
         sed -i "/k8s-cluster-add-node/a ${CONTAINER_IP}" ${WORKDIR}/kube-simple/nodes
         
