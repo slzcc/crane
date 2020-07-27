@@ -101,7 +101,7 @@ jobs:
                            slzcc/ubuntu:18.04-linuxkit-4.9.184
 
         export CONTAINER_IP=`docker inspect add-master --format "{{ .NetworkSettings.Networks.kube-simple.IPAddress }}"`
-        sed -i '/k8s-cluster-add-master/a ${CONTAINER_IP}' kube-simple/nodes
+        sed -i "/k8s-cluster-add-master/a ${CONTAINER_IP}" kube-simple/nodes
         
         # Add Master
         cd crane/ && ansible-playbook -i ../kube-simple/nodes add_master.yml -vv
@@ -116,22 +116,13 @@ jobs:
                            slzcc/ubuntu:18.04-linuxkit-4.9.184
 
         export CONTAINER_IP=`docker inspect add-node --format "{{ .NetworkSettings.Networks.kube-simple.IPAddress }}"`
-        sed -i '/k8s-cluster-add-node/a ${CONTAINER_IP}' kube-simple/nodes
+        sed -i "/k8s-cluster-add-node/a ${CONTAINER_IP}" kube-simple/nodes
         
         # Add Node
         cd crane/ && ansible-playbook -i ../kube-simple/nodes add_node.yml -vv
 
-        # Start Add Etcd Kube-Simple
-        sudo docker run -d --name add-etcd \
-                           --net kube-simple \
-                           --privileged \
-                           --cap-add=ALL \
-                           --memory 4G \
-                           --memory-swap 0 \
-                           slzcc/ubuntu:18.04-linuxkit-4.9.184
-
-        export CONTAINER_IP=`docker inspect add-etcd --format "{{ .NetworkSettings.Networks.kube-simple.IPAddress }}"`
-        sed -i '/etcd-cluster-add-node/a ${CONTAINER_IP}' kube-simple/nodes
+        # Start Add Etcd
+        sed -i "/etcd-cluster-add-node/a ${CONTAINER_IP}" kube-simple/nodes
         
         # Add Etcd
         cd crane/ && ansible-playbook -i ../kube-simple/nodes add_etcd.yml -vv
