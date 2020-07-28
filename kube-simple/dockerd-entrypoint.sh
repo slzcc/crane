@@ -183,6 +183,6 @@ else
 	set -- docker-entrypoint.sh "$@"
 fi
 
-/usr/sbin/sshd -D
+/usr/sbin/sshd
 
 exec "$@"
