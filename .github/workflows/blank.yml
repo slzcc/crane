@@ -83,7 +83,7 @@ jobs:
         sudo docker run -d --name crane-node \
                            --net kube_simple \
                            --privileged \
-                           -v /docker/add-master:/var/run \
+                           -v /docker/crane-node:/var/run \
                            --entrypoint "/sbin/init" \
                            slzcc/ubuntu:18.04-linuxkit-4.9.184-docker-19.03.12
 
