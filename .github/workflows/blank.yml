@@ -138,7 +138,8 @@ jobs:
         sed -i "/k8s-cluster-add-node/a ${CONTAINER_IP}" ${WORKDIR}/kube-simple/nodes
         
         # Add Node
-        cd ${WORKDIR}/crane/ && ansible-playbook -i ../kube-simple/nodes add_node.yml -vv
+        cd ${WORKDIR}/crane/ && ansible-playbook -i ../kube-simple/nodes add_nodes.yml -vv
+        sleep 60
         sudo kubectl get node --kubeconfig=/etc/kubernetes/admin.conf
 
         # Start Add Etcd
