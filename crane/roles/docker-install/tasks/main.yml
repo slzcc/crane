@@ -48,6 +48,7 @@
     - is_docker_daemon_config 
     - check_old_md5.stderr == ''
     - check_old_md5.stdout != check_new_md5.stdout
+    - not is_kube_simple
   ignore_errors: true
 
 - name: mkdir Docker Config DIR
@@ -80,7 +81,8 @@
     name: docker
     state: started
   ignore_errors: true
-  
+  when: not is_kube_simple
+
 - debug:
     var: result['stdout_lines']
     verbosity: 0  
