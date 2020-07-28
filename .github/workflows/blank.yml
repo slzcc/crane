@@ -97,12 +97,13 @@ jobs:
         sudo docker network create --subnet 172.20.0.0/24 kube_simple
 
         # Start Add Master Kube-Simple
-        sudo docker run -d -v /docker/add-master:/var/run --privileged docker:19.03.12-dind
+        sudo docker run -d -v /docker/add-master:/var/run --privileged docker:19.03.12-dind 
         sudo docker run -d --name add-master \
                            --net kube_simple \
                            --privileged \
                            -v /docker/add-master:/var/run \
-                           slzcc/ubuntu:18.04-linuxkit-4.9.184-docker-19.03.12
+                           --entrypoint "" \
+                           slzcc/ubuntu:18.04-linuxkit-4.9.184-docker-19.03.12 /usr/sbin/sshd
 
         sudo docker exec -i add-master docker info
         sudo docker cp ~/.ssh/authorized_keys add-master:/root/.ssh/authorized_keys
@@ -122,7 +123,8 @@ jobs:
                            --net kube_simple \
                            --privileged \
                            -v /docker/add-node:/var/run \
-                           slzcc/ubuntu:18.04-linuxkit-4.9.184-docker-19.03.12
+                           --entrypoint "" \
+                           slzcc/ubuntu:18.04-linuxkit-4.9.184-docker-19.03.12 /usr/sbin/sshd
 
         sudo docker exec -i add-node docker info
         sudo docker cp ~/.ssh/authorized_keys add-node:/root/.ssh/authorized_keys
