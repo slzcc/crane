@@ -1,0 +1,30 @@
+FROM slzcc/ubuntu:18.04-generic-4.15.0-74
+
+RUN wget -qO- https://mirror.shileizcc.com/Docker/systemd/systemd-docker-19.03.tar.gz | tar zx -C /tmp/ && \
+    mv /tmp/containerd.service /lib/systemd/system/ && \
+    mv /tmp/docker.service /lib/systemd/system/ && \
+    mv /tmp/docker.socket /lib/systemd/system/ && \
+    mkdir -p /etc/containerd && mv /tmp/config.toml /etc/containerd/config.toml && \
+    wget -qO- https://mirror.shileizcc.com/Docker/bin/docker-19.03.12.tar.gz | tar zx -C /usr/bin
+
+# set up subuid/subgid so that "--userns-remap=default" works out-of-the-box
+RUN set -x \
+    && useradd docker \
+    && groupadd dockremap \
+    && useradd -g dockremap dockremap \
+    && echo 'dockremap:165536:65536' >> /etc/subuid \
+    && echo 'dockremap:165536:65536' >> /etc/subgid
+
+# https://github.com/docker/docker/tree/master/hack/dind
+ENV DIND_COMMIT 37498f009d8bf25fbb6199e8ccd34bed84f2874b
+
+RUN set -eux; \
+    wget -O /usr/local/bin/dind "https://raw.githubusercontent.com/docker/docker/${DIND_COMMIT}/hack/dind"; \
+    chmod +x /usr/local/bin/dind
+
+COPY dockerd-entrypoint.sh /usr/local/bin/
+
+EXPOSE 2375 2376
+
+ENTRYPOINT ["/usr/local/bin/dockerd-entrypoint.sh"]
+CMD []
