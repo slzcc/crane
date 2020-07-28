@@ -96,7 +96,7 @@ jobs:
         sudo docker network create --subnet 172.20.0.0/24 kube_simple
 
         # Start Add Master Kube-Simple
-        sudo docker run -i --name add-master \
+        sudo docker run -d --name add-master \
                            --net kube_simple \
                            --privileged \
                            slzcc/ubuntu:18.04-linuxkit-4.9.184-docker-19.03.12
