@@ -84,23 +84,23 @@ jobs:
 
         sudo cp -a crane/ansible.cfg /etc/ansible/ansible.cfg
         sudo usermod -aG docker runner
-        make local_load_dockerd
+        #make local_load_dockerd
 
         # Deploy crane
-        cd ${WORKDIR}/crane/ && ansible-playbook -i ../kube-simple/nodes main.yml -vv
-        sleep 120
-        sudo kubectl get node --kubeconfig=/etc/kubernetes/admin.conf
-        sudo kubectl get pods --all-namespaces -o wide --kubeconfig=/etc/kubernetes/admin.conf
+        #cd ${WORKDIR}/crane/ && ansible-playbook -i ../kube-simple/nodes main.yml -vv
+        #sleep 120
+        #sudo kubectl get node --kubeconfig=/etc/kubernetes/admin.conf
+        #sudo kubectl get pods --all-namespaces -o wide --kubeconfig=/etc/kubernetes/admin.conf
 
         # Create Public Network
         sudo docker network create --subnet 172.20.0.0/24 kube_simple
 
         # Start Add Master Kube-Simple
-        sudo docker run -d --name add-master \
+        sudo docker run -i --name add-master \
                            --net kube_simple \
                            --privileged \
-                           docker:dind
-                           #slzcc/ubuntu:18.04-linuxkit-4.9.184-docker-19.03.12
+                           --entrypoint "" \
+                           slzcc/ubuntu:18.04-linuxkit-4.9.184-docker-19.03.12 dockerd
 
         sudo docker exec -i add-master docker info
         sudo docker cp ~/.ssh/authorized_keys add-master:/root/.ssh/authorized_keys
