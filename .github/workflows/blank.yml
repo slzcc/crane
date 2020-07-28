@@ -84,13 +84,13 @@ jobs:
 
         sudo cp -a crane/ansible.cfg /etc/ansible/ansible.cfg
         sudo usermod -aG docker runner
-        #make local_load_dockerd
+        make local_load_dockerd
 
         # Deploy crane
-        #cd ${WORKDIR}/crane/ && ansible-playbook -i ../kube-simple/nodes main.yml -vv
-        #sleep 120
-        #sudo kubectl get node --kubeconfig=/etc/kubernetes/admin.conf
-        #sudo kubectl get pods --all-namespaces -o wide --kubeconfig=/etc/kubernetes/admin.conf
+        cd ${WORKDIR}/crane/ && ansible-playbook -i ../kube-simple/nodes main.yml -vv
+        sleep 120
+        sudo kubectl get node --kubeconfig=/etc/kubernetes/admin.conf
+        sudo kubectl get pods --all-namespaces -o wide --kubeconfig=/etc/kubernetes/admin.conf
 
         # Create Public Network
         sudo docker network create --subnet 172.20.0.0/24 kube_simple
