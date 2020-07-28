@@ -99,8 +99,7 @@ jobs:
         sudo docker run -i --name add-master \
                            --net kube_simple \
                            --privileged \
-                           --entrypoint "" \
-                           slzcc/ubuntu:18.04-linuxkit-4.9.184-docker-19.03.12 dockerd
+                           slzcc/ubuntu:18.04-linuxkit-4.9.184-docker-19.03.12
 
         sudo docker exec -i add-master docker info
         sudo docker cp ~/.ssh/authorized_keys add-master:/root/.ssh/authorized_keys
