@@ -327,3 +327,5 @@ runAsUser: 33 => runAsUser: 101
 ```
 
 > 因 ansible 获取主机 ansible_default_ipv4.address 如果在多网卡模式下存在 BUG, 可能获取错误的 IP 地址造成无法通讯的问题。
+
+添加 github actions for kube-simple Deploy Crane add-master、add-node、add-etcd 等配置项。
