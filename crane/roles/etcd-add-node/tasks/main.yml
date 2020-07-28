@@ -54,11 +54,15 @@
     - "{{ etcd_add_node_ip_list }}"
     - ['etcd-key.pem', 'etcd.pem']
   delegate_to: "{{ groups['etcd-cluster-add-node'][0] }}"
+  when: "{{ len(etcd_add_node_ip_list) > 1 }}"
 
 - shell: 'rm -rf {{ etcd_ssl_dirs }}*.json {{ etcd_ssl_dirs }}*.csr'
 
 ## Etcd
 ## ********************************************************************************************************************************
+
+- name: Check Etcd TLS Files
+  shell: "ls -l {{ etcd_ssl_dirs }}"
 
 - name: Add Etcd Cluster New Member
   shell: "docker run --rm -i -e ETCDCTL_API=2 -v {{ etcd_ssl_dirs }}:{{ etcd_ssl_dirs }} -w {{ etcd_ssl_dirs }} {{ k8s_cluster_component_registry }}/etcd:{{ etcd_version }} 
