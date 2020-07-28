@@ -116,6 +116,7 @@ jobs:
         
         # Add Master
         cd ${WORKDIR}/crane/ && ansible-playbook -i ../kube-simple/nodes add_master.yml -vv
+        sleep 60
         sudo kubectl get node --kubeconfig=/etc/kubernetes/admin.conf
 
         # Start Add Node Kube-Simple
