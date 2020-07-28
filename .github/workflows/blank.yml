@@ -76,6 +76,7 @@ jobs:
         
         sed -i "s/os_network_device_name:\ .*/os_network_device_name:\ ${INSTANCE_NET_NAME}/g" ${WORKDIR}/crane/group_vars/all.yml
         sed -i "s/k8s_load_balance_ip:\ .*/k8s_load_balance_ip:\ ${INSTANCE_IP}/g" ${WORKDIR}/crane/group_vars/all.yml
+        sed -i "s/is_docker_daemon_config:\ .*/is_docker_daemon_config:\ false/g" ${WORKDIR}/crane/group_vars/all.yml
         sed -i "s/172.20.0.2/${INSTANCE_IP}/g" ${WORKDIR}/kube-simple/nodes
         sed -i 's/false/true/g' ${WORKDIR}/crane/roles/add-ons/defaults/main.yml
         sed -i 's/is_deploy_istio:\ .*/is_deploy_istio: false/g' ${WORKDIR}/crane/roles/add-ons/defaults/main.yml
@@ -101,7 +102,7 @@ jobs:
                            --cap-add=ALL \
                            --memory 4G \
                            --memory-swap 0 \
-                           slzcc/ubuntu:18.04-linuxkit-4.9.184
+                           slzcc/ubuntu:18.04-linuxkit-4.9.184-docker-19.03.12
 
         sudo docker cp ~/.ssh/authorized_keys add-master:/root/.ssh/authorized_keys
         sudo docker exec -i add-master chown root:root /root/.ssh/authorized_keys
@@ -121,7 +122,7 @@ jobs:
                            --cap-add=ALL \
                            --memory 4G \
                            --memory-swap 0 \
-                           slzcc/ubuntu:18.04-linuxkit-4.9.184
+                           slzcc/ubuntu:18.04-linuxkit-4.9.184-docker-19.03.12
 
         sudo docker cp ~/.ssh/authorized_keys add-node:/root/.ssh/authorized_keys
         sudo docker exec -i add-node chown root:root /root/.ssh/authorized_keys
