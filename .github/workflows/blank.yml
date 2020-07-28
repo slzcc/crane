@@ -110,7 +110,7 @@ jobs:
 
         # Deploy crane
         cd ${WORKDIR}/crane/ && ansible-playbook -i ../kube-simple/nodes main.yml -vv
-        sleep 120
+
         sudo kubectl get node --kubeconfig=/etc/kubernetes/admin.conf
         sudo kubectl get pods --all-namespaces -o wide --kubeconfig=/etc/kubernetes/admin.conf
 
