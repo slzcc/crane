@@ -54,8 +54,6 @@
     - "{{ etcd_add_node_ip_list }}"
     - ['etcd-key.pem', 'etcd.pem']
   delegate_to: "{{ groups['etcd-cluster-add-node'][0] }}"
-  when: 
-    - ((etcd_add_node_ip_list | lenght) > 1)
 
 - shell: 'rm -rf {{ etcd_ssl_dirs }}*.json {{ etcd_ssl_dirs }}*.csr'
 
