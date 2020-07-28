@@ -104,6 +104,7 @@ jobs:
                            --memory-swap 0 \
                            slzcc/ubuntu:18.04-linuxkit-4.9.184-docker-19.03.12
 
+        sudo docker exec -i add-master docker info
         sudo docker cp ~/.ssh/authorized_keys add-master:/root/.ssh/authorized_keys
         sudo docker exec -i add-master chown root:root /root/.ssh/authorized_keys
         sudo docker exec -i add-master chmod 600 /root/.ssh/authorized_keys
@@ -124,6 +125,7 @@ jobs:
                            --memory-swap 0 \
                            slzcc/ubuntu:18.04-linuxkit-4.9.184-docker-19.03.12
 
+        sudo docker exec -i add-node docker info
         sudo docker cp ~/.ssh/authorized_keys add-node:/root/.ssh/authorized_keys
         sudo docker exec -i add-node chown root:root /root/.ssh/authorized_keys
         sudo docker exec -i add-node chmod 600 /root/.ssh/authorized_keys
