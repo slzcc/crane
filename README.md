@@ -13,7 +13,11 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 
 部署时支持离线、在线 kubernetes 和 Docker 的安装。
 
-> [Kubernetes 使用注意事项](docs/MattersNeedingAttention.md)
+部署 Crane 时可查看注意事项, 避免无效操作:
+
+> [Crane for Kubernetes 使用注意事项](docs/MattersNeedingAttention.md)
+
+每一个 [Release](https://github.com/slzcc/crane/releases) 版本都严格按照 [Crane for Github Actions](https://github.com/slzcc/crane/actions) 进行检测, 保证服务的稳定性。
 
 # 部署说明
 
