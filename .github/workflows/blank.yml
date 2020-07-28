@@ -35,6 +35,7 @@ jobs:
     - name: Create Images and Push
       run: |
         sudo usermod -aG docker runner
+        sudo docker info
         cd script && \
            bash -x ./PushKubernetesNodeBinaries.sh
 
@@ -76,8 +77,7 @@ jobs:
         
         sed -i "s/os_network_device_name:\ .*/os_network_device_name:\ ${INSTANCE_NET_NAME}/g" ${WORKDIR}/crane/group_vars/all.yml
         sed -i "s/k8s_load_balance_ip:\ .*/k8s_load_balance_ip:\ ${INSTANCE_IP}/g" ${WORKDIR}/crane/group_vars/all.yml
-        #sed -i "s/is_docker_daemon_config:\ .*/is_docker_daemon_config:\ false/g" ${WORKDIR}/crane/group_vars/all.yml
-        sed -i "s/docker_storage_driver:\ .*/docker_storage_driver:\ 'aufs'/g" ${WORKDIR}/crane/group_vars/all.yml
+        sed -i "s/is_docker_daemon_config:\ .*/is_docker_daemon_config:\ false/g" ${WORKDIR}/crane/group_vars/all.yml
         sed -i "s/172.20.0.2/${INSTANCE_IP}/g" ${WORKDIR}/kube-simple/nodes
         sed -i 's/false/true/g' ${WORKDIR}/crane/roles/add-ons/defaults/main.yml
         sed -i 's/is_deploy_istio:\ .*/is_deploy_istio: false/g' ${WORKDIR}/crane/roles/add-ons/defaults/main.yml
@@ -97,9 +97,11 @@ jobs:
         sudo docker network create --subnet 172.20.0.0/24 kube_simple
 
         # Start Add Master Kube-Simple
+        sudo docker run -d -v /docker/add-master:/var/run --privileged docker:19.03.12-dind
         sudo docker run -d --name add-master \
                            --net kube_simple \
                            --privileged \
+                           -v /docker/add-master:/var/run \
                            slzcc/ubuntu:18.04-linuxkit-4.9.184-docker-19.03.12
 
         sudo docker exec -i add-master docker info
@@ -115,9 +117,11 @@ jobs:
         sudo kubectl get node --kubeconfig=/etc/kubernetes/admin.conf
 
         # Start Add Node Kube-Simple
+        sudo docker run -d -v /docker/add-node:/var/run --privileged docker:19.03.12-dind
         sudo docker run -d --name add-node \
                            --net kube_simple \
                            --privileged \
+                           -v /docker/add-node:/var/run \
                            slzcc/ubuntu:18.04-linuxkit-4.9.184-docker-19.03.12
 
         sudo docker exec -i add-node docker info
