@@ -146,14 +146,25 @@ jobs:
         sed -i "/etcd-cluster-add-node/a ${CONTAINER_IP}" ${WORKDIR}/kube-simple/nodes
         
         # Add Etcd
+        sudo kubectl get cs --kubeconfig=/etc/kubernetes/admin.conf
         cd ${WORKDIR}/crane/ && ansible-playbook -i ../kube-simple/nodes add_etcd.yml -vv
+        sleep 60
         sudo kubectl get node --kubeconfig=/etc/kubernetes/admin.conf
+        sudo kubectl get cs --kubeconfig=/etc/kubernetes/admin.conf
 
         # Kubernetes Certificate Rotation
+        ls -l /etc/kubernetes/pki/
         cd ${WORKDIR}/crane/ && ansible-playbook -i ../kube-simple/nodes k8s_certificate_rotation.yml -vv
+        ls -l /etc/kubernetes/pki/
+        sleep 60
+        sudo kubectl get node --kubeconfig=/etc/kubernetes/admin.conf
 
         # Etcd Certificate Rotation
+        ls -l /etc/kubernetes/pki/etcd/
         cd ${WORKDIR}/crane/ && ansible-playbook -i ../kube-simple/nodes etcd_certificate_rotation.yml -vv
+        ls -l /etc/kubernetes/pki/etcd/
+        sleep 60
+        sudo kubectl get node --kubeconfig=/etc/kubernetes/admin.conf
 
         # clean crane
         cd ${WORKDIR}/crane/ && ansible-playbook -i ../kube-simple/nodes remove_cluster.yml -vv
