@@ -407,3 +407,5 @@ is_swap_off: false
 # 是否清除集群时清除 iptables 规则，如果有自己定义的规则，建议关闭此选项，但在清除之前会进行保存
 is_remove_iptables_rule: false
 
+# 是否是 kube-simple 模式
+is_kube_simple: false
