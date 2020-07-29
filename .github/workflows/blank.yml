@@ -137,7 +137,7 @@ jobs:
                            -v crane-add-master-cni-etc:/etc/cni/net.d \
                            -v crane-add-master-etcd:/var/lib/etcd \
                            -v crane-add-master-tmp:/tmp \
-                           --privileged 
+                           --privileged \
                            docker:19.03.12-dind 
 
         sudo docker run -d --name add-master \
@@ -174,7 +174,7 @@ jobs:
                            -v crane-add-node-cni-etc:/etc/cni/net.d \
                            -v crane-add-node-etcd:/var/lib/etcd \
                            -v crane-add-node-tmp:/tmp \
-                           --privileged 
+                           --privileged \
                            docker:19.03.12-dind
 
         sudo docker run -d --name add-node \
