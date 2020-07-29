@@ -60,9 +60,12 @@
 ## Etcd
 ## ********************************************************************************************************************************
 
+- name: Check Etcd TLS Files
+  shell: "ls -l {{ etcd_ssl_dirs }}"
+
 - name: Add Etcd Cluster New Member
-  shell: "docker run --rm -i -e ETCDCTL_API=2 -v {{ etcd_ssl_dirs }}:{{ etcd_ssl_dirs }} -w {{ etcd_ssl_dirs }} {{ k8s_cluster_component_registry }}/etcd:{{ etcd_version }} 
-          etcdctl --ca-file=./etcd-ca.pem --key-file=./etcd-key.pem --cert-file=./etcd.pem --endpoints {{ etcd_cluster_str }} member add {{ hostvars[inventory_hostname].ansible_nodename }} https://{{ hostvars[inventory_hostname].ansible_default_ipv4.address }}:{{ etcd_peer_port }}"
+  shell: "docker run --rm -i -v {{ etcd_ssl_dirs }}:{{ etcd_ssl_dirs }} -w {{ etcd_ssl_dirs }} {{ k8s_cluster_component_registry }}/etcd:{{ etcd_version }} 
+          etcdctl --cacert {{ etcd_ssl_dirs }}etcd-ca.pem --key {{ etcd_ssl_dirs }}etcd-key.pem --cert {{ etcd_ssl_dirs }}etcd.pem --endpoints {{ etcd_cluster_str }} member add {{ hostvars[inventory_hostname].ansible_nodename }} --peer-urls=https://{{ hostvars[inventory_hostname].ansible_default_ipv4.address }}:{{ etcd_peer_port }}"
 
 - name: Copy Etcd Config Files to Kubernetes Master/None
   template: 

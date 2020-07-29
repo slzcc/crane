@@ -1,5 +1,5 @@
 
-name: CI
+name: Crane Deploy Testing
 
 on:
   push:
@@ -35,6 +35,7 @@ jobs:
     - name: Create Images and Push
       run: |
         sudo usermod -aG docker runner
+        sudo docker info
         cd script && \
            bash -x ./PushKubernetesNodeBinaries.sh
 
@@ -57,6 +58,7 @@ jobs:
     - name: Initialize Crane Config
       run: |
         ls -l
+        export WORKDIR=~/work/crane/crane
         sudo chmod 777 /etc/ssh/sshd_config
         sudo sed -i 's/#PermitRootLogin\ .*/PermitRootLogin\ yes/g' /etc/ssh/sshd_config
         sudo systemctl restart sshd
@@ -72,18 +74,156 @@ jobs:
 
         INSTANCE_IP=`ip a | grep 'scope global eth0' | grep -v 127.0.0.1 | grep -v inet6 | awk '{print $2}' | awk -F/ '{print $1}'`
         INSTANCE_NET_NAME=`ifconfig | egrep ^eth0 | awk -F: '{print $1}'`
-        
-        sed -i "s/os_network_device_name:\ .*/os_network_device_name:\ ${INSTANCE_NET_NAME}/g" crane/group_vars/all.yml
-        sed -i "s/k8s_load_balance_ip:\ .*/k8s_load_balance_ip:\ ${INSTANCE_IP}/g" crane/group_vars/all.yml
-        sed -i "s/172.20.0.2/${INSTANCE_IP}/g" kube-simple/nodes
-        sed -i 's/false/true/g' crane/roles/add-ons/defaults/main.yml
-        sed -i 's/is_deploy_istio:\ .*/is_deploy_istio: false/g' crane/roles/add-ons/defaults/main.yml
+
+        sed -i "s/os_network_device_name:\ .*/os_network_device_name:\ ${INSTANCE_NET_NAME}/g" ${WORKDIR}/crane/group_vars/all.yml
+        sed -i "s/k8s_load_balance_ip:\ .*/k8s_load_balance_ip:\ ${INSTANCE_IP}/g" ${WORKDIR}/crane/group_vars/all.yml
+        sed -i "s/is_docker_daemon_config:\ .*/is_docker_daemon_config:\ false/g" ${WORKDIR}/crane/group_vars/all.yml
+        sed -i "s/is_kube_simple:\ .*/is_kube_simple:\ true/g" ${WORKDIR}/crane/group_vars/all.yml
+        sed -i "s/172.20.0.2/${INSTANCE_IP}/g" ${WORKDIR}/kube-simple/nodes
+        sed -i 's/false/true/g' ${WORKDIR}/crane/roles/add-ons/defaults/main.yml
+        sed -i 's/is_deploy_istio:\ .*/is_deploy_istio: false/g' ${WORKDIR}/crane/roles/add-ons/defaults/main.yml
+        sed -i "s/docker_install_type:\ \"http_binary\"/docker_install_type:\ \"local_binary\"/g" ${WORKDIR}/crane/group_vars/all.yml
 
         sudo cp -a crane/ansible.cfg /etc/ansible/ansible.cfg
         sudo usermod -aG docker runner
+        make local_load_dockerd
+        
+        # Create Public Network
+        sudo docker network create --subnet 172.20.0.0/24 kube_simple
 
-        cd crane/ && ansible-playbook -i ../kube-simple/nodes main.yml -vv
-        sleep 120
+        # Start Crane Node
+        sudo docker run -d -v crane-node-socket:/var/run \
+                           -v crane-node-k8s-etc:/etc/kubernetes \
+                           -v crane-node-k8s-kubelet:/var/lib/kubelet \
+                           -v crane-node-cni-bin:/opt/cni/bin \
+                           -v crane-node-cni-etc:/etc/cni/net.d \
+                           -v crane-node-etcd:/var/lib/etcd \
+                           -v crane-node-tmp:/tmp \
+                           --privileged \
+                           docker:19.03.12-dind 
+
+        sudo docker run -d --name crane-node \
+                           --net kube_simple \
+                           --privileged \
+                           -v crane-node-socket:/var/run \
+                           -v crane-node-k8s-etc:/etc/kubernetes \
+                           -v crane-node-k8s-kubelet:/var/lib/kubelet \
+                           -v crane-node-cni-bin:/opt/cni/bin \
+                           -v crane-node-cni-etc:/etc/cni/net.d \
+                           -v crane-node-etcd:/var/lib/etcd \
+                           -v crane-node-tmp:/tmp \
+                           --entrypoint "/sbin/init" \
+                           slzcc/ubuntu:18.04-linuxkit-4.9.184-docker-19.03.12
+
+        sleep 10
+        sudo docker exec -i crane-node docker info
+        sudo docker cp ~/.ssh/authorized_keys crane-node:/root/.ssh/authorized_keys
+        sudo docker exec -i crane-node chown root:root /root/.ssh/authorized_keys
+        sudo docker exec -i crane-node chmod 600 /root/.ssh/authorized_keys
+        export CONTAINER_IP=`docker inspect crane-node --format "{{ .NetworkSettings.Networks.kube_simple.IPAddress }}"`
+        sed -i "/kube-node/a ${CONTAINER_IP}" ${WORKDIR}/kube-simple/nodes
+
+        # Deploy crane
+        cd ${WORKDIR}/crane/ && ansible-playbook -i ../kube-simple/nodes main.yml -vv
+
         sudo kubectl get node --kubeconfig=/etc/kubernetes/admin.conf
-        sudo kubectl get pods --all-namespaces --kubeconfig=/etc/kubernetes/admin.conf
+        sudo kubectl get pods --all-namespaces -o wide --kubeconfig=/etc/kubernetes/admin.conf
+
+        # Start Add Master Kube-Simple
+        sudo docker run -d -v crane-add-master-socket:/var/run \
+                           -v crane-add-master-k8s-etc:/etc/kubernetes \
+                           -v crane-add-master-k8s-kubelet:/var/lib/kubelet \
+                           -v crane-add-master-cni-bin:/opt/cni/bin \
+                           -v crane-add-master-cni-etc:/etc/cni/net.d \
+                           -v crane-add-master-etcd:/var/lib/etcd \
+                           -v crane-add-master-tmp:/tmp \
+                           --privileged \
+                           docker:19.03.12-dind 
+
+        sudo docker run -d --name add-master \
+                           --net kube_simple \
+                           --privileged \
+                           -v crane-add-master-socket:/var/run \
+                           -v crane-add-master-k8s-etc:/etc/kubernetes \
+                           -v crane-add-master-k8s-kubelet:/var/lib/kubelet \
+                           -v crane-add-master-cni-bin:/opt/cni/bin \
+                           -v crane-add-master-cni-etc:/etc/cni/net.d \
+                           -v crane-add-master-etcd:/var/lib/etcd \
+                           -v crane-add-master-tmp:/tmp \
+                           --entrypoint "/sbin/init" \
+                           slzcc/ubuntu:18.04-linuxkit-4.9.184-docker-19.03.12
+
+        sleep 10
+        sudo docker exec -i add-master docker info
+        sudo docker cp ~/.ssh/authorized_keys add-master:/root/.ssh/authorized_keys
+        sudo docker exec -i add-master chown root:root /root/.ssh/authorized_keys
+        sudo docker exec -i add-master chmod 600 /root/.ssh/authorized_keys
+        export CONTAINER_IP=`docker inspect add-master --format "{{ .NetworkSettings.Networks.kube_simple.IPAddress }}"`
+        sed -i "/k8s-cluster-add-master/a ${CONTAINER_IP}" ${WORKDIR}/kube-simple/nodes
+        
+        # Add Master
+        cd ${WORKDIR}/crane/ && ansible-playbook -i ../kube-simple/nodes add_master.yml -vv
+        sleep 60
+        sudo kubectl get node --kubeconfig=/etc/kubernetes/admin.conf
+
+        # Start Add Node Kube-Simple
+        sudo docker run -d -v crane-add-node-socket:/var/run \
+                           -v crane-add-node-k8s-etc:/etc/kubernetes \
+                           -v crane-add-node-k8s-kubelet:/var/lib/kubelet \
+                           -v crane-add-node-cni-bin:/opt/cni/bin \
+                           -v crane-add-node-cni-etc:/etc/cni/net.d \
+                           -v crane-add-node-etcd:/var/lib/etcd \
+                           -v crane-add-node-tmp:/tmp \
+                           --privileged \
+                           docker:19.03.12-dind
+
+        sudo docker run -d --name add-node \
+                           --net kube_simple \
+                           --privileged \
+                           -v crane-add-node-socket:/var/run \
+                           -v crane-add-node-k8s-etc:/etc/kubernetes \
+                           -v crane-add-node-k8s-kubelet:/var/lib/kubelet \
+                           -v crane-add-node-cni-bin:/opt/cni/bin \
+                           -v crane-add-node-cni-etc:/etc/cni/net.d \
+                           -v crane-add-node-etcd:/var/lib/etcd \
+                           -v crane-add-node-tmp:/tmp \
+                           --entrypoint "/sbin/init" \
+                           slzcc/ubuntu:18.04-linuxkit-4.9.184-docker-19.03.12
+
+        sleep 20
+        sudo docker exec -i add-node docker info
+        sudo docker cp ~/.ssh/authorized_keys add-node:/root/.ssh/authorized_keys
+        sudo docker exec -i add-node chown root:root /root/.ssh/authorized_keys
+        sudo docker exec -i add-node chmod 600 /root/.ssh/authorized_keys
+        export CONTAINER_IP=`docker inspect add-node --format "{{ .NetworkSettings.Networks.kube_simple.IPAddress }}"`
+        sed -i "/k8s-cluster-add-node/a ${CONTAINER_IP}" ${WORKDIR}/kube-simple/nodes
+        
+        # Add Node
+        cd ${WORKDIR}/crane/ && ansible-playbook -i ../kube-simple/nodes add_nodes.yml -vv
+        sleep 60
+        sudo kubectl get node --kubeconfig=/etc/kubernetes/admin.conf
+
+        # Kubernetes Certificate Rotation
+        ls -l /etc/kubernetes/pki/
+        cd ${WORKDIR}/crane/ && ansible-playbook -i ../kube-simple/nodes k8s_certificate_rotation.yml -vv
+        ls -l /etc/kubernetes/pki/
+        sleep 60
+        sudo kubectl get node --kubeconfig=/etc/kubernetes/admin.conf
+
+        # Etcd Certificate Rotation
+        ls -l /etc/kubernetes/pki/etcd/
+        cd ${WORKDIR}/crane/ && ansible-playbook -i ../kube-simple/nodes etcd_certificate_rotation.yml -vv
+        ls -l /etc/kubernetes/pki/etcd/
+        sleep 60
+        sudo kubectl get node --kubeconfig=/etc/kubernetes/admin.conf
+
+        # Start Add Etcd
+        sed -i "/etcd-cluster-add-node/a ${CONTAINER_IP}" ${WORKDIR}/kube-simple/nodes
+        
+        # Add Etcd
+        sudo kubectl get cs --kubeconfig=/etc/kubernetes/admin.conf
+        cd ${WORKDIR}/crane/ && ansible-playbook -i ../kube-simple/nodes add_etcd.yml -vv
+
+        # clean crane
+        cd ${WORKDIR}/crane/ && ansible-playbook -i ../kube-simple/nodes remove_cluster.yml -vv
       shell: bash
