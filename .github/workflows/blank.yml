@@ -130,7 +130,7 @@ jobs:
         sudo kubectl get pods --all-namespaces -o wide --kubeconfig=/etc/kubernetes/admin.conf
 
         # Start Add Master Kube-Simple
-        sudo docker run -d -v crane-add-master-socket:/var/run \ 
+        sudo docker run -d -v crane-add-master-socket:/var/run \
                            -v crane-add-master-k8s-etc:/etc/kubernetes \
                            -v crane-add-master-k8s-kubelet:/var/lib/kubelet \
                            -v crane-add-master-cni-bin:/opt/cni/bin \
@@ -167,7 +167,7 @@ jobs:
         sudo kubectl get node --kubeconfig=/etc/kubernetes/admin.conf
 
         # Start Add Node Kube-Simple
-        sudo docker run -d -v crane-add-node-socket:/var/run \ 
+        sudo docker run -d -v crane-add-node-socket:/var/run \
                            -v crane-add-node-k8s-etc:/etc/kubernetes \
                            -v crane-add-node-k8s-kubelet:/var/lib/kubelet \
                            -v crane-add-node-cni-bin:/opt/cni/bin \
