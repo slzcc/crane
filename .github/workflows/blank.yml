@@ -1,5 +1,5 @@
 
-name: CI
+name: Crane Deploy Testing
 
 on:
   push:
@@ -209,7 +209,7 @@ jobs:
         # Add Etcd
         sudo kubectl get cs --kubeconfig=/etc/kubernetes/admin.conf
         cd ${WORKDIR}/crane/ && ansible-playbook -i ../kube-simple/nodes add_etcd.yml -vv
-        sleep 60
+        sleep 180
         sudo kubectl get node --kubeconfig=/etc/kubernetes/admin.conf
         sudo kubectl get cs --kubeconfig=/etc/kubernetes/admin.conf
 
