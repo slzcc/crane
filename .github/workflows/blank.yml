@@ -105,7 +105,6 @@ jobs:
         sudo docker run -d --name crane-node \
                            --net kube_simple \
                            --privileged \
-                           -v /home/runner/.ssh/:/root/.ssh/ \
                            -v crane-node-socket:/var/run \
                            -v crane-node-k8s-etc:/etc/kubernetes \
                            -v crane-node-k8s-kubelet:/var/lib/kubelet \
@@ -118,6 +117,9 @@ jobs:
 
         sleep 10
         sudo docker exec -i crane-node docker info
+        sudo docker cp ~/.ssh/authorized_keys crane-node:/root/.ssh/authorized_keys
+        sudo docker exec -i crane-node chown root:root /root/.ssh/authorized_keys
+        sudo docker exec -i crane-node chmod 600 /root/.ssh/authorized_keys
         export CONTAINER_IP=`docker inspect crane-node --format "{{ .NetworkSettings.Networks.kube_simple.IPAddress }}"`
         sed -i "/kube-node/a ${CONTAINER_IP}" ${WORKDIR}/kube-simple/nodes
 
@@ -141,7 +143,6 @@ jobs:
         sudo docker run -d --name add-master \
                            --net kube_simple \
                            --privileged \
-                           -v /home/runner/.ssh/:/root/.ssh/ \
                            -v crane-add-master-socket:/var/run \
                            -v crane-add-master-k8s-etc:/etc/kubernetes \
                            -v crane-add-master-k8s-kubelet:/var/lib/kubelet \
@@ -154,6 +155,9 @@ jobs:
 
         sleep 10
         sudo docker exec -i add-master docker info
+        sudo docker cp ~/.ssh/authorized_keys add-master:/root/.ssh/authorized_keys
+        sudo docker exec -i add-master chown root:root /root/.ssh/authorized_keys
+        sudo docker exec -i add-master chmod 600 /root/.ssh/authorized_keys
         export CONTAINER_IP=`docker inspect add-master --format "{{ .NetworkSettings.Networks.kube_simple.IPAddress }}"`
         sed -i "/k8s-cluster-add-master/a ${CONTAINER_IP}" ${WORKDIR}/kube-simple/nodes
         
@@ -176,7 +180,6 @@ jobs:
         sudo docker run -d --name add-node \
                            --net kube_simple \
                            --privileged \
-                           -v /home/runner/.ssh/:/root/.ssh/ \
                            -v crane-add-node-socket:/var/run \
                            -v crane-add-node-k8s-etc:/etc/kubernetes \
                            -v crane-add-node-k8s-kubelet:/var/lib/kubelet \
@@ -189,6 +192,9 @@ jobs:
 
         sleep 20
         sudo docker exec -i add-node docker info
+        sudo docker cp ~/.ssh/authorized_keys add-node:/root/.ssh/authorized_keys
+        sudo docker exec -i add-node chown root:root /root/.ssh/authorized_keys
+        sudo docker exec -i add-node chmod 600 /root/.ssh/authorized_keys
         export CONTAINER_IP=`docker inspect add-node --format "{{ .NetworkSettings.Networks.kube_simple.IPAddress }}"`
         sed -i "/k8s-cluster-add-node/a ${CONTAINER_IP}" ${WORKDIR}/kube-simple/nodes
         
