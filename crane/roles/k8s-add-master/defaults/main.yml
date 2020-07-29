@@ -1,6 +1,6 @@
 k8s_master_ip_str: >-
   {% for host in groups['kube-master'] -%}
-    {{ hostvars[host].ansible_default_ipv4.address }}
+    {{ host }}
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}
 
@@ -12,7 +12,7 @@ k8s_master_name_str: >-
 
 add_node_ip_list: >-
   [{% for host in groups['k8s-cluster-add-node'] -%}
-    '{{ hostvars[host].ansible_default_ipv4.address }}'
+    '{{ host }}'
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}]
 
@@ -24,7 +24,7 @@ add_node_name_list: >-
 
 add_master_ip_list: >-
   [{% for host in groups['k8s-cluster-add-master'] -%}
-    '{{ hostvars[host].ansible_default_ipv4.address }}'
+    '{{ host }}'
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}]
 

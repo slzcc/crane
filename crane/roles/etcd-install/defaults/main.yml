@@ -34,19 +34,19 @@ tls_etcd_head_info_ST: 'BeiJing'
 ## ********************************************************************************************************************************
 k8s_master_ip_list: >-
   [{% for host in groups['kube-master'] -%}
-    '{{ hostvars[host].ansible_default_ipv4.address }}'
+    '{{ host }}'
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}]
 
 etcd_master_ip_str: >-
   {% for host in groups['etcd'] -%}
-    {{ hostvars[host].ansible_default_ipv4.address }}
+    {{ host }}
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}
 
 etcd_master_ip_list: >-
   [{% for host in groups['kube-master'] -%}
-    '{{ hostvars[host].ansible_default_ipv4.address }}'
+    '{{ host }}'
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}]
 

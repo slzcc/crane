@@ -38,9 +38,9 @@
 #         }
 #         EOF'
 
-- name: Copy Kubernetes Proxy Config Files
-  template: 
-    src: "roles/kubernetes-networks/templates/kube-proxy.j2"
-    dest: "{{ temporary_dirs }}kube-proxy.yml"
-    mode: 0644
-    owner: "{{ ssh_connect_user }}"
+# - name: Copy Kubernetes Proxy Config Files
+#   template: 
+#     src: "roles/kubernetes-networks/templates/kube-proxy.j2"
+#     dest: "{{ temporary_dirs }}kube-proxy.yml"
+#     mode: 0644
+#     owner: "{{ ssh_connect_user }}"
