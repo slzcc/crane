@@ -93,7 +93,6 @@ jobs:
 
         # Start Crane Node
         sudo docker run -d -v crane-node-socket:/var/run \ 
-                           -v crane-node-docker:/var/lib/docker \
                            -v crane-node-k8s-etc:/etc/kubernetes \
                            -v crane-node-k8s-kubelet:/var/lib/kubelet \
                            -v crane-node-cni-bin:/opt/cni/bin \
@@ -105,9 +104,8 @@ jobs:
         sudo docker run -d --name crane-node \
                            --net kube_simple \
                            --privileged \
-                           -v ${HOME}/.ssh/authorized_keys:/root/.ssh/authorized_keys \
+                           -v /home/runner/.ssh/authorized_keys:/root/.ssh/authorized_keys \
                            -v crane-node-socket:/var/run \ 
-                           -v crane-node-docker:/var/lib/docker \
                            -v crane-node-k8s-etc:/etc/kubernetes \
                            -v crane-node-k8s-kubelet:/var/lib/kubelet \
                            -v crane-node-cni-bin:/opt/cni/bin \
@@ -130,7 +128,6 @@ jobs:
 
         # Start Add Master Kube-Simple
         sudo docker run -d -v crane-add-master-socket:/var/run \ 
-                           -v crane-add-master-docker:/var/lib/docker \
                            -v crane-add-master-k8s-etc:/etc/kubernetes \
                            -v crane-add-master-k8s-kubelet:/var/lib/kubelet \
                            -v crane-add-master-cni-bin:/opt/cni/bin \
@@ -142,9 +139,8 @@ jobs:
         sudo docker run -d --name add-master \
                            --net kube_simple \
                            --privileged \
-                           -v ${HOME}/.ssh/authorized_keys:/root/.ssh/authorized_keys \
+                           -v /home/runner/.ssh/authorized_keys:/root/.ssh/authorized_keys \
                            -v crane-add-master-socket:/var/run \ 
-                           -v crane-add-master-docker:/var/lib/docker \
                            -v crane-add-master-k8s-etc:/etc/kubernetes \
                            -v crane-add-master-k8s-kubelet:/var/lib/kubelet \
                            -v crane-add-master-cni-bin:/opt/cni/bin \
@@ -166,7 +162,6 @@ jobs:
 
         # Start Add Node Kube-Simple
         sudo docker run -d -v crane-add-node-socket:/var/run \ 
-                           -v crane-add-node-docker:/var/lib/docker \
                            -v crane-add-node-k8s-etc:/etc/kubernetes \
                            -v crane-add-node-k8s-kubelet:/var/lib/kubelet \
                            -v crane-add-node-cni-bin:/opt/cni/bin \
@@ -178,9 +173,8 @@ jobs:
         sudo docker run -d --name add-node \
                            --net kube_simple \
                            --privileged \
-                           -v ${HOME}/.ssh/authorized_keys:/root/.ssh/authorized_keys \
+                           -v /home/runner/.ssh/authorized_keys:/root/.ssh/authorized_keys \
                            -v crane-add-node-socket:/var/run \ 
-                           -v crane-add-node-docker:/var/lib/docker \
                            -v crane-add-node-k8s-etc:/etc/kubernetes \
                            -v crane-add-node-k8s-kubelet:/var/lib/kubelet \
                            -v crane-add-node-cni-bin:/opt/cni/bin \
