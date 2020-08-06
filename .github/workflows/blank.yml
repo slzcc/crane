@@ -217,6 +217,9 @@ jobs:
         sleep 60
         sudo kubectl get node --kubeconfig=/etc/kubernetes/admin.conf
 
+        # Upgrade Kubernetes
+        cd ${WORKDIR}/crane/ && ansible-playbook -i ../kube-simple/nodes upgrade_version.yml -vv
+
         # Start Add Etcd
         sed -i "/etcd-cluster-add-node/a ${CONTAINER_IP}" ${WORKDIR}/kube-simple/nodes
         
