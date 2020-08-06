@@ -67,7 +67,7 @@ ansible in docker 如果使用部署机器中的某一个实例并使用离线�
 
 ### apiServer
 
-如果发现 aoiServer 日志输出如下:
+如果发现 apiServer 日志输出如下:
 
 ```
 I0722 20:27:25.279953       1 log.go:172] http: TLS handshake error from 10.200.1.127:47606: read tcp 10.200.1.127:5443->10.200.1.127:47606: read: connection reset by peer

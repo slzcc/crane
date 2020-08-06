@@ -6,7 +6,7 @@
 
 - name: Install Docker-ce
   include: roles/docker-install/includes/main.yaml
-  when: result.stderr or is_mandatory_docker_install
+  when: is_mandatory_docker_install or result.stderr
 
 - name: Check DockerD Daemon.js isFile
   shell: "ls /etc/docker/daemon.json"
@@ -42,7 +42,7 @@
     
 - name: Stop DockerD
   service:
-    name: docker
+    name: ["docker", "containerd"]
     state: stopped
   when: 
     - is_docker_daemon_config 
@@ -66,8 +66,7 @@
     mode: 0644
     owner: "{{ ssh_connect_user }}"
   when: 
-    - is_docker_daemon_config
-    - check_daemon_file.stderr != ''
+    - is_mandatory_docker_config or is_docker_daemon_config and check_daemon_file.stderr != ''
   ignore_errors: true
   
 - name: Docker-ce Powered UP And Startd
