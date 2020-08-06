@@ -31,6 +31,7 @@
     - [v1.18.6.5 更新内容](#v11865-更新内容)
     - [v1.18.6.6 更新内容](#v11866-更新内容)
     - [v1.18.6.7 更新内容](#v11867-更新内容)
+    - [v1.18.6.8 更新内容](#v11868-更新内容)
 
 # v1.18.0.0
 
@@ -329,3 +330,15 @@ runAsUser: 33 => runAsUser: 101
 > 因 ansible 获取主机 ansible_default_ipv4.address 如果在多网卡模式下存在 BUG, 可能获取错误的 IP 地址造成无法通讯的问题。
 
 添加 github actions for kube-simple Deploy Crane add-master、add-node、add-etcd 等配置项。
+
+对 add-etcd 修改 ETCD V2 API 为 ETCD V3 API。
+
+### v1.18.6.8 更新内容
+
+添加 docker install 中 `daemon.json` 文件的强制覆盖策略。
+
+修复 docker install `is_mandatory_docker_install` 的优先级问题。
+
+添加 docker install 中停止 `containerd` 服务的运行。
+
+添加 kubelet 启动时如果 kernel 低于 4.3 时将添加 `--feature-gates SupportPodPidsLimit=false --feature-gates SupportNodePidsLimit=false` 配置项。

@@ -7,7 +7,7 @@
 k8s_version: 'v1.18.6'
 
 # 避免大版本中组件的版本差异, 使用 build 版本作为差异配置项, 在项目中可以看做如下使用 '{{ k8s_version }}.{{ build_k8s_version }}'
-build_k8s_version: '7'
+build_k8s_version: '8'
 
 # 部署 CNI 对应版本, 如使用镜像方式部署, 不能修改 (如果可以使用 {{ k8s_cluster_component_registry }} 中的仓库地址获取镜像则可随意修改)
 # https://github.com/containernetworking/plugins/releases/
@@ -84,6 +84,9 @@ is_rbac: false
 
 # kubernetes CA Config 请参照: roles/kubernetes-default/defaults/main.yml
 
+# kubernetes 最低 kernel 否则关闭相应的功能
+min_kernel_version: 4.3
+
 ## Kuber Network
 ## ********************************************************************************************************************************
 
@@ -132,6 +135,10 @@ kubelet_options: "--cgroup-driver={{ kubelet_cgroup_drive }} --network-plugin=cn
 ## GC DOCS https://kubernetes.io/docs/tasks/administer-cluster/out-of-resource/
 kubectl_gc_options: "--eviction-hard='memory.available<100Mi,nodefs.available<5%,imagefs.available<5%,nodefs.inodesFree<5%' --eviction-minimum-reclaim='memory.available=0Mi,nodefs.available=500Mi,imagefs.available=2Gi' --system-reserved=memory=1Gi"
 
+# 当 kernel 版本低于 min_kernel_version 时, 则添加部分配置以方便阻止 kubelet 启动时加载 kernel 新功能异常报错
+# DOCS: https://github.com/kubernetes/kubernetes/issues/79046
+kubelet_low_kernel_config: '--feature-gates SupportPodPidsLimit=false --feature-gates SupportNodePidsLimit=false'
+
 ## External Proxy
 ## ********************************************************************************************************************************
 # 执行过程中使用 Wget or Curl 时可以借助代理执行. (下载包文件与镜像部署方式没有交集，镜像部署已经包含这一步骤)
@@ -151,9 +158,6 @@ time_location: "Asia/Shanghai"
 
 ## Docker
 ## ********************************************************************************************************************************
-
-# 强制安装 Docker, 当可能存在不同版本 Docker 可以强制安装统一版本
-is_mandatory_docker_install: false
 
 # install To Docker Version
 docker_version: '19.03.12'
@@ -179,6 +183,7 @@ docker_data_root: '/var/lib/docker'
 # Docker Image 存储驱动, 默认系统自识别
 # 因部分 xfs 底层存储 ftype=0, 会造成 overlay2 无法正常使用, 请自行解决.
 # DOCS https://docs.docker.com/storage/storagedriver/overlayfs-driver/
+# 问题指南: https://www.jianshu.com/p/00ffd8df6010
 docker_storage_driver: ""
 
 # 允许的不安全 Registry 地址
@@ -198,6 +203,12 @@ is_docker_daemon_config: true
 # Docker Systemd Options:
 # Example: '"HTTP_PROXY=http://{{ http_proxy }}" "HTTPS_PROXY=http://{{ https_proxy }}" "NO_PROXY=localhost,127.0.0.1"'
 docker_systemd_env_option: ''
+
+# 强制安装 Docker, 当可能存在不同版本 Docker 可以强制安装统一版本
+is_mandatory_docker_install: false
+
+# 强制覆盖 daemon.json 配置文件
+is_mandatory_docker_config: false
 
 # NVIDIA 驱动
 # Docs: https://github.com/NVIDIA/nvidia-docker
