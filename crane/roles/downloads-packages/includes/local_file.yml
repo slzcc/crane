@@ -20,5 +20,5 @@
   when: check_k8s_image is failed
 
 - name: Image Deploy
-  include: roles/downloads-packages/includes/image_deploy.yml
+  include_tasks: roles/downloads-packages/includes/image_deploy.yml
   when: check_k8s_image is failed

@@ -1,8 +1,8 @@
 ---
 - name: Ubuntu Install Docker-ce roles
-  include: roles/docker-install/includes/ubuntu.yaml
+  include_tasks: roles/docker-install/includes/ubuntu.yaml
   when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
 
 - name: Centos Install Docker-ce roles
-  include: roles/docker-install/includes/centos.yaml
+  include_tasks: roles/docker-install/includes/centos.yaml
   when: ansible_distribution == 'CentOS'
