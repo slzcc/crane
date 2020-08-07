@@ -58,7 +58,7 @@
             --kubeconfig={{ kubernetes_etc_dirs }}bootstrap-kubelet.conf"
 
 - name: File Empowerment
-  shell: chown {{ ssh_connect_user }} {{ kubernetes_etc_dirs }}bootstrap-kubelet.conf
+  shell: "chown {{ ssh_connect_user }} {{ kubernetes_etc_dirs }}bootstrap-kubelet.conf"
 
 - name: Clean Cluster in TLS bootstrap secret.
   shell: "{{ kubernetes_ctl_path }}kubectl delete -f {{ bootstrappers_yaml_path }}"
@@ -91,6 +91,5 @@
   shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}kubelet-bootstrap-rbac.yml ; do >&2 echo "Starting..." && sleep 1 ; done'
 
 - name: Deploy Kubernetes Certification Files
-  include_tasks: includes/main.yml
-  run_once: true
+  include: includes/main.yml
   delegate_to: "{{ groups['kube-master'][0] }}"
