@@ -3,11 +3,11 @@
 ## ********************************************************************************************************************************
 
 - name: Download CFSSL 
-  include: includes/download_deploy.yml
+  include_tasks: includes/download_deploy.yml
   when: not is_using_local_files_deploy
 
 - name: Image CFSSL 
-  include: includes/image_deploy.yml
+  include_tasks: includes/image_deploy.yml
   when: is_using_local_files_deploy
 
 ## Copy CFSSL Etcd Json Files

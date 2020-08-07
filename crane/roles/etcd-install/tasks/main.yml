@@ -2,7 +2,7 @@
 ## Copy Etcd Config Files to Kubernetes Master
 ## ********************************************************************************************************************************
 - name: Generate Etcd CA
-  include: includes/main.yml
+  include_tasks: includes/main.yml
   run_once: true
   delegate_to: "{{ etcd_master_one_host }}"
 
