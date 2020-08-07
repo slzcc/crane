@@ -31,7 +31,7 @@
     owner: "{{ ssh_connect_user }}"
 
 - name: Create Kubelet PEM
-  include: includes/kubelet_pem.yml
+  include_tasks: includes/kubelet_pem.yml
   
 - name: System Reload
   shell: "systemctl daemon-reload"
@@ -42,7 +42,7 @@
     enabled: yes
 
 - name: Copy admin.yml To Home
-  include: includes/admin.yml
+  include_tasks: includes/admin.yml
   
 - name: Relaod Config
   service: 

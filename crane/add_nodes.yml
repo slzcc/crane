@@ -34,7 +34,7 @@
     - { role: system-initialize, tags: [system]}
     - { role: downloads-packages, tags: [packages]}
   tasks:
-    - { include: 'roles/kubernetes-default/includes/main.yml' }
+    - { include_tasks: 'roles/kubernetes-default/includes/main.yml' }
 
 - name: Create Bootstrap Config Files to Nodes.
   hosts: kube-master[0]
@@ -45,7 +45,7 @@
   vars_files:
     - "roles/kubernetes-bootstraps/defaults/main.yml"
   tasks:
-    - { include: roles/kubernetes-bootstraps/includes/create-bootstrap.yml }
+    - { include_tasks: roles/kubernetes-bootstraps/includes/create-bootstrap.yml }
 
 - name: Copy Cluster CA Files to Nodes.
   hosts: kube-master[0]

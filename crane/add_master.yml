@@ -34,7 +34,7 @@
     - { role: system-initialize, tags: [system]}
     - { role: downloads-packages, tags: [packages]}
   tasks:
-    - { include: 'roles/kubernetes-default/includes/main.yml' }
+    - { include_tasks: 'roles/kubernetes-default/includes/main.yml' }
 
 - name: Run Nodes
   hosts: k8s-cluster-add-master
@@ -54,7 +54,7 @@
   vars_files:
     - "roles/k8s-add-master/defaults/main.yml"
   tasks:
-    - { include: roles/k8s-add-master/includes/main.yml }
+    - { include_tasks: roles/k8s-add-master/includes/main.yml }
     
 - name: Add Nodes
   hosts: k8s-cluster-add-master
@@ -75,4 +75,4 @@
   vars:
     ansible_ssh_pipelining: true
   tasks:
-    - { include: roles/k8s-add-master/includes/update-haproxy.yml }
+    - { include_tasks: roles/k8s-add-master/includes/update-haproxy.yml }
