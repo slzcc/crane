@@ -41,7 +41,7 @@
   roles:
     - { role: downloads-packages, tags: [packages]}
   tasks:
-    - { include: roles/kubernetes-default/includes/main.yml }
+    - { include_tasks: roles/kubernetes-default/includes/main.yml }
 
 - name: Cluster Master Configuration File Deployment, CFSSL Generated CA
   hosts: kube-master[0]

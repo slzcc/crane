@@ -58,7 +58,7 @@
             --kubeconfig={{ kubernetes_etc_dirs }}bootstrap-kubelet.conf"
 
 - name: File Empowerment
-  shell: chown {{ ssh_connect_user }} {{ kubernetes_etc_dirs }}bootstrap-kubelet.conf
+  shell: "chown {{ ssh_connect_user }} {{ kubernetes_etc_dirs }}bootstrap-kubelet.conf"
 
 - name: Clean Cluster in TLS bootstrap secret.
   shell: "{{ kubernetes_ctl_path }}kubectl delete -f {{ bootstrappers_yaml_path }}"
@@ -77,7 +77,7 @@
   ignore_errors: true
 
 - name: Deploy Bootstrap for Error do it Again.
-  include: includes/create-bootstrap.yml
+  include_tasks: includes/create-bootstrap.yml
   when: result.stderr
 
 - name: Copy Kubelet Bootstrap RBAC.
@@ -92,5 +92,4 @@
 
 - name: Deploy Kubernetes Certification Files
   include: includes/main.yml
-  run_once: true
   delegate_to: "{{ groups['kube-master'][0] }}"

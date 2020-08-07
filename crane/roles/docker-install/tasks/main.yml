@@ -5,7 +5,7 @@
   ignore_errors: true
 
 - name: Install Docker-ce
-  include: roles/docker-install/includes/main.yaml
+  include_tasks: roles/docker-install/includes/main.yaml
   when: is_mandatory_docker_install or result.stderr
 
 - name: Check DockerD Daemon.js isFile
@@ -51,7 +51,7 @@
     - not is_kube_simple
   ignore_errors: true
 
-- name: mkdir Docker Config DIR
+- name: Create Docker Config DIR
   file:
     path: "/etc/docker"
     mode: 0755

@@ -2,21 +2,21 @@
 # Kubernetes
 ## ********************************************************************************************************************************
 - name: Configure Kubernetes to execute files in download
-  include: roles/downloads-packages/includes/download_file.yml
+  include_tasks: roles/downloads-packages/includes/download_file.yml
   when: not is_using_local_files_deploy and not is_using_image_deploy
 
 - name: Configure Kubernetes to execute files in localhost
-  include: roles/downloads-packages/includes/local_file.yml
+  include_tasks: roles/downloads-packages/includes/local_file.yml
   when: is_using_local_files_deploy
 
 - name: Configure Kubernetes to execute files in image deploy
-  include: roles/downloads-packages/includes/image_deploy.yml
+  include_tasks: roles/downloads-packages/includes/image_deploy.yml
   when: is_using_image_deploy and not is_using_local_files_deploy
 
 - name: Update Master Kubelet and Manifests Config
-  include: templates/master/{{ k8s_upgrade_version }}/main.yml
+  include_tasks: templates/master/{{ k8s_upgrade_version }}/main.yml
   when: is_kube_master
 
 - name: Update Node Kubelet Config
-  include: templates/node/{{ k8s_upgrade_version }}/main.yml
+  include_tasks: templates/node/{{ k8s_upgrade_version }}/main.yml
   when: is_kube_node

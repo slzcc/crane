@@ -12,13 +12,13 @@
   ignore_errors: true
  
 - name: Ubuntu Install Docker-ce
-  include: roles/docker-install/includes/local_binary.yaml
+  include_tasks: roles/docker-install/includes/local_binary.yaml
   when: docker_install_type == 'local_binary'
 
 - name: Ubuntu Install Docker-ce
-  include: roles/docker-install/includes/http_script.yaml
+  include_tasks: roles/docker-install/includes/http_script.yaml
   when: docker_install_type == 'http_script'
 
 - name: Ubuntu Install Docker-ce
-  include: roles/docker-install/includes/http_binary.yaml
+  include_tasks: roles/docker-install/includes/http_binary.yaml
   when: docker_install_type == 'http_binary'
