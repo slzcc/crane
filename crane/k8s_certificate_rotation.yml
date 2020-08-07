@@ -39,9 +39,9 @@
   vars:
     ansible_ssh_pipelining: true
   tasks:
-    - { include: 'roles/kubernetes-master/includes/admin.yml' }
-    - { include: 'roles/kubernetes-master/includes/kubelet_pem.yml' }
-    - { include: 'roles/kubernetes-ca-rotation/includes/update-cluster-master.yml' }
+    - { include_tasks: 'roles/kubernetes-master/includes/admin.yml' }
+    - { include_tasks: 'roles/kubernetes-master/includes/kubelet_pem.yml' }
+    - { include_tasks: 'roles/kubernetes-ca-rotation/includes/update-cluster-master.yml' }
 
 - name: Update Cluster Network
   hosts: kube-master[0]
@@ -50,7 +50,7 @@
   vars:
     ansible_ssh_pipelining: true
   tasks:
-    - { include: 'roles/kubernetes-ca-rotation/includes/update-network.yml' }
+    - { include_tasks: 'roles/kubernetes-ca-rotation/includes/update-network.yml' }
 
 - name: Create New Bootstrap Config Files to Nodes.
   hosts: kube-master[0]
@@ -62,8 +62,8 @@
     - "roles/kubernetes-bootstraps/defaults/main.yml"
     - "roles/kubernetes-ca-rotation/defaults/main.yml"
   tasks:
-    - { include: 'roles/kubernetes-bootstraps/includes/create-bootstrap.yml' }
-    - { include: 'roles/kubernetes-ca-rotation/includes/update-cluster-node-ca.yml' }
+    - { include_tasks: 'roles/kubernetes-bootstraps/includes/create-bootstrap.yml' }
+    - { include_tasks: 'roles/kubernetes-ca-rotation/includes/update-cluster-node-ca.yml' }
 
 - name: Create New CA
   hosts: kube-node
@@ -72,4 +72,4 @@
   vars:
     ansible_ssh_pipelining: true
   tasks:
-    - { include: 'roles/kubernetes-ca-rotation/includes/update-cluster-node.yml' }
+    - { include_tasks: 'roles/kubernetes-ca-rotation/includes/update-cluster-node.yml' }

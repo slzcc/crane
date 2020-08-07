@@ -32,6 +32,7 @@
     - [v1.18.6.6 更新内容](#v11866-更新内容)
     - [v1.18.6.7 更新内容](#v11867-更新内容)
     - [v1.18.6.8 更新内容](#v11868-更新内容)
+    - [v1.18.6.9 更新内容](#v11869-更新内容)
 
 # v1.18.0.0
 
@@ -341,4 +342,16 @@ runAsUser: 33 => runAsUser: 101
 
 添加 docker install 中停止 `containerd` 服务的运行。
 
-添加 kubelet 启动时如果 kernel 低于 4.3 时将添加 `--feature-gates SupportPodPidsLimit=false --feature-gates SupportNodePidsLimit=false` 配置项。
+添加 kubelet 启动时如果 kernel 低于 4.3 时将添加:
+
+``` 
+--feature-gates SupportPodPidsLimit=false --feature-gates SupportNodePidsLimit=false
+```
+
+### v1.18.6.9 更新内容
+
+修改部分命名方式不规范问题。
+
+修复部署 Crane 时, 走 k8s-addone 时耗时较长, 并把 `include` 改为 `import_tasks`。
+
+修改 Crane 在 Ansible 中使用的 `include` 改为 `include_tasks`。因 `include` 后续会被弃用。

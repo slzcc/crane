@@ -77,7 +77,7 @@
   ignore_errors: true
 
 - name: Deploy Bootstrap for Error do it Again.
-  include: includes/create-bootstrap.yml
+  include_tasks: includes/create-bootstrap.yml
   when: result.stderr
 
 - name: Copy Kubelet Bootstrap RBAC.
@@ -91,6 +91,6 @@
   shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}kubelet-bootstrap-rbac.yml ; do >&2 echo "Starting..." && sleep 1 ; done'
 
 - name: Deploy Kubernetes Certification Files
-  include: includes/main.yml
+  include_tasks: includes/main.yml
   run_once: true
   delegate_to: "{{ groups['kube-master'][0] }}"

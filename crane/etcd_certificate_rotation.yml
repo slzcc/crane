@@ -38,7 +38,7 @@
   vars:
     ansible_ssh_pipelining: true
   tasks:
-    - { include: 'roles/etcd-ca-rotation/includes/update-cluster-etcd.yml' }
+    - { include_tasks: 'roles/etcd-ca-rotation/includes/update-cluster-etcd.yml' }
 
 - name: Update Kubernetes Cluster ApiServer Server Config
   hosts: k8s-master
@@ -47,7 +47,7 @@
   vars:
     ansible_ssh_pipelining: true
   tasks:
-    - { include: 'roles/etcd-ca-rotation/includes/update-cluster-apiserver.yml' }
+    - { include_tasks: 'roles/etcd-ca-rotation/includes/update-cluster-apiserver.yml' }
 
 - name: Update Kubernetes Cluster Network Server Config
   hosts: k8s-cluster
@@ -56,4 +56,4 @@
   vars:
     ansible_ssh_pipelining: true
   tasks:
-    - { include: 'roles/etcd-ca-rotation/includes/update-cluster-network.yml' }
+    - { include_tasks: 'roles/etcd-ca-rotation/includes/update-cluster-network.yml' }
