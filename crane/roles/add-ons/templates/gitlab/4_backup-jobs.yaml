@@ -14,17 +14,30 @@ spec:
           volumes:
           - name: config
             configMap:
-              name: kubeconfig
+              name: kubeconfig-admin
           containers:
           - name: gitlab-backup
-            image: slzcc/kubectl:v1.15.3
+            image: slzcc/kubectl:v1.18.3
             volumeMounts:
             - name: config
               mountPath: /etc/kubeconfig
             command:
             - /bin/sh
             - -c
-            - pod_name=$(kubectl get pods -l app=gitlab-ops -o jsonpath='{.items[*].metadata.name}' -n gitlab --kubeconfig=/etc/kubeconfig/config);
-              kubectl get po/$pod_name --kubeconfig=/etc/kubeconfig/config;
-              kubectl --kubeconfig=/etc/kubeconfig/config exec $pod_name -- gitlab-rake gitlab:backup:create
+            - kubectl --kubeconfig=/etc/kubeconfig/config exec -i $(kubectl get pods -l app=gitlab-ops -o jsonpath='{.items[*].metadata.name}' -n $POD_NAMESPACE --kubeconfig=/etc/kubeconfig/config) -n $POD_NAMESPACE -- gitlab-rake gitlab:backup:create
+            env:
+            - name: TZ
+              value: "Asia/Shanghai"
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
           restartPolicy: OnFailure

@@ -33,6 +33,7 @@
     - [v1.18.6.7 更新内容](#v11867-更新内容)
     - [v1.18.6.8 更新内容](#v11868-更新内容)
     - [v1.18.6.9 更新内容](#v11869-更新内容)
+    - [v1.18.8.0 更新内容](#v11880-更新内容)
 
 # v1.18.0.0
 
@@ -355,3 +356,9 @@ runAsUser: 33 => runAsUser: 101
 修复部署 Crane 时, 走 k8s-addone 时耗时较长, 并把 `include` 改为 `import_tasks`。
 
 修改 Crane 在 Ansible 中使用的 `include` 改为 `include_tasks`。因 `include` 后续会被弃用。
+
+### v1.18.8.0 更新内容
+
+添加 kubernetes v1.18.8 版本支持。
+
+修复 gitlab backup 定时任务无法正常执行的问题。
