@@ -57,6 +57,12 @@ all_hostname_str: >-
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}
 
+k8s_master_default_ip_str: >-
+  {% for host in groups['kube-master'] -%}
+    {{ hostvars[host].ansible_default_ipv4.address }}
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}
+  
 # TLS
 ## ********************************************************************************************************************************
 
