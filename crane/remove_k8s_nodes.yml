@@ -3,8 +3,8 @@
   gather_facts: false
   roles:
     - { role: local-task }
-      
-- hosts: all
+
+- hosts: kube-master[0]:k8s-cluster-del-node
   become: yes
   gather_facts: true
   become_method: sudo
@@ -14,11 +14,20 @@
     - name: Check all Nodes
       ping: 
 
-- name: Test
+- name: Delete Kubernetes Cluster Nodes
   hosts: kube-master[0]
   become: yes
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
   roles:
-    - { role: tests, tags: [tests]}
+    - { role: k8s-del-nodes, tags: [k8s-del-nodes]}
+
+- name: Clean Kubernetes Nodes DataDir
+  hosts: k8s-cluster-del-node
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  roles:
+    - { role: clean-install, tags: [clean]}

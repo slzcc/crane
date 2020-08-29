@@ -32,7 +32,7 @@
             -ca=etcd-ca.pem \
             -ca-key=etcd-ca-key.pem \
             -config=ca-config.json \
-            -hostname=127.0.0.1,{{ etcd_add_node_ip_str }} \
+            -hostname=127.0.0.1,{{ etcd_add_node_ip_str }},{{ etcd_master_default_ip_str }} \
             -profile=kubernetes \
             etcd-csr.json | {{ kubernetes_ctl_path }}cfssljson -bare etcd"
   delegate_to: "{{ groups['etcd-cluster-add-node'][0] }}"
