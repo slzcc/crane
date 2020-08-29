@@ -16,8 +16,8 @@ DOCKER_VERSION := `awk '/^docker_version/' ./crane/group_vars/all.yml | awk -F':
 #        etcd_certificate_rotation.yml
 #        main.yml
 #        test.yml
-CRANE_ENTRANCE := remove_k8s_nodes.yml
-OPTION := -vv
+CRANE_ENTRANCE := main.yml
+OPTION :=
 
 build:
 	@docker build -t ${DockerHubRepoName}/${ProjectName}:${VERSION} . --no-cache
