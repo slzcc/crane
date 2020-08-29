@@ -62,6 +62,12 @@ etcd_initial_cluster_addr: >-
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}
 
+etcd_master_default_ip_str: >-
+  {% for host in groups['etcd'] -%}
+    {{ hostvars[host].ansible_default_ipv4.address }}
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}
+
 etcd_master_one_host: "{{ groups['etcd'][0] }}"
 
 
