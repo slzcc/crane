@@ -166,5 +166,36 @@ $ docker run --name crane --rm -i \
 
 ---
 
+## Make Tasks
+
+Makefile 中有如下 Tasks：
+
+```
+Tasks: add_etcd.yml
+       add_nodes.yml
+       k8s_certificate_rotation.yml
+       remove_cluster.yml
+       remove_k8s_nodes.yml
+       remove_etcd_nodes.yml
+       upgrade_version.yml
+       add_master.yml
+       etcd_certificate_rotation.yml
+       main.yml
+       test.yml
+```
+
+默认执行 main.yml, 如需操作其他 Tasks，请修改 CRANE_ENTRANCE 参数即可:
+
+```
+CRANE_ENTRANCE := main.yml
+OPTION :=
+```
+
+执行启动命令:
+
+```
+$ make run_main
+```
+
 如果使用后发现什么问题请及时联系我进行解决: https://wiki.shileizcc.com/confluence/display/LM/Leave+a+message, 或提出 issue。
 感谢支持!
