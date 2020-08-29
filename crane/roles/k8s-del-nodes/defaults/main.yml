@@ -1,0 +1,5 @@
+k8s_del_node_ip_list: >-
+  [{% for host in groups['k8s-cluster-del-node'] -%}
+    '{{ hostvars[host].ansible_default_ipv4.address }}'
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}]

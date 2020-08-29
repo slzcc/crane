@@ -74,7 +74,7 @@ os_network_device_name: < NetWork Name >
 
 ## Deploy Kubernetes Cluster
 
-如上述修改完成后, 可执行命令（v1.18.5.0 部署版本为例）：
+如上述修改完成后, 可执行命令（v1.19.0.1 部署版本为例）：
 
 ```
 $ docker run --name crane --rm -i \
@@ -84,7 +84,7 @@ $ docker run --name crane --rm -i \
          -e LINES=61 \
          -v ~/.ssh:/root/.ssh \
          -v ${PWD}:/crane \
-         slzcc/crane:v1.18.5.0 \
+         slzcc/crane:v1.19.0.1 \
          -i nodes main.yml -vv
 ```
 Cluster Status
@@ -100,12 +100,12 @@ node-csr-GJqCuRzlL6KzLvxLRgNo1fEswguU6RLaETPjw2SNzs4   10m       system:bootstra
 
 $ kubectl get nodes
 NAME         STATUS     ROLES     AGE       VERSION
-instance-2   Ready      master    11m       v1.18.5
-instance-3   Ready      master    11m       v1.18.5
-instance-4   Ready      master    11m       v1.18.5
-instance-5   NotReady   node      10m       v1.18.5
-instance-6   NotReady   node      10m       v1.18.5
-instance-7   NotReady   node      10m       v1.18.5
+instance-2   Ready      master    11m       v1.19.0
+instance-3   Ready      master    11m       v1.19.0
+instance-4   Ready      master    11m       v1.19.0
+instance-5   NotReady   node      10m       v1.19.0
+instance-6   NotReady   node      10m       v1.19.0
+instance-7   NotReady   node      10m       v1.19.0
 
 $ kubectl -n kube-system get pod -o wide
 NAME                                       READY     STATUS              RESTARTS   AGE       IP            NODE
@@ -162,20 +162,20 @@ $ docker run --name crane --rm -i \
         -e LINES=61 \
         -v ~/.ssh:/root/.ssh \
         -v ${PWD}:/crane \
-        slzcc/crane:v1.18.5.0 \
+        slzcc/crane:v1.19.0.1 \
         -i nodes add_master.yml -vv
 ```
 查看 Cluster Status:
 ```
 $ kubectl get node
 NAME         STATUS     ROLES     AGE       VERSION
-instance-2   Ready      master    46m       v1.18.5
-instance-3   Ready      master    46m       v1.18.5
-instance-4   Ready      master    46m       v1.18.5
-instance-5   Ready      node      45m       v1.18.5
-instance-6   Ready      node      45m       v1.18.5
-instance-7   Ready      node      45m       v1.18.5
-instance-8   Ready      master    7m        v1.18.5
+instance-2   Ready      master    46m       v1.19.0
+instance-3   Ready      master    46m       v1.19.0
+instance-4   Ready      master    46m       v1.19.0
+instance-5   Ready      node      45m       v1.19.0
+instance-6   Ready      node      45m       v1.19.0
+instance-7   Ready      node      45m       v1.19.0
+instance-8   Ready      master    7m        v1.19.0
 
 $ kubectl get csr
 NAME                                                   AGE       REQUESTOR                 CONDITION
@@ -212,21 +212,21 @@ $ docker run --name crane --rm -i \
         -e LINES=61 \
         -v ~/.ssh:/root/.ssh \
         -v ${PWD}:/crane \
-        slzcc/crane:v1.18.5.0 \
+        slzcc/crane:v1.19.0.1 \
         -i nodes add_nodes.yml -vv
 ```
 Cluster Status
 ```
 $ kubectl get node
 NAME         STATUS     ROLES     AGE       VERSION
-instance-2   Ready      master    46m       v1.18.5
-instance-3   Ready      master    46m       v1.18.5
-instance-4   Ready      master    46m       v1.18.5
-instance-5   Ready      node      45m       v1.18.5
-instance-6   Ready      node      45m       v1.18.5
-instance-7   Ready      node      45m       v1.18.5
-instance-8   Ready      master    7m        v1.18.5
-instance-9   NotReady   node      10s       v1.18.5
+instance-2   Ready      master    46m       v1.19.0
+instance-3   Ready      master    46m       v1.19.0
+instance-4   Ready      master    46m       v1.19.0
+instance-5   Ready      node      45m       v1.19.0
+instance-6   Ready      node      45m       v1.19.0
+instance-7   Ready      node      45m       v1.19.0
+instance-8   Ready      master    7m        v1.19.0
+instance-9   NotReady   node      10s       v1.19.0
 
 $ kubectl get csr
 NAME                                                   AGE       REQUESTOR                 CONDITION
@@ -254,7 +254,7 @@ $ docker run --name crane --rm -i \
         -e LINES=61 \
         -v ~/.ssh:/root/.ssh \
         -v ${PWD}:/crane \
-        slzcc/crane:v1.18.5.0 \
+        slzcc/crane:v1.19.0.1 \
         -i nodes remove_cluster.yml -vv
 ```
 
@@ -285,7 +285,7 @@ $ docker run --name crane --rm -i \
         -e LINES=61 \
         -v ~/.ssh:/root/.ssh \
         -v ${PWD}:/crane \
-        slzcc/crane:v1.18.5.0 \
+        slzcc/crane:v1.19.0.1 \
         -i nodes add_etcd.yml -vv
 ```
 > 添加的节点在现有的集群中不会被直接识别到, 因为 Etcd Endpoints 还是之前使用的, 如需要修改目前只支持手动更新, 因为牵扯太多目前不支持热更新服务配置, 否则会引起 apiServer、Calico 等应用的使用。
@@ -304,7 +304,7 @@ $ docker run --name crane --rm -i \
         -e LINES=61 \
         -v ~/.ssh:/root/.ssh \
         -v ${PWD}:/crane \
-        slzcc/crane:v1.18.5.0 \ 
+        slzcc/crane:v1.19.0.1 \ 
         -i nodes main.yml --tags k8s-addons -vv
 ```
 
@@ -324,7 +324,7 @@ $ docker run --name crane --rm -i \
         -e LINES=61 \
         -v ~/.ssh:/root/.ssh \
         -v ${PWD}:/crane \
-        slzcc/crane:v1.18.5.0 \
+        slzcc/crane:v1.19.0.1 \
         -i nodes k8s_certificate_rotation.yml -vv
 ```
 
@@ -407,8 +407,62 @@ $ docker run --name crane --rm -i \
         -e LINES=61 \
         -v ~/.ssh:/root/.ssh \
         -v ${PWD}:/crane \
-        slzcc/crane:v1.18.5.0 \
+        slzcc/crane:v1.19.0.1 \
         -i nodes etcd_certificate_rotation.yml -vv
+```
+
+## Delete Etcd Cluster Nodes
+
+删除 Etcd Cluster 中的一个或多个 Node, 注意修改 nodes 中的 etcd-cluster-del-node 列表, 并且移除 etcd 列表对应的值。如下：
+
+```
+[etcd]
+1.2.3.4
+#2.3.4.5
+
+[etcd-cluster-del-node]
+2.3.4.5
+
+```
+
+部署安装:
+```
+$ docker run --name crane --rm -i \
+        -e ANSIBLE_HOST_KEY_CHECKING=false \
+        -e TERM=xterm-256color \
+        -e COLUMNS=238 \
+        -e LINES=61 \
+        -v ~/.ssh:/root/.ssh \
+        -v ${PWD}:/crane \
+        slzcc/crane:v1.19.0.1 \
+        -i nodes remove_etcd_nodes.yml -vv
+```
+
+## Delete Kubernetes Cluster Nodes
+
+删除 Kubernetes Cluster 中的一个或多个 Node, 注意修改 nodes 中的 k8s-cluster-del-node 列表, 并且移除 kube-node 列表对应的值。如下：
+
+```
+[kube-node]
+1.2.3.4
+#2.3.4.5
+
+[k8s-cluster-del-node]
+2.3.4.5
+
+```
+
+部署安装:
+```
+$ docker run --name crane --rm -i \
+        -e ANSIBLE_HOST_KEY_CHECKING=false \
+        -e TERM=xterm-256color \
+        -e COLUMNS=238 \
+        -e LINES=61 \
+        -v ~/.ssh:/root/.ssh \
+        -v ${PWD}:/crane \
+        slzcc/crane:v1.19.0.1 \
+        -i nodes remove_k8s_nodes.yml -vv
 ```
 
 ## Ansible in Docker
@@ -424,7 +478,7 @@ $ docker run --name crane --rm -i \
         -e LINES=61 \
         -v ~/.ssh:/root/.ssh \
         -v ${PWD}:/crane \
-        slzcc/crane:v1.18.5.0 \
+        slzcc/crane:v1.19.0.1 \
         -i nodes main.yml -vv
 ```
 > ~~切记！不要在任何 Master 或者 Node 节点上使用 Ansible in Docker 会造成 Dockerd 被重启导致服务中断！~~
