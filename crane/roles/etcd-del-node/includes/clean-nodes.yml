@@ -1,0 +1,3 @@
+---
+- name: Move Etcd DataDir
+  shell: "mv {{ etcd_data_dirs }} {{ temporary_dirs }}etcd-`date +%Y%m%d%H%M%S`"

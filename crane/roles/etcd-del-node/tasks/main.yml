@@ -1,0 +1,15 @@
+---
+
+- name: SnapShot Etcd
+  shell: docker run --rm -i -v {{ etcd_ssl_dirs }}:{{ etcd_ssl_dirs }} -w {{ temporary_dirs }}etcdb {{ k8s_cluster_component_registry }}/etcd:{{ etcd_version }} etcdctl --cacert {{ etcd_ssl_dirs }}etcd-ca.pem --key {{ etcd_ssl_dirs }}etcd-key.pem --cert {{ etcd_ssl_dirs }}etcd.pem --endpoints {{ etcd_cluster_str.split(",")[0] }} snapshot save snapshot-`date +%Y%m%d%H%M%S`.db
+
+- name: Get Etcd Cluster List
+  shell: docker run --rm -i -v {{ etcd_ssl_dirs }}:{{ etcd_ssl_dirs }} -w {{ etcd_ssl_dirs }} {{ k8s_cluster_component_registry }}/etcd:{{ etcd_version }} etcdctl --cacert {{ etcd_ssl_dirs }}etcd-ca.pem --key {{ etcd_ssl_dirs }}etcd-key.pem --cert {{ etcd_ssl_dirs }}etcd.pem --endpoints {{ etcd_cluster_str }} member list
+  register: result
+  ignore_errors: true
+
+- name: Delete Etcd Cluster Nodes
+  shell: echo {{ result['stdout'] }} | grep '{{ item[0] }}' | awk -F, '{print $1}' | xargs -i docker run --rm -i -v {{ etcd_ssl_dirs }}:{{ etcd_ssl_dirs }} -w {{ etcd_ssl_dirs }} {{ k8s_cluster_component_registry }}/etcd:{{ etcd_version }} etcdctl --cacert {{ etcd_ssl_dirs }}etcd-ca.pem --key {{ etcd_ssl_dirs }}etcd-key.pem --cert {{ etcd_ssl_dirs }}etcd.pem --endpoints {{ etcd_cluster_str }} member remove {}
+  with_nested:
+    - "{{ etcd_del_node_ip_list }}"
+    - "-"

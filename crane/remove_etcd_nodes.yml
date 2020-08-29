@@ -1,0 +1,42 @@
+---
+- hosts: localhost
+  gather_facts: false
+  roles:
+    - { role: local-task }
+      
+- hosts: kube-master[0]:etcd:etcd-cluster-del-node
+  become: yes
+  gather_facts: true
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  tasks:
+    - name: Check all Nodes
+      ping: 
+
+- name: Delete Etcd Clster Nodes
+  hosts: kube-master[0]
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  roles:
+    - { role: etcd-del-node, tags: [etcd-del-node]}
+
+- name: Clean Etcd Nodes DataDir
+  hosts: etcd-cluster-del-node
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  tasks:
+    - { include_tasks: 'roles/etcd-del-node/includes/clean-nodes.yml' }
+
+- name: Set Kubernetes Cluster Etcd Config
+  hosts: kube-master[0]
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  tasks:
+    - { include_tasks: 'roles/etcd-add-node/includes/update-k8s-manifests.yml' }
