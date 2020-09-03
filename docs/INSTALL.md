@@ -123,7 +123,7 @@ $ cat > /etc/docker/daemon.json  <<EOF
         "max-size": "1G"
     },
     "data-root": "/var/lib/docker",
-    "insecure-registry": []
+    "insecure-registries": []
 }
 EOF
  
