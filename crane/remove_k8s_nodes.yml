@@ -14,6 +14,13 @@
     - name: Check all Nodes
       ping: 
 
+- hosts: kube-master
+  gather_facts: false
+  become: yes
+  become_method: sudo
+  roles:
+    - { role: downloads-ssh-key, tags: [copy_ssh_private_key]}
+    
 - name: Delete Kubernetes Cluster Nodes
   hosts: kube-master[0]
   become: yes

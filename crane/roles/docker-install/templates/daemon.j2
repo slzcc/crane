@@ -11,5 +11,5 @@
 {% if ansible_distribution != '' %}
     "storage-driver": "{{ docker_storage_driver }}",
 {% endif %}
-    "insecure-registry": {{ docker_insecure_registry }}
+    "insecure-registries": {{ docker_insecure_registry }}
 }
