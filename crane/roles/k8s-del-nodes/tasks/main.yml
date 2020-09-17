@@ -29,3 +29,4 @@
   with_nested:
     - "{{ k8s_del_node_ip_list }}"
     - "-"
+  ignore_errors: true
