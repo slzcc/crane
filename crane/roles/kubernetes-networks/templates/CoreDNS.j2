@@ -54,14 +54,17 @@ data:
   Corefile: |
     .:53 {
         errors
-        health
+        health {
+          lameduck 5s
+        }
         ready
         kubernetes {{ dns_domain }} in-addr.arpa ip6.arpa {
-          pods insecure
           fallthrough in-addr.arpa ip6.arpa
         }
         prometheus :9153
-        forward . /etc/resolv.conf
+        forward . /etc/resolv.conf {
+          max_concurrent 3000
+        }
         cache 30
         reload
         loadbalance
@@ -102,7 +105,7 @@ spec:
         imagePullPolicy: IfNotPresent
         resources:
           limits:
-            memory: 1024Mi
+            memory: 170Mi
           requests:
             cpu: 100m
             memory: 70Mi
