@@ -2,7 +2,7 @@
 - name: Create Docker Cert Config Dir
   file:
     path: "/etc/docker/certs.d"
-    mode: 0755
+    mode: 0777
     owner: "{{ ssh_connect_user }}"
     state: directory
   ignore_errors: true
@@ -10,7 +10,7 @@
 ## Create Docker Cert Dir
 - name: Copy Client CA Files in All K8s Nodes
   shell: "sudo ssh -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no -i {{ ssh_public_key }} \
-            -p {{ ssh_connect_port }} {{ ssh_connect_user }}@{{ item[0] }} 'sudo mkdir -p /etc/docker/certs.d'"
+            -p {{ ssh_connect_port }} {{ ssh_connect_user }}@{{ item[0] }} 'sudo mkdir -p /etc/docker/certs.d && chown {{ ssh_connect_user }} /etc/docker/certs.d'"
   with_nested:
     - "{{ k8s_all_ip_list }}"
     - "-"
