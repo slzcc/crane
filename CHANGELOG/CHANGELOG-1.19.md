@@ -5,6 +5,7 @@
     - [v1.19.0.2 更新内容](#v11902-更新内容)
     - [v1.19.1.0 更新内容](#v11910-更新内容)
     - [v1.19.2.0 更新内容](#v11920-更新内容)
+    - [v1.19.2.1 更新内容](#v11921-更新内容)
 
 # v1.19.0.0
 
@@ -48,3 +49,58 @@ Crane 以更新至 1.19.1.0 版本。
 Crane 以更新至 1.19.2.0 版本。
 Del K8s 中对删除 node 添加抑制报错，主要解决远程服务器有残留数据但并没有添加到集群的问题。
 CoreDNS 配置 Memory Limit 1024Mi, 旧配置 170Mi 时会触发 OOMKill 的问题目前没有解决调整内存大小可避免触发。
+
+# v1.19.2.1
+
+CoreDNS 修改配置如下:
+
+```
+    .:53 {
+        errors
+        health
+        ready
+        kubernetes {{ dns_domain }} in-addr.arpa ip6.arpa {
+          pods insecure
+          fallthrough in-addr.arpa ip6.arpa
+        }
+        prometheus :9153
+        forward . /etc/resolv.conf
+        cache 30
+        reload
+        loadbalance
+    }
+
+# edit =>
+    .:53 {
+        errors
+        health {
+          lameduck 5s
+        }
+        ready
+        kubernetes {{ dns_domain }} in-addr.arpa ip6.arpa {
+          fallthrough in-addr.arpa ip6.arpa
+        }
+        prometheus :9153
+        forward . /etc/resolv.conf {
+          max_concurrent 3000
+        }
+        cache 30
+        reload
+        loadbalance
+    }
+```
+
+> 主要加入 DNS 查询最大上限避免高内存的消耗导致服务崩溃.
+
+CoreDNS Memory Limit 修改为:
+
+```
+1024Mi => 170Mi
+```
+
+Harbor Copy TLS in Docker Cert Config 时有权限问题，在创建目录时添加：
+
+```
+...
+&& chown {{ ssh_connect_user }} /etc/docker/certs.d
+```
