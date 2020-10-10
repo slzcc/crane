@@ -6,6 +6,7 @@
     - [v1.19.1.0 更新内容](#v11910-更新内容)
     - [v1.19.2.0 更新内容](#v11920-更新内容)
     - [v1.19.2.1 更新内容](#v11921-更新内容)
+    - [v1.19.2.2 更新内容](#v11922-更新内容)
 
 # v1.19.0.0
 
@@ -103,4 +104,13 @@ Harbor Copy TLS in Docker Cert Config 时有权限问题，在创建目录时添
 ```
 ...
 && chown {{ ssh_connect_user }} /etc/docker/certs.d
+```
+
+# v1.19.2.2
+
+在 # v1.19.2.1 中的 harbor 下发 ca 时修复的权限问题有遗漏 sudo 问题，此版本修复上个版本的问题如下：
+
+```
+...
+$ chown {{ ssh_connect_user }} /etc/docker/certs.d => $ sudo chown {{ ssh_connect_user }} /etc/docker/certs.d
 ```
