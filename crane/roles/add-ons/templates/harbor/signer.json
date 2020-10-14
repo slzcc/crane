@@ -5,11 +5,11 @@
     "tls_key_file": "/etc/ssl/notary/tls.key"
   },
   "logging": {
-    "level": "debug"
+    "level": "info"
   },
   "storage": {
     "backend": "postgres",
-    "db_url": "postgres://postgres:changeit@release-name-harbor-database:5432/notarysigner?sslmode=disable",
+    "db_url": "{{ harbor_clair_secret_postgres }}",
     "default_alias": "defaultalias"
   }
 }
