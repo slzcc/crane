@@ -204,12 +204,12 @@ spec:
         - name: CORE_SECRET
           valueFrom:
             secretKeyRef:
-              name: {{ harbor_project_name_prefix }}harbor-core
+              name: "{{ harbor_project_name_prefix }}harbor-core"
               key: secret
         - name: JOBSERVICE_SECRET
           valueFrom:
             secretKeyRef:
-              name: {{ harbor_project_name_prefix }}harbor-jobservice
+              name: "{{ harbor_project_name_prefix }}harbor-jobservice"
               key: JOBSERVICE_SECRET
         ports:
         - containerPort: 8080
@@ -232,13 +232,13 @@ spec:
           path: /usr/share/zoneinfo
       - name: registry-htpasswd
         secret:
-          secretName: {{ harbor_project_name_prefix }}harbor-registry
+          secretName: "{{ harbor_project_name_prefix }}harbor-registry"
           items:
             - key: REGISTRY_HTPASSWD
               path: passwd
       - name: registry-root-certificate
         secret:
-          secretName: {{ harbor_project_name_prefix }}harbor-core
+          secretName: "{{ harbor_project_name_prefix }}harbor-core"
       - name: registry-config
         configMap:
           name: "{{ harbor_project_name_prefix }}harbor-registry"
