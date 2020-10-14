@@ -153,7 +153,7 @@ spec:
         - name: CORE_SECRET
           valueFrom:
             secretKeyRef:
-              name: {{ harbor_project_name_prefix }}harbor-core
+              name: "{{ harbor_project_name_prefix }}harbor-core"
               key: secret
         envFrom:
         - configMapRef:

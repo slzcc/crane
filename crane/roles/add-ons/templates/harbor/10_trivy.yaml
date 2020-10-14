@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ harbor_project_name_prefix }}harbor-trivy
+  name: "{{ harbor_project_name_prefix }}harbor-trivy"
   labels:
     heritage: Tiller
     release: release-name
@@ -95,7 +95,7 @@ spec:
             - name: "SCANNER_TRIVY_GITHUB_TOKEN"
               valueFrom:
                 secretKeyRef:
-                  name: {{ harbor_project_name_prefix }}harbor-trivy
+                  name: "{{ harbor_project_name_prefix }}harbor-trivy"
                   key: gitHubToken
             - name: "SCANNER_TRIVY_SEVERITY"
               value: "UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL"
