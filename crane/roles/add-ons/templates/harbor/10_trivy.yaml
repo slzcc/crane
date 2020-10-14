@@ -126,7 +126,7 @@ spec:
             - name: api-server
               containerPort: 8080
           volumeMounts:
-          - name: data
+          - name: trivy-data
             mountPath: /home/scanner/.cache
             subPath:
             readOnly: false
@@ -156,5 +156,5 @@ spec:
               cpu: 200m
               memory: 512Mi
       volumes:
-        - name: trivy
+        - name: trivy-data
           emptyDir: {}
