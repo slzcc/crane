@@ -37,6 +37,7 @@
     - "7_clair.yaml"
     - "8_notary.yaml"
     - "9_chartmuseum.yaml"
+    - "10_truvt.yaml"
 
 - name: Create Harbor Namespace
   shell: "{{ kubernetes_ctl_path }}kubectl create namespace {{ harbor_namespace }}"
@@ -53,11 +54,12 @@
 
 - name: Create Harbor Core Secret
   shell: "{{ kubernetes_ctl_path }}kubectl create secret generic release-name-harbor-core \
-          --from-literal=secretKey={{ harbor_core_secure_key }} \
-          --from-literal=secret={{ harbor_core_secret }} \
-          --from-literal=HARBOR_ADMIN_PASSWORD={{ harbor_admin_password }} \
-          --from-literal=POSTGRESQL_PASSWORD={{ harbor_pg_admin_password }} \
-          --from-literal=CLAIR_DB_PASSWORD={{ harbor_pg_clair_password }} \
+          --from-literal=secretKey={{ harbor_core_secret_secret_key | b64decode }} \
+          --from-literal=secret={{ harbor_core_secret_secret | b64decode }} \
+          --from-literal=HARBOR_ADMIN_PASSWORD={{ harbor_admin_password | b64decode }} \
+          --from-literal=POSTGRESQL_PASSWORD={{ harbor_pg_secret_admin_password | b64decode }} \
+          --from-literal=REGISTRY_CREDENTIAL_PASSWORD={{ harbor_jobservice_secret_registry_credential_password | b64decode }} \
+          --from-literal=CSRF_KEY={{ harbor_core_secret_csrf_key | b64decode }} \
           --from-file={{ kubernetes_etc_dirs }}harbor/cert/tls.crt \
           --from-file={{ kubernetes_etc_dirs }}harbor/cert/tls.key \
           -n {{ harbor_namespace }} && \
@@ -75,7 +77,11 @@
   ignore_errors: true
 
 - name: Create Harbor Calir Secret
-  shell: "{{ kubernetes_ctl_path }}kubectl create secret generic release-name-harbor-clair --from-file={{ kubernetes_etc_dirs }}harbor/config/config.yaml -n {{ harbor_namespace }} && \
+  shell: "{{ kubernetes_ctl_path }}kubectl create secret generic release-name-harbor-clair \
+          --from-file={{ kubernetes_etc_dirs }}harbor/config/config.yaml \
+          --from-literal=redis={{ harbor_trivy_secret_redisURL | b64decode }} \
+          --from-literal=database={{ harbor_clair_secret_postgres | b64decode }} \
+          -n {{ harbor_namespace }} && \
           {{ kubernetes_ctl_path }}kubectl label secret release-name-harbor-clair heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}"
   ignore_errors: true
 
@@ -101,35 +107,6 @@
           {{ kubernetes_ctl_path }}kubectl label secret release-name-harbor-notary-server heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}"
   ignore_errors: true
 
-- name: Create Harbor Registry Secret
-  shell: "{{ kubernetes_ctl_path }}kubectl create secret generic release-name-harbor-registry \
-          --from-literal=REGISTRY_HTTP_SECRET={{ harbor_registry_secure_key }} \
-          --from-literal=REGISTRY_REDIS_PASSWORD={{ harbor_registry_redis_password }} \
-          -n {{ harbor_namespace }} && \
-          {{ kubernetes_ctl_path }}kubectl label secret release-name-harbor-registry heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}"
-  ignore_errors: true
-
-- name: Create Harbor Postgresql Secret
-  shell: "{{ kubernetes_ctl_path }}kubectl create secret generic release-name-harbor-database \
-          --from-literal=POSTGRES_PASSWORD={{ harbor_pg_admin_password }} \
-          -n {{ harbor_namespace }} && \
-          {{ kubernetes_ctl_path }}kubectl label secret release-name-harbor-database heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}"
-  ignore_errors: true
-
-- name: Create Harbor Jobservice Secret
-  shell: "{{ kubernetes_ctl_path }}kubectl create secret generic release-name-harbor-jobservice \
-          --from-literal=secret={{ harbor_jobservice_secure_key }} \
-          -n {{ harbor_namespace }} && \
-          {{ kubernetes_ctl_path }}kubectl label secret release-name-harbor-jobservice heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}"
-  ignore_errors: true
-
-- name: Create Harbor Chartmuseum Secret
-  shell: "{{ kubernetes_ctl_path }}kubectl create secret generic release-name-harbor-chartmuseum \
-          --from-literal=CACHE_REDIS_PASSWORD={{ harbor_chartmuseum_redis_password }} \
-          -n {{ harbor_namespace }} && \
-          {{ kubernetes_ctl_path }}kubectl label secret release-name-harbor-chartmuseum heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}"
-  ignore_errors: true
-
 - name: Set Create Harbor Ingress Secret Command in Script
   shell: "echo '{{ kubernetes_ctl_path }}kubectl create secret generic release-name-harbor-ingress \
           --from-file={{ kubernetes_etc_dirs }}harbor/cert/tls.crt \
@@ -141,11 +118,12 @@
 
 - name: Set Create Harbor Core Secret Command in Script
   shell: "echo '{{ kubernetes_ctl_path }}kubectl create secret generic release-name-harbor-core \
-          --from-literal=secretKey={{ harbor_core_secure_key }} \
-          --from-literal=secret={{ harbor_core_secret }} \
-          --from-literal=HARBOR_ADMIN_PASSWORD={{ harbor_admin_password }} \
-          --from-literal=POSTGRESQL_PASSWORD={{ harbor_pg_admin_password }} \
-          --from-literal=CLAIR_DB_PASSWORD={{ harbor_pg_clair_password }} \
+          --from-literal=secretKey={{ harbor_core_secret_secret_key | b64decode }} \
+          --from-literal=secret={{ harbor_core_secret_secret | b64decode }} \
+          --from-literal=HARBOR_ADMIN_PASSWORD={{ harbor_admin_password | b64decode }} \
+          --from-literal=POSTGRESQL_PASSWORD={{ harbor_pg_secret_admin_password | b64decode }} \
+          --from-literal=REGISTRY_CREDENTIAL_PASSWORD={{ harbor_jobservice_secret_registry_credential_password | b64decode }} \
+          --from-literal=CSRF_KEY={{ harbor_core_secret_csrf_key | b64decode }} \
           --from-file={{ kubernetes_etc_dirs }}harbor/cert/tls.crt \
           --from-file={{ kubernetes_etc_dirs }}harbor/cert/tls.key \
           -n {{ harbor_namespace }} && \
@@ -163,37 +141,12 @@
           {{ kubernetes_ctl_path }}kubectl label secret release-name-harbor-notary-server heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}' >> {{ kubernetes_etc_dirs }}/harbor/secret.sh"
   ignore_errors: true
 
-- name: Set Create Harbor Registry Secret Command in Script
-  shell: "echo '{{ kubernetes_ctl_path }}kubectl create secret generic release-name-harbor-registry \
-          --from-literal=REGISTRY_HTTP_SECRET={{ harbor_registry_secure_key }} \
-          --from-literal=REGISTRY_REDIS_PASSWORD={{ harbor_registry_redis_password }} \
-          -n {{ harbor_namespace }} && \
-          {{ kubernetes_ctl_path }}kubectl label secret release-name-harbor-registry heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}' >> {{ kubernetes_etc_dirs }}/harbor/secret.sh"
-  ignore_errors: true
-
-- name: Set Create Harbor Postgresql Secret Command in Script
-  shell: "echo '{{ kubernetes_ctl_path }}kubectl create secret generic release-name-harbor-database \
-          --from-literal=POSTGRES_PASSWORD={{ harbor_pg_admin_password }} \
-          -n {{ harbor_namespace }} && \
-          {{ kubernetes_ctl_path }}kubectl label secret release-name-harbor-database heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}' >> {{ kubernetes_etc_dirs }}/harbor/secret.sh"
-  ignore_errors: true
-
-- name: Set Create Harbor Jobservice Secret Command in Script
-  shell: "echo '{{ kubernetes_ctl_path }}kubectl create secret generic release-name-harbor-jobservice \
-          --from-literal=secret={{ harbor_jobservice_secure_key }} \
-          -n {{ harbor_namespace }} && \
-          {{ kubernetes_ctl_path }}kubectl label secret release-name-harbor-jobservice heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}' >> {{ kubernetes_etc_dirs }}/harbor/secret.sh"
-  ignore_errors: true
-
-- name: Set Create Harbor Chartmuseum Secret Command in Script
-  shell: "echo '{{ kubernetes_ctl_path }}kubectl create secret generic release-name-harbor-chartmuseum \
-          --from-literal=CACHE_REDIS_PASSWORD={{ harbor_chartmuseum_redis_password }} \
-          -n {{ harbor_namespace }} && \
-          {{ kubernetes_ctl_path }}kubectl label secret release-name-harbor-chartmuseum heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}' >> {{ kubernetes_etc_dirs }}/harbor/secret.sh"
-  ignore_errors: true
-
 - name: Set Create Harbor Calir Secret Command in Script
-  shell: "echo '{{ kubernetes_ctl_path }}kubectl create secret generic release-name-harbor-clair --from-file={{ kubernetes_etc_dirs }}harbor/config/config.yaml -n {{ harbor_namespace }} && \
+  shell: "echo '{{ kubernetes_ctl_path }}kubectl create secret generic release-name-harbor-clair \
+          --from-file={{ kubernetes_etc_dirs }}harbor/config/config.yaml \
+          --from-literal=redis={{ harbor_trivy_secret_redisURL | b64decode }} \
+          --from-literal=database={{ harbor_clair_secret_postgres | b64decode }} \
+          -n {{ harbor_namespace }} && \
           {{ kubernetes_ctl_path }}kubectl label secret release-name-harbor-clair heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}' >> {{ kubernetes_etc_dirs }}/harbor/secret.sh"
   ignore_errors: true
 

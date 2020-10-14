@@ -1,0 +1,160 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ harbor_project_name_prefix }}harbor-trivy
+  labels:
+    heritage: Tiller
+    release: release-name
+    chart: harbor
+    app: "harbor"
+type: Opaque
+data:
+  redisURL: "{{ harbor_trivy_secret_redisURL | b64decode }}"
+  gitHubToken: "{{ harbor_trivy_secret_gitHubToken | b64decode }}"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ harbor_project_name_prefix }}harbor-trivy"
+  labels:
+    heritage: Tiller
+    release: release-name
+    chart: harbor
+    app: "harbor"
+spec:
+  ports:
+    - name: api-server
+      protocol: TCP
+      port: 8080
+  selector:
+    release: release-name
+    app: "harbor"
+    component: trivy
+    
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: "{{ harbor_project_name_prefix }}harbor-trivy"
+  labels:
+    heritage: Tiller
+    release: release-name
+    chart: harbor
+    app: "harbor"
+    component: trivy
+spec:
+  replicas: 1
+  serviceName: "{{ harbor_project_name_prefix }}harbor-trivy"
+  selector:
+    matchLabels:
+      release: release-name
+      app: "harbor"
+      component: trivy
+  template:
+    metadata:
+      labels:
+        heritage: Tiller
+        release: release-name
+        chart: harbor
+        app: "harbor"
+        component: trivy
+      annotations:
+        checksum/secret: 7e11ee3d2d80064b31efb1cf7ec39ef9b22d0a8eee92b100ec6eaab3e2c03b91
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10000
+        fsGroup: 10000
+      automountServiceAccountToken: false
+      containers:
+        - name: trivy
+          image: goharbor/trivy-adapter-photon:{{ harbor_version }}
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: false
+            allowPrivilegeEscalation: false
+          env:
+            - name: HTTP_PROXY
+              value: ""
+            - name: HTTPS_PROXY
+              value: ""
+            - name: NO_PROXY
+              value: "{{ harbor_project_name_prefix }}harbor-core,{{ harbor_project_name_prefix }}harbor-jobservice,{{ harbor_project_name_prefix }}harbor-database,{{ harbor_project_name_prefix }}harbor-chartmuseum,{{ harbor_project_name_prefix }}harbor-clair,{{ harbor_project_name_prefix }}harbor-notary-server,{{ harbor_project_name_prefix }}harbor-notary-signer,{{ harbor_project_name_prefix }}harbor-registry,{{ harbor_project_name_prefix }}harbor-portal,{{ harbor_project_name_prefix }}harbor-trivy,127.0.0.1,localhost,.local,.internal"
+            - name: "SCANNER_LOG_LEVEL"
+              value: "info"
+            - name: "SCANNER_TRIVY_CACHE_DIR"
+              value: "/home/scanner/.cache/trivy"
+            - name: "SCANNER_TRIVY_REPORTS_DIR"
+              value: "/home/scanner/.cache/reports"
+            - name: "SCANNER_TRIVY_DEBUG_MODE"
+              value: "false"
+            - name: "SCANNER_TRIVY_VULN_TYPE"
+              value: "os,library"
+            - name: "SCANNER_TRIVY_GITHUB_TOKEN"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ harbor_project_name_prefix }}harbor-trivy
+                  key: gitHubToken
+            - name: "SCANNER_TRIVY_SEVERITY"
+              value: "UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL"
+            - name: "SCANNER_TRIVY_IGNORE_UNFIXED"
+              value: "false"
+            - name: "SCANNER_TRIVY_SKIP_UPDATE"
+              value: "false"
+            - name: "SCANNER_TRIVY_INSECURE"
+              value: "false"
+            - name: SCANNER_API_SERVER_ADDR
+              value: ":8080"
+            - name: "SCANNER_REDIS_URL"
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ harbor_project_name_prefix }}harbor-trivy"
+                  key: redisURL
+            - name: "SCANNER_STORE_REDIS_URL"
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ harbor_project_name_prefix }}harbor-trivy"
+                  key: redisURL
+            - name: "SCANNER_JOB_QUEUE_REDIS_URL"
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ harbor_project_name_prefix }}harbor-trivy"
+                  key: redisURL
+          ports:
+            - name: api-server
+              containerPort: 8080
+          volumeMounts:
+          - name: data
+            mountPath: /home/scanner/.cache
+            subPath:
+            readOnly: false
+          livenessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /probe/healthy
+              port: api-server
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 10
+          readinessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /probe/ready
+              port: api-server
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          resources:
+            limits:
+              cpu: 1
+              memory: 1Gi
+            requests:
+              cpu: 200m
+              memory: 512Mi
+      volumes:
+        - name: trivy
+          emptyDir: {}
