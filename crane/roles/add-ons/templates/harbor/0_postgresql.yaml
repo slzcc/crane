@@ -11,7 +11,7 @@ metadata:
     app: "harbor"
 type: Opaque
 data:
-  POSTGRES_PASSWORD: "{{ harbor_pg_secret_admin_password | b64decode }}"
+  POSTGRES_PASSWORD: "{{ harbor_pg_secret_admin_password | string | b64encode }}"
 
 ---
 # Source: harbor/templates/database/database-svc.yaml

@@ -10,8 +10,8 @@ metadata:
     app: "harbor"
 type: Opaque
 data:
-  redisURL: "{{ harbor_trivy_secret_redisURL | b64decode }}"
-  gitHubToken: "{{ harbor_trivy_secret_gitHubToken | b64decode }}"
+  redisURL: "{{ harbor_trivy_secret_redisURL | string | b64encode }}"
+  gitHubToken: "{{ harbor_trivy_secret_gitHubToken | string | b64encode }}"
 
 ---
 apiVersion: v1

@@ -121,7 +121,6 @@ harbor_trivy_secret_gitHubToken: ""
 # Harbor Secret
 harbor_clair_secret_postgres: "postgres://postgres:{{ harbor_pg_secret_admin_password }}@{{ harbor_project_name_prefix }}harbor-database:5432/postgres?sslmode=disable"
 
-
 # Harbor Domain
 harbor_ingress_default_domain: "harbor.example.com"
 harbor_ingress_notary_domain: "notary.example.com"

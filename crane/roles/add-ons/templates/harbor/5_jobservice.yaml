@@ -11,8 +11,8 @@ metadata:
     app: "harbor"
 type: Opaque
 data:
-  JOBSERVICE_SECRET: "{{ harbor_jobservice_secret_secure | b64decode }}"
-  REGISTRY_CREDENTIAL_PASSWORD: "{{ harbor_jobservice_secret_registry_credential_password | b64decode }}"
+  JOBSERVICE_SECRET: "{{ harbor_jobservice_secret_secure | string | b64encode }}"
+  REGISTRY_CREDENTIAL_PASSWORD: "{{ harbor_jobservice_secret_registry_credential_password | string | b64encode }}"
 
 ---
 # Source: harbor/templates/jobservice/jobservice-cm.yaml
