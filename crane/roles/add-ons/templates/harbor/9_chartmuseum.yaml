@@ -12,12 +12,13 @@ metadata:
 type: Opaque
 data:
   CACHE_REDIS_PASSWORD: "{{ harbor_chartmuseum_secret_redis_password | string | b64encode }}"
-  
+
+---
 # Source: harbor/templates/chartmuseum/chartmuseum-cm.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ harbor_project_name_prefix }}harbor-chartmuseum
+  name: "{{ harbor_project_name_prefix }}harbor-chartmuseum"
   labels:
     heritage: Tiller
     release: release-name
@@ -36,7 +37,7 @@ data:
   DISABLE_API: "false"
   DISABLE_STATEFILES: "false"
   ALLOW_OVERWRITE: "true"
-  CHART_URL: https://{{ harbor_ingress_default_domain }}/chartrepo
+  CHART_URL: "https://{{ harbor_ingress_default_domain }}/chartrepo"
   AUTH_ANONYMOUS_GET: "false"
   TLS_CERT: ""
   TLS_KEY: ""
@@ -128,7 +129,7 @@ spec:
         - name: BASIC_AUTH_PASS
           valueFrom:
             secretKeyRef:
-              name: {{ harbor_project_name_prefix }}harbor-core
+              name: "{{ harbor_project_name_prefix }}harbor-core"
               key: secret
         ports:
         - containerPort: 9999
