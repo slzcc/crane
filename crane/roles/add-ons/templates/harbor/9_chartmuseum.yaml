@@ -11,7 +11,7 @@ metadata:
     app: "harbor"
 type: Opaque
 data:
-  CACHE_REDIS_PASSWORD: "{{ harbor_chartmuseum_secret_redis_password | b64decode }}"
+  CACHE_REDIS_PASSWORD: "{{ harbor_chartmuseum_secret_redis_password | string | b64encode }}"
   
 # Source: harbor/templates/chartmuseum/chartmuseum-cm.yaml
 apiVersion: v1
