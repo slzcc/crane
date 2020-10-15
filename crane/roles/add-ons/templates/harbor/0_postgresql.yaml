@@ -1,9 +1,24 @@
 ---
+# Source: harbor/templates/database/database-secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: "{{ harbor_project_name_prefix }}harbor-database"
+  labels:
+    heritage: Tiller
+    release: release-name
+    chart: harbor
+    app: "harbor"
+type: Opaque
+data:
+  POSTGRES_PASSWORD: "{{ harbor_pg_secret_admin_password | string | b64encode }}"
+
+---
 # Source: harbor/templates/database/database-svc.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: "release-name-harbor-database"
+  name: "{{ harbor_project_name_prefix }}harbor-database"
   labels:
     heritage: Tiller
     release: release-name
@@ -22,7 +37,7 @@ spec:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: "release-name-harbor-database"
+  name: "{{ harbor_project_name_prefix }}harbor-database"
   labels:
     heritage: Tiller
     release: release-name
@@ -31,7 +46,7 @@ metadata:
     component: database
 spec:
   replicas: 1
-  serviceName: "release-name-harbor-database"
+  serviceName: "{{ harbor_project_name_prefix }}harbor-database"
   selector:
     matchLabels:
       release: release-name
@@ -46,36 +61,43 @@ spec:
         app: "harbor"
         component: database
       annotations:
-        checksum/secret: 4af16722d680eab69b7513431158cc43c015ebf3e6f6e0cfff8bcd3191c12ed0
+        checksum/secret: 90e0d57ebc6da6126ee1a270482b27747d8dede1c6ae5c371fafa2157b82cb87
     spec:
       initContainers:
       - name: "change-permission-of-directory"
-        image: "slzcc/busybox:latest"
+        securityContext:
+          runAsUser: 0
+        image: goharbor/harbor-db:{{ harbor_version }}
         imagePullPolicy: IfNotPresent
         command: ["/bin/sh"]
-        args: ["-c", "chown -R 999:999 /var/lib/postgresql/data"]
+        args: ["-c", "chown -R postgres:postgres /var/lib/postgresql/data"]
         volumeMounts:
         - name: database-data
           mountPath: /var/lib/postgresql/data
+          subPath:
       - name: "remove-lost-found"
-        image: slzcc/harbor-db:dev
+        image: goharbor/harbor-db:{{ harbor_version }}
         imagePullPolicy: IfNotPresent
         command: ["rm", "-Rf", "/var/lib/postgresql/data/lost+found"]
         volumeMounts:
         - name: database-data
           mountPath: /var/lib/postgresql/data
+          subPath:
       containers:
       - name: database
-        image: slzcc/harbor-db:v1.8.2
+        image: goharbor/harbor-db:{{ harbor_version }}
         imagePullPolicy: IfNotPresent
         env:
-          - name: TZ
-            value: "{{ time_location }}"
+        - name: TZ
+          value: "{{ time_location }}"
+        envFrom:
+        - secretRef:
+            name: "{{ harbor_project_name_prefix }}harbor-database"
         livenessProbe:
           exec:
             command:
             - /docker-healthcheck.sh
-          initialDelaySeconds: 60
+          initialDelaySeconds: 300
           periodSeconds: 10
         readinessProbe:
           exec:
@@ -83,13 +105,10 @@ spec:
             - /docker-healthcheck.sh
           initialDelaySeconds: 1
           periodSeconds: 10
-        envFrom:
-          - secretRef:
-              name: "release-name-harbor-database"
         volumeMounts:
         - name: database-data
           mountPath: /var/lib/postgresql/data
-          subPath: 
+          subPath:
         - mountPath: /usr/share/zoneinfo
           name: usr-local-timezone
           readOnly: true
@@ -100,3 +119,4 @@ spec:
         hostPath:
           path: /usr/share/zoneinfo
           type: DirectoryOrCreate
+
