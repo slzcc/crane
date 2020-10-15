@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ harbor_project_name_prefix }}harbor-notary-server
+  name: "{{ harbor_project_name_prefix }}harbor-notary-server"
   labels:
     heritage: Tiller
     release: release-name
@@ -22,7 +22,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ harbor_project_name_prefix }}harbor-notary-server
+  name: "{{ harbor_project_name_prefix }}harbor-notary-server"
   labels:
     heritage: Tiller
     release: release-name
@@ -60,7 +60,7 @@ spec:
         - name: MIGRATIONS_PATH
           value: migrations/server/postgresql
         - name: DB_URL
-          value: {{ harbor_clair_secret_postgres }}
+          value: "{{ harbor_notary_secret_postgres }}"
         volumeMounts:
         - name: config
           mountPath: /etc/notary/server-config.postgres.json
@@ -84,16 +84,16 @@ spec:
           secretName: "{{ harbor_project_name_prefix }}harbor-notary-server"
       - name: token-service-certificate
         secret:
-          secretName: {{ harbor_project_name_prefix }}harbor-core
+          secretName: "{{ harbor_project_name_prefix }}harbor-core"
       - name: signer-certificate
         secret:
-          secretName: {{ harbor_project_name_prefix }}harbor-notary-server
+          secretName: "{{ harbor_project_name_prefix }}harbor-notary-server"
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ harbor_project_name_prefix }}harbor-notary-signer
+  name: "{{ harbor_project_name_prefix }}harbor-notary-signer"
   labels:
     heritage: Tiller
     release: release-name
@@ -112,7 +112,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ harbor_project_name_prefix }}harbor-notary-signer
+  name: "{{ harbor_project_name_prefix }}harbor-notary-signer"
   labels:
     heritage: Tiller
     release: release-name
@@ -149,7 +149,7 @@ spec:
         - name: MIGRATIONS_PATH
           value: migrations/signer/postgresql
         - name: DB_URL
-          value: {{ harbor_clair_secret_postgres }}
+          value: "{{ harbor_notary_secret_postgres }}"
         - name: NOTARY_SIGNER_DEFAULTALIAS
           value: defaultalias
         volumeMounts:
@@ -175,4 +175,4 @@ spec:
           secretName: "{{ harbor_project_name_prefix }}harbor-notary-server"
       - name: signer-certificate
         secret:
-          secretName: {{ harbor_project_name_prefix }}harbor-notary-server
+          secretName: "{{ harbor_project_name_prefix }}harbor-notary-server"
