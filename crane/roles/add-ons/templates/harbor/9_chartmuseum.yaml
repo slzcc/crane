@@ -84,6 +84,8 @@ metadata:
     component: chartmuseum
 spec:
   replicas: 1
+  strategy:
+    type: RollingUpdate
   selector:
     matchLabels:
       release: release-name
@@ -102,6 +104,8 @@ spec:
         checksum/secret: f854a2a0fc0067507c97ae856d61bbe3e74c8b8498778f18d856126adef4a11b
         checksum/secret-core: a9907bceec7b276e25d1716477db697e02e7c150a4a4ba450013f3992e7a1672
     spec:
+      securityContext:
+        fsGroup: 10000
       containers:
       - name: chartmuseum
         image: goharbor/chartmuseum-photon:{{ harbor_version }}
@@ -110,7 +114,7 @@ spec:
           httpGet:
             path: /health
             port: 9999
-          initialDelaySeconds: 1
+          initialDelaySeconds: 300
           periodSeconds: 10
         readinessProbe:
           httpGet:
@@ -131,6 +135,9 @@ spec:
             secretKeyRef:
               name: "{{ harbor_project_name_prefix }}harbor-core"
               key: secret
+        - # Needed to make AWS' client connect correctly (see https://github.com/Tiller/chartmuseum/issues/280)
+            name: AWS_SDK_LOAD_CONFIG
+            value: "1"
         ports:
         - containerPort: 9999
         volumeMounts:
