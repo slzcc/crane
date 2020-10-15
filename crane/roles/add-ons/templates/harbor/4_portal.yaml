@@ -1,9 +1,51 @@
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ harbor_project_name_prefix }}harbor-portal"
+  labels:
+    heritage: Tiller
+    release: release-name
+    chart: harbor
+    app: "harbor"
+data:
+  nginx.conf: |+
+    worker_processes auto;
+    pid /tmp/nginx.pid;
+    events {
+        worker_connections  1024;
+    }
+    http {
+        client_body_temp_path /tmp/client_body_temp;
+        proxy_temp_path /tmp/proxy_temp;
+        fastcgi_temp_path /tmp/fastcgi_temp;
+        uwsgi_temp_path /tmp/uwsgi_temp;
+        scgi_temp_path /tmp/scgi_temp;
+        server {
+            listen 8080;
+            server_name  localhost;
+            root   /usr/share/nginx/html;
+            index  index.html index.htm;
+            include /etc/nginx/mime.types;
+            gzip on;
+            gzip_min_length 1000;
+            gzip_proxied expired no-cache no-store private auth;
+            gzip_types text/plain text/css application/json application/javascript application/x-javascript text/xml application/xml application/xml+rss text/javascript;
+            location / {
+                try_files $uri $uri/ /index.html;
+            }
+            location = /index.html {
+                add_header Cache-Control "no-store, no-cache, must-revalidate";
+            }
+        }
+    }
+
+---
 # Source: harbor/templates/portal/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: "release-name-harbor-portal"
+  name: "{{ harbor_project_name_prefix }}harbor-portal"
   labels:
     heritage: Tiller
     release: release-name
@@ -12,7 +54,7 @@ metadata:
 spec:
   ports:
     - port: 80
-      targetPort: 80
+      targetPort: 8080
   selector:
     release: release-name
     app: "harbor"
@@ -23,7 +65,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "release-name-harbor-portal"
+  name: "{{ harbor_project_name_prefix }}harbor-portal"
   labels:
     heritage: Tiller
     release: release-name
@@ -47,31 +89,37 @@ spec:
     spec:
       containers:
       - name: portal
-        image: slzcc/harbor-portal:v1.8.2
+        image: goharbor/harbor-portal:{{ harbor_version }}
         imagePullPolicy: IfNotPresent
         env:
-          - name: TZ
-            value: "{{ time_location }}"
+        - name: TZ
+          value: "{{ time_location }}"
         livenessProbe:
           httpGet:
             path: /
-            port: 80
+            port: 8080
           initialDelaySeconds: 1
           periodSeconds: 10
         readinessProbe:
           httpGet:
             path: /
-            port: 80
+            port: 8080
           initialDelaySeconds: 1
           periodSeconds: 10
         ports:
-        - containerPort: 80
+        - containerPort: 8080
         volumeMounts:
         - mountPath: /usr/share/zoneinfo
           name: usr-local-timezone
           readOnly: true
+        - name: portal-config
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
       volumes:
       - name: usr-local-timezone
         hostPath:
           path: /usr/share/zoneinfo
           type: DirectoryOrCreate
+      - name: portal-config
+        configMap:
+          name: "{{ harbor_project_name_prefix }}harbor-portal"

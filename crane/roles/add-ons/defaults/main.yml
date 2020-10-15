@@ -81,29 +81,51 @@ upload_service_ingress_domain: "upload.example.com"
 # Harbor Deploy Enable
 is_deploy_harbor: false
 
+# Harbor Version
+## https://github.com/goharbor/harbor/releases
+harbor_version: "v2.1.0"
+
+# Harbor Pod Prefix Name
+harbor_project_name_prefix: "release-name-"
+
 # Harbor Deploy Namespace
-harbor_namespace: "harbor"
+harbor_namespace: "harbor-system"
 
 # Harbor Admin Password
 harbor_admin_password: "Harbor12345"
 
-# Harbor PostGreSQL Password
-harbor_pg_admin_password: "changeit"
-harbor_pg_clair_password: "changeit"
+# Harbor PostGreSQL Secret 
+harbor_pg_secret_admin_password: "changeit"
 
 # Harbor Core Secure Key
-harbor_core_secure_key: "not-a-secure-key" 
-harbor_core_secret: "90USoEBlROrSey6F"
+harbor_core_secret_secret_key: "not-a-secure-key" 
+harbor_core_secret_secret: "pxfN8RPG54GfaP2Y"
+harbor_core_secret_csrf_key: "L930JXpTmcRXkt40qkL8JE1x9p3f5A7M"
 
-# Harbor Registry Secure
-harbor_registry_secure_key: "iCELcbcIHHG4RSua"
-harbor_registry_redis_password: ""
+# Harbor Registry Secret
+## harbor_registry_user:harbor_registry_password
+harbor_registry_secret_htpasswd: "{{ harbor_jobservice_secret_registry_credential_username }}:$2y$10$9L4Tc0DJbFFMB6RdSCunrOpTHdwhid4ktBJmLD00bYgqkkGOvll3mYou"
+harbor_registry_secret_http_secret: "74Q3oNeReD3XiQ08"
+harbor_registry_secret_redis_password: ""
 
-# Harbor JobService Secure
-harbor_jobservice_secure_key: "L1Jp8tCQngTlftfO"
+# Harbor JobService Secret
+harbor_jobservice_secret_secure: "Lujf8J1BFRhWMiW3"
+harbor_jobservice_secret_registry_credential_username: "harbor_registry_user"
+harbor_jobservice_secret_registry_credential_password: "harbor_registry_password"
 
-# Harbor chartmuseum Secure
-harbor_chartmuseum_redis_password: ""
+# Harbor chartmuseum Secret
+harbor_chartmuseum_secret_redis_password: ""
+
+# Harbor truvt Secret
+harbor_trivy_secret_redisURL: "redis://{{ harbor_project_name_prefix }}harbor-redis:6379/5?idle_timeout_seconds=30"
+harbor_trivy_secret_gitHubToken: ""
+
+# Harbor clair Secret
+harbor_clair_secret_postgres: "postgres://postgres:{{ harbor_pg_secret_admin_password }}@{{ harbor_project_name_prefix }}harbor-database:5432/postgres?sslmode=disable"
+
+# Harbor notary Secret
+harbor_notary_server_secret_postgres: "postgres://postgres:{{ harbor_pg_secret_admin_password }}@{{ harbor_project_name_prefix }}harbor-database:5432/notaryserver?sslmode=disable"
+harbor_notary_signer_secret_postgres: "postgres://postgres:{{ harbor_pg_secret_admin_password }}@{{ harbor_project_name_prefix }}harbor-database:5432/notarysigner?sslmode=disable"
 
 # Harbor Domain
 harbor_ingress_default_domain: "harbor.example.com"

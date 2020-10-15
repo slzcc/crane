@@ -1,9 +1,26 @@
 ---
+# Source: harbor/templates/registry/registry-secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: "{{ harbor_project_name_prefix }}harbor-registry"
+  labels:
+    heritage: Tiller
+    release: release-name
+    chart: harbor
+    app: "harbor"
+type: Opaque
+data:
+  REGISTRY_HTPASSWD: "{{ harbor_registry_secret_htpasswd | string | b64encode }}"
+  REGISTRY_HTTP_SECRET: "{{ harbor_registry_secret_http_secret | string | b64encode }}"
+  REGISTRY_REDIS_PASSWORD: "{{ harbor_registry_secret_redis_password | string | b64encode }}"
+
+---
 # Source: harbor/templates/registry/registry-cm.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "release-name-harbor-registry"
+  name: "{{ harbor_project_name_prefix }}harbor-registry"
   labels:
     heritage: Tiller
     release: release-name
@@ -13,7 +30,7 @@ data:
   config.yml: |+
     version: 0.1
     log:
-      level: debug
+      level: info
       fields:
         service: registry
     storage:
@@ -29,41 +46,41 @@ data:
       redirect:
         disable: false
     redis:
-      addr: "release-name-harbor-redis:6379"
+      addr: {{ harbor_project_name_prefix }}harbor-redis:6379
       db: 2
+      password:
+      readtimeout: 10s
+      writetimeout: 10s
+      dialtimeout: 10s
     http:
       addr: :5000
+      relativeurls: false
       # set via environment variable
       # secret: placeholder
       debug:
         addr: localhost:5001
     auth:
-      token:
-        issuer: harbor-token-issuer
-        realm: "https://{{ harbor_ingress_default_domain }}/service/token"
-        rootcertbundle: /etc/registry/root.crt
-        service: harbor-registry
+      htpasswd:
+        realm: harbor-registry-basic-realm
+        path: /etc/registry/passwd
     validation:
       disabled: true
-    notifications:
-      endpoints:
-        - name: harbor
-          disabled: false
-          url: http://release-name-harbor-core/service/notifications
-          timeout: 3000ms
-          threshold: 5
-          backoff: 1s
+    compatibility:
+      schema1:
+        enabled: true
   ctl-config.yml: |+
     ---
     protocol: "http"
     port: 8080
-    log_level: debug
+    log_level: info
+    registry_config: "/etc/registry/config.yml"
+
 ---
 # Source: harbor/templates/registry/registry-svc.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: "release-name-harbor-registry"
+  name: "{{ harbor_project_name_prefix }}harbor-registry"
   labels:
     heritage: Tiller
     release: release-name
@@ -85,7 +102,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "release-name-harbor-registry"
+  name: "{{ harbor_project_name_prefix }}harbor-registry"
   labels:
     heritage: Tiller
     release: release-name
@@ -94,6 +111,8 @@ metadata:
     component: registry
 spec:
   replicas: 1
+  strategy:
+    type: RollingUpdate
   selector:
     matchLabels:
       release: release-name
@@ -108,82 +127,96 @@ spec:
         app: "harbor"
         component: registry
       annotations:
-        checksum/configmap: e6aee07f9d9577ef09570040209706c51a3b0f1dd307c57bce95d7012f595714
-        checksum/secret: f00f876f2be46d83aedf6acd22a586c84108fedfaaa54776e5e661f20717e820
-        checksum/secret-jobservice: 0359c82ef1e69328e6952003debcf6303ce6f49711d936441d154fd6c29bc464
-        checksum/secret-core: 7745b7b8c5c82cfad7ad077902022082285e095158000de55342efa537c1c8db
+        checksum/configmap: 75455e3881dd754519533620b796bfd538678a15acd745534143f570a99219bb
+        checksum/secret: 3d90a820ae62822d6e37112c51697e9319e8b5449f5723dfbf2ab19e96624176
+        checksum/secret-jobservice: 36145ececce4a2fe7979ce0167f12ab890574f9accf331866c21e73533284d7e
+        checksum/secret-core: abaef46ca421802a71f8cd307f208252ac4264b5e817c03b52bcad8aebbc6e6f
     spec:
+      securityContext:
+        fsGroup: 10000
       containers:
       - name: registry
-        image: slzcc/registry-photon:v2.7.1-patch-2819-v1.8.2
+        image: goharbor/registry-photon:{{ harbor_version }}
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
             path: /
+            scheme: HTTP
             port: 5000
-          initialDelaySeconds: 1
+          initialDelaySeconds: 300
           periodSeconds: 10
         readinessProbe:
           httpGet:
             path: /
+            scheme: HTTP
             port: 5000
           initialDelaySeconds: 1
           periodSeconds: 10
         args: ["serve", "/etc/registry/config.yml"]
         envFrom:
         - secretRef:
-            name: "release-name-harbor-registry"
+            name: "{{ harbor_project_name_prefix }}harbor-registry"
+        env:
+        - name: TZ
+          value: "{{ time_location }}"
         ports:
         - containerPort: 5000
         - containerPort: 5001
         volumeMounts:
         - name: registry-data
           mountPath: /storage
-          subPath: 
+          subPath:
         - name: registry-root-certificate
           mountPath: /etc/registry/root.crt
           subPath: tls.crt
+        - name: registry-htpasswd
+          mountPath: /etc/registry/passwd
+          subPath: passwd
         - name: registry-config
           mountPath: /etc/registry/config.yml
           subPath: config.yml
+        - mountPath: /usr/share/zoneinfo
+          name: usr-local-timezone
+          readOnly: true
       - name: registryctl
-        image: slzcc/harbor-registryctl:v1.8.2
+        image: goharbor/harbor-registryctl:{{ harbor_version }}
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
             path: /api/health
+            scheme: HTTP
             port: 8080
-          initialDelaySeconds: 1
+          initialDelaySeconds: 300
           periodSeconds: 10
         readinessProbe:
           httpGet:
             path: /api/health
+            scheme: HTTP
             port: 8080
           initialDelaySeconds: 1
           periodSeconds: 10
-        args: ["serve", "/etc/registry/config.yml"]
         envFrom:
         - secretRef:
-            name: "release-name-harbor-registry"
+            name: "{{ harbor_project_name_prefix }}harbor-registry"
         env:
-          - name: TZ
-            value: "{{ time_location }}"
-          - name: CORE_SECRET
-            valueFrom:
-              secretKeyRef:
-                name: release-name-harbor-core
-                key: secret
-          - name: JOBSERVICE_SECRET
-            valueFrom:
-              secretKeyRef:
-                name: release-name-harbor-jobservice
-                key: secret
+        - name: TZ
+          value: "{{ time_location }}"
+        - name: CORE_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: "{{ harbor_project_name_prefix }}harbor-core"
+              key: secret
+        - name: JOBSERVICE_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: "{{ harbor_project_name_prefix }}harbor-jobservice"
+              key: JOBSERVICE_SECRET
         ports:
         - containerPort: 8080
         volumeMounts:
         - name: registry-data
           mountPath: /storage
-          subPath: 
+          subPath:
         - name: registry-config
           mountPath: /etc/registry/config.yml
           subPath: config.yml
@@ -197,12 +230,17 @@ spec:
       - name: usr-local-timezone
         hostPath:
           path: /usr/share/zoneinfo
-          type: DirectoryOrCreate
+      - name: registry-htpasswd
+        secret:
+          secretName: "{{ harbor_project_name_prefix }}harbor-registry"
+          items:
+            - key: REGISTRY_HTPASSWD
+              path: passwd
       - name: registry-root-certificate
         secret:
-          secretName: release-name-harbor-core
+          secretName: "{{ harbor_project_name_prefix }}harbor-core"
       - name: registry-config
         configMap:
-          name: "release-name-harbor-registry"
+          name: "{{ harbor_project_name_prefix }}harbor-registry"
       - name: registry-data
         emptyDir: {}
