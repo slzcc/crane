@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: release-name-harbor-core
+  name: {{ harbor_project_name_prefix }}harbor-core
   labels:
     heritage: Tiller
     release: release-name
@@ -12,57 +12,54 @@ metadata:
 data:
   app.conf: |+
     appname = Harbor
-    runmode = dev
+    runmode = prod
     enablegzip = true
 
-    [dev]
+    [prod]
     httpport = 8080
+  PORT: "8080"
   DATABASE_TYPE: "postgresql"
-  POSTGRESQL_HOST: "release-name-harbor-database"
+  POSTGRESQL_HOST: "{{ harbor_project_name_prefix }}harbor-database"
   POSTGRESQL_PORT: "5432"
   POSTGRESQL_USERNAME: "postgres"
   POSTGRESQL_DATABASE: "registry"
   POSTGRESQL_SSLMODE: "disable"
   POSTGRESQL_MAX_IDLE_CONNS: "50"
-  POSTGRESQL_MAX_OPEN_CONNS: "100"
+  POSTGRESQL_MAX_OPEN_CONNS: "1000"
   EXT_ENDPOINT: "https://{{ harbor_ingress_default_domain }}"
-  CORE_URL: "http://release-name-harbor-core"
-  JOBSERVICE_URL: "http://release-name-harbor-jobservice"
-  REGISTRY_URL: "http://release-name-harbor-registry:5000"
-  TOKEN_SERVICE_URL: "http://release-name-harbor-core/service/token"
+  CORE_URL: "http://{{ harbor_project_name_prefix }}harbor-core:80"
+  JOBSERVICE_URL: "http://{{ harbor_project_name_prefix }}harbor-jobservice"
+  REGISTRY_URL: "http://{{ harbor_project_name_prefix }}harbor-registry:5000"
+  TOKEN_SERVICE_URL: "http://{{ harbor_project_name_prefix }}harbor-core:80/service/token"
   WITH_NOTARY: "true"
-  NOTARY_URL: "http://release-name-harbor-notary-server:4443"
-  CFG_EXPIRATION: "5"
-  ADMIRAL_URL: "NA"
+  NOTARY_URL: "http://{{ harbor_project_name_prefix }}harbor-notary-server:4443"
+  CORE_LOCAL_URL: "http://127.0.0.1:8080"
   WITH_CLAIR: "true"
-  CLAIR_DB_HOST: "release-name-harbor-database"
-  CLAIR_DB_PORT: "5432"
-  CLAIR_DB_USERNAME: "postgres"
-  CLAIR_DB: "postgres"
-  CLAIR_DB_SSLMODE: "disable"
-  CLAIR_URL: "http://release-name-harbor-clair:6060"
+  CLAIR_ADAPTER_URL: "http://{{ harbor_project_name_prefix }}harbor-clair:8080"
+  WITH_TRIVY: "true"
+  TRIVY_ADAPTER_URL: "http://{{ harbor_project_name_prefix }}harbor-trivy:8080"
   REGISTRY_STORAGE_PROVIDER_NAME: "filesystem"
   WITH_CHARTMUSEUM: "true"
-  CHART_REPOSITORY_URL: "http://release-name-harbor-chartmuseum"
-  LOG_LEVEL: "debug"
+  CHART_REPOSITORY_URL: "http://{{ harbor_project_name_prefix }}harbor-chartmuseum"
+  LOG_LEVEL: "info"
   CONFIG_PATH: "/etc/core/app.conf"
-  SYNC_REGISTRY: "false"
   CHART_CACHE_DRIVER: "redis"
-  _REDIS_URL: "release-name-harbor-redis:6379,100,"
-  _REDIS_URL_REG: "redis://release-name-harbor-redis:6379/2"
-  PORTAL_URL: "http://release-name-harbor-portal"
-  REGISTRYCTL_URL: "http://release-name-harbor-registry:8080"
-  CLAIR_HEALTH_CHECK_SERVER_URL: "http://release-name-harbor-clair:6061"
+  _REDIS_URL_CORE: "redis://{{ harbor_project_name_prefix }}harbor-redis:6379/0?idle_timeout_seconds=30"
+  _REDIS_URL_REG: "redis://{{ harbor_project_name_prefix }}harbor-redis:6379/2?idle_timeout_seconds=30"
+  PORTAL_URL: "http://{{ harbor_project_name_prefix }}harbor-portal"
+  REGISTRY_CONTROLLER_URL: "http://{{ harbor_project_name_prefix }}harbor-registry:8080"
+  REGISTRY_CREDENTIAL_USERNAME: "harbor_registry_user"
   HTTP_PROXY: ""
   HTTPS_PROXY: ""
-  NO_PROXY: "release-name-harbor-core,release-name-harbor-jobservice,release-name-harbor-database,release-name-harbor-chartmuseum,release-name-harbor-clair,release-name-harbor-notary-server,release-name-harbor-notary-signer,release-name-harbor-registry,127.0.0.1,localhost,.local,.internal"
-
+  NO_PROXY: "{{ harbor_project_name_prefix }}harbor-core,{{ harbor_project_name_prefix }}harbor-jobservice,{{ harbor_project_name_prefix }}harbor-database,{{ harbor_project_name_prefix }}harbor-chartmuseum,{{ harbor_project_name_prefix }}harbor-clair,{{ harbor_project_name_prefix }}harbor-notary-server,{{ harbor_project_name_prefix }}harbor-notary-signer,{{ harbor_project_name_prefix }}harbor-registry,{{ harbor_project_name_prefix }}harbor-portal,{{ harbor_project_name_prefix }}harbor-trivy,127.0.0.1,localhost,.local,.internal"
+  PERMITTED_REGISTRY_TYPES_FOR_PROXY_CACHE: "docker-hub,harbor"
+  
 ---
 # Source: harbor/templates/core/core-svc.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: release-name-harbor-core
+  name: {{ harbor_project_name_prefix }}harbor-core
   labels:
     heritage: Tiller
     release: release-name
@@ -82,7 +79,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: release-name-harbor-core
+  name: {{ harbor_project_name_prefix }}harbor-core
   labels:
     heritage: Tiller
     release: release-name
@@ -103,46 +100,56 @@ spec:
         app: "harbor"
         component: core
       annotations:
-        checksum/configmap: 0373a325098ed5b361361922e96600ae2be85875d2a4a9d985157017a2e832b0
-        checksum/secret: 80a7da5d8fd72242d8f013f1e072dc0fe7c87938525f1656be5041f805e702c7
-        checksum/secret-jobservice: 24dff4b3a305b02ae74e5f1e0233ce041801e9d74151f3240f7e99847a838ee4
+        checksum/configmap: 5102de663fd724059140f17860805bdf4bc332dff8b6ee6a28b8b0d34ad33d41
+        checksum/secret: 5606a3539fe158db5bbfad9d3acb98fb95c1d313d59cd96e88d97da32e29f2ce
+        checksum/secret-jobservice: 3558956449ed3c2c3774a2d91ca78a75c53f909c68d80ed553ec733242298ae9
     spec:
       securityContext:
         fsGroup: 10000
       containers:
       - name: core
-        image: slzcc/harbor-core:v1.8.2
+        image: goharbor/harbor-core:{{ harbor_version }}
         imagePullPolicy: IfNotPresent
+        startupProbe:
+          httpGet:
+            path: /api/v2.0/ping
+            scheme: HTTP
+            port: 8080
+          failureThreshold: 360
+          initialDelaySeconds: 10
+          periodSeconds: 10
         livenessProbe:
           httpGet:
-            path: /api/ping
+            path: /api/v2.0/ping
+            scheme: HTTP
             port: 8080
-          initialDelaySeconds: 30
+          failureThreshold: 2
           periodSeconds: 10
         readinessProbe:
           httpGet:
-            path: /api/ping
+            path: /api/v2.0/ping
+            scheme: HTTP
             port: 8080
-          initialDelaySeconds: 30
+          failureThreshold: 2
           periodSeconds: 10
         envFrom:
         - configMapRef:
-            name: "release-name-harbor-core"
+            name: "{{ harbor_project_name_prefix }}harbor-core"
         - secretRef:
-            name: "release-name-harbor-core"
+            name: "{{ harbor_project_name_prefix }}harbor-core"
         env:
-          - name: TZ
-            value: "{{ time_location }}"
-          - name: CORE_SECRET
-            valueFrom:
-              secretKeyRef:
-                name: release-name-harbor-core
-                key: secret
-          - name: JOBSERVICE_SECRET
-            valueFrom:
-              secretKeyRef:
-                name: "release-name-harbor-jobservice"
-                key: secret
+        - name: TZ
+          value: "{{ time_location }}"
+        - name: CORE_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ harbor_project_name_prefix }}harbor-core
+              key: secret
+        - name: JOBSERVICE_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: "{{ harbor_project_name_prefix }}harbor-jobservice"
+              key: JOBSERVICE_SECRET
         ports:
         - containerPort: 8080
         volumeMounts:
@@ -156,8 +163,7 @@ spec:
           mountPath: /etc/core/private_key.pem
           subPath: tls.key
         - name: ca-download
-          mountPath: /etc/core/ca/ca.crt
-          subPath: ca.crt
+          mountPath: /etc/core/ca
         - name: psc
           mountPath: /etc/core/token
         - mountPath: /usr/share/zoneinfo
@@ -170,25 +176,22 @@ spec:
           type: DirectoryOrCreate
       - name: config
         configMap:
-          name: release-name-harbor-core
+          name: {{ harbor_project_name_prefix }}harbor-core
           items:
             - key: app.conf
               path: app.conf
       - name: secret-key
         secret:
-          secretName: release-name-harbor-core
+          secretName: {{ harbor_project_name_prefix }}harbor-core
           items:
             - key: secretKey
               path: key
       - name: token-service-private-key
         secret:
-          secretName: release-name-harbor-core
+          secretName: {{ harbor_project_name_prefix }}harbor-core
       - name: ca-download
         secret:
-          secretName: "release-name-harbor-ingress"
-          items:
-            - key: ca.crt
-              path: ca.crt
+          secretName: "{{ harbor_project_name_prefix }}harbor-ingress"
       - name: psc
         emptyDir: {}
 

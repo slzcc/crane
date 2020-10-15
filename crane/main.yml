@@ -111,7 +111,7 @@
     - { role: kubernetes-networks, tags: [k8s-networks]}
 
 - name: Deploy Add Ons
-  hosts: kube-master
+  hosts: kube-master[0]
   gather_facts: true
   become: yes
   become_method: sudo

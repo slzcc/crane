@@ -1,9 +1,25 @@
 ---
+# Source: harbor/templates/jobservice/jobservice-secrets.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: "{{ harbor_project_name_prefix }}harbor-jobservice"
+  labels:
+    heritage: Tiller
+    release: release-name
+    chart: harbor
+    app: "harbor"
+type: Opaque
+data:
+  JOBSERVICE_SECRET: "{{ harbor_jobservice_secret_secure | string | b64encode }}"
+  REGISTRY_CREDENTIAL_PASSWORD: "{{ harbor_jobservice_secret_registry_credential_password | string | b64encode }}"
+
+---
 # Source: harbor/templates/jobservice/jobservice-cm.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "release-name-harbor-jobservice"
+  name: "{{ harbor_project_name_prefix }}harbor-jobservice"
   labels:
     heritage: Tiller
     release: release-name
@@ -11,17 +27,19 @@ metadata:
     app: "harbor"
 data:
   config.yml: |+
+    #Server listening port
     protocol: "http"
     port: 8080
     worker_pool:
       workers: 10
       backend: "redis"
       redis_pool:
-        redis_url: "release-name-harbor-redis:6379/1"
+        redis_url: "redis://{{ harbor_project_name_prefix }}harbor-redis:6379/1"
         namespace: "harbor_job_service_namespace"
+        idle_timeout_second: 3600
     job_loggers:
       - name: "FILE"
-        level: DEBUG
+        level: INFO
         settings: # Customized settings of logger
           base_dir: "/var/log/jobs"
         sweeper:
@@ -31,14 +49,35 @@ data:
     #Loggers for the job service
     loggers:
       - name: "STD_OUTPUT"
-        level: DEBUG
-        
+        level: INFO
+
+---
+# Source: harbor/templates/jobservice/jobservice-cm-env.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ harbor_project_name_prefix }}harbor-jobservice-env"
+  labels:
+    heritage: Tiller
+    release: release-name
+    chart: harbor
+    app: "harbor"
+data:
+  CORE_URL: "http://{{ harbor_project_name_prefix }}harbor-core:80"
+  TOKEN_SERVICE_URL: "http://{{ harbor_project_name_prefix }}harbor-core:80/service/token"
+  REGISTRY_URL: "http://{{ harbor_project_name_prefix }}harbor-registry:5000"
+  REGISTRY_CONTROLLER_URL: "http://{{ harbor_project_name_prefix }}harbor-registry:8080"
+  REGISTRY_CREDENTIAL_USERNAME: "harbor_registry_user"
+  HTTP_PROXY: ""
+  HTTPS_PROXY: ""
+  NO_PROXY: "{{ harbor_project_name_prefix }}harbor-core,{{ harbor_project_name_prefix }}harbor-jobservice,{{ harbor_project_name_prefix }}harbor-database,{{ harbor_project_name_prefix }}harbor-chartmuseum,{{ harbor_project_name_prefix }}harbor-clair,{{ harbor_project_name_prefix }}harbor-notary-server,{{ harbor_project_name_prefix }}harbor-notary-signer,{{ harbor_project_name_prefix }}harbor-registry,{{ harbor_project_name_prefix }}harbor-portal,{{ harbor_project_name_prefix }}harbor-trivy,127.0.0.1,localhost,.local,.internal"
+
 ---
 # Source: harbor/templates/jobservice/jobservice-svc.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: "release-name-harbor-jobservice"
+  name: "{{ harbor_project_name_prefix }}harbor-jobservice"
   labels:
     heritage: Tiller
     release: release-name
@@ -58,7 +97,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "release-name-harbor-jobservice"
+  name: "{{ harbor_project_name_prefix }}harbor-jobservice"
   labels:
     heritage: Tiller
     release: release-name
@@ -67,6 +106,8 @@ metadata:
     component: jobservice
 spec:
   replicas: 1
+  strategy:
+    type: RollingUpdate
   selector:
     matchLabels:
       release: release-name
@@ -81,53 +122,44 @@ spec:
         app: "harbor"
         component: jobservice
       annotations:
-        checksum/configmap: f0b27f033ca1da1a1fedf6d04039310b2099eb7fe2318134923d4956b88c25af
-        checksum/secret: f90fb5c3965f4b0e0b3716138a0e1d7edb51ef208839103f20db56d45ac4e17b
-        checksum/secret-core: 1cfe4f86beaacb3b6d36fc07d16b003c83d4f66940b350ae1b1392af0aea18f9
+        checksum/configmap: 4c096c702ec83c5c97aa8952f85904d710b5ff2f70593c7ffcf84222863e2ed4
+        checksum/configmap-env: 004b4d029da2fbfcca0601f335004553b6f636436e5910dfb801b7dae587328d
+        checksum/secret: dfcddfc20a7c56243bbc44aa6418f8159e44e269514fe1cf23bc44fd9d998620
+        checksum/secret-core: 12ab762c8e6802af765cdbac8c7d7fceafa54260b751d26e83b8ccbb20705f5d
     spec:
       securityContext:
         fsGroup: 10000
       containers:
       - name: jobservice
-        image: slzcc/harbor-jobservice:v1.8.2
+        image: goharbor/harbor-jobservice:{{ harbor_version }}
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
             path: /api/v1/stats
+            scheme: HTTP
             port: 8080
-          initialDelaySeconds: 20
+          initialDelaySeconds: 300
           periodSeconds: 10
         readinessProbe:
           httpGet:
             path: /api/v1/stats
+            scheme: HTTP
             port: 8080
           initialDelaySeconds: 20
           periodSeconds: 10
         env:
-          - name: TZ
-            value: "{{ time_location }}"
-          - name: CORE_SECRET
-            valueFrom:
-              secretKeyRef:
-                name: release-name-harbor-core
-                key: secret
-          - name: JOBSERVICE_SECRET
-            valueFrom:
-              secretKeyRef:
-                name: "release-name-harbor-jobservice"
-                key: secret
-          - name: CORE_URL
-            value: "http://release-name-harbor-core"
-          - name: REGISTRY_CONTROLLER_URL
-            value: "http://release-name-harbor-registry:8080"
-          - name: LOG_LEVEL
-            value: debug
-          - name: HTTP_PROXY
-            value: ""
-          - name: HTTPS_PROXY
-            value: ""
-          - name: NO_PROXY
-            value: "release-name-harbor-core,release-name-harbor-jobservice,release-name-harbor-database,release-name-harbor-chartmuseum,release-name-harbor-clair,release-name-harbor-notary-server,release-name-harbor-notary-signer,release-name-harbor-registry,127.0.0.1,localhost,.local,.internal"
+        - name: TZ
+          value: "{{ time_location }}"
+        - name: CORE_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: "{{ harbor_project_name_prefix }}harbor-core"
+              key: secret
+        envFrom:
+        - configMapRef:
+            name: "{{ harbor_project_name_prefix }}harbor-jobservice-env"
+        - secretRef:
+            name: "{{ harbor_project_name_prefix }}harbor-jobservice"
         ports:
         - containerPort: 8080
         volumeMounts:
@@ -136,7 +168,7 @@ spec:
           subPath: config.yml
         - name: job-logs
           mountPath: /var/log/jobs
-          subPath: 
+          subPath:
         - mountPath: /usr/share/zoneinfo
           name: usr-local-timezone
           readOnly: true
@@ -147,6 +179,6 @@ spec:
           type: DirectoryOrCreate
       - name: jobservice-config
         configMap:
-          name: "release-name-harbor-jobservice"
+          name: "{{ harbor_project_name_prefix }}harbor-jobservice"
       - name: job-logs
         emptyDir: {}
