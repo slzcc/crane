@@ -118,8 +118,11 @@ harbor_chartmuseum_secret_redis_password: ""
 harbor_trivy_secret_redisURL: "redis://{{ harbor_project_name_prefix }}harbor-redis:6379/5?idle_timeout_seconds=30"
 harbor_trivy_secret_gitHubToken: ""
 
-# Harbor Secret
+# Harbor clair Secret
 harbor_clair_secret_postgres: "postgres://postgres:{{ harbor_pg_secret_admin_password }}@{{ harbor_project_name_prefix }}harbor-database:5432/postgres?sslmode=disable"
+
+# Harbor notary Secret
+harbor_notary_secret_postgres: "postgres://postgres:{{ harbor_pg_secret_admin_password }}@{{ harbor_project_name_prefix }}harbor-database:5432/notaryserver?sslmode=disable"
 
 # Harbor Domain
 harbor_ingress_default_domain: "harbor.example.com"

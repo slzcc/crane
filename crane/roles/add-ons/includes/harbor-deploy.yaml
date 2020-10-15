@@ -44,16 +44,16 @@
   ignore_errors: true
 
 - name: Create Harbor Ingress Secret
-  shell: "{{ kubernetes_ctl_path }}kubectl create secret generic release-name-harbor-ingress \
+  shell: "{{ kubernetes_ctl_path }}kubectl create secret generic {{ harbor_project_name_prefix }}harbor-ingress \
           --from-file={{ kubernetes_etc_dirs }}harbor/cert/tls.crt \
           --from-file={{ kubernetes_etc_dirs }}harbor/cert/tls.key \
           --from-file={{ kubernetes_etc_dirs }}harbor/cert/ca.crt \
           -n {{ harbor_namespace }} && \
-          {{ kubernetes_ctl_path }}kubectl label secret release-name-harbor-ingress heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}"
+          {{ kubernetes_ctl_path }}kubectl label secret {{ harbor_project_name_prefix }}harbor-ingress heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}"
   ignore_errors: true
 
 - name: Create Harbor Core Secret
-  shell: "{{ kubernetes_ctl_path }}kubectl create secret generic release-name-harbor-core \
+  shell: "{{ kubernetes_ctl_path }}kubectl create secret generic {{ harbor_project_name_prefix }}harbor-core \
           --from-literal=secretKey={{ harbor_core_secret_secret_key }} \
           --from-literal=secret={{ harbor_core_secret_secret }} \
           --from-literal=HARBOR_ADMIN_PASSWORD={{ harbor_admin_password }} \
@@ -63,10 +63,10 @@
           --from-file={{ kubernetes_etc_dirs }}harbor/cert/tls.crt \
           --from-file={{ kubernetes_etc_dirs }}harbor/cert/tls.key \
           -n {{ harbor_namespace }} && \
-          {{ kubernetes_ctl_path }}kubectl label secret release-name-harbor-core heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}"
+          {{ kubernetes_ctl_path }}kubectl label secret {{ harbor_project_name_prefix }}harbor-core heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}"
   ignore_errors: true
 
-- name: Copy Harbor Calir Config
+- name: Copy Harbor Clair Config
   template: 
     src: "roles/add-ons/templates/harbor/{{ item }}"
     dest: "{{ kubernetes_etc_dirs }}harbor/config/{{ item }}"
@@ -76,13 +76,13 @@
     - "config.yaml"
   ignore_errors: true
 
-- name: Create Harbor Calir Secret
-  shell: "{{ kubernetes_ctl_path }}kubectl create secret generic release-name-harbor-clair \
+- name: Create Harbor Clair Secret
+  shell: "{{ kubernetes_ctl_path }}kubectl create secret generic {{ harbor_project_name_prefix }}harbor-clair \
           --from-file={{ kubernetes_etc_dirs }}harbor/config/config.yaml \
           --from-literal=redis={{ harbor_trivy_secret_redisURL }} \
           --from-literal=database={{ harbor_clair_secret_postgres }} \
           -n {{ harbor_namespace }} && \
-          {{ kubernetes_ctl_path }}kubectl label secret release-name-harbor-clair heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}"
+          {{ kubernetes_ctl_path }}kubectl label secret {{ harbor_project_name_prefix }}harbor-clair heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}"
   ignore_errors: true
 
 - name: Copy Harbor Notary Signer and Notary Config
@@ -97,27 +97,27 @@
   ignore_errors: true
 
 - name: Create Harbor Notary Secret
-  shell: "{{ kubernetes_ctl_path }}kubectl create secret generic release-name-harbor-notary-server \
+  shell: "{{ kubernetes_ctl_path }}kubectl create secret generic {{ harbor_project_name_prefix }}harbor-notary-server \
           --from-file={{ kubernetes_etc_dirs }}harbor/cert/tls.crt \
           --from-file={{ kubernetes_etc_dirs }}harbor/cert/tls.key \
           --from-file={{ kubernetes_etc_dirs }}harbor/cert/ca.crt \
           --from-file={{ kubernetes_etc_dirs }}harbor/config/server.json \
           --from-file={{ kubernetes_etc_dirs }}harbor/config/signer.json \
           -n {{ harbor_namespace }} && \
-          {{ kubernetes_ctl_path }}kubectl label secret release-name-harbor-notary-server heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}"
+          {{ kubernetes_ctl_path }}kubectl label secret {{ harbor_project_name_prefix }}harbor-notary-server heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}"
   ignore_errors: true
 
 - name: Set Create Harbor Ingress Secret Command in Script
-  shell: "echo '{{ kubernetes_ctl_path }}kubectl create secret generic release-name-harbor-ingress \
+  shell: "echo '{{ kubernetes_ctl_path }}kubectl create secret generic {{ harbor_project_name_prefix }}harbor-ingress \
           --from-file={{ kubernetes_etc_dirs }}harbor/cert/tls.crt \
           --from-file={{ kubernetes_etc_dirs }}harbor/cert/tls.key \
           --from-file={{ kubernetes_etc_dirs }}harbor/cert/ca.crt \
           -n {{ harbor_namespace }} && \
-          {{ kubernetes_ctl_path }}kubectl label secret release-name-harbor-ingress heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}' >> {{ kubernetes_etc_dirs }}/harbor/secret.sh"
+          {{ kubernetes_ctl_path }}kubectl label secret {{ harbor_project_name_prefix }}harbor-ingress heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}' >> {{ kubernetes_etc_dirs }}/harbor/secret.sh"
   ignore_errors: true
 
 - name: Set Create Harbor Core Secret Command in Script
-  shell: "echo '{{ kubernetes_ctl_path }}kubectl create secret generic release-name-harbor-core \
+  shell: "echo '{{ kubernetes_ctl_path }}kubectl create secret generic {{ harbor_project_name_prefix }}harbor-core \
           --from-literal=secretKey={{ harbor_core_secret_secret_key }} \
           --from-literal=secret={{ harbor_core_secret_secret }} \
           --from-literal=HARBOR_ADMIN_PASSWORD={{ harbor_admin_password }} \
@@ -127,27 +127,27 @@
           --from-file={{ kubernetes_etc_dirs }}harbor/cert/tls.crt \
           --from-file={{ kubernetes_etc_dirs }}harbor/cert/tls.key \
           -n {{ harbor_namespace }} && \
-          {{ kubernetes_ctl_path }}kubectl label secret release-name-harbor-core heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}' >> {{ kubernetes_etc_dirs }}/harbor/secret.sh"
+          {{ kubernetes_ctl_path }}kubectl label secret {{ harbor_project_name_prefix }}harbor-core heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}' >> {{ kubernetes_etc_dirs }}/harbor/secret.sh"
   ignore_errors: true
 
 - name: Set Create Harbor Notary Secret Command in Script
-  shell: "echo '{{ kubernetes_ctl_path }}kubectl create secret generic release-name-harbor-notary-server \
+  shell: "echo '{{ kubernetes_ctl_path }}kubectl create secret generic {{ harbor_project_name_prefix }}harbor-notary-server \
           --from-file={{ kubernetes_etc_dirs }}harbor/cert/tls.crt \
           --from-file={{ kubernetes_etc_dirs }}harbor/cert/tls.key \
           --from-file={{ kubernetes_etc_dirs }}harbor/cert/ca.crt \
           --from-file={{ kubernetes_etc_dirs }}harbor/config/server.json \
           --from-file={{ kubernetes_etc_dirs }}harbor/config/signer.json \
           -n {{ harbor_namespace }} && \
-          {{ kubernetes_ctl_path }}kubectl label secret release-name-harbor-notary-server heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}' >> {{ kubernetes_etc_dirs }}/harbor/secret.sh"
+          {{ kubernetes_ctl_path }}kubectl label secret {{ harbor_project_name_prefix }}harbor-notary-server heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}' >> {{ kubernetes_etc_dirs }}/harbor/secret.sh"
   ignore_errors: true
 
-- name: Set Create Harbor Calir Secret Command in Script
-  shell: "echo '{{ kubernetes_ctl_path }}kubectl create secret generic release-name-harbor-clair \
+- name: Set Create Harbor Clair Secret Command in Script
+  shell: "echo '{{ kubernetes_ctl_path }}kubectl create secret generic {{ harbor_project_name_prefix }}harbor-clair \
           --from-file={{ kubernetes_etc_dirs }}harbor/config/config.yaml \
           --from-literal=redis={{ harbor_trivy_secret_redisURL }} \
           --from-literal=database={{ harbor_clair_secret_postgres }} \
           -n {{ harbor_namespace }} && \
-          {{ kubernetes_ctl_path }}kubectl label secret release-name-harbor-clair heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}' >> {{ kubernetes_etc_dirs }}/harbor/secret.sh"
+          {{ kubernetes_ctl_path }}kubectl label secret {{ harbor_project_name_prefix }}harbor-clair heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}' >> {{ kubernetes_etc_dirs }}/harbor/secret.sh"
   ignore_errors: true
 
 - name: Set Harbor Dir Permissions
