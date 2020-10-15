@@ -76,56 +76,61 @@ spec:
             privileged: false
             allowPrivilegeEscalation: false
           env:
-            - name: HTTP_PROXY
-              value: ""
-            - name: HTTPS_PROXY
-              value: ""
-            - name: NO_PROXY
-              value: "{{ harbor_project_name_prefix }}harbor-core,{{ harbor_project_name_prefix }}harbor-jobservice,{{ harbor_project_name_prefix }}harbor-database,{{ harbor_project_name_prefix }}harbor-chartmuseum,{{ harbor_project_name_prefix }}harbor-clair,{{ harbor_project_name_prefix }}harbor-notary-server,{{ harbor_project_name_prefix }}harbor-notary-signer,{{ harbor_project_name_prefix }}harbor-registry,{{ harbor_project_name_prefix }}harbor-portal,{{ harbor_project_name_prefix }}harbor-trivy,127.0.0.1,localhost,.local,.internal"
-            - name: "SCANNER_LOG_LEVEL"
-              value: "info"
-            - name: "SCANNER_TRIVY_CACHE_DIR"
-              value: "/home/scanner/.cache/trivy"
-            - name: "SCANNER_TRIVY_REPORTS_DIR"
-              value: "/home/scanner/.cache/reports"
-            - name: "SCANNER_TRIVY_DEBUG_MODE"
-              value: "false"
-            - name: "SCANNER_TRIVY_VULN_TYPE"
-              value: "os,library"
-            - name: "SCANNER_TRIVY_GITHUB_TOKEN"
-              valueFrom:
-                secretKeyRef:
-                  name: "{{ harbor_project_name_prefix }}harbor-trivy"
-                  key: gitHubToken
-            - name: "SCANNER_TRIVY_SEVERITY"
-              value: "UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL"
-            - name: "SCANNER_TRIVY_IGNORE_UNFIXED"
-              value: "false"
-            - name: "SCANNER_TRIVY_SKIP_UPDATE"
-              value: "false"
-            - name: "SCANNER_TRIVY_INSECURE"
-              value: "false"
-            - name: SCANNER_API_SERVER_ADDR
-              value: ":8080"
-            - name: "SCANNER_REDIS_URL"
-              valueFrom:
-                secretKeyRef:
-                  name: "{{ harbor_project_name_prefix }}harbor-trivy"
-                  key: redisURL
-            - name: "SCANNER_STORE_REDIS_URL"
-              valueFrom:
-                secretKeyRef:
-                  name: "{{ harbor_project_name_prefix }}harbor-trivy"
-                  key: redisURL
-            - name: "SCANNER_JOB_QUEUE_REDIS_URL"
-              valueFrom:
-                secretKeyRef:
-                  name: "{{ harbor_project_name_prefix }}harbor-trivy"
-                  key: redisURL
+          - name: TZ
+            value: "{{ time_location }}"
+          - name: HTTP_PROXY
+            value: ""
+          - name: HTTPS_PROXY
+            value: ""
+          - name: NO_PROXY
+            value: "{{ harbor_project_name_prefix }}harbor-core,{{ harbor_project_name_prefix }}harbor-jobservice,{{ harbor_project_name_prefix }}harbor-database,{{ harbor_project_name_prefix }}harbor-chartmuseum,{{ harbor_project_name_prefix }}harbor-clair,{{ harbor_project_name_prefix }}harbor-notary-server,{{ harbor_project_name_prefix }}harbor-notary-signer,{{ harbor_project_name_prefix }}harbor-registry,{{ harbor_project_name_prefix }}harbor-portal,{{ harbor_project_name_prefix }}harbor-trivy,127.0.0.1,localhost,.local,.internal"
+          - name: "SCANNER_LOG_LEVEL"
+            value: "info"
+          - name: "SCANNER_TRIVY_CACHE_DIR"
+            value: "/home/scanner/.cache/trivy"
+          - name: "SCANNER_TRIVY_REPORTS_DIR"
+            value: "/home/scanner/.cache/reports"
+          - name: "SCANNER_TRIVY_DEBUG_MODE"
+            value: "false"
+          - name: "SCANNER_TRIVY_VULN_TYPE"
+            value: "os,library"
+          - name: "SCANNER_TRIVY_GITHUB_TOKEN"
+            valueFrom:
+              secretKeyRef:
+                name: "{{ harbor_project_name_prefix }}harbor-trivy"
+                key: gitHubToken
+          - name: "SCANNER_TRIVY_SEVERITY"
+            value: "UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL"
+          - name: "SCANNER_TRIVY_IGNORE_UNFIXED"
+            value: "false"
+          - name: "SCANNER_TRIVY_SKIP_UPDATE"
+            value: "false"
+          - name: "SCANNER_TRIVY_INSECURE"
+            value: "false"
+          - name: SCANNER_API_SERVER_ADDR
+            value: ":8080"
+          - name: "SCANNER_REDIS_URL"
+            valueFrom:
+              secretKeyRef:
+                name: "{{ harbor_project_name_prefix }}harbor-trivy"
+                key: redisURL
+          - name: "SCANNER_STORE_REDIS_URL"
+            valueFrom:
+              secretKeyRef:
+                name: "{{ harbor_project_name_prefix }}harbor-trivy"
+                key: redisURL
+          - name: "SCANNER_JOB_QUEUE_REDIS_URL"
+            valueFrom:
+              secretKeyRef:
+                name: "{{ harbor_project_name_prefix }}harbor-trivy"
+                key: redisURL
           ports:
             - name: api-server
               containerPort: 8080
           volumeMounts:
+          - mountPath: /usr/share/zoneinfo
+            name: usr-local-timezone
+            readOnly: true
           - name: trivy-data
             mountPath: /home/scanner/.cache
             subPath:
@@ -158,3 +163,7 @@ spec:
       volumes:
         - name: trivy-data
           emptyDir: {}
+        - name: usr-local-timezone
+        hostPath:
+          path: /usr/share/zoneinfo
+          type: DirectoryOrCreate
