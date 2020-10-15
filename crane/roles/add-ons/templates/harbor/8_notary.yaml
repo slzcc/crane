@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: release-name-harbor-notary-server
+  name: "{{ harbor_project_name_prefix }}harbor-notary-server"
   labels:
     heritage: Tiller
     release: release-name
@@ -22,7 +22,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: release-name-harbor-notary-server
+  name: "{{ harbor_project_name_prefix }}harbor-notary-server"
   labels:
     heritage: Tiller
     release: release-name
@@ -52,7 +52,7 @@ spec:
         fsGroup: 10000
       containers:
       - name: notary-server
-        image: slzcc/notary-server-photon:v0.6.1-v1.8.2
+        image: goharbor/notary-server-photon:{{ harbor_version }}
         imagePullPolicy: IfNotPresent
         env:
         - name: TZ
@@ -60,7 +60,7 @@ spec:
         - name: MIGRATIONS_PATH
           value: migrations/server/postgresql
         - name: DB_URL
-          value: postgres://postgres:changeit@release-name-harbor-database:5432/notaryserver?sslmode=disable
+          value: "{{ harbor_notary_server_secret_postgres }}"
         volumeMounts:
         - name: config
           mountPath: /etc/notary/server-config.postgres.json
@@ -81,19 +81,19 @@ spec:
           type: DirectoryOrCreate
       - name: config
         secret:
-          secretName: "release-name-harbor-notary-server"
+          secretName: "{{ harbor_project_name_prefix }}harbor-notary-server"
       - name: token-service-certificate
         secret:
-          secretName: release-name-harbor-core
+          secretName: "{{ harbor_project_name_prefix }}harbor-core"
       - name: signer-certificate
         secret:
-          secretName: release-name-harbor-notary-server
+          secretName: "{{ harbor_project_name_prefix }}harbor-notary-server"
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: release-name-harbor-notary-signer
+  name: "{{ harbor_project_name_prefix }}harbor-notary-signer"
   labels:
     heritage: Tiller
     release: release-name
@@ -112,7 +112,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: release-name-harbor-notary-signer
+  name: "{{ harbor_project_name_prefix }}harbor-notary-signer"
   labels:
     heritage: Tiller
     release: release-name
@@ -141,7 +141,7 @@ spec:
         fsGroup: 10000
       containers:
       - name: notary-signer
-        image: slzcc/notary-signer-photon:v0.6.1-v1.8.2
+        image: goharbor/notary-signer-photon:{{ harbor_version }}
         imagePullPolicy: IfNotPresent
         env:
         - name: TZ
@@ -149,7 +149,7 @@ spec:
         - name: MIGRATIONS_PATH
           value: migrations/signer/postgresql
         - name: DB_URL
-          value: postgres://postgres:changeit@release-name-harbor-database:5432/notarysigner?sslmode=disable
+          value: "{{ harbor_notary_signer_secret_postgres }}"
         - name: NOTARY_SIGNER_DEFAULTALIAS
           value: defaultalias
         volumeMounts:
@@ -172,7 +172,7 @@ spec:
           type: DirectoryOrCreate
       - name: config
         secret:
-          secretName: "release-name-harbor-notary-server"
+          secretName: "{{ harbor_project_name_prefix }}harbor-notary-server"
       - name: signer-certificate
         secret:
-          secretName: release-name-harbor-notary-server
+          secretName: "{{ harbor_project_name_prefix }}harbor-notary-server"

@@ -35,6 +35,7 @@ $ tree /etc/kubernetes/harbor/
 ├── 7_clair.yaml
 ├── 8_notary.yaml
 ├── 9_chartmuseum.yaml
+├── 10_trivy.yaml
 ├── cert                             # Cert Config, 默认 20 年证书有效期
 │   ├── ca-config.json
 │   ├── ca.crt -> ca.pem
