@@ -9,7 +9,7 @@
   },
   "storage": {
     "backend": "postgres",
-    "db_url": "{{ harbor_notary_secret_postgres }}",
+    "db_url": "{{ harbor_notary_signer_secret_postgres }}",
     "default_alias": "defaultalias"
   }
 }
