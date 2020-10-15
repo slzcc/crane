@@ -14,7 +14,7 @@
   },
   "storage": {
     "backend": "postgres",
-    "db_url": "{{ harbor_clair_secret_postgres }}"
+    "db_url": "{{ harbor_notary_secret_postgres }}"
   },
   "auth": {
     "type": "token",
