@@ -149,6 +149,9 @@ http_proxy: ""
 # HTTPS Proxy
 https_proxy: ""
 
+# No Proxy
+no_proxy: "localhost,127.0.0.1"
+
 ## System Config
 ## ********************************************************************************************************************************
 
@@ -201,7 +204,7 @@ docker_log_size: '1G'
 is_docker_daemon_config: true
 
 # Docker Systemd Options:
-# Example: '"HTTP_PROXY=http://{{ http_proxy }}" "HTTPS_PROXY=http://{{ https_proxy }}" "NO_PROXY=localhost,127.0.0.1"'
+# Example: '"HTTP_PROXY=http://{{ http_proxy }}" "HTTPS_PROXY=http://{{ https_proxy }}" "NO_PROXY={{ no_proxy }}"'
 docker_systemd_env_option: ''
 
 # 强制安装 Docker, 当可能存在不同版本 Docker 可以强制安装统一版本

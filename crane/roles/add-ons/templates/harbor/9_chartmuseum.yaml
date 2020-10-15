@@ -14,6 +14,27 @@ data:
   CACHE_REDIS_PASSWORD: "{{ harbor_chartmuseum_secret_redis_password | string | b64encode }}"
 
 ---
+# Source: harbor/templates/jobservice/jobservice-cm-env.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ harbor_project_name_prefix }}harbor-jobservice-env"
+  labels:
+    heritage: Tiller
+    release: release-name
+    chart: harbor
+    app: "harbor"
+data:
+  CORE_URL: "http://{{ harbor_project_name_prefix }}harbor-core:80"
+  TOKEN_SERVICE_URL: "http://{{ harbor_project_name_prefix }}harbor-core:80/service/token"
+  REGISTRY_URL: "http://{{ harbor_project_name_prefix }}harbor-registry:5000"
+  REGISTRY_CONTROLLER_URL: "http://{{ harbor_project_name_prefix }}harbor-registry:8080"
+  REGISTRY_CREDENTIAL_USERNAME: "{{ harbor_jobservice_secret_registry_credential_username | string | b64encode }}"
+  HTTP_PROXY: ""
+  HTTPS_PROXY: ""
+  NO_PROXY: "{{ harbor_project_name_prefix }}harbor-core,{{ harbor_project_name_prefix }}harbor-jobservice,{{ harbor_project_name_prefix }}harbor-database,{{ harbor_project_name_prefix }}harbor-chartmuseum,{{ harbor_project_name_prefix }}harbor-clair,{{ harbor_project_name_prefix }}harbor-notary-server,{{ harbor_project_name_prefix }}harbor-notary-signer,{{ harbor_project_name_prefix }}harbor-registry,{{ harbor_project_name_prefix }}harbor-portal,{{ harbor_project_name_prefix }}harbor-trivy,127.0.0.1,localhost,.local,.internal"
+
+---
 # Source: harbor/templates/chartmuseum/chartmuseum-cm.yaml
 apiVersion: v1
 kind: ConfigMap
@@ -37,10 +58,7 @@ data:
   DISABLE_API: "false"
   DISABLE_STATEFILES: "false"
   ALLOW_OVERWRITE: "true"
-  CHART_URL: "https://{{ harbor_ingress_default_domain }}/chartrepo"
   AUTH_ANONYMOUS_GET: "false"
-  TLS_CERT: ""
-  TLS_KEY: ""
   CONTEXT_PATH: ""
   INDEX_LIMIT: "0"
   MAX_STORAGE_OBJECTS: "0"
@@ -84,6 +102,8 @@ metadata:
     component: chartmuseum
 spec:
   replicas: 1
+  strategy:
+    type: RollingUpdate
   selector:
     matchLabels:
       release: release-name
@@ -102,6 +122,8 @@ spec:
         checksum/secret: f854a2a0fc0067507c97ae856d61bbe3e74c8b8498778f18d856126adef4a11b
         checksum/secret-core: a9907bceec7b276e25d1716477db697e02e7c150a4a4ba450013f3992e7a1672
     spec:
+      securityContext:
+        fsGroup: 10000
       containers:
       - name: chartmuseum
         image: goharbor/chartmuseum-photon:{{ harbor_version }}
@@ -110,7 +132,7 @@ spec:
           httpGet:
             path: /health
             port: 9999
-          initialDelaySeconds: 1
+          initialDelaySeconds: 300
           periodSeconds: 10
         readinessProbe:
           httpGet:
@@ -131,6 +153,9 @@ spec:
             secretKeyRef:
               name: "{{ harbor_project_name_prefix }}harbor-core"
               key: secret
+        - # Needed to make AWS' client connect correctly (see https://github.com/Tiller/chartmuseum/issues/280)
+            name: AWS_SDK_LOAD_CONFIG
+            value: "1"
         ports:
         - containerPort: 9999
         volumeMounts:
