@@ -123,7 +123,8 @@ harbor_trivy_secret_gitHubToken: ""
 harbor_clair_secret_postgres: "postgres://postgres:{{ harbor_pg_secret_admin_password }}@{{ harbor_project_name_prefix }}harbor-database:5432/postgres?sslmode=disable"
 
 # Harbor notary Secret
-harbor_notary_secret_postgres: "postgres://postgres:{{ harbor_pg_secret_admin_password }}@{{ harbor_project_name_prefix }}harbor-database:5432/notaryserver?sslmode=disable"
+harbor_notary_server_secret_postgres: "postgres://postgres:{{ harbor_pg_secret_admin_password }}@{{ harbor_project_name_prefix }}harbor-database:5432/notaryserver?sslmode=disable"
+harbor_notary_signer_secret_postgres: "postgres://postgres:{{ harbor_pg_secret_admin_password }}@{{ harbor_project_name_prefix }}harbor-database:5432/notarysigner?sslmode=disable"
 
 # Harbor Domain
 harbor_ingress_default_domain: "harbor.example.com"
