@@ -104,12 +104,13 @@ harbor_core_secret_csrf_key: "L930JXpTmcRXkt40qkL8JE1x9p3f5A7M"
 
 # Harbor Registry Secret
 ## harbor_registry_user:harbor_registry_password
-harbor_registry_secret_htpasswd: "harbor_registry_user:$2y$10$9L4Tc0DJbFFMB6RdSCunrOpTHdwhid4ktBJmLD00bYgqkkGOvll3mYou"
+harbor_registry_secret_htpasswd: "{{ harbor_jobservice_secret_registry_credential_username }}:$2y$10$9L4Tc0DJbFFMB6RdSCunrOpTHdwhid4ktBJmLD00bYgqkkGOvll3mYou"
 harbor_registry_secret_http_secret: "74Q3oNeReD3XiQ08"
 harbor_registry_secret_redis_password: ""
 
 # Harbor JobService Secret
 harbor_jobservice_secret_secure: "Lujf8J1BFRhWMiW3"
+harbor_jobservice_secret_registry_credential_username: "harbor_registry_user"
 harbor_jobservice_secret_registry_credential_password: "harbor_registry_password"
 
 # Harbor chartmuseum Secret
