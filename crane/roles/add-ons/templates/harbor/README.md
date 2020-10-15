@@ -1,5 +1,7 @@
 # Harbor Deploy
 
+> 部署 Harbor 2.x 时如遇遇到通过 web 登入后卡在登入页面的问题, 请对挂载目录全部设为 777 权限即可解决。
+
 安装 Harbor 需要注意 [main.yml](../../defaults/main.yml) 中 `is_deploy_harbor` 为 `true`, 并且修改 Domain:
 
 ```
