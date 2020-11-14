@@ -75,3 +75,8 @@ I0722 20:27:43.031841       1 log.go:172] http: TLS handshake error from 10.200.
 ```
 
 请忽略，这是 kubelet 进行健康检查时无法通过 https 校验报错，可以通过 nc 模拟请求进行查看。
+
+
+### hostname
+
+主机名 Master 节点不要设为大写，在生成 kubelet.conf 时会产生无法注册的问题。
