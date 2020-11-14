@@ -8,6 +8,7 @@
     - [v1.19.2.1 更新内容](#v11921-更新内容)
     - [v1.19.2.2 更新内容](#v11922-更新内容)
     - [v1.19.3.0 更新内容](#v11930-更新内容)
+    - [v1.19.4.0 更新内容](#v11940-更新内容)
 
 # v1.19.0.0
 
@@ -121,3 +122,22 @@ $ chown {{ ssh_connect_user }} /etc/docker/certs.d => $ sudo chown {{ ssh_connec
 Crane 以更新至 1.19.3.0 版本。
 添加 harbor 部署时可自定义版本，默认 v2.1.0, 可根据 [Harbor Release](https://github.com/goharbor/harbor/releases) 查看官方可部署版本。
 重构 harbor 部署配置项, 之前的配置（v1.8.2）文件无法直接修改使用。
+
+# v1.19.3.1
+
+修复 harbor 创建证书时, 添加了重复 DNS 记录的问题。
+
+# v1.19.4.0
+
+Crane 以更新至 1.19.4.0 版本。
+
+```
+@crane/roles/add-ons/defaults/main.yml
+添加 Domain 使用注释。
+
+@crane/roles/add-ons/includes/harbor_create_tls.yaml
+修复 Harbor 创建 TLS 有重复 DNS 记录。
+
+@docs/MattersNeedingAttention.md
+添加部分错误说明。
+```
