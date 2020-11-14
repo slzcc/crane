@@ -128,6 +128,8 @@ harbor_notary_server_secret_postgres: "postgres://postgres:{{ harbor_pg_secret_a
 harbor_notary_signer_secret_postgres: "postgres://postgres:{{ harbor_pg_secret_admin_password }}@{{ harbor_project_name_prefix }}harbor-database:5432/notarysigner?sslmode=disable"
 
 # Harbor Domain
+## 此值切记一定要使用最常用的域名进行绑定, Harbor 会在数据库中记录此值, 所以后续需要修改时则可能遇到不必要的问题,
+## 可以通过下方的 `harbor_tls_option_domain` 定义外网或其他域名地址进行绑定
 harbor_ingress_default_domain: "harbor.example.com"
 harbor_ingress_notary_domain: "notary.example.com"
 
