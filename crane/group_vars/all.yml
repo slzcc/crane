@@ -4,14 +4,14 @@
 # 部署 Kubernetes 对应版本, 不建议修改, 如需修改请修改小版本进行部署测试, 大版本会引发部署参数不支持等问题.
 # 如使用镜像方式部署, 不能修改
 # https://github.com/kubernetes/kubernetes/releases
-k8s_version: 'v1.19.4'
+k8s_version: 'v1.20.0'
 
 # 避免大版本中组件的版本差异, 使用 build 版本作为差异配置项, 在项目中可以看做如下使用 '{{ k8s_version }}.{{ build_k8s_version }}'
 build_k8s_version: '0'
 
 # 部署 CNI 对应版本, 如使用镜像方式部署, 不能修改 (如果可以使用 {{ k8s_cluster_component_registry }} 中的仓库地址获取镜像则可随意修改)
 # https://github.com/containernetworking/plugins/releases/
-cni_version: 'v0.8.6'
+cni_version: 'v0.8.7'
 
 # CNI OS Type
 cni_os_drive: 'linux-amd64'
@@ -35,7 +35,7 @@ k8s_cluster_ip_range: '10.16.0.0/12'
 
 # Kubernetes ApiServer 的总入口地址, 可配置 SLB 等云服务商提供的地址, 但需要接入后端服务器的 80, 443 端口, 此地址可以写某个单实例的 IP 地址
 # 支持 Domain, 支持 AWS ELB
-k8s_load_balance_ip: 10.174.0.2
+k8s_load_balance_ip: 10.146.0.10
 
 # Kubernetes HaProxy 监听的 apiServer 完整的 URL
 k8s_apiserver_https_bind: 'https://{{ k8s_load_balance_ip }}:{{ k8s_master_haproxy_bind_port }}'
@@ -163,7 +163,8 @@ time_location: "Asia/Shanghai"
 ## ********************************************************************************************************************************
 
 # install To Docker Version
-docker_version: '19.03.12'
+# https://download.docker.com/linux/static/stable/x86_64/
+docker_version: '20.10.0'
 
 # Docker 安装类型, 默认 http_binary, 其他方式: http_binary, local_binary, http_script
 # 值为 http_binary 则通过远程下载二进制文件到执行目录.
@@ -172,7 +173,7 @@ docker_version: '19.03.12'
 docker_install_type: "http_binary"
 
 # http_binary Source Addr
-docker_install_http_binary_source: 'https://mirror.shileizcc.com/Docker/bin/'
+docker_install_http_binary_source: 'https://download.docker.com/linux/static/stable/x86_64'
 
 # install docker bin path
 docker_ctl_path: '/usr/bin/'
@@ -222,7 +223,7 @@ is_mandatory_docker_config: false
 # HaProxy Version
 # 如使用镜像方式部署, 不能修改 (如果可以使用 {{ k8s_cluster_component_registry }} 中的仓库地址获取镜像则可随意修改)
 # https://hub.docker.com/_/haproxy
-haproxy_version: '2.2.0'
+haproxy_version: '2.3.2'
 
 # 配置 stats 的 URI 地址
 haproxy_stats_url: '/haproxy_stats'
@@ -259,7 +260,7 @@ kubernetes_cni_dirs: '/opt/cni/bin'
 kubelet_work_dirs: '/var/lib/kubelet/'
 
 # 前置临时目录
-temporary_dirs: '/tmp/'
+temporary_dirs: '/tmp/crane/'
 
 # Cgroup Drive (如果内核未达到 4.4.x 以上版本, 请改为 systemd, 否则低版本内核无法支持 cgroupfs 会造成集群无法启动)
 kubelet_cgroup_drive: 'cgroupfs'
@@ -298,7 +299,7 @@ source_ssh_private_key_file: "{{ hostvars[inventory_hostname]['ansible_ssh_priva
 # Etcd Verions
 # https://github.com/etcd-io/etcd/releases
 # 如使用镜像方式部署, 不能修改 (如果可以使用 {{ k8s_cluster_component_registry }} 中的仓库地址获取镜像则可随意修改)
-etcd_version: '3.4.7'
+etcd_version: '3.4.9'
 
 # Etcd 使用的 Client 协议, 默认 HTTPS, 不能修改
 etcd_url_scheme: "https"
@@ -351,7 +352,7 @@ calico_ipv4_pool_cidr: '172.208.0.0/12'
 # Calico Verion
 # https://github.com/projectcalico/calico/releases
 # 如使用镜像方式部署, 不能修改 (如果可以使用 {{ k8s_cluster_component_registry }} 中的仓库地址获取镜像则可随意修改)
-calico_version: 'v3.15.1'
+calico_version: 'v3.17.0'
 
 # CNI Config Dir
 cni_config_dir: '/etc/cni/net.d'
@@ -368,7 +369,9 @@ calico_type: 'Off'
 # Calico 使用 CNI 版本
 calico_cni_version: '0.3.1'
 
-# https://docs.projectcalico.org/manifests/calico.yaml
+# Calico Release 配置文件
+## https://docs.projectcalico.org/manifests/calico.yaml
+## Docs https://docs.projectcalico.org/getting-started/kubernetes/installation/config-options
 
 ## Kubernetes Add Ons
 ## ********************************************************************************************************************************
@@ -385,7 +388,7 @@ dns_cluster_range: "{{ k8s_cluster_ip_range }}"
 # CoreDNS Version
 # https://github.com/coredns/coredns/releases
 # 如使用镜像方式部署, 不能修改 (如果可以使用 {{ k8s_cluster_component_registry }} 中的仓库地址获取镜像则可随意修改)
-dns_version: '1.7.0'
+dns_version: '1.8.0'
 
 ## Add-Ons
 ## ********************************************************************************************************************************
