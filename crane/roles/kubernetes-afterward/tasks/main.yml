@@ -1,4 +1,9 @@
 ---
+- name: Remove the master Schedule status.
+  shell: '{{ kubernetes_ctl_path }}kubectl taint nodes node-role.kubernetes.io/master="":NoSchedule --all'
+  when: not is_kube_master_schedule
+  ignore_errors: false
+  
 - name: Do not use the RBAC
   shell: "{{ kubernetes_ctl_path }}kubectl create clusterrolebinding serviceaccounts-cluster-admin \
           --clusterrole=cluster-admin \
@@ -6,8 +11,12 @@
   when: not is_rbac
 
 # https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#noderestriction
-- name: Set Master Role Label 
+- name: Set Master Role Label *
   shell: "for i in $({{ kubernetes_ctl_path }}kubectl get node -l node.kubernetes.io/master= | sed '1d' | awk  '{print $1}'); do {{ kubernetes_ctl_path }}kubectl label node $i node-role.kubernetes.io/master=''; done"
+  ignore_errors: true
+
+- name: Set Master Role Label **
+  shell: "for i in $({{ kubernetes_ctl_path }}kubectl get node -l node.kubernetes.io/master= | sed '1d' | awk  '{print $1}'); do {{ kubernetes_ctl_path }}kubectl label node $i node-role.kubernetes.io/control-plane=''; done"
   ignore_errors: true
 
 - name: Set Nodes Role Label 

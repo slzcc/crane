@@ -48,12 +48,13 @@ spec:
     - --requestheader-username-headers=X-Remote-User
     - --secure-port={{ k8s_master_apiservice_bind_port }}
     - --service-account-key-file={{ kubernetes_pki_dirs }}sa.pub
+    - --service-account-issuer=https://kubernetes.default.svc.{{ dns_domain }}
+    - --service-account-signing-key-file={{ kubernetes_pki_dirs }}sa.key
     - --service-cluster-ip-range={{ k8s_cluster_ip_range }}
     - --tls-cert-file={{ kubernetes_pki_dirs }}apiserver.pem
     - --tls-private-key-file={{ kubernetes_pki_dirs }}apiserver-key.pem
     - --service-node-port-range={{ k8s_apiserver_node_port_range }}
     - --client-ca-file={{ kubernetes_pki_dirs }}ca.pem
-    - --service-account-key-file={{ kubernetes_pki_dirs }}sa.pub
     image: {{ k8s_cluster_component_registry }}/kube-apiserver-amd64:{{ k8s_version }}
     imagePullPolicy: IfNotPresent
     env:

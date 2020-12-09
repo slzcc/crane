@@ -8,8 +8,9 @@ Crane 以更新至 1.20.0.0 版本。
 
 Update 各组件版本:
   * kubernetes 1.19.4 => [1.20.0](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.20.md)
+  * kubernetes cni 0.8.6 => [0.8.7](https://github.com/containernetworking/plugins/releases/tag/v0.8.7)
   * docker 19.03.12
-  * etcd 3.4.7 => [3.4.14](https://github.com/etcd-io/etcd/blob/master/CHANGELOG-3.4.md)
+  * etcd 3.4.7 => [3.4.9](https://github.com/etcd-io/etcd/blob/master/CHANGELOG-3.4.md)
   * haproxy 2.2.0 => [2.3.2](http://www.haproxy.org/download/2.3/src/CHANGELOG)
   * calico 3.15.1 => [3.17.0](https://docs.projectcalico.org/v3.17/release-notes/)
   * coredns 1.7.0 => [1.8.0](https://coredns.io/2020/10/22/coredns-1.8.0-release/)
