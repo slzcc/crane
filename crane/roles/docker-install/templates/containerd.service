@@ -5,8 +5,12 @@ After=network.target
 
 [Service]
 ExecStartPre=-/sbin/modprobe overlay
-ExecStart={{ docker_ctl_path }}/containerd
+ExecStartPre=/sbin/modprobe br_netfilter
+ExecStart={{ docker_ctl_path }}containerd
+Restart=always
+RestartSec=5
 KillMode=process
+OOMScoreAdjust=-999
 Delegate=yes
 LimitNOFILE=1048576
 # Having non-zero Limit*s causes performance problems due to accounting overhead

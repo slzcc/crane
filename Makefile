@@ -17,7 +17,7 @@ DOCKER_VERSION := `awk '/^docker_version/' ./crane/group_vars/all.yml | awk -F':
 #        main.yml
 #        test.yml
 CRANE_ENTRANCE := main.yml
-OPTION :=
+OPTION := --tags k8s-networks
 
 build:
 	@docker build -t ${DockerHubRepoName}/${ProjectName}:${VERSION} . --no-cache
@@ -39,6 +39,10 @@ run_test:
 	@docker run --name crane --net host --rm -it -e ANSIBLE_HOST_KEY_CHECKING=false -e TERM=xterm-256color -e COLUMNS=238 -e LINES=61 -v ~/.ssh:/root/.ssh -v ${PWD}:/crane -w /crane/crane -v ${PWD}/crane/ansible.cfg:/etc/ansible/ansible.cfg ${DockerHubRepoName}/${ProjectName}:${VERSION} -i nodes test.yml -vv
 
 local_load_dockerd:
+	@wget -qO- https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz > ${PWD}/crane/roles/docker-install/files/docker-${DOCKER_VERSION}.tar.gz
+
+# Ready to scrap
+local_load_dockerd_old:
 	@docker run --rm -i -e DOCKER_VERSION=${DOCKER_VERSION} -v ${PWD}/crane/roles/docker-install/files:/docker_bin -w /usr/local/bin docker:${DOCKER_VERSION} sh -c "tar zcf /docker_bin/docker-${DOCKER_VERSION}.tar.gz containerd  containerd-shim  ctr  docker  dockerd  docker-entrypoint.sh  docker-init  docker-proxy runc"
 
 run_simple:
