@@ -81,7 +81,3 @@
     state: started
   ignore_errors: true
   when: not is_kube_simple
-
-- debug:
-    var: result['stdout_lines']
-    verbosity: 0  
