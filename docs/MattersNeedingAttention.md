@@ -386,3 +386,9 @@ Kiali (1.12) 现支持 4 中认证协议:
 > [Auth](https://kiali.io/documentation/latest/configuration/authentication/)
 
 > [过时 Auth 说明]https://kiali.io/documentation/v1.21/installation-guide/#_login_options
+
+修改 auth 时需要修改 kilii-operator 的配置:
+
+```
+$ kubectl edit kiali -n istio-system kiali
+```
