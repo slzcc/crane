@@ -11,6 +11,13 @@
   when: result is failed
   ignore_errors: true
 
+- name: Create Temporary Directory
+  file:
+    path: "{{ temporary_dirs }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
 - name: Create Binary Perform Directory
   file:
     path: "{{ kubernetes_ctl_path }}"
