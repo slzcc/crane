@@ -8,7 +8,7 @@ Environment="KUBELET_CERTIFICATE_ARGS=--rotate-certificates=true --cert-dir={{ k
 EnvironmentFile=-{{ kubelet_work_dirs }}kubernetes-flags.env
 # This is a file that the user can use for overrides of the kubelet args as a last resort. Preferably, the user should use
 # the .NodeRegistration.KubeletExtraArgs object in the configuration files instead. KUBELET_EXTRA_ARGS should be sourced from this file.
-Environment="KUBELET_EXTRA_ARGS=--node-labels=node.kubernetes.io/node='' --logtostderr=true --v=0"
+Environment="KUBELET_EXTRA_ARGS=--node-labels=node.kubernetes.io/master='' --logtostderr=true --v=0"
 EnvironmentFile=-/etc/default/kubelet
 ExecStart=
 ExecStart={{ kubernetes_ctl_path }}kubelet $KUBELET_KUBECONFIG_ARGS $KUBELET_CONFIG_ARGS $KUBELET_KUBEADM_ARGS $KUBELET_EXTRA_ARGS $KUBELET_SYSTEM_PODS_ARGS $KUBELET_DNS_ARGS $KUBELET_AUTHZ_ARGS $KUBELET_CERTIFICATE_ARGS

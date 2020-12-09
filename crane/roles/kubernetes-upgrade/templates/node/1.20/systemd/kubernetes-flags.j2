@@ -1,1 +1,1 @@
-KUBELET_KUBEADM_ARGS={{ kubelet_options }}
+KUBELET_KUBEADM_ARGS={{ kubelet_options }} {% if min_kernel_version is version(ansible_facts.kernel, ">=") %} {{ kubelet_low_kernel_config }} {% endif %}
