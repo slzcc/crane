@@ -17,7 +17,7 @@ DOCKER_VERSION := `awk '/^docker_version/' ./crane/group_vars/all.yml | awk -F':
 #        main.yml
 #        test.yml
 CRANE_ENTRANCE := main.yml
-OPTION := --tags k8s-networks
+OPTION :=
 
 build:
 	@docker build -t ${DockerHubRepoName}/${ProjectName}:${VERSION} . --no-cache
