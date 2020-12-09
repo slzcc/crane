@@ -28,6 +28,17 @@
     mode: 0644
     owner: "{{ ssh_connect_user }}"
 
-- name: Deploy Calico
+- name: Delete Calico Old Etcd Secrets
+  shell: '{{ kubernetes_ctl_path }}kubectl delete secret calico-etcd-secrets -n kube-system'
+  ignore_errors: true
+
+- name: Deploy Calico Etcd Secrets
+  shell: '{{ kubernetes_ctl_path }}kubectl create secret generic calico-etcd-secrets -n kube-system \
+                                                         --from-literal=etcd-ca={{ etcd_ssl_dirs }}etcd-ca.pem \
+                                                         --from-literal=etcd-cert={{ etcd_ssl_dirs }}etcd.pem
+                                                         --from-literal=etcd-key={{ etcd_ssl_dirs }}etcd-key.pem'
+  ignore_errors: true
+
+- name: Deploy Calico Containers
   shell: '{{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}calico.yml'
   ignore_errors: true

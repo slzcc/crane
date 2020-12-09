@@ -80,7 +80,7 @@ docker save -o ${temporaryDirs}/image_pause.tar.gz \
                ${sourceRegistry}/pause:${pauseVersion} 
                
 # Calico
-for i in cni node kube-controllers; do
+for i in cni node kube-controllers pod2daemon-flexvol; do
     docker pull ${calicoRegistry}/$i:${calicoVersion}
     
     [ ${isImagePush} == 'true' ] && docker tag ${calicoRegistry}/$i:${calicoVersion} ${targetRegistry}/$i:${calicoVersion} && \
@@ -93,7 +93,7 @@ docker save -o ${temporaryDirs}/image_calico.tar.gz \
                ${calicoRegistry}/kube-controllers:${calicoVersion} \
                ${calicoRegistry}/cni:${calicoVersion} \
                ${calicoRegistry}/node:${calicoVersion}
-              
+               
 # HaProxy
 docker pull haproxy:${haproxyVersion}
 [ ${CleanPullImage} == 'true' ] && docker rmi -f haproxy:${haproxyVersion}
