@@ -1,0 +1,1 @@
+kubelet_containerd_cri_options: "--container-runtime=remote --container-runtime-endpoint=unix:///var/run/crio/crio.sock"

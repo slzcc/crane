@@ -1,3 +1,0 @@
----
-# 安装类型为 http_script 方式安装时, 默认使用 Aliyun 镜像源, 可设为空.
-docker_install_source: ""

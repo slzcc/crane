@@ -1,0 +1,13 @@
+{% if cri_driver == 'docker' %}
+runtime-endpoint: unix:///var/run/dockershim.sock
+image-endpoint: unix:///var/run/dockershim.sock
+#timeout: 10
+#debug: true
+{%- elif cri_driver == "containerd" -%}
+runtime-endpoint: unix:///run/containerd/containerd.sock
+image-endpoint: unix:///run/containerd/containerd.sock
+#imeout: 10
+#ebug: false
+{%- else -%}
+runtime-endpoint: unix:///var/run/crio/crio.sock
+{% endif %}

@@ -1,0 +1,8 @@
+---
+- name: Ubuntu Install CRIO roles
+  include_tasks: roles/cri-install/includes/cri-o/ubuntu.yaml
+  when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
+
+- name: Centos Install CRIO roles
+  include_tasks: roles/cri-install/includes/cri-o/centos.yaml
+  when: ansible_distribution == 'CentOS'

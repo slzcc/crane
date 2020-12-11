@@ -1,0 +1,28 @@
+---
+# Create Temporary Directory
+- name: Create Temporary Directory
+  include: "roles/system-initialize/includes/temporary.yaml"
+
+- name: Deploy CRI to Containerd
+  include: "roles/cri-install/includes/containerd/main.yml"
+  when: cri_driver == "containerd"
+
+- name: Deploy CRI to Podman
+  include: "roles/cri-install/includes/podman/main.yml"
+  when: cri_driver == "podman"
+
+- name: Deploy CRI to Docker
+  include: "roles/cri-install/includes/docker/main.yml"
+  when: cri_driver == "docker"
+  
+- name: Deploy CRI to CRIO
+  include: "roles/cri-install/includes/cri-o/main.yml"
+
+- name: Copy Crictl Config
+  template: 
+    src: "roles/cri-install/templates/{{ item }}"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+    dest: "/etc/crictl.yaml"
+  with_items:
+    - "crictl.yaml"

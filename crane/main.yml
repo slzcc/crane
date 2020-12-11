@@ -20,7 +20,7 @@
   roles:
     - { role: clean-install, tags: [clean], when: is_initialize_clean}
 
-- name: Prepare the environment and install docker.
+- name: Prepare the environment and install CRI.
   hosts: k8s-cluster:etcd
   become: yes
   become_method: sudo
@@ -28,7 +28,7 @@
     ansible_ssh_pipelining: true
   roles:
     - { role: system-initialize, tags: [system]}
-    - { role: docker-install, tags: [docker]}
+    - { role: cri-install, tags: [cri]}
 
 - name: Binary File Deployment.
   hosts: k8s-cluster:etcd

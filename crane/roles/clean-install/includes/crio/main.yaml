@@ -1,0 +1,17 @@
+---
+- include_vars: "roles/cri-install/vars/crio.yaml"
+
+- name: Clean CRIO Binary Files
+  file:
+    path: "{{ kubernetes_ctl_path }}{{ item }}"
+    state: absent
+  with_items:
+    - "conmon"
+    - "crictl"
+    - "crio"
+    - "crio-status"
+    - "crun"
+    - "pinns"
+    - "runc"
+  ignore_errors: true
+  when: is_remove_crio

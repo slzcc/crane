@@ -23,6 +23,8 @@
     mode: 0644
     owner: "{{ ssh_connect_user }}"
 
+- include_vars: "roles/cri-install/vars/kubelet.yaml"
+
 - name: Copy Kubelet Env Config
   template: 
     src: "kubernetes-flags.j2"

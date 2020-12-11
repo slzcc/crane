@@ -11,12 +11,9 @@
   when: result is failed
   ignore_errors: true
 
+# Create Temporary Directory
 - name: Create Temporary Directory
-  file:
-    path: "{{ temporary_dirs }}"
-    mode: 0755
-    owner: "{{ ssh_connect_user }}"
-    state: directory
+  include: "roles/system-initialize/includes/temporary.yaml"
 
 - name: Create Binary Perform Directory
   file:
