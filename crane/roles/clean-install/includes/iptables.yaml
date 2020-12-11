@@ -1,0 +1,26 @@
+---
+# Clean IPVS and Iptables
+- name: IPTABLES SAVE
+  shell: "iptables-save > {{ temporary_dirs }}$(date +%F-%H-%M-%S.iptables)"
+  ignore_errors: true
+
+- name: Clean IPVS Rules
+  shell: "ipvsadm -C"
+  when: is_install_ipvsadm and kube_proxy_mode == 'ipvs' and is_remove_iptables_rule
+  ignore_errors: true
+
+- name: DELETE ALL IPTABLE CLAIN
+  shell: "iptables -F -t {{ item }}"
+  with_items:
+    - "nat"
+    - "filter"
+  ignore_errors: true
+  when: is_remove_iptables_rule
+
+- name: Clean Kube IPVS0
+  shell: "ip a flush dev {{ item }}"
+  with_items:
+    - "kube-ipvs0"
+    - "tunl0"
+  when: kube_proxy_mode == "ipvs"
+  ignore_errors: true

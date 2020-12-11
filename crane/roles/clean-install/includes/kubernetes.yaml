@@ -1,0 +1,60 @@
+---
+
+# Clean Kubernetes
+- name: Stop Kubelet
+  service: 
+    name: kubelet
+    state: stopped
+  ignore_errors: true
+
+- name: Umount K8s Drive
+  shell: "for i in `cat /proc/mounts | grep '{{ kubelet_work_dirs }}' | awk '{print $2}'`;do umount $i; done"
+  ignore_errors: true
+
+- name: Clean kubernetes Etc Working directory ** .
+  file:
+    path: "{{ systemd_default_dirs }}kubelet.service"
+    state: absent
+  ignore_errors: true
+
+- name: Clean Kubelet Systemd Config
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ systemd_etc_dirs }}kubelet.service.d/"
+    - "{{ systemd_default_dirs }}kubelet.service"
+  ignore_errors: true
+
+- name: Clean Kuberentes Binary Files
+  file:
+    path: "{{ kubernetes_ctl_path }}{{ item }}"
+    state: absent
+  with_items:
+    - "kubectl"
+    - "kubelet"
+  when: is_remove_k8s_binary
+  
+- name: Clean KubeConfig Dir
+  file:
+    path: "~/.kube"
+    state: absent
+  ignore_errors: true
+
+- name: Clean Kubelet Working directory.
+  file:
+    path: "{{ kubelet_work_dirs }}"
+    state: absent
+  ignore_errors: true
+
+- name: Clean Kubelet PKI Config directory.
+  file:
+    path: "{{ kubernetes_etc_dirs }}pki"
+    state: absent
+  ignore_errors: true
+
+- name: Clean Kubelet Config Home directory.
+  file:
+    path: "{{ kubernetes_etc_dirs }}"
+    state: absent
+  ignore_errors: true

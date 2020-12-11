@@ -1,0 +1,24 @@
+## Containerd
+## ********************************************************************************************************************************
+
+# https://github.com/containerd/containerd/releases
+containerd_version: 1.3.9
+
+# 自定义配置
+is_containerd_config_custom: true
+
+# 安装的介质(在线离线)可选 local_binary/http_binary
+# 当选择 local_binary 时, 需要保证 files 拥有 cri type 的二进制包 
+containerd_install_type: "{{ cri_drive_install_type }}"
+
+
+# Containerd cgroup drive
+containerd_cgroup_drive: '{{ cgroup_drive }}'
+
+
+# Containerd 存储路径
+containerd_data_root: '/var/lib/containerd'
+
+# Containerd Plugin Path
+# Containerd 存储路径
+containerd_plugin_root: '/opt/containerd'

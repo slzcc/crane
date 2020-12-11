@@ -1,0 +1,42 @@
+---
+
+# Clean Docker
+- name: Clean Docker Containers.
+  shell: "docker rm -f $(docker ps -f 'name=k8s*' -aq)"
+  ignore_errors: true
+
+- name: Stop Docker (If there is)
+  service:
+    name: "['containerd', 'docker', 'docker.socket']"
+    state: stopped
+  ignore_errors: true
+
+# Clean Docker Configs
+- name: Clean Docker Configs
+  include: "roles/clean-install/includes/docker/config.yaml"
+  when: is_remove_docker_ce
+  
+# Clean Docker Package
+- name: Clean Docker Package
+  include: "roles/clean-install/includes/docker/package.yaml"
+  when: is_remove_docker_ce
+
+# Clean Docker Binary
+- name: Clean Docker Binary
+  include: "roles/clean-install/includes/docker/binary.yaml"
+  when: is_remove_docker_ce
+
+# Clean Docker Data
+- name: Clean Docker Data
+  include: "roles/clean-install/includes/docker/data.yaml"
+  when: is_remove_docker_ce and is_remove_docker_dir
+
+# Clean Docker Image
+- name: Clean Docker Image
+  include: "roles/clean-install/includes/docker/image.yaml"
+  when: is_remove_k8s_images
+  
+# Clean Docker Containerd
+- name: Clean Docker Containerd
+  include: "roles/clean-install/includes/docker/containerd.yaml"
+  when: is_remove_docker_containerd

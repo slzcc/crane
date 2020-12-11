@@ -1,0 +1,10 @@
+---
+
+- name: Clean Cfssl files
+  file:
+    path: "{{ kubernetes_ctl_path }}{{ item }}"
+    state: absent
+  with_items:
+    - "cfssl"
+    - "cfssljson"
+  when: is_remove_cfssl

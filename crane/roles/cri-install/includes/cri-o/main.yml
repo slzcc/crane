@@ -1,0 +1,26 @@
+---
+- include_vars: "roles/cri-install/vars/crio.yaml"
+
+- name: Check CRIO Version
+  shell: "crio -v | awk '{print $3}' | awk -F',' '{print $1}'"
+  register: result
+  ignore_errors: true
+
+- name: Install CRIO
+  include_tasks: "roles/cri-install/includes/cri-o/os.yaml"
+  when: result.stderr
+  
+- name: Systemd Reload Config Cache
+  shell: "systemctl daemon-reload"
+
+- name: cri-o Powered UP And Startd
+  service: 
+    name: crio
+    enabled: yes
+  ignore_errors: true
+
+- name: Start cri-o
+  service:
+    name: crio
+    state: started
+  ignore_errors: true

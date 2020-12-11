@@ -1,0 +1,14 @@
+---
+
+# Clean Etcd
+- name: Clean Etcd ssl directory.
+  file:
+    path: "{{ etcd_ssl_dirs }}"
+    state: absent
+  ignore_errors: true
+
+- name: Clean Etcd Working directory.
+  file:
+    path: "{{ etcd_data_dirs }}"
+    state: absent
+  ignore_errors: true

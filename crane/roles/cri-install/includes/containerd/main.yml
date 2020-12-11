@@ -1,0 +1,26 @@
+---
+- include_vars: "roles/cri-install/vars/containerd.yaml"
+
+- name: Check CRIO Version
+  shell: "containerd -v | awk '{print $3}' | awk -F',' '{print $1}'"
+  register: result
+  ignore_errors: true
+
+- name: Install Containerd
+  include_tasks: "roles/cri-install/includes/containerd/os.yaml"
+  when: result.stderr
+  
+- name: Systemd Reload Config Cache
+  shell: "systemctl daemon-reload"
+
+- name: Containerd Powered UP And Startd
+  service: 
+    name: containerd
+    enabled: yes
+  ignore_errors: true
+
+- name: Start Containerd
+  service:
+    name: containerd
+    state: started
+  ignore_errors: true
