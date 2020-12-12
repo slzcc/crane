@@ -1,0 +1,19 @@
+---
+
+- name: Clean Kubernetes Containerd Image
+  shell: "ctr -n k8s.io i rm $(ctr -n k8s.io i ls | tail -1 | grep '{{ item }}' | awk '{print $1}')"
+  with_items:
+    - "k8s.gcr.io/kube-apiserver-amd64"
+    - "k8s.gcr.io/kube-controller-manager"
+    - "k8s.gcr.io/kube-scheduler"
+    - "k8s.gcr.io/kube-proxy"
+    - "k8s.gcr.io/etcd"
+    - "k8s.gcr.io/pause"
+    - "docker.io/slzcc/keepalived"
+    - "docker.io/haproxy"
+    - "docker.io/calico/cni"
+    - "docker.io/calico/kube-controllers"
+    - "docker.io/calico/node"
+    - "docker.io/calico/pod2daemon-flexvol"
+    - "docker.io/coredns/coredns"
+  ignore_errors: true

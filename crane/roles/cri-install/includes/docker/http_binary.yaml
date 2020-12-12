@@ -1,0 +1,16 @@
+---
+- name: Stop DockerD
+  service:
+    name: "{{ item }}"
+    state: stopped
+  ignore_errors: true
+  when: is_mandatory_docker_install
+  with_items:
+    - "docker"
+    - "containerd"
+
+- name: Get Docker Binary File
+  shell: "export http_proxy={{ http_proxy }} ; export https_proxy={{ https_proxy }} ; wget -qO- '{{ docker_install_http_binary_source }}/docker-{{ docker_version }}.tgz' | tar zx -C {{ temporary_dirs }}"
+
+- name: Binary Install
+  include: "roles/cri-install/includes/docker/_binary_install.yaml"

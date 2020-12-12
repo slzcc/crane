@@ -11,7 +11,9 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 
 部署全局基于 TLS, 并区分 K8s Cluster CA、Etcd CA 证书, 并支持证书轮转。
 
-部署时支持离线、在线 kubernetes 和 Docker 的安装。
+部署时支持离线、在线 kubernetes 和 CRI 的安装。
+
+CRI 支持多种服务共存部署模式, 可同时部署 docker/containerd/crio, 用户自定义 RuntimeClass 运行时。
 
 部署 Crane 时可查看注意事项, 避免无效操作:
 

@@ -1,194 +1,40 @@
 ---
-# Clean Kubernetes
-- name: Stop Kubelet
-  service: 
-    name: kubelet
-    state: stopped
-  ignore_errors: true
-
-- name: Umount K8s Drive
-  shell: "for i in `cat /proc/mounts | grep '{{ kubelet_work_dirs }}' | awk '{print $2}'`;do umount $i; done"
-  ignore_errors: true
-
-- name: Clean kubernetes Etc Working directory ** .
-  file:
-    path: "{{ systemd_default_dirs }}kubelet.service"
-    state: absent
-  ignore_errors: true
-
-- name: Clean Kubelet Systemd Config
-  file:
-    path: "{{ item }}"
-    state: absent
-  with_items:
-    - "{{ systemd_etc_dirs }}kubelet.service.d/"
-    - "{{ systemd_default_dirs }}kubelet.service"
-  ignore_errors: true
-
-- name: Clean Kuberentes Binary Files
-  file:
-    path: "{{ kubernetes_ctl_path }}{{ item }}"
-    state: absent
-  with_items:
-    - "kubectl"
-    - "kubelet"
-  when: is_remove_k8s_binary
-  
-- name: Clean KubeConfig Dir
-  file:
-    path: "~/.kube"
-    state: absent
-  ignore_errors: true
-
-- name: Clean Kubelet Working directory.
-  file:
-    path: "{{ kubelet_work_dirs }}"
-    state: absent
-  ignore_errors: true
-
-- name: Clean Kubelet PKI Config directory.
-  file:
-    path: "{{ kubernetes_etc_dirs }}pki"
-    state: absent
-  ignore_errors: true
-
-- name: Clean Kubelet Config Home directory.
-  file:
-    path: "{{ kubernetes_etc_dirs }}"
-    state: absent
-  ignore_errors: true
-
-# Clean Docker
-- name: Clean Docker Containers.
-  shell: "docker rm -f $(docker ps -f 'name=k8s*' -aq)"
-  ignore_errors: true
-
-- name: Clean Kubernetes Docker Image
-  shell: "docker rmi -f $(docker images -f 'reference={{ item }}*' | sed '1d' | awk '{print $3}')"
-  with_items:
-    - "k8s.gcr.io/kube-apiserver-amd64"
-    - "k8s.gcr.io/kube-controller-manager"
-    - "k8s.gcr.io/kube-scheduler"
-    - "k8s.gcr.io/kube-proxy"
-    - "k8s.gcr.io/etcd"
-    - "k8s.gcr.io/pause"
-    - "slzcc/keepalived"
-    - "haproxy"
-    - "calico/cni"
-    - "calico/kube-controllers"
-    - "calico/node"
-    - "coredns/coredns"
-  when: is_remove_k8s_images
-  ignore_errors: true
-  
-- name: Clean Docker for Ubuntu
-  apt: 
-    name: ["docker-ce "]
-    autoremove: yes
-    purge: yes
-  when: is_remove_docker_ce and ansible_lsb.id == 'Ubuntu'
-  ignore_errors: true
-
-- name: Clean Docker for Centos
-  yum: 
-    name: ["docker-ce "]
-    state: removed
-    autoremove: yes
-  when: is_remove_docker_ce and ansible_lsb.id == 'Centos'
-  ignore_errors: true
-
-- name: Clean Docker Data DIR
-  file:
-    path: "{{ docker_data_root }}"
-    state: absent
-  when: is_remove_docker_ce and is_remove_docker_dir
-  ignore_errors: true
-
-- name: Clean Docker Binary Files
-  file:
-    path: "/usr/bin/{{ item }}"
-    state: absent
-  with_items:
-    - "containerd"
-    - "containerd-shim"
-    - "ctr"
-    - "docker"
-    - "dockerd"
-    - "docker-entrypoint.sh"
-    - "docker-init"
-    - "docker-proxy"
-    - "runc"
-  when: is_remove_docker_ce and is_remove_docker_dir
-  ignore_errors: true
-
 # Clean Etcd
-- name: Clean Etcd ssl directory.
-  file:
-    path: "{{ etcd_ssl_dirs }}"
-    state: absent
-  ignore_errors: true
+- name: Clean Etcd
+  include: "roles/clean-install/includes/etcd.yaml"
 
-- name: Clean Etcd Working directory.
-  file:
-    path: "{{ etcd_data_dirs }}"
-    state: absent
-  ignore_errors: true
+# Clean Kubernetes
+- name: Clean Kubernetes
+  include: "roles/clean-install/includes/kubernetes.yaml"
 
 # Clean CNI
-- name: Clean CNI Cluster Config
-  file:
-    path: "{{ cni_config_dir }}"
-    state: absent
-  ignore_errors: true
+- name: Clean CNI
+  include: "roles/clean-install/includes/cni.yaml"
 
-- name: Clean CNI Dir
-  file:
-    path: "{{ kubernetes_cni_dirs }}"
-    state: absent
-  when: is_remove_cni
-  ignore_errors: true
-
-# Clean Other
-- name: Clean Haproxy
-  file:
-    path: "{{ haproxy_etc_dirs }}"
-    state: absent
-  ignore_errors: true
-  
-- name: Systemd Reload
-  shell: "systemctl daemon-reload"
-
-- name: Clean Cfssl files
-  file:
-    path: "{{ kubernetes_ctl_path }}{{ item }}"
-    state: absent
-  with_items:
-    - "cfssl"
-    - "cfssljson"
-  when: is_remove_cfssl
+# Clean Haproxy
+- name: Clean CNI
+  include: "roles/clean-install/includes/haproxy.yaml"
 
 # Clean IPVS and Iptables
-- name: IPTABLES SAVE
-  shell: "iptables-save > {{ temporary_dirs }}$(date +%F-%H-%M-%S.iptables)"
-  ignore_errors: true
+- name: Clean Iptables
+  include: "roles/clean-install/includes/iptables.yaml"
 
-- name: Clean IPVS Rules
-  shell: "ipvsadm -C"
-  when: is_install_ipvsadm and kube_proxy_mode == 'ipvs' and is_remove_iptables_rule
-  ignore_errors: true
+# Clean Other
+- name: Clean Other
+  include: "roles/clean-install/includes/other.yaml"
+  
+# Clean Docker
+- name: Clean Docker
+  include: "roles/clean-install/includes/docker/main.yaml"
 
-- name: DELETE ALL IPTABLE CLAIN
-  shell: "iptables -F -t {{ item }}"
-  with_items:
-    - "nat"
-    - "filter"
-  ignore_errors: true
-  when: is_remove_iptables_rule
+# Clean Containerd
+- name: Clean Containerd
+  include: "roles/clean-install/includes/containerd/main.yaml"
 
-- name: Clean Kube IPVS0
-  shell: "ip a flush dev {{ item }}"
-  with_items:
-    - "kube-ipvs0"
-    - "tunl0"
-  when: kube_proxy_mode == "ipvs"
-  ignore_errors: true
+  # Clean CRIO
+- name: Clean CRIO
+  include: "roles/clean-install/includes/crio/main.yaml"
+  
+# Reload Systemd
+- name: Systemd Reload
+  shell: "systemctl daemon-reload"

@@ -1,0 +1,25 @@
+## CRIO
+## ********************************************************************************************************************************
+
+# https://github.com/cri-o/cri-o/releases
+crio_version: v1.19.0
+
+# install docs https://github.com/cri-o/cri-o/blob/master/install.md#installation-instructions
+
+# 安装的介质(在线离线)可选 local_binary/http_binary
+# 当选择 local_binary 时, 需要保证 files 拥有 crio 的二进制包
+# 可执行 make local_load_crio 或者 local_load_containerd
+crio_install_type: '{{ cri_drive_install_type }}'
+
+# crio
+# https://github.com/kubernetes-sigs/cri-tools
+
+# crio cgroup drive
+crio_cgroup_drive: '{{ cgroup_drive }}'
+
+# crio 存储路径
+crio_data_root: '/var/lib/crio'
+
+# crio Socket 文件路径
+crio_socket_home: '/var/run/crio'
+crio_socket_path: '{{ crio_socket_home }}/crio.sock'
