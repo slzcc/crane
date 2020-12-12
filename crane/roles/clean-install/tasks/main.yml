@@ -1,15 +1,11 @@
 ---
-# Clean Kubernetes
-- name: Clean Kubernetes
-  include: "roles/clean-install/includes/kubernetes.yaml"
-
-# Clean Docker
-- name: Clean Docker
-  include: "roles/clean-install/includes/docker/main.yaml"
-
 # Clean Etcd
 - name: Clean Etcd
   include: "roles/clean-install/includes/etcd.yaml"
+
+# Clean Kubernetes
+- name: Clean Kubernetes
+  include: "roles/clean-install/includes/kubernetes.yaml"
 
 # Clean CNI
 - name: Clean CNI
@@ -19,14 +15,18 @@
 - name: Clean CNI
   include: "roles/clean-install/includes/haproxy.yaml"
 
-# Clean Other
-- name: Clean Other
-  include: "roles/clean-install/includes/other.yaml"
-
 # Clean IPVS and Iptables
 - name: Clean Iptables
   include: "roles/clean-install/includes/iptables.yaml"
+
+# Clean Other
+- name: Clean Other
+  include: "roles/clean-install/includes/other.yaml"
   
+# Clean Docker
+- name: Clean Docker
+  include: "roles/clean-install/includes/docker/main.yaml"
+
 # Clean Containerd
 - name: Clean Containerd
   include: "roles/clean-install/includes/containerd/main.yaml"
@@ -34,7 +34,7 @@
   # Clean CRIO
 - name: Clean CRIO
   include: "roles/clean-install/includes/crio/main.yaml"
-
+  
 # Reload Systemd
 - name: Systemd Reload
   shell: "systemctl daemon-reload"

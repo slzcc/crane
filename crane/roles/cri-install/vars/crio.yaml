@@ -11,6 +11,15 @@ crio_version: v1.19.0
 # 可执行 make local_load_crio 或者 local_load_containerd
 crio_install_type: '{{ cri_drive_install_type }}'
 
-
-# crico
+# crio
 # https://github.com/kubernetes-sigs/cri-tools
+
+# crio cgroup drive
+crio_cgroup_drive: '{{ cgroup_drive }}'
+
+# crio 存储路径
+crio_data_root: '/var/lib/crio'
+
+# crio Socket 文件路径
+crio_socket_home: '/var/run/crio'
+crio_socket_path: '{{ crio_socket_home }}/crio.sock'

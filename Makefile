@@ -19,7 +19,7 @@ CONTAINERD_VERSION := `awk '/^containerd_version/' ./crane/roles/cri-install/var
 #        main.yml
 #        test.yml
 CRANE_ENTRANCE := main.yml
-OPTION := -vv --tags cri
+OPTION := -vv
 
 build:
 	@docker build -t ${DockerHubRepoName}/${ProjectName}:${VERSION} . --no-cache
@@ -68,8 +68,8 @@ local_load_image:
 	@until docker exec -i import-kubernetes-temporary bash /docker-image-import.sh ; do >&2 echo "Starting..." && sleep 1 ; done
 	@docker rm -f import-kubernetes-temporary
 
-local_load_crio: local_load_containerd
+local_load_crio:
 	@wget -qO- https://storage.googleapis.com/k8s-conform-cri-o/artifacts/crio-${CRIO_VERSION}.tar.gz > ${PWD}/crane/roles/cri-install/files/crio-${CRIO_VERSION}.tar.gz
 
-local_load_containerd: local_load_crio
+local_load_containerd:
 	@wget -qO- https://github.com/containerd/containerd/releases/download/v${CONTAINERD_VERSION}/containerd-${CONTAINERD_VERSION}-linux-amd64.tar.gz > ${PWD}/crane/roles/cri-install/files/containerd-${CONTAINERD_VERSION}-linux-amd64.tar.gz

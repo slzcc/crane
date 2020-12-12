@@ -22,3 +22,6 @@ containerd_data_root: '/var/lib/containerd'
 # Containerd Plugin Path
 # Containerd 存储路径
 containerd_plugin_root: '/opt/containerd'
+
+# Containerd Socket 文件路径
+containerd_socket_path: '/run/containerd/containerd.sock'

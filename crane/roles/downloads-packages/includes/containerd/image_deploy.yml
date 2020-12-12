@@ -18,33 +18,56 @@
   ignore_errors: true
 
 - name: Pull the Image
-  shell: "docker rm -f import-kubernetes-temporary | true && docker run --name import-kubernetes-temporary -d -v /var/run/docker.sock:/var/run/docker.sock:ro {{ k8s_image_deploy_repo }}:{{ k8s_version }}.{{ build_k8s_version }} sleep 1234567"
+  shell: "ctr -n k8s.io image pull {{ k8s_image_deploy_repo }}:{{ k8s_version }}.{{ build_k8s_version }}"
+  when: (check_kubectl_version.stdout != k8s_version) or (check_k8s_image is failed) or (check_binary_files is failed)
+
+- name: Run Temportay Containers
+  shell: "ctr -n k8s.io run --null-io --net-host -d \
+                            --label name=import-kubernetes-temporary \
+                            --mount type=bind,src=/var/run,dst=/var/run,options=rbind:ro \
+                            --mount type=bind,src=/run,dst=/run,options=rbind:ro \
+                            {{ k8s_image_deploy_repo }}:{{ k8s_version }}.{{ build_k8s_version }} import-kubernetes-temporary sleep 1234567"
   when: (check_kubectl_version.stdout != k8s_version) or (check_k8s_image is failed) or (check_binary_files is failed)
 
 - name: Export the Image
-  shell: 'until docker exec -i import-kubernetes-temporary bash /docker-image-import.sh ; do >&2 echo "Starting..." && sleep 1 ; done'
+  shell: 'until ctr -n k8s.io tasks exec --exec-id $(ctr -n k8s.io tasks list | grep 'import-kubernetes-temporary'| awk '{print $2}') import-kubernetes-temporary bash /containerd-image-import.sh ; do >&2 echo "Starting..." && sleep 1 ; done'
   when: check_k8s_image is failed
 
+- name: Create Temportay Mount Path
+  file:
+    path: "{{ temporary_dirs }}import-kubernetes-temporary"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
+- name: Temportay Mount to.
+  shell: "ctr -n k8s.io snapshot mounts {{ temporary_dirs }}import-kubernetes-temporary import-kubernetes-temporary | xargs sudo"
+
 - name: Export the cfssl
-  shell: "docker cp import-kubernetes-temporary:/cfssl {{ kubernetes_ctl_path }}"
+  shell: "cp -a {{ temporary_dirs }}import-kubernetes-temporary/cfssl {{ kubernetes_ctl_path }}"
   when: check_binary_files is failed
 
 - name: Export the cfssljson
-  shell: "docker cp import-kubernetes-temporary:/cfssljson {{ kubernetes_ctl_path }}"
+  shell: "cp -a {{ temporary_dirs }}import-kubernetes-temporary/cfssljson {{ kubernetes_ctl_path }}"
   when: check_binary_files is failed
 
 - name: Export the Kubelet
-  shell: "docker cp import-kubernetes-temporary:/kubernetes/node/bin/kubelet {{ kubernetes_ctl_path }}"
+  shell: "cp -a {{ temporary_dirs }}import-kubernetes-temporary/kubernetes/node/bin/kubelet {{ kubernetes_ctl_path }}"
   when: check_kubectl_version.stdout != k8s_version
 
 - name: Export the Kubectl
-  shell: "docker cp import-kubernetes-temporary:/kubernetes/node/bin/kubectl {{ kubernetes_ctl_path }}"
+  shell: "cp -a {{ temporary_dirs }}import-kubernetes-temporary/kubernetes/node/bin/kubectl {{ kubernetes_ctl_path }}"
   when: check_kubectl_version.stdout != k8s_version
 
 - name: Export the CNI
-  shell: "docker cp import-kubernetes-temporary:/cni/. {{ kubernetes_cni_dirs }}"
+  shell: "cp -a {{ temporary_dirs }}import-kubernetes-temporary/cni {{ kubernetes_cni_dirs }}"
   when: check_binary_files is failed
 
+- name: Temportay uMount to.
+  shell: "umount -l {{ temporary_dirs }}import-kubernetes-temporary"
+
 - name: Clean Temporary Container
-  shell: "docker rm -f import-kubernetes-temporary"
+  shell: "ctr -n k8s.io tasks kill --signal 9 import-kubernetes-temporary && \
+          ctr -n k8s.io tasks rm import-kubernetes-temporary && \
+          ctr -n k8s.io c rm import-kubernetes-temporary"
   ignore_errors: true
