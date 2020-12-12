@@ -1,0 +1,82 @@
+---
+
+- name: Move Docker binray to bin Path
+  shell: "cp -a {{ temporary_dirs }}docker/{{ item }} {{ kubernetes_ctl_path }}"
+  with_items:
+    - "docker"
+    - "docker-init"
+    - "docker-proxy"
+    - "dockerd"
+    - "runc"
+  ignore_errors: true
+
+- name: Check Containerd Systemd Status
+  shell: "systemctl is-active containerd --no-pager"
+  register: result
+  ignore_errors: true
+
+- name: Move Containerd binray to bin Path
+  shell: "cp -a {{ temporary_dirs }}docker/{{ item }} {{ kubernetes_ctl_path }}"
+  with_items:
+    - "containerd"
+  ignore_errors: true
+  when: result.stderr or result.stdout != 'active'
+
+- name: Copy Containerd Systemd Config
+  template: 
+    src: "roles/cri-install/templates/containerd/{{ item }}"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+    dest: "{{ systemd_default_dirs }}{{ item }}"
+  with_items:
+    - "containerd.service"
+  when: result.stderr or result.stdout != 'active'
+
+- name: Copy Docker Systemd Config
+  template: 
+    src: "roles/cri-install/templates/docker/{{ item }}"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+    dest: "{{ systemd_default_dirs }}{{ item }}"
+  with_items:
+    - "docker.service"
+    - "docker.socket"
+
+- name: Copy Containerd Config
+  template: 
+    src: "roles/cri-install/templates/containerd/{{ item }}"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+    dest: "/etc/containerd/config.toml"
+  with_items:
+    - "containerd_config.toml"
+  when: result.stderr or result.stdout != 'active'
+
+- name: Create Containerd Config Path
+  file:
+    path: "/etc/containerd"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
+- name: Check Containerd Plugin Files
+  shell: "ls -l /usr/local/bin/containerd-shim-runc-v2"
+  register: cplugin
+  ignore_errors: true
+
+- name: Move Containerd Plugin binray to bin Path
+  shell: "cp -a {{ temporary_dirs }}docker/{{ item }} {{ kubernetes_ctl_path }}"
+  with_items:
+    - "containerd-shim"
+    - "containerd-shim-runc-v1"
+    - "containerd-shim-runc-v2"
+    - "ctr"
+  ignore_errors: true
+  when: cplugin.stderr
+
+- name: Systemd Reload Config Cache
+  shell: "systemctl daemon-reload"
+
+- name: System Add Docker Group
+  shell: "groupadd docker"
+  ignore_errors: true

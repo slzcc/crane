@@ -1,0 +1,8 @@
+---
+
+- name: Create Temporary Directory
+  file:
+    path: "{{ temporary_dirs }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory

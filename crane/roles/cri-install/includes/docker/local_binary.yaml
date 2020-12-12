@@ -1,0 +1,13 @@
+---
+- name: Copy Docker Binary Compressed File
+  copy: 
+    src: "roles/cri-install/files/docker-{{ docker_version }}.tar.gz"
+    dest: "{{ temporary_dirs }}/docker-{{ docker_version }}.tar.gz"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+
+- name: Unpack the dockerd. Tar. Gz
+  shell: "tar zxf {{ temporary_dirs }}/docker-{{ docker_version }}.tar.gz -C {{ temporary_dirs }}"
+
+- name: Binary Install
+  include: "roles/cri-install/includes/docker/_binary_install.yaml"

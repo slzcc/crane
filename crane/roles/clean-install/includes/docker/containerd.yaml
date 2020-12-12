@@ -1,0 +1,24 @@
+---
+
+- name: Remove System Containerd Configs
+  shell: "mv {{ systemd_default_dirs }}containerd.service {{ temporary_dirs }}"
+  ignore_errors: true
+
+- name: Systemd Reload Remove Containerd
+  shell: "systemctl daemon-reload"
+  ignore_errors: true
+
+- name: Remove Containerd Configs
+  shell: "mv /etc/containerd {{ temporary_dirs }}"
+  when: is_remove_docker_daemon_cfg
+  ignore_errors: true
+
+- name: Clean Containerd Binary Files
+  file:
+    path: "{{ kubernetes_ctl_path }}{{ item }}"
+    state: absent
+  with_items:
+    - "containerd"
+    - "containerd-shim"
+    - "containerd-shim-runc-v2"
+  ignore_errors: true

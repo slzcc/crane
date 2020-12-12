@@ -1,0 +1,7 @@
+---
+
+- name: Clean Haproxy
+  file:
+    path: "{{ haproxy_etc_dirs }}"
+    state: absent
+  ignore_errors: true

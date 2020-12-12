@@ -1,0 +1,15 @@
+---
+
+# Clean CNI
+- name: Clean CNI Cluster Config
+  file:
+    path: "{{ cni_config_dir }}"
+    state: absent
+  ignore_errors: true
+
+- name: Clean CNI Dir
+  file:
+    path: "{{ kubernetes_cni_dirs }}"
+    state: absent
+  when: is_remove_all or is_remove_cni
+  ignore_errors: true

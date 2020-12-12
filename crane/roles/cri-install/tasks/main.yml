@@ -1,0 +1,29 @@
+---
+- include_vars: "roles/cri-install/vars/docker.yaml"
+- include_vars: "roles/cri-install/vars/containerd.yaml"
+- include_vars: "roles/cri-install/vars/crio.yaml"
+
+# Create Temporary Directory
+- name: Create Temporary Directory
+  include: "roles/system-initialize/includes/temporary.yaml"
+
+- name: Deploy CRI to Containerd
+  include: "roles/cri-install/includes/containerd/main.yml"
+  when: ("containerd" in cri_driver)
+
+- name: Deploy CRI to Docker
+  include: "roles/cri-install/includes/docker/main.yml"
+  when: ("docker" in cri_driver)
+  
+- name: Deploy CRI to CRIO
+  include: "roles/cri-install/includes/cri-o/main.yml"
+  when: ("crio" in cri_driver)
+
+- name: Copy Crictl Config
+  template: 
+    src: "roles/cri-install/templates/{{ item }}"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+    dest: "/etc/crictl.yaml"
+  with_items:
+    - "crictl.yaml"

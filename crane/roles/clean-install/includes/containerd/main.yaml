@@ -1,0 +1,50 @@
+---
+- include_vars: "roles/cri-install/vars/containerd.yaml"
+
+- name: Stop Containerd.
+  service:
+    name: "['containerd']"
+    state: stopped
+  ignore_errors: true
+
+# Clean Containerd Image
+- name: Clean Docker Image
+  include: "roles/clean-install/includes/containerd/image.yaml"
+  when: is_remove_all or is_remove_k8s_images
+
+- name: Clean Containerd Binary Files
+  file:
+    path: "{{ kubernetes_ctl_path }}{{ item }}"
+    state: absent
+  with_items:
+    - "containerd"
+    - "containerd-shim"
+    - "containerd-shim-runc-v1"
+    - "containerd-shim-runc-v2"
+    - "ctr"
+  ignore_errors: true
+  when: is_remove_all or is_remove_containerd
+
+- name: Remove System Containerd Configs
+  shell: "mv {{ systemd_default_dirs }}containerd.service {{ temporary_dirs }}"
+  when: is_remove_all or is_remove_containerd
+  ignore_errors: true
+
+- name: Systemd Reload Remove Containerd
+  shell: "systemctl daemon-reload"
+  ignore_errors: true
+
+- name: Remove Containerd Configs
+  shell: "mv /etc/containerd {{ temporary_dirs }}"
+  when: is_remove_all or is_remove_containerd
+  ignore_errors: true
+
+- name: Remove Containerd Data Path
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ containerd_data_root }}"
+    - "{{ containerd_plugin_root }}"
+  ignore_errors: true
+  when: is_remove_all or is_remove_containerd_dir

@@ -1,0 +1,59 @@
+---
+- include_vars: "roles/cri-install/vars/crio.yaml"
+
+- name: Stop CRIO.
+  service:
+    name: "['crio']"
+    state: stopped
+  ignore_errors: true
+
+- name: Clean CRIO Binary Files
+  file:
+    path: "{{ kubernetes_ctl_path }}{{ item }}"
+    state: absent
+  with_items:
+    - "conmon"
+    - "crictl"
+    - "crio"
+    - "crio-status"
+    - "crun"
+    - "pinns"
+    - "runc"
+  ignore_errors: true
+  when: is_remove_all or is_remove_crio
+
+- name: Remove System CRIO Configs
+  shell: "mv {{ systemd_default_dirs }}crio.service {{ temporary_dirs }}"
+  when: is_remove_all or is_remove_crio
+  ignore_errors: true
+
+- name: Systemd Reload Remove Containerd
+  shell: "systemctl daemon-reload"
+  ignore_errors: true
+
+- name: Remove CRIO Configs
+  shell: "mv /etc/crio {{ temporary_dirs }}"
+  when: is_remove_all or is_remove_crio
+  ignore_errors: true
+
+- name: Remove CRIO Env Configs
+  shell: "mv /etc/default/crio {{ temporary_dirs }}"
+  when: is_remove_all or is_remove_crio
+  ignore_errors: true
+
+- name: Remove CRIO Ctrctl Configs
+  shell: "mv /etc/crictl.yaml {{ temporary_dirs }}"
+  when: is_remove_all or is_remove_containerd
+  ignore_errors: true
+
+- name: Remove CRIO Data Path
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ crio_data_root }}"
+    - "/var/log/crio/pods"
+    - "/var/run/crio/version"
+    - "/var/run/crio/crio.sock"
+  ignore_errors: true
+  when: is_remove_all or is_remove_crio_dir

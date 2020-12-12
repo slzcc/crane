@@ -1,0 +1,16 @@
+---
+
+- name: Clean Cfssl files
+  file:
+    path: "{{ kubernetes_ctl_path }}{{ item }}"
+    state: absent
+  with_items:
+    - "cfssl"
+    - "cfssljson"
+  when: is_remove_all or is_remove_cfssl
+
+- name: Clean Temporary files
+  file:
+    path: "{{ temporary_dirs }}"
+    state: absent
+  when: is_remove_all or is_remove_temporary
