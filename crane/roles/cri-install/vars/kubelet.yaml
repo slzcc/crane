@@ -1,0 +1,6 @@
+kubelet_containerd_cri_options: >-
+  {% if cri_k8s_default == 'crio' %}
+  --container-runtime=remote --container-runtime-endpoint=unix://{{ crio_socket_path }}
+  {%- elif cri_k8s_default == "containerd" -%}
+  --container-runtime=remote --container-runtime-endpoint=unix://{{ containerd_socket_path }}
+  {% endif %}

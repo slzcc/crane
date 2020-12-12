@@ -3,6 +3,8 @@
 # 如果需要部署到自己的私有仓库，请修改此项名称
 export targetRegistry=${targetRegistry:-'slzcc'}
 
+_cri_driver=`awk '/^cri_driver/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+
 _cni_os_drive=`awk '/^cni_os_drive/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 _dockerVersion=`awk '/^docker_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 _k8sVersion=`awk '/^k8s_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
@@ -51,6 +53,12 @@ for i in \$(ls /image_*.tar.gz); do
 done
 EOF
 
+cat > ${temporaryDirs}/containerd-image-import.sh <<EOF
+for i in \$(ls /image_*.tar.gz); do
+    ctr -n k8s.io i import \$i
+done
+EOF
+
 chmod +x ${temporaryDirs}/docker-image-import.sh
 
 cat > ${temporaryDirs}/Dockerfile << EOF
@@ -73,6 +81,7 @@ RUN wget -qO- "https://pkg.cfssl.org/R1.2/cfssl_linux-amd64" > /cfssl && \
 FROM ubuntu:18.04
 
 COPY --from=DockerCli /usr/local/bin/docker /usr/local/bin
+COPY --from=DockerCli /usr/local/bin/ctr /usr/local/bin
 COPY --from=Packages /kubernetes /kubernetes
 COPY --from=Packages /cni /cni
 COPY --from=Packages /cfssl /cfssl
@@ -81,6 +90,7 @@ COPY --from=Packages /cfssljson /cfssljson
 COPY ./image_*.tar.gz /
 
 COPY docker-image-import.sh /docker-image-import.sh
+COPY containerd-image-import.sh /containerd-image-import.sh
 
 EOF
 

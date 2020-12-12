@@ -1,0 +1,14 @@
+---
+
+- name: Create Containerd Config Path
+  file:
+    path: "{{ temporary_dirs }}containerd"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
+- name: install containerd binary
+  shell: "export http_proxy={{ http_proxy }} ; export https_proxy={{ https_proxy }} ; wget -qO- https://github.com/containerd/containerd/releases/download/v{{ containerd_version }}/containerd-{{ containerd_version }}-linux-amd64.tar.gz | tar -zx -C {{ temporary_dirs }}containerd"
+
+- name: Binary Install
+  include: "roles/cri-install/includes/containerd/_binary_install.yaml"

@@ -1,0 +1,45 @@
+---
+- name: Move CRIO binray to bin Path
+  shell: "cp -a {{ temporary_dirs }}crio-{{ crio_version }}/bin/{{ item }} {{ kubernetes_ctl_path }}"
+  with_items:
+    - "conmon"
+    - "crictl"
+    - "crio"
+    - "crio-status"
+    - "crun"
+    - "pinns"
+    - "runc"
+
+- name: Copy cri-o Systemd Config
+  template: 
+    src: "roles/cri-install/templates/cri-o/{{ item }}"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+    dest: "{{ systemd_default_dirs }}{{ item }}"
+  with_items:
+    - "crio.service"
+
+- name: Copy cri-o Systemd Env Config
+  template: 
+    src: "roles/cri-install/templates/cri-o/{{ item }}"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+    dest: "/etc/default/crio"
+  with_items:
+    - "crio.service.conf"
+
+- name: Create cri-o Config Path
+  file:
+    path: "/etc/crio"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
+- name: Copy cri-o Config
+  template: 
+    src: "roles/cri-install/templates/cri-o/{{ item }}"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+    dest: "/etc/crio/crio.conf"
+  with_items:
+    - "crio.conf"
