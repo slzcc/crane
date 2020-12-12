@@ -199,3 +199,11 @@ $ make run_main
 
 如果使用后发现什么问题请及时联系我进行解决: https://wiki.shileizcc.com/confluence/display/LM/Leave+a+message, 或提出 issue。
 感谢支持!
+
+## 离线安装
+
+离线安装围绕着 OCI Image 部署方式进行, 当前 docker 以及 containerd 支持标准的镜像导出, 但 crio 当前版本(1.20.0.1)不支持, 其需要通过 crictl 工具对接。
+
+默认 `is_using_local_files_deploy: false`, 当需要离线安装时则改为 `true` 但需要保证 crane/roles/downloads-packages/files 有所需的二进制文件。
+
+默认 `is_using_image_deploy: true`, 则表示通过 OCI Image 方式部署, 如果为 `false` 并且 `is_using_local_files_deploy: false` 则通过在线下载官方二进制包以及镜像部署(当前版本不会检测当前服务器是否存在相应的文件会直接覆盖), 因是官方下载则可能需要配置 http/https_proxy 的配置项, 请自行解决。

@@ -1,0 +1,31 @@
+---
+- name: Yum Install Dependence
+  yum: 
+    name: ["wget", "curl"]
+    state: present
+  environment:
+    http_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ https_proxy }}"
+  when: ansible_distribution == 'CentOS'
+  async: 30
+  poll: 2
+  ignore_errors: true
+
+- name: Load Kernel Module
+  include_tasks: "roles/cri-install/includes/docker/kernel_module.yaml"
+
+- name: Centos7 Http Binary Install Docker-ce
+  include_tasks: "roles/cri-install/includes/docker/http_binary.yaml"
+  when: ansible_distribution_major_version == "7" and docker_install_type == 'http_binary'
+
+- name: Centos7 Local Binary Install Docker-ce
+  include_tasks: "roles/cri-install/includes/docker/local_binary.yaml"
+  when: ansible_distribution_major_version == "7" and docker_install_type == 'local_binary'
+
+- name: Centos8 Http Binary Install Docker-ce
+  include_tasks: "roles/cri-install/includes/docker/http_binary.yaml"
+  when: ansible_distribution_major_version == "8" and docker_install_type == 'http_binary'
+
+- name: Centos8 Local Binary Install Docker-ce
+  include_tasks: "roles/cri-install/includes/docker/local_binary.yaml"
+  when: ansible_distribution_major_version == "8" and docker_install_type == 'local_binary'

@@ -23,6 +23,10 @@
     mode: 0644
     owner: "{{ ssh_connect_user }}"
 
+- include_vars: "roles/cri-install/vars/crio.yaml"
+- include_vars: "roles/cri-install/vars/containerd.yaml"
+- include_vars: "roles/cri-install/vars/kubelet.yaml"
+
 - name: Copy Kubelet Env Config
   template: 
     src: "kubernetes-flags.j2"
@@ -44,10 +48,10 @@
 - name: Copy admin.yml To Home
   include_tasks: includes/admin.yml
   
-- name: Relaod Config
-  service: 
-    name: kubelet
-    state: reloaded
+# - name: Relaod Config
+#   service: 
+#     name: kubelet
+#     state: reloaded
 
 - name: Run Kubelet
   service:

@@ -1,0 +1,40 @@
+---
+- name: Move Containerd binray to bin Path
+  shell: "cp -a {{ temporary_dirs }}containerd/bin/{{ item }} {{ kubernetes_ctl_path }}"
+  with_items:
+    - "containerd"
+    - "containerd-shim"
+    - "containerd-shim-runc-v1"
+    - "containerd-shim-runc-v2"
+    - "ctr"
+  ignore_errors: true
+  
+- name: Copy Containerd Systemd Config
+  template: 
+    src: "roles/cri-install/templates/containerd/{{ item }}"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+    dest: "{{ systemd_default_dirs }}{{ item }}"
+  with_items:
+    - "containerd.service"
+
+- name: Create Containerd Config Path
+  file:
+    path: "/etc/containerd"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
+- name: Create Containerd Config
+  shell: "containerd config default > /etc/containerd/config.toml"
+  when: not is_containerd_config_custom
+  
+- name: Copy Containerd Config
+  template: 
+    src: "roles/cri-install/templates/containerd/{{ item }}"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+    dest: "/etc/containerd/config.toml"
+  with_items:
+    - "containerd_config.toml"
+  when: is_containerd_config_custom

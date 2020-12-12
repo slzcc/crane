@@ -1,0 +1,5 @@
+cgroup_drive: '{{ kubelet_cgroup_drive }}'
+
+# 安装的介质(在线离线)可选 local_binary/http_binary
+# 当选择 local_binary 时, 需要保证 files 拥有 cri type 的二进制包
+cri_drive_install_type: 'http_binary'
