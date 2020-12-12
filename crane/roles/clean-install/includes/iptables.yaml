@@ -15,7 +15,7 @@
     - "nat"
     - "filter"
   ignore_errors: true
-  when: is_remove_iptables_rule
+  when: is_remove_all or is_remove_iptables_rule
 
 - name: Clean Kube IPVS0
   shell: "ip a flush dev {{ item }}"

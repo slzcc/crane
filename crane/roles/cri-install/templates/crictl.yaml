@@ -1,13 +1,13 @@
-{% if cri_driver == 'docker' %}
+{% if cri_driver == 'crio' %}
+runtime-endpoint: unix://{{ crio_socket_path }}
+{%- elif cri_driver == "containerd" -%}
+runtime-endpoint: unix://{{ containerd_socket_path }}
+image-endpoint: unix://{{ containerd_socket_path }}
+#timeout: 10
+#debug: false
+{%- else -%}
 runtime-endpoint: unix:///var/run/dockershim.sock
 image-endpoint: unix:///var/run/dockershim.sock
-timeout: 10
-debug: true
-{%- elif cri_driver == "containerd" -%}
-runtime-endpoint: unix:///run/containerd/containerd.sock
-image-endpoint: unix:///run/containerd/containerd.sock
-timeout: 10
-debug: false
-{%- else -%}
-runtime-endpoint: unix:///var/run/crio/crio.sock
+#timeout: 10
+#debug: true
 {% endif %}

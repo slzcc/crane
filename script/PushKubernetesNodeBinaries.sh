@@ -81,7 +81,7 @@ RUN wget -qO- "https://pkg.cfssl.org/R1.2/cfssl_linux-amd64" > /cfssl && \
 FROM ubuntu:18.04
 
 COPY --from=DockerCli /usr/local/bin/docker /usr/local/bin
-COPY --from=DockerCli /usr/local/bin/ctr /usr/local/ctr
+COPY --from=DockerCli /usr/local/bin/ctr /usr/local/bin
 COPY --from=Packages /kubernetes /kubernetes
 COPY --from=Packages /cni /cni
 COPY --from=Packages /cfssl /cfssl

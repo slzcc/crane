@@ -1,0 +1,19 @@
+---
+# CNI
+## ********************************************************************************************************************************
+- name: Check CNI Dir
+  shell: "ls {{ kubernetes_cni_dirs }}"
+  register: CHECK_CNI_BIN_PACKAGE
+  ignore_errors: true
+
+- name: Download Kubernetes-cni Plugin Binary Files
+  file:
+    path: "{{ kubernetes_cni_dirs }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+  when: CHECK_CNI_BIN_PACKAGE is failed
+
+- name: Download CNI Package
+  shell: "export http_proxy={{ http_proxy }} ; export https_proxy={{ https_proxy }} ; wget -qO- 'https://github.com/containernetworking/plugins/releases/download/{{ cni_version }}/cni-plugins-{{ cni_os_drive }}-{{ cni_version }}.tgz' | tar -zx -C {{ kubernetes_cni_dirs }}"
+  when: CHECK_CNI_BIN_PACKAGE is failed

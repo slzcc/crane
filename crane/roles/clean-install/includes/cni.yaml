@@ -11,5 +11,5 @@
   file:
     path: "{{ kubernetes_cni_dirs }}"
     state: absent
-  when: is_remove_cni
+  when: is_remove_all or is_remove_cni
   ignore_errors: true

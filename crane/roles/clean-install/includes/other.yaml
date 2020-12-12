@@ -7,4 +7,10 @@
   with_items:
     - "cfssl"
     - "cfssljson"
-  when: is_remove_cfssl
+  when: is_remove_all or is_remove_cfssl
+
+- name: Clean Temporary files
+  file:
+    path: "{{ temporary_dirs }}"
+    state: absent
+  when: is_remove_all or is_remove_temporary

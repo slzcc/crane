@@ -1,8 +1,4 @@
 ---
-- name: Configure Kubernetes to execute files in download
-  include_tasks: "includes/containerd/download_file.yml"
-  when: not is_using_local_files_deploy and not is_using_image_deploy
-
 - name: Configure Kubernetes to execute files in localhost
   include_tasks: "includes/containerd/local_file.yml"
   when: is_using_local_files_deploy

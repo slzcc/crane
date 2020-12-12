@@ -1,9 +1,15 @@
+## All Clear
+## ********************************************************************************************************************************
+# 此选项会忽略下面所有配置项
+# 主要目的是恢复安装 Crane 涉及到所有组件之前的状况
+is_remove_all: true
+
 
 ## Docker
 ## ********************************************************************************************************************************
 
 # 清除集群时是否删除 Docker.
-is_remove_docker_ce: true
+is_remove_docker_ce: false
 
 # 清除 Docker CE 时清除数据目录.
 is_remove_docker_dir: false
@@ -20,12 +26,18 @@ is_remove_docker_containerd: "{{ is_remove_docker_ce }}"
 # 清除集群时是否删除 CRIO.
 is_remove_crio: false
 
+# 是否清除 CRIO 数据目录
+is_remove_crio_dir: false
+
 
 ## Containerd
 ## ********************************************************************************************************************************
 
 # 清除集群时是否删除 Containerd.
 is_remove_containerd: false
+
+# 是否清除 Containerd 数据目录
+is_remove_containerd_dir: false
 
 
 ## CNI
@@ -60,9 +72,6 @@ is_remove_cfssl: false
 # 是否关闭 Swap, 当值为 false 时, 则表示不作任何操作, 当为 true 时, 会关闭服务器上所有的 Swap.
 is_swap_off: false
 
+# 是否清楚临时存放目录
+is_remove_temporary: false
 
-## Simple
-## ********************************************************************************************************************************
-
-# 是否是 kube-simple 模式
-is_kube_simple: false
