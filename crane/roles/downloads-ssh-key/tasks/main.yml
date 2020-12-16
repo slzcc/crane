@@ -1,4 +1,8 @@
 ---
+- include_vars: "{{ item }}"
+  with_items:
+    - "roles/crane/defaults/main.yml"
+
 - name: Create Temporary Directory
   file:
     path: "{{ temporary_dirs }}"

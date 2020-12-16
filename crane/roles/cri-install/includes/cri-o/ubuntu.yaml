@@ -12,9 +12,12 @@
   ignore_errors: true
  
 - name: Ubuntu Install CRIO
-  include_tasks: roles/cri-install/includes/cri-o/local_binary.yaml
+  include_tasks: roles/downloads-packages/includes/cri-o/local_binary.yaml
   when: crio_install_type == 'local_binary'
 
 - name: Ubuntu Install CRIO
-  include_tasks: roles/cri-install/includes/cri-o/http_binary.yaml
+  include_tasks: roles/downloads-packages/includes/cri-o/http_binary.yaml
   when: crio_install_type == 'http_binary'
+
+- name: Binary Install
+  include: "roles/cri-install/includes/cri-o/_binary_install.yaml"

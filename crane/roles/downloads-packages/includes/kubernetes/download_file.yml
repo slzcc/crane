@@ -1,9 +1,0 @@
----
-- name: Deploy Kubectl Tools
-  include: "roles/kubernetes-tools/kubectl/install.yml"
-
-- name: Deploy CNI Tools
-  include: "roles/kubernetes-tools/cni/install.yml"
-
-- name: Deploy CFSSL Tools
-  include: "roles/kubernetes-tools/cfssl/install.yml"

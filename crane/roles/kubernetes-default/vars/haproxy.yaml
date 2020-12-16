@@ -1,0 +1,14 @@
+---
+
+# 配置 stats 的 URI 地址
+haproxy_stats_url: '/haproxy_stats'
+
+# 监听 stats 的端口
+haproxy_stats_port: 9090
+
+# 访问 stats 时所需的账户/密码
+haproxy_admin_username: 'crane'
+haproxy_admin_password: 'crane'
+
+# HaProxy Config Dir
+haproxy_etc_dirs: '/etc/haproxy/'

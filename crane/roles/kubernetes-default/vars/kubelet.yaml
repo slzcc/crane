@@ -1,0 +1,11 @@
+# Kubelet Options
+## 不区分 Master/Nodes
+kubelet_options: "--cgroup-driver={{ kubelet_cgroup_drive }} --network-plugin=cni --cni-conf-dir={{ cni_config_dir }} --cni-bin-dir={{ kubernetes_cni_dirs }} --pod-infra-container-image={{ k8s_pod_infra_container_image }} --runtime-cgroups=/systemd/system.slice --kubelet-cgroups=/systemd/system.slice --fail-swap-on=false {{ kubectl_gc_options }}"
+
+## GC Config, (没有应用, 如需要请加入 kubelet_options 配置内, 请熟悉文档中的每一项参数功能再进行配置)
+## GC DOCS https://kubernetes.io/docs/tasks/administer-cluster/out-of-resource/
+kubectl_gc_options: "--eviction-hard='memory.available<100Mi,nodefs.available<5%,imagefs.available<5%,nodefs.inodesFree<5%' --eviction-minimum-reclaim='memory.available=0Mi,nodefs.available=500Mi,imagefs.available=2Gi' --system-reserved=memory=1Gi"
+
+# 当 kernel 版本低于 min_kernel_version 时, 则添加部分配置以方便阻止 kubelet 启动时加载 kernel 新功能异常报错
+# DOCS: https://github.com/kubernetes/kubernetes/issues/79046
+kubelet_low_kernel_config: '--feature-gates SupportPodPidsLimit=false --feature-gates SupportNodePidsLimit=false'

@@ -1,0 +1,8 @@
+---
+- name: Configure CNI to execute files in localhost
+  include_tasks: "includes/cni/http_download.yaml"
+  when: is_using_local_files_deploy
+
+- name: Configure CNI to execute files in image deploy
+  include_tasks: "includes/cni/image_deploy.yaml"
+  when: is_using_image_deploy and not is_using_local_files_deploy

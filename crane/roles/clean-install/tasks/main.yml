@@ -1,4 +1,8 @@
 ---
+# Clean Crane
+- name: Clean Crane
+  include: "roles/clean-install/includes/crane.yaml"
+
 # Clean Etcd
 - name: Clean Etcd
   include: "roles/clean-install/includes/etcd.yaml"

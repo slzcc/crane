@@ -1,4 +1,5 @@
 ---
+- include_vars: "roles/cri-install/vars/docker.yaml"
 
 # Clean Docker
 - name: Clean Docker Containers.
@@ -7,9 +8,16 @@
 
 - name: Stop Docker (If there is)
   service:
-    name: "['containerd', 'docker', 'docker.socket']"
+    name: "['docker', 'docker.socket']"
     state: stopped
   ignore_errors: true
+
+- name: Stop Docker for Containerd(If there is)
+  service:
+    name: "['containerd']"
+    state: stopped
+  ignore_errors: true
+  when: is_remove_all or is_remove_containerd
 
 # Clean Docker Configs
 - name: Clean Docker Configs

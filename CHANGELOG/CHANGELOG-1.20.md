@@ -125,6 +125,10 @@ temporary_dirs: '/tmp/crane/'
 
 因 Kubernetes 在后续版本中会删除 [Docker](https://kubernetes.io/blog/2020/12/02/dont-panic-kubernetes-and-docker/) 的支持, 特进行其他 CRI(container runtime interface) 的补充.[Dockershim 弃用说明](https://kubernetes.io/blog/2020/12/02/dockershim-faq/)
 
+## v1.20.0.1 属于重大更新
+
+v1.20.0.1 属于重大更新修改了相当于重构了 1/3 的部署逻辑, 实现逻辑没有变动但把所有的逻辑顺序进行的合理的拆分.
+
 添加以下支持:
   * CRIO
   * Containerd
@@ -138,3 +142,8 @@ temporary_dirs: '/tmp/crane/'
 cri 支持多种驱动共同部署, 可通过 `cri_k8s_default` 指定 k8s 默认 cri 驱动.
 
 Docker 的安装去掉了 http_script 方式安装, 维护成本较高.
+
+精简 crane/group_vars/all.yml 配置, 各配置项移动至各项目 defaults 中。
+> 精简比例从大概 500 行配置, 精简至 130 +
+
+目前主要解决了之前 download 部分的不统一问题, 由于 crane 部署使用了 image 方式进行属于半离线安装, 可能造成一部分的差异化.

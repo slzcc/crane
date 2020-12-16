@@ -1,0 +1,10 @@
+# 此值为镜像仓库部署时, 使用的镜像仓库地址, 如果需要自定义, 请把指定镜像放置在自定义仓库内, 并指定相同的 tag
+# 默认使用 hub 官方源, 如果有网络问题, 可以使用 github 和 aliyun 源: (目前 github 需要 docker login docker.pkg.github.com 才可以使用)
+# github: 'docker.pkg.github.com/slzcc/crane/kubernetes'
+# aliyun-beijing: 'registry.cn-beijing.aliyuncs.com/slzcc/kubernetes'
+# aliyun-hangzhou: 'registry.cn-hangzhou.aliyuncs.com/slzcc/kubernetes'
+# 因涉及到 CRI, hub.docker 镜像仓库一律必须携带 docker.io 头
+k8s_image_deploy_repo: 'docker.io/slzcc/kubernetes'
+
+# 前置临时目录
+temporary_dirs: '/tmp/crane/'

@@ -62,5 +62,8 @@
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/kubernetes-default/defaults/main.yml"
+    - "roles/kubernetes-default/vars/kubelet.yaml"
   roles:
     - { role: kubernetes-nodes, tags: [k8s-nodes]}

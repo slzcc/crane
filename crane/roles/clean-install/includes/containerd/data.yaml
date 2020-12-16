@@ -1,0 +1,10 @@
+---
+
+- name: Remove Containerd Data Path
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ containerd_data_root }}"
+    - "{{ containerd_plugin_root }}"
+  ignore_errors: true
