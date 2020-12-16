@@ -1,0 +1,9 @@
+---
+- name: Deploy Kubectl Tools
+  include: "roles/downloads-packages/includes/kubernetes/binary/main.yml"
+
+- name: Deploy CNI Tools
+  include: "roles/downloads-packages/includes/cni/main.yml"
+
+- name: Deploy CFSSL Tools
+  include: "roles/downloads-packages/includes/cfssl/main.yml"

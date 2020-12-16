@@ -9,40 +9,6 @@ k8s_version: 'v1.20.0'
 # 避免大版本中组件的版本差异, 使用 build 版本作为差异配置项, 在项目中可以看做如下使用 '{{ k8s_version }}.{{ build_k8s_version }}'
 build_k8s_version: '1'
 
-## Kubernetes
-## ********************************************************************************************************************************
-
-# Kubernetes ApiServer 监听的端口号
-k8s_master_apiservice_bind_port: 5443
-
-# Kubernetes HaProxy 监听的端口号
-# 在部署的 Kubernetes 集群架构中, 使用 HaProxy 作为 apiServer 负载均衡设备, 集群架构应为 SLB > HaProxy > apiServer
-# 请自行设置端口号, 最好保持默认值
-k8s_master_haproxy_bind_port: 6443
-
-# Kubernetes 在集群中使用的 ClusterIP, 此地址依赖 k8s_cluster_ip_range 的网段
-# Kubernetes Default Service 值, 实际由 apiServer 自动进行创建
-# apiServer 选择会使用合理的掩码计算出 k8s_cluster_ip_range 的第一个 IP 地址进行使用
-k8s_cluster_ip: '10.16.0.1'
-
-# Kubernetes 集群使用的 ClusterIP 网段
-# 如需修改时, 请设计合理的掩码
-k8s_cluster_ip_range: '10.16.0.0/12'
-
-# Kubernetes ApiServer 的总入口地址, 可配置 SLB 等云服务商提供的地址, 但需要接入后端服务器的 80, 443 端口, 此地址可以写某个单实例的 IP 地址
-# 支持 Domain, 支持 AWS ELB
-k8s_load_balance_ip: 10.146.0.10
-
-# Kubernetes HaProxy 监听的 apiServer 完整的 URL
-k8s_apiserver_https_bind: 'https://{{ k8s_load_balance_ip }}:{{ k8s_master_haproxy_bind_port }}'
-
-# Kubernetes 可暴露的 NodePort 端口号
-k8s_apiserver_node_port_range: '10-64878'
-
-# 判定值, 勿动
-is_kube_master: "{{ inventory_hostname in groups['kube-master'] }}"
-is_kube_node: "{{ inventory_hostname in groups['kube-node'] }}"
-
 # 是否使用本地文件, 例如 kubectl, image 方式部署, 此项只能适用于容器方式部署, 但与 is_using_image_deploy 参数有冲突关系, 此值为本地镜像打包方式部署, is_using_image_deploy 为远程镜像方式部署。
 is_using_local_files_deploy: false
 
@@ -51,90 +17,80 @@ is_using_local_files_deploy: false
 # 如果服务器是在国内, 强烈推荐使用此值设为 true, 并保证可以获取 docker hub 镜像资源.
 is_using_image_deploy: true
 
-# 此值为镜像仓库部署时, 使用的镜像仓库地址, 如果需要自定义, 请把指定镜像放置在自定义仓库内, 并指定相同的 tag
-# 默认使用 hub 官方源, 如果有网络问题, 可以使用 github 和 aliyun 源: (目前 github 需要 docker login docker.pkg.github.com 才可以使用)
-# github: 'docker.pkg.github.com/slzcc/crane/kubernetes'
-# aliyun-beijing: 'registry.cn-beijing.aliyuncs.com/slzcc/kubernetes'
-# aliyun-hangzhou: 'registry.cn-hangzhou.aliyuncs.com/slzcc/kubernetes'
-# 因涉及到 CRI, hub.docker 镜像仓库一律必须携带 docker.io 头
-k8s_image_deploy_repo: 'docker.io/slzcc/kubernetes'
-
 # 是否开启 Master 节点调度, 默认为 true. 
 is_kube_master_schedule: true
 
-# Pause Version
+# 是否使用 Keepalived, 在非公有云/私有云环境中, 需要借助 keepalived 进行服务集群的高可用, 它的位置在类 SLB 层
+# 其他配置参照 crane/roles/kubernetes-networks/defaults/keepalived.yaml
+is_keepalived: false
+
+# HaProxy Version
 # 如使用镜像方式部署, 不能修改 (如果可以使用 {{ k8s_cluster_component_registry }} 中的仓库地址获取镜像则可随意修改)
-# Coding: https://github.com/kubernetes/kubernetes/tree/master/build/pause
-pause_version: '3.2'
+# https://hub.docker.com/_/haproxy
+# 其他配置参照 crane/roles/kubernetes-default/vars/haproxy.yaml
+haproxy_version: '2.3.2'
 
-# infra image, 依赖下方镜像仓库地址
-k8s_pod_infra_container_image: "{{ k8s_cluster_component_registry }}/pause:{{ pause_version }}"
-
-# Kubernetes Cluster Registry Addr, 默认值为: k8s.gcr.io
-# 此地址可以修改为自定义镜像地址, 但需要确保已经执行 script/PublishK8sRegistryImages.sh 脚本, 所以参数可改为 slzcc, 如果在国内可使用 docker.io/slzcc 获取镜像。
-# 受影响的镜像为: etcd、kube-apiserver-amd64、kube-controller-manager、kube-scheduler、kube-proxy、pause。
-# 此值依赖于 is_kube_master_schedule, 如果使用镜像方式部署时, 此值不能变动
-k8s_cluster_component_registry: 'k8s.gcr.io'
-
-# 是否使用 RBAC, 集群默认是 RBAC 认证, 但可以在部署完集群之后创建超级用户取消所有限制
-is_rbac: false
-
-# kubernetes CA Config 请参照: roles/kubernetes-default/defaults/main.yml
-
-# kubernetes 最低 kernel 否则关闭相应的功能
-min_kernel_version: 4.3
-
-## Kuber Network
+## Kubernetes
 ## ********************************************************************************************************************************
+
+# Kubernetes ApiServer 的总入口地址, 可配置 SLB 等云服务商提供的地址, 但需要接入后端服务器的 80, 443 端口, 此地址可以写某个单实例的 IP 地址
+# 支持 Domain, 支持 AWS ELB
+k8s_load_balance_ip: 10.146.0.10
+
+# 其他选择参照 roles/kubernetes-manifests/defaults/main.yml
+
+# CoreDNS Version
+# https://github.com/coredns/coredns/releases
+# 如使用镜像方式部署, 不能修改 (如果可以使用 {{ k8s_cluster_component_registry }} 中的仓库地址获取镜像则可随意修改)
+dns_version: '1.8.0'
+
+# 部署 CNI 对应版本, 如使用镜像方式部署, 不能修改 (如果可以使用 {{ k8s_cluster_component_registry }} 中的仓库地址获取镜像则可随意修改)
+# https://github.com/containernetworking/plugins/releases/
+cni_version: 'v0.8.7'
+
+# Etcd Verions
+# https://github.com/etcd-io/etcd/releases
+# 如使用镜像方式部署, 不能修改 (如果可以使用 {{ k8s_cluster_component_registry }} 中的仓库地址获取镜像则可随意修改)
+# 其他配置参照 crane/roles/etcd-install/vars/mail.yml
+etcd_version: '3.4.9'
+
+# Kube Proxy
+# 如果配置了 Keepalived 就需要配置绑定的 nodePort 的物理网段，否则 Keepalived 的流量无法到达 nodePort, 因为 Keepalived 会发送 ARP 请求到此网段内，如果不设置这个网段则会流量不可达. v1.15.3.5 中修复。
+# 如果物理网段为 10.100.21.0/24, 请把值写入下方配置即可. 需要传入列表。
+# 其他选择参照 roles/kubernetes-network/defaults/main.yml
+kube_proxy_node_port_addresses: ["10.100.21.0/24", "172.17.48.0/24"]
+
+# Kube Network
+# Kubernetes Network 的优化 https://www.kubernetes.org.cn/5036.html
 
 # 第三方网络设备绑定的网络设备配置，需要集群内绑定的网卡名称统一，也就是说所有的内部外部通信走一块网卡
 # Etcd 绑定的宿主机网卡, 此配置需要在启动 Etcd 的节点上强制网卡名称一致
 # 如果配置了 Keepalived 则 Keepalived 也会绑定到这块网卡上, 支持多网卡用逗号隔开
-# 使用多网卡时, 不要使用 keepalived, 因为 keepalived 只能绑定第一个网卡, 如需要使用时请单独修改 vip_bind_net_device 参数
+# 使用多网卡时, 不要使用 keepalived, 因为 keepalived 只能绑定第一个网卡, 如需要使用时请单独修改 keepalived.vip_bind_net_device 参数
 os_network_device_name: 'ens4'
 
-## Keepalived
-## ********************************************************************************************************************************
-
-# 是否使用 Keepalived, 在非公有云/私有云环境中, 需要借助 keepalived 进行服务集群的高可用, 它的位置在类 SLB 层
-is_keepalived: false
-
-# Keepalived 绑定的 IP 地址, 它在 HaProxy 的上一层
-keepalived_ip: "{{ k8s_load_balance_ip }}"
-
-# Keepalived 绑定的物理网卡名称, 这里不支持多网卡, 如果 `os_network_device_name` 的值为多网卡
-# 请在这里填写 VIP 需要绑定的网卡设备。只支持单个值!
-vip_bind_net_device: "{{ os_network_device_name }}"
-
-## Kube Proxy
-## ********************************************************************************************************************************
-
-# Kube Proxy 模式, 默认 ipvs, 如果设置为空则默认使用 iptable
-kube_proxy_mode: "ipvs"
-
-# 是否安装 ipvsadm
-is_install_ipvsadm: true
-
-# 如果配置了 Keepalived 就需要配置绑定的 nodePort 的物理网段，否则 Keepalived 的流量无法到达 nodePort, 因为 Keepalived 会发送 ARP 请求到此网段内，如果不设置这个网段则会流量不可达. v1.15.3.5 中修复。
-# 如果物理网段为 10.100.21.0/24, 请把值写入下方配置即可. 需要传入列表。
-kube_proxy_node_port_addresses: ["10.100.21.0/24", "172.17.48.0/24"]
-
-# ipvs 调度策略.
-kube_proxy_ipvs_scheduler: "rr"
+# Calico Verion
+# https://github.com/projectcalico/calico/releases
+# 如使用镜像方式部署, 不能修改 (如果可以使用 {{ k8s_cluster_component_registry }} 中的仓库地址获取镜像则可随意修改)
+# 其他配置请参照 roles/kubernetes-networks/defaults/calico.yaml
+calico_version: 'v3.17.0'
 
 ## Kubelet Config
+# 参照 crane/roles/kubernetes-default/vars/kubelet.yaml
+
+## CRI
 ## ********************************************************************************************************************************
-# Kubelet Options
-## 不区分 Master/Nodes
-kubelet_options: "--cgroup-driver={{ kubelet_cgroup_drive }} --network-plugin=cni --cni-conf-dir={{ cni_config_dir }} --cni-bin-dir={{ kubernetes_cni_dirs }} --pod-infra-container-image={{ k8s_pod_infra_container_image }} --runtime-cgroups=/systemd/system.slice --kubelet-cgroups=/systemd/system.slice --fail-swap-on=false {{ kubectl_gc_options }}"
 
-## GC Config, (没有应用, 如需要请加入 kubelet_options 配置内, 请熟悉文档中的每一项参数功能再进行配置)
-## GC DOCS https://kubernetes.io/docs/tasks/administer-cluster/out-of-resource/
-kubectl_gc_options: "--eviction-hard='memory.available<100Mi,nodefs.available<5%,imagefs.available<5%,nodefs.inodesFree<5%' --eviction-minimum-reclaim='memory.available=0Mi,nodefs.available=500Mi,imagefs.available=2Gi' --system-reserved=memory=1Gi"
+# cri 支持的驱动有 docker/containerd/crio
+## 各驱动独立配置项, 请参阅 crane/roles/cri-install
+cri_driver: ["docker", "containerd", "crio"]
 
-# 当 kernel 版本低于 min_kernel_version 时, 则添加部分配置以方便阻止 kubelet 启动时加载 kernel 新功能异常报错
-# DOCS: https://github.com/kubernetes/kubernetes/issues/79046
-kubelet_low_kernel_config: '--feature-gates SupportPodPidsLimit=false --feature-gates SupportNodePidsLimit=false'
+# 此选项配置 Kubernetes 默认 cri 驱动
+# 当使用 RuntimeClass 时此选项配合 `cri_driver` 使用
+cri_k8s_default: containerd
+
+# 具体配置请移步 crane/roles/cri-install/defaults/main.yml 进行修改
+
 
 ## External Proxy
 ## ********************************************************************************************************************************
@@ -149,212 +105,9 @@ https_proxy: ""
 # No Proxy
 no_proxy: "localhost,127.0.0.1"
 
-## System Config
-## ********************************************************************************************************************************
-
 # 部署的 Cluster 中 Containers 的时区, 由于是挂载宿主机 /usr/share/zoneinfo 目录解决, 所以要保证此目录的存在。
 # 如果需要设置 UTC 时区, 请设置值为: Europe/Moscow
 time_location: "Asia/Shanghai"
-
-
-## CRI
-## ********************************************************************************************************************************
-
-# cri 支持的驱动有 docker/containerd/crio
-## 各驱动独立配置项, 请参阅 crane/roles/cri-install
-cri_driver: ["docker", "containerd", "crio"]
-
-# 此选项配置 Kubernetes 默认 cri 驱动
-# 当使用 RuntimeClass 时此选项配合 `cri_driver` 使用
-cri_k8s_default: docker
-
-# 具体配置请移步 crane/roles/cri-install/defaults/main.yml 进行修改
-
-## HaProxy
-## ********************************************************************************************************************************
-
-# HaProxy Version
-# 如使用镜像方式部署, 不能修改 (如果可以使用 {{ k8s_cluster_component_registry }} 中的仓库地址获取镜像则可随意修改)
-# https://hub.docker.com/_/haproxy
-haproxy_version: '2.3.2'
-
-# 配置 stats 的 URI 地址
-haproxy_stats_url: '/haproxy_stats'
-
-# 监听 stats 的端口
-haproxy_stats_port: 9090
-
-# 访问 stats 时所需的账户/密码
-haproxy_admin_username: 'crane'
-haproxy_admin_password: 'crane'
-
-# HaProxy Config Dir
-haproxy_etc_dirs: '/etc/haproxy/'
-
-## Configuration Directory
-## ********************************************************************************************************************************
-
-# Kubectl DirName
-kubernetes_ctl_path: '/usr/local/bin/'
-
-# Kubernetes PKI Path
-kubernetes_pki_dirs: '{{ kubernetes_etc_dirs }}pki/'
-
-# Etcd Config Path
-kubernetes_etc_dirs: '/etc/kubernetes/'
-
-# Kubernetes Manifests Path
-kubernetes_manifests_dirs: '{{ kubernetes_etc_dirs }}manifests/'
-
-# CNI Bin Path
-kubernetes_cni_dirs: '/opt/cni/bin'
-
-# Kubectl 工作目录
-kubelet_work_dirs: '/var/lib/kubelet/'
-
-# 前置临时目录
-temporary_dirs: '/tmp/crane/'
-
-# Cgroup Drive (如果内核未达到 4.4.x 以上版本, 请改为 systemd, 否则低版本内核无法支持 cgroupfs 会造成集群无法启动)
-kubelet_cgroup_drive: 'cgroupfs'
-
-## Systemd Config
-## ********************************************************************************************************************************
-
-# Systemd 子配置文件目录
-systemd_etc_dirs: '/etc/systemd/system/'
-
-# Systemd 主配置文件目录
-systemd_default_dirs: '/lib/systemd/system/'
-
-## SSH
-## ********************************************************************************************************************************
-
-# 使用 Ansible 部署时连接实例的用户
-ssh_connect_user: "{{ hostvars[inventory_hostname]['ansible_ssh_user'] }}"
-
-# 使用 Ansible 部署时连接实例的 SSH 端口
-ssh_connect_port: "{{ hostvars[inventory_hostname]['ansible_ssh_port'] }}"
-
-# 使用 Ansible 部署时, 如需要节点之间进行协作传入的证书地址
-target_ssh_private_key_file: "{{ temporary_dirs }}.general-id_rsa"
-
-# 执行 SSH 或者 SCP 的公钥地址
-ssh_public_key: "{{ target_ssh_private_key_file }}"
-
-# 本地的公钥/私钥地址
-source_ssh_public_key_file: "{{ hostvars[inventory_hostname]['ansible_ssh_public_key_file'] }}"
-source_ssh_private_key_file: "{{ hostvars[inventory_hostname]['ansible_ssh_private_key_file'] }}"
-
-## Etcd
-## ********************************************************************************************************************************
-
-# Etcd Verions
-# https://github.com/etcd-io/etcd/releases
-# 如使用镜像方式部署, 不能修改 (如果可以使用 {{ k8s_cluster_component_registry }} 中的仓库地址获取镜像则可随意修改)
-etcd_version: '3.4.9'
-
-# Etcd 使用的 Client 协议, 默认 HTTPS, 不能修改
-etcd_url_scheme: "https"
-
-# Etcd 使用的 Cluster Peer 协议, 默认 HTTPS, 不能修改
-etcd_peer_url_scheme: "https"
-
-# Etcd Client TLS Auth
-etcd_client_cert_auth: true
-
-# Etcd Peer TLS Auth
-etcd_peer_client_cert_auth: true
-
-# Etcd Client Port
-etcd_client_port: 2379
-
-# Etcd Peer Port
-etcd_peer_port: 2380
-
-# Etcd Client TLS Auto
-etcd_client_tls_auto: true
-
-# Etcd Peer TLS Auto
-etcd_peer_tls_auto: true
-
-# Etcd Cluster Token
-etcd_cluster_token: 'etcd-k8s-cluster'
-
-# Etcd Cluster Type
-etcd_cluster_type: 'new'
-
-# 占位符
-etcd_interface: ""
-
-# Etcd Certs Path
-etcd_ssl_dirs: '{{ kubernetes_pki_dirs }}etcd/'
-
-# Etcd Data Path
-etcd_data_dirs: '/var/lib/etcd/'
-
-# Etcd CA Config 请参照: roles/etcd-install/defaults/main.yml
-
-## Add Nodes
-## ********************************************************************************************************************************
-# Kubernetes Network 的优化 https://www.kubernetes.org.cn/5036.html
-#
-# Calico Pool CIDR
-calico_ipv4_pool_cidr: '172.208.0.0/12'
-
-# Calico Verion
-# https://github.com/projectcalico/calico/releases
-# 如使用镜像方式部署, 不能修改 (如果可以使用 {{ k8s_cluster_component_registry }} 中的仓库地址获取镜像则可随意修改)
-calico_version: 'v3.17.0'
-
-# 判定值, 勿动
-is_add_master: "{{ inventory_hostname in groups['k8s-cluster-add-master'] }}"
-is_add_node: "{{ inventory_hostname in groups['k8s-cluster-add-node'] }}"
-
-# Calico Type 
-# Calico 使用的模式默认使用, 默认为 BGP 设置为 Off:, 如果需要使用 IPIP 则设置为 :Always
-calico_type: 'Off'
-
-# Calico CNI Version
-# Calico 使用 CNI 版本
-calico_cni_version: '0.3.1'
-
-# Calico Release 配置文件
-## https://docs.projectcalico.org/manifests/calico.yaml
-## Docs https://docs.projectcalico.org/getting-started/kubernetes/installation/config-options
-
-
-## CNI
-## ********************************************************************************************************************************
-
-# 部署 CNI 对应版本, 如使用镜像方式部署, 不能修改 (如果可以使用 {{ k8s_cluster_component_registry }} 中的仓库地址获取镜像则可随意修改)
-# https://github.com/containernetworking/plugins/releases/
-cni_version: 'v0.8.7'
-
-# CNI OS Type
-cni_os_drive: 'linux-amd64'
-
-# CNI Config Dir
-cni_config_dir: '/etc/cni/net.d'
-
-
-## Kubernetes Add Ons
-## ********************************************************************************************************************************
-
-# DNS 服务所需的 Domain 后缀
-dns_domain: 'cluster.local'
-
-# DNS 服务的 ClusterIP 地址, 依赖集群 ClusterIP 网段
-dns_cluster_ip: '10.16.0.10'
-
-# DNS 集群 ClusterIP 网段
-dns_cluster_range: "{{ k8s_cluster_ip_range }}"
-
-# CoreDNS Version
-# https://github.com/coredns/coredns/releases
-# 如使用镜像方式部署, 不能修改 (如果可以使用 {{ k8s_cluster_component_registry }} 中的仓库地址获取镜像则可随意修改)
-dns_version: '1.8.0'
-
 
 ## Add-Ons
 ## ********************************************************************************************************************************
@@ -364,10 +117,8 @@ dns_version: '1.8.0'
 ## ********************************************************************************************************************************
 # 初始化时, 是否进行 Clean, 如果是全新的环境可以不开启, 如果之前部署过或者使用 kubeadm 进行部署则需要开启此配置,
 # 应避免部署时影响效率
-is_initialize_clean: false
-
 # 更多清除选项请查阅 crane/roles/clean-install/defaults/main.yml
-
+is_initialize_clean: false
 
 ## Simple
 ## ********************************************************************************************************************************

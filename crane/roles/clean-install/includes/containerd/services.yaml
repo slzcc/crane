@@ -1,0 +1,9 @@
+---
+
+- name: Clean Kubernetes Containerd Service and rm >
+  shell: "for i in $(ctr -n k8s.io tasks ls -q); do ctr -n k8s.io tasks kill --signal 9 $i; done"
+  ignore_errors: true
+
+- name: Clean Kubernetes Containerd Service and rm >>>
+  shell: "ctr -n k8s.io c rm $(ctr -n k8s.io c ls -q)"
+  ignore_errors: true

@@ -25,6 +25,8 @@ CRI 支持多种服务共存部署模式, 可同时部署 docker/containerd/crio
 
 部署示例请参照 [Crane Install](./docs/INSTALL.md) 文件进行部署。
 
+离线部署示例请参照 [Crane Offine Install](./docs/OFFINE_INSTALL.md) 文件进行部署。
+
 各功能示例参照 [Crane Other Features](./docs/FunctionalSpecifications.md) 文件进行部署。
 
 Add-Ons 参照 [Add-Ons Install](./crane/roles/add-ons) 文件进行部署。

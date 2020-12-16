@@ -13,12 +13,11 @@ Crane 是由我个人独立创作并维护的, 在使用范围上可能得不到
 * Centos7/8
 
 以 v1.18.5 为例, 支持版本：
-* Kubernetes A/C/S v1.18.5
-* CoreDNS: v1.6.9
-* Calico: v3.14.0
-* Kube Proxy: v1.18.5
-* HaProxy: v2.1.4
-* Etcd: v3.4.7
+* Kubernetes A/C/S v1.20.0
+* CoreDNS: v1.8.0
+* Calico: v3.17.0
+* HaProxy: v2.3.2
+* Etcd: v3.4.9
 * pause: v3.2
 
 ### 开始使用 Crane
@@ -26,7 +25,7 @@ Crane 是由我个人独立创作并维护的, 在使用范围上可能得不到
 使用 Crane 很简单, 有可能在一定程度上比 Kubeadm 都简单(国内源问题), 可以通过如下方式获取源码进行安装:
 
 ```
-$ git clone -b v1.18.5.0 https://github.com/slzcc/crane.git
+$ git clone -b v1.20.0.1 https://github.com/slzcc/crane.git
 ```
 
 然后进入 crane 目录后, 首先修改 nodes 文件列表:
@@ -54,6 +53,12 @@ $ cat nodes
 
 [etcd-cluster-add-node]
 # 部署完集群后, 填写需要添加的 Etcd 节点列表 (第一次部署时, 这里必须留空)
+
+[k8s-cluster-del-node]
+# 部署完集群后, 填写需要移除的 Node 节点列表 (第一次部署时, 这里必须留空)
+
+[etcd-cluster-del-node]
+# 部署完集群后, 填写需要移除的 Etcd 节点列表 (第一次部署时, 这里必须留空)
 
 [k8s-cluster:children]
 kube-node
@@ -199,11 +204,3 @@ $ make run_main
 
 如果使用后发现什么问题请及时联系我进行解决: https://wiki.shileizcc.com/confluence/display/LM/Leave+a+message, 或提出 issue。
 感谢支持!
-
-## 离线安装
-
-离线安装围绕着 OCI Image 部署方式进行, 当前 docker 以及 containerd 支持标准的镜像导出, 但 crio 当前版本(1.20.0.1)不支持, 其需要通过 crictl 工具对接。
-
-默认 `is_using_local_files_deploy: false`, 当需要离线安装时则改为 `true` 但需要保证 crane/roles/downloads-packages/files 有所需的二进制文件。
-
-默认 `is_using_image_deploy: true`, 则表示通过 OCI Image 方式部署, 如果为 `false` 并且 `is_using_local_files_deploy: false` 则通过在线下载官方二进制包以及镜像部署(当前版本不会检测当前服务器是否存在相应的文件会直接覆盖), 因是官方下载则可能需要配置 http/https_proxy 的配置项, 请自行解决。

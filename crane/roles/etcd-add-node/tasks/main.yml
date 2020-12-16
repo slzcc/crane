@@ -1,15 +1,18 @@
 ---
+- include_vars: "roles/etcd-install/vars/main.yml"
+
 # CFSSL install
 ## ********************************************************************************************************************************
-
 - name: Download CFSSL 
-  include_tasks: includes/download_deploy.yml
+  include: "roles/downloads-packages/includes/cfssl/http_download.yaml"
   when: not is_using_local_files_deploy
+  delegate_to: "{{ groups['etcd-cluster-add-node'][0] }}"
 
 - name: Image CFSSL 
-  include_tasks: includes/image_deploy.yml
+  include: "roles/downloads-packages/includes/cfssl/image_deploy.yaml"
   when: is_using_local_files_deploy
-
+  delegate_to: "{{ groups['etcd-cluster-add-node'][0] }}"
+  
 ## Copy CFSSL Etcd Json Files
 ## ********************************************************************************************************************************
 

@@ -10,5 +10,11 @@
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/crane/defaults/main.yml"
+    - "roles/system-initialize/defaults/main.yml"
+    - "roles/kubernetes-networks/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-default/defaults/configure.yaml"
   roles:
     - { role: clean-install, tags: [clean]}

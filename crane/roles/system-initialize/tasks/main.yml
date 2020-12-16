@@ -1,7 +1,14 @@
 ---
 - setup:
   
-- include_vars: "roles/clean-install/defaults/main.yml"
+- include_vars: "{{ item }}"
+  with_items:
+    - "roles/crane/defaults/main.yml"
+    - "roles/etcd-install/vars/main.yml"
+    - "roles/clean-install/defaults/main.yml"
+    - "roles/kubernetes-networks/defaults/main.yml"
+    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
 
 - name: Check Swap
   shell: "swapon -s | sed '1d' | awk '{print $1}'"

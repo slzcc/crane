@@ -1,0 +1,18 @@
+---
+
+- name: Create Containerd Config Path
+  file:
+    path: "/etc/containerd"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
+- name: Create Containerd Data Path
+  file:
+    path: "{{ item }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+  with_items:
+    - "{{ containerd_data_root }}"
+    - "{{ containerd_plugin_root }}"

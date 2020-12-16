@@ -1,4 +1,11 @@
 --- 
+- include_vars: "roles/kubernetes-default/vars/haproxy.yaml"
+
+- name: Backup Kubernetes ApiServer Config Files
+  shell: 'cp -a {{ kubernetes_manifests_dirs }}kube-apiserver.yml {{ temporary_dirs }}etcd-add-node/kube-apiserver.yml-`date +%Y%m%d%H%M%S`'
+  when: is_kube_master
+  ignore_errors: true
+
 - name: Copy Kubernetes ApiServer Config Files
   template: 
     src: "roles/kubernetes-manifests/templates/kube-apiserver.j2"
@@ -10,29 +17,17 @@
 - name: Copy Calico Config Files
   template: 
     src: "roles/kubernetes-networks/templates/calico.j2"
-    dest: "{{ temporary_dirs }}calico.yml"
+    dest: "{{ temporary_dirs }}etcd-add-node/calico.yml"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
   delegate_to: "{{ groups['kube-master'][0] }}"
-
-# - name: Clean Calico
-#   shell: '{{ kubernetes_ctl_path }}kubectl delete -f {{ temporary_dirs }}calico.yml'
-#   ignore_errors: true
-
-# - name: Clean CNI Cluster Config
-#   file:
-#     path: "{{ cni_config_dir }}"
-#     state: absent
-#   ignore_errors: true
-
-# - name: Create CNI Cluster Config
-#   file:
-#     path: "{{ cni_config_dir }}"
-#     mode: 0755
-#     owner: "{{ ssh_connect_user }}"
-#     state: directory
     
 - name: Deploy Calico
-  shell: '{{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}calico.yml'
+  shell: '{{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}etcd-add-node/calico.yml'
+  ignore_errors: true
+  delegate_to: "{{ groups['kube-master'][0] }}"
+
+- name: Backup Kubernetes ApiServer Config Files
+  shell: 'mv { temporary_dirs }}etcd-add-node/calico.yml { temporary_dirs }}etcd-add-node/calico.yml-`date +%Y%m%d%H%M%S`'
   ignore_errors: true
   delegate_to: "{{ groups['kube-master'][0] }}"
