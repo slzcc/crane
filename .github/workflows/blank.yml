@@ -3,13 +3,13 @@ name: Crane Deploy Testing
 
 on:
   push:
-    branches: [ develop , staging ]
+    branches: [ release-1.19 ]
 
 jobs:
   
   buildKubernetesImages:
     
-    if: github.ref == 'refs/heads/develop'
+    if: github.ref == 'refs/heads/release-1.19'
 
     runs-on: ubuntu-18.04
 
