@@ -12,6 +12,8 @@
   shell: "ctr -n k8s.io c rm import-kubernetes-temporary"
   ignore_errors: true
 
+# https://github.com/containerd/containerd/issues/4133
+# https://github.com/containerd/containerd/issues/3971
 - name: Check is Run import-kubernetes-temporary >>>>
   shell: "rm -rf /run/containerd/runc/k8s.io/import-kubernetes-temporary"
   ignore_errors: true
