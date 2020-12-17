@@ -35,9 +35,9 @@
   when: is_remove_all or is_remove_docker_ce
 
 # Clean Docker Binary
-- name: Clean Docker Binary
-  include: "roles/clean-install/includes/docker/binary.yaml"
-  when: is_remove_all or is_remove_docker_ce
+# - name: Clean Docker Binary
+#   include: "roles/clean-install/includes/docker/binary.yaml"
+#   when: is_remove_all or is_remove_docker_ce
 
 # Clean Docker Data
 - name: Clean Docker Data
