@@ -147,3 +147,5 @@ Docker 的安装去掉了 http_script 方式安装, 维护成本较高.
 > 精简比例从大概 500 行配置, 精简至 130 +
 
 目前主要解决了之前 download 部分的不统一问题, 由于 crane 部署使用了 image 方式进行属于半离线安装, 可能造成一部分的差异化.
+
+废弃 `is_using_image_deploy` 参数.
