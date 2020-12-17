@@ -1,0 +1,13 @@
+---
+
+- name: Check is Run import-kubernetes-temporary >
+  shell: "ctr -n k8s.io tasks kill -a --signal 9 import-kubernetes-temporary"
+  ignore_errors: true
+
+- name: Check is Run import-kubernetes-temporary >>
+  shell: "ctr -n k8s.io tasks rm import-kubernetes-temporary"
+  ignore_errors: true
+
+- name: Check is Run import-kubernetes-temporary >>>
+  shell: "ctr -n k8s.io c rm import-kubernetes-temporary"
+  ignore_errors: true

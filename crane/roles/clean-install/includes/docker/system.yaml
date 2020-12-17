@@ -1,0 +1,9 @@
+---
+
+- name: Remove Docker User
+  shell: "userdel docker"
+  ignore_errors: true
+
+- name: Remove Docker Group
+  shell: "groupdel docker"
+  ignore_errors: true

@@ -6,4 +6,4 @@
 
 - name: Configure cfssl to execute files in image deploy
   include_tasks: "includes/cfssl/image_deploy.yaml"
-  when: is_using_image_deploy and not is_using_local_files_deploy
+  when: not is_using_local_files_deploy

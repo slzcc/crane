@@ -21,17 +21,8 @@
   shell: "ctr -n k8s.io image pull {{ k8s_image_deploy_repo }}:{{ k8s_version }}.{{ build_k8s_version }}"
   when: (check_kubectl_version.stdout != k8s_version) or (check_k8s_image is failed) or (check_binary_files is failed)
 
-- name: Check is Run import-kubernetes-temporary >
-  shell: "ctr -n k8s.io tasks kill --signal 9 import-kubernetes-temporary"
-  ignore_errors: true
-
-- name: Check is Run import-kubernetes-temporary >>
-  shell: "ctr -n k8s.io tasks rm import-kubernetes-temporary"
-  ignore_errors: true
-
-- name: Check is Run import-kubernetes-temporary >>>
-  shell: "ctr -n k8s.io c rm import-kubernetes-temporary"
-  ignore_errors: true
+- name: Clean is Run import-kubernetes-temporary
+  include: "roles/clean-install/includes/crane/containerd/import-kubernetes-temporary.yaml"
 
 - name: Run Temportay Containers
   shell: "ctr -n k8s.io run --null-io --net-host -d \
@@ -54,7 +45,7 @@
 
 - name: Temportay Mount to.
   shell: "ctr -n k8s.io snapshot mounts {{ temporary_dirs }}import-kubernetes-temporary import-kubernetes-temporary | xargs sudo"
-  when: check_k8s_image is failed
+  when: (check_kubectl_version.stdout != k8s_version) or (check_k8s_image is failed) or (check_binary_files is failed)
 
 - name: Export the cfssl
   shell: "cp -a {{ temporary_dirs }}import-kubernetes-temporary/cfssl {{ kubernetes_ctl_path }}"
@@ -78,11 +69,7 @@
 
 - name: Temportay uMount to.
   shell: "umount -l {{ temporary_dirs }}import-kubernetes-temporary"
-  when: check_k8s_image is failed
-  
-- name: Clean Temporary Container
-  shell: "ctr -n k8s.io tasks kill --signal 9 import-kubernetes-temporary && \
-          ctr -n k8s.io tasks rm import-kubernetes-temporary && \
-          ctr -n k8s.io c rm import-kubernetes-temporary"
-  when: check_k8s_image is failed
   ignore_errors: true
+  
+- name: Clean is Run import-kubernetes-temporary
+  include: "roles/clean-install/includes/crane/containerd/import-kubernetes-temporary.yaml"

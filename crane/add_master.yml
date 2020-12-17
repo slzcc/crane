@@ -35,6 +35,7 @@
     - "roles/cri-install/vars/crio.yaml"
     - "roles/etcd-install/vars/main.yml"
     - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/kubernetes-default/defaults/tls.yaml"
     - "roles/downloads-ssh-key/defaults/main.yml"
   roles:
     - { role: clean-install, tags: [clean], when: is_initialize_clean}
@@ -89,6 +90,7 @@
     - "roles/kubernetes-default/defaults/configure.yaml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/system-initialize/defaults/main.yml"
+    - "roles/kubernetes-default/defaults/tls.yaml"
     - "roles/crane/defaults/main.yml"
     - "roles/kubernetes-default/vars/kubelet.yaml"
     - "roles/cri-install/vars/kubelet.yaml"
@@ -109,5 +111,21 @@
     - "roles/system-initialize/defaults/main.yml"
     - "roles/crane/defaults/main.yml"
     - "roles/kubernetes-default/vars/haproxy.yaml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
   tasks:
     - { include_tasks: roles/k8s-add-master/includes/update-haproxy.yml }
+
+- name: Deployment Kubernetes Cluster Afterward CMD
+  hosts: kube-master[0]
+  gather_facts: true
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-default/defaults/configure.yaml"
+  roles:
+    - { role: kubernetes-afterward, tags: [k8s-afterward]}

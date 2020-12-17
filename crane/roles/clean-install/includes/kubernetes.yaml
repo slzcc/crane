@@ -12,9 +12,7 @@
   ignore_errors: true
 
 - name: Clean kubernetes Etc Working directory ** .
-  file:
-    path: "{{ systemd_default_dirs }}kubelet.service"
-    state: absent
+  shell: "mv {{ systemd_default_dirs }}kubelet.service {{ temporary_dirs }}"
   ignore_errors: true
 
 - name: Clean Kubelet Systemd Config

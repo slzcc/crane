@@ -16,3 +16,6 @@
     dest: "{{ target_ssh_private_key_file }}"
     owner: "{{ ssh_connect_user }}"
     mode: 0400
+
+- name: Check SSH Known
+  include_tasks: "roles/system-initialize/includes/ssh/main.yml"
