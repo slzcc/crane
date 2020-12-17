@@ -9,13 +9,8 @@ k8s_version: 'v1.20.0'
 # 避免大版本中组件的版本差异, 使用 build 版本作为差异配置项, 在项目中可以看做如下使用 '{{ k8s_version }}.{{ build_k8s_version }}'
 build_k8s_version: '1'
 
-# 是否使用本地文件, 例如 kubectl, image 方式部署, 此项只能适用于容器方式部署, 但与 is_using_image_deploy 参数有冲突关系, 此值为本地镜像打包方式部署, is_using_image_deploy 为远程镜像方式部署。
+# 是否使用离线方式部署.
 is_using_local_files_deploy: false
-
-# 是否使用远程镜像部署, 例如 kubectl, image 默认为 true
-# 如果使用镜像部署需要保证 Ansible 中 *_version 未被修改的情况下才可使用, 否则版本不一致造成的问题自行解决.
-# 如果服务器是在国内, 强烈推荐使用此值设为 true, 并保证可以获取 docker hub 镜像资源.
-is_using_image_deploy: true
 
 # 是否开启 Master 节点调度, 默认为 true. 
 is_kube_master_schedule: true
@@ -83,7 +78,7 @@ calico_version: 'v3.17.0'
 
 # cri 支持的驱动有 docker/containerd/crio
 ## 各驱动独立配置项, 请参阅 crane/roles/cri-install
-cri_driver: ["docker", "containerd", "crio"]
+cri_driver: ["docker", "containerd"]
 
 # 此选项配置 Kubernetes 默认 cri 驱动
 # 当使用 RuntimeClass 时此选项配合 `cri_driver` 使用

@@ -4,12 +4,13 @@
 
 默认 `is_using_local_files_deploy: false`, 当需要离线安装时则改为 `true` 但需要保证 crane/roles/downloads-packages/files 有所需的二进制文件。
 
-默认 `is_using_image_deploy: true`, 则表示通过 OCI Image 方式部署, 如果为 `false` 并且 `is_using_local_files_deploy: false` 则通过在线下载官方二进制包以及镜像部署(当前版本不会检测当前服务器是否存在相应的文件会直接覆盖), 因是官方下载则可能需要配置 http/https_proxy 的配置项, 请自行解决。
+> 废弃 is_using_image_deploy 参数：
+> 默认 `is_using_image_deploy: true`, 则表示通过 OCI Image 方式部署, 如果为 `false` 并且 `is_using_local_files_deploy: false` 则通过在线下载官方二进制包以及镜像部署(当前版本不会检测当前服务器是否存在相应的文件会直接覆盖), 因是官方下载则可能需要配置 http/https_proxy 的配置项, 请自行解决。
 
 使用离线安装首先准备 CRI 本地文件, 执行命令:
 
 ```
-$ make local_load_crt
+$ make local_load_cri
 ```
 
 > 如果出现网络问题请自行解决.

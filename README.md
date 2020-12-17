@@ -7,6 +7,8 @@
 
 Please refer to the documentation for detailed configuration: [Wiki Docs URL](https://wiki.shileizcc.com/display/CASE/Ansible+Kubernetes+Cluster)。
 
+Crane 默认使用半离线安装, 环境统一版本比较友好。
+
 使用 Ansible 基于容器化部署 Kubernetes Cluster（非 Kubeadm）, 并支持 Master/Node/Etcd 节点的添加。
 
 部署全局基于 TLS, 并区分 K8s Cluster CA、Etcd CA 证书, 并支持证书轮转。

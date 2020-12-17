@@ -6,18 +6,23 @@
   shell: "docker rm -f $(docker ps -f 'name=k8s*' -aq)"
   ignore_errors: true
 
+- name: Docker Turn off Start Up
+  service: 
+    name: "{{ item }}"
+    enabled: no
+  with_items:
+    - "docker"
+    - "docker.socket"
+  ignore_errors: true
+  
 - name: Stop Docker (If there is)
   service:
-    name: "['docker', 'docker.socket']"
+    name: "{{ item }}"
     state: stopped
   ignore_errors: true
-
-- name: Stop Docker for Containerd(If there is)
-  service:
-    name: "['containerd']"
-    state: stopped
-  ignore_errors: true
-  when: is_remove_all or is_remove_containerd
+  with_items:
+    - "docker"
+    - "docker.socket"
 
 # Clean Docker Configs
 - name: Clean Docker Configs
@@ -44,7 +49,11 @@
   include: "roles/clean-install/includes/docker/image.yaml"
   when: is_remove_all or is_remove_k8s_images
   
-# Clean Docker Containerd
-- name: Clean Docker Containerd
-  include: "roles/clean-install/includes/docker/containerd.yaml"
-  when: is_remove_all or is_remove_docker_containerd
+# Clean Docker Socket
+- name: Clean Docker Socket
+  shell: "rm -rf {{ docker_socket_path }}"
+  ignore_errors: true
+
+- name: Clean Docker Users
+  include: "roles/clean-install/includes/docker/system.yaml"
+  when: is_remove_all or is_remove_docker_ce

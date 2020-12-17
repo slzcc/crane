@@ -9,4 +9,4 @@
 
 - name: Deploy Kubernetes to execute files in download
   include_tasks: "includes/kubernetes/main.yml"
-  when: not is_using_local_files_deploy and not is_using_image_deploy
+  when: not is_using_local_files_deploy

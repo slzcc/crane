@@ -40,16 +40,17 @@ run_add_etcd:
 	@docker rm -f crane > /dev/null 2>&1 || true
 	@docker run --name crane --net host --rm -it -e ANSIBLE_HOST_KEY_CHECKING=false -e TERM=xterm-256color -e COLUMNS=238 -e LINES=61 -v ~/.ssh:/root/.ssh -v ${PWD}:/crane -v ${PWD}/crane/ansible.cfg:/etc/ansible/ansible.cfg -w /crane/crane  ${DockerHubRepoName}/${ProjectName}:${VERSION} -i nodes add_etcd.yml ${OPTION}
 
+run_add_master:
+	@docker rm -f crane > /dev/null 2>&1 || true
+	@docker run --name crane --net host --rm -it -e ANSIBLE_HOST_KEY_CHECKING=false -e TERM=xterm-256color -e COLUMNS=238 -e LINES=61 -v ~/.ssh:/root/.ssh -v ${PWD}:/crane -v ${PWD}/crane/ansible.cfg:/etc/ansible/ansible.cfg -w /crane/crane  ${DockerHubRepoName}/${ProjectName}:${VERSION} -i nodes add_master.yml ${OPTION}
+
+run_add_nodes:
+	@docker rm -f crane > /dev/null 2>&1 || true
+	@docker run --name crane --net host --rm -it -e ANSIBLE_HOST_KEY_CHECKING=false -e TERM=xterm-256color -e COLUMNS=238 -e LINES=61 -v ~/.ssh:/root/.ssh -v ${PWD}:/crane -v ${PWD}/crane/ansible.cfg:/etc/ansible/ansible.cfg -w /crane/crane  ${DockerHubRepoName}/${ProjectName}:${VERSION} -i nodes add_nodes.yml ${OPTION}
+
 run_test:
 	@docker rm -f crane > /dev/null 2>&1 || true
 	@docker run --name crane --net host --rm -it -e ANSIBLE_HOST_KEY_CHECKING=false -e TERM=xterm-256color -e COLUMNS=238 -e LINES=61 -v ~/.ssh:/root/.ssh -v ${PWD}:/crane -w /crane/crane -v ${PWD}/crane/ansible.cfg:/etc/ansible/ansible.cfg ${DockerHubRepoName}/${ProjectName}:${VERSION} -i nodes test.yml -vv
-
-local_load_dockerd:
-	@wget -qO- https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz > ${PWD}/crane/roles/downloads-packages/files/docker-${DOCKER_VERSION}.tar.gz
-
-# Ready to scrap
-local_load_dockerd_old:
-	@docker run --rm -i -e DOCKER_VERSION=${DOCKER_VERSION} -v ${PWD}/crane/roles/docker-install/files:/docker_bin -w /usr/local/bin docker:${DOCKER_VERSION} sh -c "tar zcf /docker_bin/docker-${DOCKER_VERSION}.tar.gz containerd  containerd-shim  ctr  docker  dockerd  docker-entrypoint.sh  docker-init  docker-proxy runc"
 
 run_simple:
 	@docker rm -f crane > /dev/null 2>&1 || true
@@ -62,6 +63,25 @@ clean_simple:
 clean_main:
 	@docker rm -f crane > /dev/null 2>&1 || true
 	@docker run --name crane --rm -it -e ANSIBLE_HOST_KEY_CHECKING=false -e TERM=xterm-256color -e COLUMNS=238 -e LINES=61 -v ~/.ssh:/root/.ssh -v ${PWD}:/crane -w /crane/crane -v ${PWD}/crane/ansible.cfg:/etc/ansible/ansible.cfg ${DockerHubRepoName}/${ProjectName}:${VERSION} -i nodes remove_cluster.yml ${OPTION}
+
+remove_k8s_nodes:
+	@docker rm -f crane > /dev/null 2>&1 || true
+	@docker run --name crane --rm -it -e ANSIBLE_HOST_KEY_CHECKING=false -e TERM=xterm-256color -e COLUMNS=238 -e LINES=61 -v ~/.ssh:/root/.ssh -v ${PWD}:/crane -w /crane/crane -v ${PWD}/crane/ansible.cfg:/etc/ansible/ansible.cfg ${DockerHubRepoName}/${ProjectName}:${VERSION} -i nodes remove_k8s_nodes.yml ${OPTION}
+
+rotation_k8s_ca:
+	@docker rm -f crane > /dev/null 2>&1 || true
+	@docker run --name crane --rm -it -e ANSIBLE_HOST_KEY_CHECKING=false -e TERM=xterm-256color -e COLUMNS=238 -e LINES=61 -v ~/.ssh:/root/.ssh -v ${PWD}:/crane -w /crane/crane -v ${PWD}/crane/ansible.cfg:/etc/ansible/ansible.cfg ${DockerHubRepoName}/${ProjectName}:${VERSION} -i nodes k8s_certificate_rotation.yml ${OPTION}
+
+rotation_etcd_ca:
+	@docker rm -f crane > /dev/null 2>&1 || true
+	@docker run --name crane --rm -it -e ANSIBLE_HOST_KEY_CHECKING=false -e TERM=xterm-256color -e COLUMNS=238 -e LINES=61 -v ~/.ssh:/root/.ssh -v ${PWD}:/crane -w /crane/crane -v ${PWD}/crane/ansible.cfg:/etc/ansible/ansible.cfg ${DockerHubRepoName}/${ProjectName}:${VERSION} -i nodes etcd_certificate_rotation.yml ${OPTION}
+
+local_load_dockerd:
+	@wget -qO- https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz > ${PWD}/crane/roles/downloads-packages/files/docker-${DOCKER_VERSION}.tar.gz
+
+# Ready to scrap
+local_load_dockerd_old:
+	@docker run --rm -i -e DOCKER_VERSION=${DOCKER_VERSION} -v ${PWD}/crane/roles/docker-install/files:/docker_bin -w /usr/local/bin docker:${DOCKER_VERSION} sh -c "tar zcf /docker_bin/docker-${DOCKER_VERSION}.tar.gz containerd  containerd-shim  ctr  docker  dockerd  docker-entrypoint.sh  docker-init  docker-proxy runc"
 
 local_save_image:
 	@docker pull slzcc/kubernetes:${VERSION}
@@ -78,5 +98,5 @@ local_load_crio:
 local_load_containerd:
 	@wget -qO- https://github.com/containerd/containerd/releases/download/v${CONTAINERD_VERSION}/containerd-${CONTAINERD_VERSION}-linux-amd64.tar.gz > ${PWD}/crane/roles/downloads-packages/files/containerd-${CONTAINERD_VERSION}-linux-amd64.tar.gz
 
-local_load_crt: local_load_dockerd local_load_containerd local_load_crio
+local_load_cri: local_load_dockerd local_load_containerd local_load_crio
 	

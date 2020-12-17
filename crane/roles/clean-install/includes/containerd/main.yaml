@@ -4,12 +4,25 @@
 - name: Clean Containerd Services
   include: "roles/clean-install/includes/containerd/services.yaml"
 
+- name: Containerd Turn off Start Up
+  service: 
+    name: "{{ item }}"
+    enabled: no
+  with_items:
+    - "containerd"
+  ignore_errors: true
+  
 - name: Stop Containerd.
   service:
-    name: "['containerd']"
+    name: "containerd"
     state: stopped
   ignore_errors: true
-
+  
+# Clean Containerd Socket
+- name: Clean Containerd Socket
+  shell: "rm -rf {{ containerd_socket_path }}"
+  ignore_errors: true
+  
 # Clean Containerd Image
 # - name: Clean Containerd Image
 #   include: "roles/clean-install/includes/containerd/image.yaml"

@@ -1,18 +1,6 @@
 ---
 # Kubernetes
 ## ********************************************************************************************************************************
-# - name: Configure Kubernetes to execute files in download
-#   include_tasks: roles/downloads-packages/includes/download_file.yml
-#   when: not is_using_local_files_deploy and not is_using_image_deploy
-
-# - name: Configure Kubernetes to execute files in localhost
-#   include_tasks: roles/downloads-packages/includes/local_file.yml
-#   when: is_using_local_files_deploy
-
-# - name: Configure Kubernetes to execute files in image deploy
-#   include_tasks: roles/downloads-packages/includes/image_deploy.yml
-#   when: is_using_image_deploy and not is_using_local_files_deploy
-
 - name: Containerd Configure Kubernetes to execute files in download
   include_tasks: "roles/downloads-packages/includes/containerd/main.yml"
   when: cri_k8s_default == 'containerd'
@@ -23,7 +11,7 @@
 
 - name: Deploy Kubernetes to execute files in download
   include_tasks: "roles/downloads-packages/includes/kubernetes/main.yml"
-  when: not is_using_local_files_deploy and not is_using_image_deploy
+  when: not is_using_local_files_deploy
 
 - name: Update Master Kubelet and Manifests Config
   include_tasks: "templates/master/{{ k8s_upgrade_version }}/main.yml"

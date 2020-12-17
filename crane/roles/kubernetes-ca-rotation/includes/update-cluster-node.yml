@@ -14,7 +14,7 @@
 
 - name: Clean Old Kubelet CA
   file:
-    path: "{{ kubelet_work_dirs }}/pki/{{ item }}"
+    path: "{{ kubelet_work_dirs }}pki/{{ item }}"
     state: absent
   with_items:
     - kubelet-client-current.pem

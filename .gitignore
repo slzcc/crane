@@ -1,4 +1,6 @@
 *.tar.gz
+*.tgz
+*.idea
 *.retry
 *.DS_Store
 *.swp
