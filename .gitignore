@@ -1,5 +1,8 @@
 *.tar.gz
+*.tgz
+*.idea
 *.retry
 *.DS_Store
 *.swp
 tags
+crane/nodes

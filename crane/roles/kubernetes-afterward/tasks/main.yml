@@ -9,6 +9,7 @@
           --clusterrole=cluster-admin \
           --group=system:serviceaccounts"
   when: not is_rbac
+  ignore_errors: true
 
 # https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#noderestriction
 - name: Set Master Role Label *

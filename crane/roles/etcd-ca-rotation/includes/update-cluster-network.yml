@@ -1,31 +1,49 @@
 ---
-- name: Copy Calico Config Files
-  template: 
-    src: "roles/kubernetes-networks/templates/calico.j2"
-    dest: "{{ temporary_dirs }}calico.yml"
-    mode: 0644
-    owner: "{{ ssh_connect_user }}"
-  delegate_to: "{{ groups['kube-master'][0] }}"
+# - name: Copy Calico Config Files
+#   template: 
+#     src: "roles/kubernetes-networks/templates/calico.j2"
+#     dest: "{{ temporary_dirs }}calico.yml"
+#     mode: 0644
+#     owner: "{{ ssh_connect_user }}"
+#   delegate_to: "{{ groups['kube-master'][0] }}"
 
-- name: Clean Calico
-  shell: '{{ kubernetes_ctl_path }}kubectl delete -f {{ temporary_dirs }}calico.yml'
-  ignore_errors: true
-  delegate_to: "{{ groups['kube-master'][0] }}"
+# - name: Clean Calico
+#   shell: '{{ kubernetes_ctl_path }}kubectl delete -f {{ temporary_dirs }}calico.yml'
+#   ignore_errors: true
+#   delegate_to: "{{ groups['kube-master'][0] }}"
 
-- name: Clean CNI Cluster Config
-  file:
-    path: "{{ cni_config_dir }}"
-    state: absent
-  ignore_errors: true
+# - name: Clean CNI Cluster Config
+#   file:
+#     path: "{{ cni_config_dir }}"
+#     state: absent
+#   ignore_errors: true
 
-- name: Create CNI Cluster Config
-  file:
-    path: "{{ cni_config_dir }}"
-    mode: 0755
-    owner: "{{ ssh_connect_user }}"
-    state: directory
+# - name: Create CNI Cluster Config
+#   file:
+#     path: "{{ cni_config_dir }}"
+#     mode: 0755
+#     owner: "{{ ssh_connect_user }}"
+#     state: directory
     
-- name: Deploy Calico
-  shell: '{{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}calico.yml'
-  ignore_errors: true
+# - name: Deploy Calico
+#   shell: '{{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}calico.yml'
+#   ignore_errors: true
+#   delegate_to: "{{ groups['kube-master'][0] }}"
+
+- name: Delete Calico Old Etcd Secrets
+  shell: '{{ kubernetes_ctl_path }}kubectl delete secret calico-etcd-secrets -n kube-system'
   delegate_to: "{{ groups['kube-master'][0] }}"
+  ignore_errors: true
+
+- name: Deploy Calico Etcd Secrets
+  shell: '{{ kubernetes_ctl_path }}kubectl create secret generic calico-etcd-secrets -n kube-system \
+                                                         --from-literal=etcd-ca={{ etcd_ssl_dirs }}etcd-ca.pem \
+                                                         --from-literal=etcd-cert={{ etcd_ssl_dirs }}etcd.pem
+                                                         --from-literal=etcd-key={{ etcd_ssl_dirs }}etcd-key.pem'
+  delegate_to: "{{ groups['kube-master'][0] }}"
+
+- name: Reload Calico Controllers
+  shell: "kubectl rollout restart deployment/calico-kube-controllers -n kube-system"
+
+- name: Reload Calico Nodes
+  shell: "kubectl rollout restart daemonset/calico-node -n kube-system"

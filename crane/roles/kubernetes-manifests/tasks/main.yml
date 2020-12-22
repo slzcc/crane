@@ -1,4 +1,6 @@
 ---
+- include_vars: "roles/kubernetes-default/vars/haproxy.yaml"
+
 ## Copy Kubernetes Manifests Files
 ## ********************************************************************************************************************************
 - name: Create Kubernetes PKI WorkDir

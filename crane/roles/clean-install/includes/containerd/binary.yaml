@@ -1,0 +1,13 @@
+---
+
+- name: Clean Containerd Binary Files
+  file:
+    path: "{{ kubernetes_ctl_path }}{{ item }}"
+    state: absent
+  with_items:
+    - "containerd"
+    - "containerd-shim"
+    - "containerd-shim-runc-v1"
+    - "containerd-shim-runc-v2"
+    - "ctr"
+  ignore_errors: true

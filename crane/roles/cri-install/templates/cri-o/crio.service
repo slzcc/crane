@@ -5,7 +5,7 @@ Wants=network-online.target
 After=network-online.target
 
 [Service]
-ExecStartPre=-/sbin/modprobe br_netfilter
+#ExecStartPre=-/sbin/modprobe br_netfilter
 ExecStartPre=-/sbin/modprobe overlay
 Type=notify
 EnvironmentFile=-/etc/default/crio

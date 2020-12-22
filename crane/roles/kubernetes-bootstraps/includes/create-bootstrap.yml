@@ -50,3 +50,5 @@
 
 - name: Deploy Bootstrap.
   shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ bootstrappers_yaml_path }} ; do >&2 echo "Starting..." && sleep 1 ; done'
+  async: 30
+  poll: 2

@@ -1,0 +1,25 @@
+---
+
+- name: Create Docker Config Path
+  file:
+    path: "/etc/docker"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
+- name: Create Docker CRE Config Path
+  file:
+    path: "/etc/docker/cert.d"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
+- name: Create Docker Data Path
+  file:
+    path: "{{ item }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+  with_items:
+    - "{{ docker_data_root }}"
+    - "{{ containerd_plugin_root }}"

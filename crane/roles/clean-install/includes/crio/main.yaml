@@ -1,9 +1,17 @@
 ---
 - include_vars: "roles/cri-install/vars/crio.yaml"
 
+- name: CRIO Turn off Start Up
+  service: 
+    name: "{{ item }}"
+    enabled: no
+  with_items:
+    - "crio"
+  ignore_errors: true
+
 - name: Stop CRIO.
   service:
-    name: "['crio']"
+    name: "crio"
     state: stopped
   ignore_errors: true
 
@@ -57,3 +65,8 @@
     - "/var/run/crio/crio.sock"
   ignore_errors: true
   when: is_remove_all or is_remove_crio_dir
+
+# Clean CRIO Socket
+- name: Clean CRIO Socket
+  shell: "rm -rf {{ crio_socket_path }}"
+  ignore_errors: true

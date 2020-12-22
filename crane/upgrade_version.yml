@@ -19,5 +19,15 @@
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/system-initialize/defaults/main.yml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/kubernetes-default/vars/kubelet.yaml"
+    - "roles/cri-install/vars/kubelet.yaml"
+    - "roles/cri-install/vars/crio.yaml"
+    - "roles/cri-install/vars/containerd.yaml"
   roles:
     - { role: kubernetes-upgrade, tags: [k8s-upgrade]}

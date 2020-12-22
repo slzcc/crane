@@ -1,0 +1,20 @@
+## Kube Proxy
+## ********************************************************************************************************************************
+
+# Kube Proxy 模式, 默认 ipvs, 如果设置为空则默认使用 iptable
+kube_proxy_mode: "ipvs"
+
+# 是否安装 ipvsadm
+is_install_ipvsadm: true
+
+# ipvs 调度策略.
+kube_proxy_ipvs_scheduler: "rr"
+
+## CNI
+## ********************************************************************************************************************************
+
+# CNI OS Type
+cni_os_drive: 'linux-amd64'
+
+# CNI Config Dir
+cni_config_dir: '/etc/cni/net.d'

@@ -4,6 +4,9 @@
   register: result
   ignore_errors: true
 
+- name: Initialize Containerd
+  include_tasks: "roles/cri-install/includes/containerd/initialize.yaml"
+
 - name: Install Containerd
   include_tasks: "roles/cri-install/includes/containerd/os.yaml"
   when: result.stderr

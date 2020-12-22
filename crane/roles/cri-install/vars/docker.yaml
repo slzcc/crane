@@ -15,7 +15,7 @@ docker_install_http_binary_source: 'https://download.docker.com/linux/static/sta
 
 # install docker bin path
 # 目前已经废弃
-docker_ctl_path: '/usr/bin/'
+#docker_ctl_path: '/usr/bin/'
 
 # 镜像加速, 如果为空则不设置.
 docker_registry_mirrors: '["https://4dyopx9i.mirror.aliyuncs.com"]'

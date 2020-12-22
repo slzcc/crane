@@ -8,5 +8,5 @@
     owner: "{{ ssh_connect_user }}"
     
 - name: Restart Kubernetes Master HaProxy Containers
-  shell: "docker rm -f $(docker ps --filter name=k8s_haproxy -q)"
+  shell: "{{ kubernetes_ctl_path }}docker rm -f $(docker ps --filter name=k8s_haproxy -q)"
   ignore_errors: true

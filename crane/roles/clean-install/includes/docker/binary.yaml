@@ -1,5 +1,4 @@
 ---
-
 - name: Clean Docker Binary Files
   file:
     path: "{{ kubernetes_ctl_path }}{{ item }}"
