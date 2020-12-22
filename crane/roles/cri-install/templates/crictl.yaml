@@ -1,6 +1,7 @@
-{% if cri_driver == 'crio' %}
+{% if cri_k8s_default == 'crio' %}
 runtime-endpoint: unix://{{ crio_socket_path }}
-{%- elif cri_driver == "containerd" -%}
+image-endpoint: unix://{{ crio_socket_path }}
+{%- elif cri_k8s_default == "containerd" -%}
 runtime-endpoint: unix://{{ containerd_socket_path }}
 image-endpoint: unix://{{ containerd_socket_path }}
 #timeout: 10
@@ -11,3 +12,4 @@ image-endpoint: unix:///var/run/dockershim.sock
 #timeout: 10
 #debug: true
 {% endif %}
+# Docs https://github.com/kubernetes-sigs/cri-tools/blob/master/docs/crictl.md

@@ -1,15 +1,12 @@
 ---
+- include_vars: "roles/etcd-install/vars/main.yml"
+
 # CFSSL install
 ## ********************************************************************************************************************************
-
 - name: Download CFSSL 
-  include_tasks: includes/download_deploy.yml
-  when: not is_using_local_files_deploy
-
-- name: Image CFSSL 
-  include_tasks: includes/image_deploy.yml
-  when: is_using_local_files_deploy
-
+  include: "roles/downloads-packages/includes/cfssl/main.yml"
+  delegate_to: "{{ groups['etcd-cluster-add-node'][0] }}"
+  
 ## Copy CFSSL Etcd Json Files
 ## ********************************************************************************************************************************
 
@@ -22,6 +19,13 @@
   with_items:
     - ca-config.json
     - etcd-csr.json
+  delegate_to: "{{ groups['etcd-cluster-add-node'][0] }}"
+
+## Backup Old Certificate Files
+## ********************************************************************************************************************************
+
+- name: Backup Old Certificate Files
+  shell: "cp -a {{ etcd_ssl_dirs }} {{ temporary_dirs }}etcd-add-node/certs-old-`date +%Y%m%d%H%M%S`"
   delegate_to: "{{ groups['etcd-cluster-add-node'][0] }}"
 
 ## Create Certificate Files
@@ -64,7 +68,7 @@
   shell: "ls -l {{ etcd_ssl_dirs }}"
 
 - name: Add Etcd Cluster New Member
-  shell: "docker run --rm -i -v {{ etcd_ssl_dirs }}:{{ etcd_ssl_dirs }} -w {{ etcd_ssl_dirs }} {{ k8s_cluster_component_registry }}/etcd:{{ etcd_version }} 
+  shell: "{{ kubernetes_ctl_path }}docker run --rm -i -v {{ etcd_ssl_dirs }}:{{ etcd_ssl_dirs }} -w {{ etcd_ssl_dirs }} {{ k8s_cluster_component_registry }}/etcd:{{ etcd_version }} 
           etcdctl --cacert {{ etcd_ssl_dirs }}etcd-ca.pem --key {{ etcd_ssl_dirs }}etcd-key.pem --cert {{ etcd_ssl_dirs }}etcd.pem --endpoints {{ etcd_cluster_str }} member add {{ hostvars[inventory_hostname].ansible_nodename }} --peer-urls=https://{{ hostvars[inventory_hostname].ansible_default_ipv4.address }}:{{ etcd_peer_port }}"
 
 - name: Copy Etcd Config Files to Kubernetes Master/None

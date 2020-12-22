@@ -1,0 +1,20 @@
+# Kubectl DirName
+kubernetes_ctl_path: '/usr/local/bin/'
+
+# Kubernetes PKI Path
+kubernetes_pki_dirs: '{{ kubernetes_etc_dirs }}pki/'
+
+# Etcd Config Path
+kubernetes_etc_dirs: '/etc/kubernetes/'
+
+# Kubernetes Manifests Path
+kubernetes_manifests_dirs: '{{ kubernetes_etc_dirs }}manifests/'
+
+# CNI Bin Path
+kubernetes_cni_dirs: '/opt/cni/bin'
+
+# Kubectl 工作目录
+kubelet_work_dirs: '/var/lib/kubelet/'
+
+# Cgroup Drive (如果内核未达到 4.4.x 以上版本, 请改为 systemd, 否则低版本内核无法支持 cgroupfs 会造成集群无法启动)
+kubelet_cgroup_drive: 'cgroupfs'

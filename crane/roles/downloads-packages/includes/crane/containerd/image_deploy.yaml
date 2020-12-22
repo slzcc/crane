@@ -1,0 +1,71 @@
+---
+# Deploy
+## ********************************************************************************************************************************
+# Check kubernetes image
+- name: Check kubernetes image
+  shell: 'for i in k8s.gcr.io/kube-proxy:{{ k8s_version }} k8s.gcr.io/kube-apiserver-amd64:{{ k8s_version }} k8s.gcr.io/kube-controller-manager:{{ k8s_version }} k8s.gcr.io/kube-scheduler:{{ k8s_version }} haproxy calico/node:{{ calico_version }} calico/cni:{{ calico_version }} calico/kube-controllers:{{ calico_version }} coredns/coredns:{{ dns_version }} k8s.gcr.io/etcd:{{ etcd_version }} k8s.gcr.io/pause:{{ pause_version }} slzcc/keepalived; do if [ ! `{{ kubernetes_ctl_path }}ctr -n k8s.io images ls -q | grep $i | wc -l` -ge 1 ] ;then echo 1 > /dev/stderr && exit 1 ; fi ; done'
+  register: check_k8s_image
+  ignore_errors: true
+
+- name: Check Binary files
+  shell: 'for i in cfssl cfssljson kubelet kubectl; do if [ "`ls {{ kubernetes_ctl_path }}$i | wc -l`" -eq 0 ] ; then echo 1 > /dev/stderr && exit 1; fi ; done'
+  register: check_binary_files
+  ignore_errors: true
+
+- name: Check Kubectl Version
+  shell: "{{ kubernetes_ctl_path }}kubectl version --short=true --client=true | awk '{print $3}'"
+  register: check_kubectl_version
+  ignore_errors: true
+
+- name: Check the Image
+  shell: "{{ kubernetes_ctl_path }}ctr -n k8s.io image ls | grep {{ k8s_image_deploy_repo }}:{{ k8s_version }}.{{ build_k8s_version }} | wc -l"
+  register: check_crane_image
+
+- name: Pull the Image
+  shell: "{{ kubernetes_ctl_path }}ctr -n k8s.io image pull {{ k8s_image_deploy_repo }}:{{ k8s_version }}.{{ build_k8s_version }}"
+  when: check_crane_image.stdout == 0
+
+- name: Clean is Run import-kubernetes-temporary
+  include: "roles/clean-install/includes/crane/containerd/import-kubernetes-temporary.yaml"
+
+- name: Run Temportay Containers
+  shell: "{{ kubernetes_ctl_path }}ctr -n k8s.io run --null-io --net-host -d \
+                            --label name=import-kubernetes-temporary \
+                            --mount type=bind,src=/var/run,dst=/var/run,options=rbind:ro \
+                            --mount type=bind,src=/run,dst=/run,options=rbind:ro \
+                            {{ k8s_image_deploy_repo }}:{{ k8s_version }}.{{ build_k8s_version }} import-kubernetes-temporary sleep 1234567"
+  when: (check_kubectl_version.stdout != k8s_version) or (check_k8s_image is failed) or (check_binary_files is failed)
+
+- name: Export the Image
+  shell: "until {{ kubernetes_ctl_path }}ctr -n k8s.io tasks exec --exec-id $({{ kubernetes_ctl_path }}ctr -n k8s.io tasks list | grep 'import-kubernetes-temporary'| awk '{print $2}') import-kubernetes-temporary bash /containerd-image-import.sh ; do >&2 echo 'Starting...' && sleep 1 ; done"
+  when: check_k8s_image is failed
+
+- name: Create Temportay Mount Path
+  file:
+    path: "{{ temporary_dirs }}import-kubernetes-temporary"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
+- name: Temportay Mount to.
+  shell: "{{ kubernetes_ctl_path }}ctr -n k8s.io snapshot mounts {{ temporary_dirs }}import-kubernetes-temporary import-kubernetes-temporary | xargs sudo"
+  when: (check_kubectl_version.stdout != k8s_version) or (check_k8s_image is failed) or (check_binary_files is failed)
+
+- name: Export the cfssl and cfssljson
+  include: "roles/downloads-packages/includes/cfssl/containerd/image_deploy.yaml" 
+  when: check_binary_files is failed
+
+- name: Export the Kubelet and kubectl
+  include: "roles/downloads-packages/includes/kubernetes/containerd/image_deploy.yaml" 
+  when: check_kubectl_version.stdout != k8s_version
+
+- name: Export the CNI
+  include: "roles/downloads-packages/includes/cni/containerd/image_deploy.yaml" 
+  when: check_binary_files is failed
+
+- name: Temportay uMount to.
+  shell: "umount -l {{ temporary_dirs }}import-kubernetes-temporary"
+  ignore_errors: true
+  
+- name: Clean is Run import-kubernetes-temporary
+  include: "roles/clean-install/includes/crane/containerd/import-kubernetes-temporary.yaml"

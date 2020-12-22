@@ -17,6 +17,8 @@
   gather_facts: false
   become: yes
   become_method: sudo
+  vars_files:
+    - "roles/crane/defaults/main.yml"
   roles:
     - { role: downloads-ssh-key, tags: [copy_ssh_private_key]}
 
@@ -28,6 +30,16 @@
     ansible_ssh_pipelining: true
   vars_files:
     - "roles/kubernetes-default/defaults/main.yml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/system-initialize/defaults/main.yml"
+    - "roles/cri-install/vars/docker.yaml"
+    - "roles/cri-install/vars/containerd.yaml"
+    - "roles/cri-install/vars/crio.yaml"
+    - "roles/etcd-install/vars/main.yml"
+    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/kubernetes-default/defaults/tls.yaml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/kubernetes-networks/defaults/main.yml"
   roles:
     - { role: clean-install, tags: [clean], when: is_initialize_clean}
     - { role: cri-install, tags: [cri]}
@@ -44,6 +56,13 @@
     ansible_ssh_pipelining: true
   vars_files:
     - "roles/kubernetes-bootstraps/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/system-initialize/defaults/main.yml"
+    - "roles/kubernetes-default/defaults/tls.yaml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/kubernetes-default/vars/kubelet.yaml"
   tasks:
     - { include_tasks: roles/kubernetes-bootstraps/includes/create-bootstrap.yml }
 
@@ -53,6 +72,18 @@
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/system-initialize/defaults/main.yml"
+    - "roles/kubernetes-default/defaults/tls.yaml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/kubernetes-default/vars/kubelet.yaml"
+    - "roles/etcd-install/vars/main.yml"
+    - "roles/cri-install/vars/kubelet.yaml"
+    - "roles/cri-install/vars/crio.yaml"
+    - "roles/cri-install/vars/containerd.yaml"
   roles:
     - { role: k8s-add-nodes, tags: [k8s-add-node]}
 
@@ -62,5 +93,28 @@
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/system-initialize/defaults/main.yml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/cri-install/vars/kubelet.yaml"
+    - "roles/kubernetes-default/vars/kubelet.yaml"
   roles:
     - { role: kubernetes-nodes, tags: [k8s-nodes]}
+    
+- name: Deployment Kubernetes Cluster Afterward CMD
+  hosts: kube-master[0]
+  gather_facts: true
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-default/defaults/configure.yaml"
+  roles:
+    - { role: kubernetes-afterward, tags: [k8s-afterward]}

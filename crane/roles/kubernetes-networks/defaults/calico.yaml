@@ -1,0 +1,11 @@
+# Calico Type 
+# Calico 使用的模式默认使用, 默认为 BGP 设置为 Off:, 如果需要使用 IPIP 则设置为 :Always
+calico_type: 'Off'
+
+# Calico CNI Version
+# Calico 使用 CNI 版本
+calico_cni_version: '0.3.1'
+
+# Calico Release 配置文件
+## https://docs.projectcalico.org/manifests/calico.yaml
+## Docs https://docs.projectcalico.org/getting-started/kubernetes/installation/config-options

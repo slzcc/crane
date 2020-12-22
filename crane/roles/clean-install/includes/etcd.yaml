@@ -1,11 +1,16 @@
 ---
+- include_vars: "roles/etcd-install/vars/main.yml"
+- include_vars: "roles/etcd-add-node/defaults/main.yml"
 
 # Clean Etcd
 - name: Backup Etcd(SnapShot)
-  shell: docker run --rm -i -v {{ etcd_ssl_dirs }}:{{ etcd_ssl_dirs }} -w {{ temporary_dirs }}etcdb {{ k8s_cluster_component_registry }}/etcd:{{ etcd_version }} etcdctl --cacert {{ etcd_ssl_dirs }}etcd-ca.pem --key {{ etcd_ssl_dirs }}etcd-key.pem --cert {{ etcd_ssl_dirs }}etcd.pem --endpoints {{ etcd_cluster_str.split(",")[0] }} snapshot save snapshot-`date +%Y%m%d%H%M%S`.db
+  shell: >
+    {{ kubernetes_ctl_path }}docker run --name crane-etcd-backup-to-clean --rm -i -v {{ etcd_ssl_dirs }}:{{ etcd_ssl_dirs }} -w {{ temporary_dirs }}etcdb {{ k8s_cluster_component_registry }}/etcd:{{ etcd_version }} etcdctl --cacert {{ etcd_ssl_dirs }}etcd-ca.pem --key {{ etcd_ssl_dirs }}etcd-key.pem --cert {{ etcd_ssl_dirs }}etcd.pem --endpoints {{ etcd_cluster_str.split(",")[0] }} snapshot save snapshot-`date +%Y%m%d%H%M%S`.db
   delegate_to: "{{ groups['kube-master'][0] }}"
+  async: 30
+  poll: 2
   ignore_errors: true
-  
+
 - name: Clean Etcd ssl directory.
   file:
     path: "{{ etcd_ssl_dirs }}"

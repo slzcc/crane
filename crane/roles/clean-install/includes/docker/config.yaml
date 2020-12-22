@@ -4,6 +4,10 @@
   shell: "mv {{ systemd_default_dirs }}docker.service {{ temporary_dirs }}"
   ignore_errors: true
 
+- name: Remove System Docker Socket Configs
+  shell: "mv {{ systemd_default_dirs }}docker.socket {{ temporary_dirs }}"
+  ignore_errors: true
+
 - name: Systemd Reload Remove Docker
   shell: "systemctl daemon-reload"
   ignore_errors: true

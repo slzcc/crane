@@ -10,14 +10,15 @@
     owner: "{{ ssh_connect_user }}" 
     mode: 0644
   with_items:
-    - ca-config.json
-    - ca-csr.json
-    - apiserver-csr.json
-    - front-proxy-ca-csr.json
-    - front-proxy-client-csr.json
-    - admin-csr.json
-    - manager-csr.json
-    - scheduler-csr.json
+    - "ca-config.json"
+    - "ca-csr.json"
+    - "apiserver-csr.json"
+    - "front-proxy-ca-csr.json"
+    - "front-proxy-client-csr.json"
+    - "admin-csr.json"
+    - "manager-csr.json"
+    - "scheduler-csr.json"
+    - "kubelet-csr.json"
 
 ## Create Kubernetes CA
 - name: Create Kubernetes Certificate Files

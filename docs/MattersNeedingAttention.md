@@ -392,3 +392,30 @@ Kiali (1.12) 现支持 4 中认证协议:
 ```
 $ kubectl edit kiali -n istio-system kiali
 ```
+
+## Kubelet Bug
+
+kubelet 日志如下:
+
+```
+Dec 21 13:01:03 BJ-M8-HADOOP-105-145 kubelet[353352]: I1221 13:01:03.731043  353352 kubelet_node_status.go:73] Successfully registered node bj-m8-hadoop-105-145
+Dec 21 13:01:03 BJ-M8-HADOOP-105-145 kubelet[353352]: E1221 13:01:03.747928  353352 kubelet.go:1845] skipping pod synchronization - container runtime status check may not have completed yet
+Dec 21 13:01:03 BJ-M8-HADOOP-105-145 kubelet[353352]: F1221 13:01:03.777407  353352 kubelet.go:1383] Failed to start ContainerManager failed to build map of initial containers from runtime: no PodsandBox found with Id 'a69881c50fe65f411010f10309ed653784650f48c1e4586814932b4acf7437e1'
+```
+
+问题属于 docker 存储驱动的问题，使用 overlay2 后解决。
+
+> 相关文档 http://blog.ittour.net/2019/09/25/container-runtime-is-down-pleg-is-not-healthy/
+
+
+## Ansible Bug
+
+如果执行时报错rux:
+
+```
+TASK [downloads-packages : Import Kubernetes Containerd Image] *****************************************************************************************************************************************************************************************************************
+task path: /crane/crane/roles/downloads-packages/includes/crane/containerd/local_file.yaml:18
+fatal: [192.168.6.96]: FAILED! => {"changed": true, "cmd": "ctr -n k8s.io i import /tmp/crane/kubernetes.tar.gz", "delta": "0:00:00.018852", "end": "2020-12-22 15:54:19.290911", "msg": "non-zero return code", "rc": 127, "start": "2020-12-22 15:54:19.272059", "stderr": "/bin/sh: ctr: command not found", "stderr_lines": ["/bin/sh: ctr: command not found"], "stdout": "", "stdout_lines": []}
+```
+
+因 Crane 默认把组件下载到 `/usr/local/bin` 目前已经把所有涉及到二进制的文件加入了 `{{ kubernetes_ctl_path }}` 参数头, 如还发现类似问题请自行解决。
