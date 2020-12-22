@@ -23,7 +23,7 @@
 
 - name: Pull the Image
   shell: "{{ kubernetes_ctl_path }}ctr -n k8s.io image pull {{ k8s_image_deploy_repo }}:{{ k8s_version }}.{{ build_k8s_version }}"
-  when: check_crane_image.stdout == 0
+  when: check_crane_image.stdout == "0"
 
 - name: Clean is Run import-kubernetes-temporary
   include: "roles/clean-install/includes/crane/containerd/import-kubernetes-temporary.yaml"
