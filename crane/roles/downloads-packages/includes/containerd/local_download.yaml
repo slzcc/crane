@@ -1,0 +1,17 @@
+---
+- name: Create Containerd Config Path
+  file:
+    path: "{{ temporary_dirs }}containerd"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
+- name: Copy Containerd Binary Compressed File
+  copy: 
+    src: "roles/downloads-packages/files/containerd-{{ containerd_version }}-linux-amd64.tar.gz"
+    dest: "{{ temporary_dirs }}containerd-{{ containerd_version }}-linux-amd64.tar.gz"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+
+- name: Unpack the containerd. Tar. Gz
+  shell: "tar zxf {{ temporary_dirs }}containerd-{{ containerd_version }}-linux-amd64.tar.gz -C {{ temporary_dirs }}containerd"

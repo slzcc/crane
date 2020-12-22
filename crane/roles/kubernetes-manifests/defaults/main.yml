@@ -1,0 +1,65 @@
+## Kubernetes
+## ********************************************************************************************************************************
+
+# Kubernetes ApiServer 监听的端口号
+k8s_master_apiservice_bind_port: 5443
+
+# Kubernetes HaProxy 监听的端口号
+# 在部署的 Kubernetes 集群架构中, 使用 HaProxy 作为 apiServer 负载均衡设备, 集群架构应为 SLB > HaProxy > apiServer
+# 请自行设置端口号, 最好保持默认值
+k8s_master_haproxy_bind_port: 6443
+
+# Kubernetes 在集群中使用的 ClusterIP, 此地址依赖 k8s_cluster_ip_range 的网段
+# Kubernetes Default Service 值, 实际由 apiServer 自动进行创建
+# apiServer 选择会使用合理的掩码计算出 k8s_cluster_ip_range 的第一个 IP 地址进行使用
+k8s_cluster_ip: '10.16.0.1'
+
+# Kubernetes 集群使用的 ClusterIP 网段
+# 如需修改时, 请设计合理的掩码
+k8s_cluster_ip_range: '10.16.0.0/12'
+
+# Kubernetes Pool CIDR
+k8s_cluster_ipv4_pool_cidr: '172.208.0.0/12'
+
+# Kubernetes HaProxy 监听的 apiServer 完整的 URL
+k8s_apiserver_https_bind: 'https://{{ k8s_load_balance_ip }}:{{ k8s_master_haproxy_bind_port }}'
+
+# Kubernetes 可暴露的 NodePort 端口号
+k8s_apiserver_node_port_range: '10-64878'
+
+# Pause Version
+# 如使用镜像方式部署, 不能修改 (如果可以使用 {{ k8s_cluster_component_registry }} 中的仓库地址获取镜像则可随意修改)
+# Coding: https://github.com/kubernetes/kubernetes/tree/master/build/pause
+pause_version: '3.2'
+
+# infra image, 依赖下方镜像仓库地址
+k8s_pod_infra_container_image: "{{ k8s_cluster_component_registry }}/pause:{{ pause_version }}"
+
+# Kubernetes Cluster Registry Addr, 默认值为: k8s.gcr.io
+# 此地址可以修改为自定义镜像地址, 但需要确保已经执行 script/PublishK8sRegistryImages.sh 脚本, 所以参数可改为 slzcc, 如果在国内可使用 docker.io/slzcc 获取镜像。
+# 受影响的镜像为: etcd、kube-apiserver-amd64、kube-controller-manager、kube-scheduler、kube-proxy、pause。
+# 此值依赖于 is_kube_master_schedule, 如果使用镜像方式部署时, 此值不能变动
+k8s_cluster_component_registry: 'k8s.gcr.io'
+
+# 是否使用 RBAC, 集群默认是 RBAC 认证, 但可以在部署完集群之后创建超级用户取消所有限制
+is_rbac: false
+
+# kubernetes CA Config 请参照: roles/kubernetes-default/defaults/main.yml
+
+# kubernetes 最低 kernel 否则关闭相应的功能
+min_kernel_version: 4.3
+
+# DNS 服务所需的 Domain 后缀
+dns_domain: 'cluster.local'
+
+# DNS 服务的 ClusterIP 地址, 依赖集群 ClusterIP 网段
+dns_cluster_ip: '10.16.0.10'
+
+# DNS 集群 ClusterIP 网段
+dns_cluster_range: "{{ k8s_cluster_ip_range }}"
+
+# 判定值, 勿动
+is_kube_master: "{{ inventory_hostname in groups['kube-master'] }}"
+is_kube_node: "{{ inventory_hostname in groups['kube-node'] }}"
+is_add_master: "{{ inventory_hostname in groups['k8s-cluster-add-master'] }}"
+is_add_node: "{{ inventory_hostname in groups['k8s-cluster-add-node'] }}"

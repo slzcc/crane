@@ -1,0 +1,10 @@
+---
+- name: Copy CRIO Binary Compressed File
+  copy: 
+    src: "roles/downloads-packages/files/crio-{{ crio_version }}.tar.gz"
+    dest: "{{ temporary_dirs }}crio-{{ crio_version }}.tar.gz"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+
+- name: Unpack the crio. Tar. Gz
+  shell: "tar zxf {{ temporary_dirs }}crio-{{ crio_version }}.tar.gz -C {{ temporary_dirs }}"

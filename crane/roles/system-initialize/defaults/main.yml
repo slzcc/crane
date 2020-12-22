@@ -1,2 +1,12 @@
+## Systemd Config
+## ********************************************************************************************************************************
+
+# Systemd 子配置文件目录
+systemd_etc_dirs: '/etc/systemd/system/'
+
+# Systemd 主配置文件目录
+systemd_default_dirs: '/lib/systemd/system/'
+
+# 内核配置
 kernel_nf_conntrack_buckets: 262144
 kernel_nf_conntrack_max: 1048576

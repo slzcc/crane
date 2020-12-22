@@ -7,6 +7,8 @@
 
 Please refer to the documentation for detailed configuration: [Wiki Docs URL](https://wiki.shileizcc.com/display/CASE/Ansible+Kubernetes+Cluster)。
 
+Crane 使用半离线安装, 解决国内无法使用 `k8s.gcr.io` 源问题。
+
 使用 Ansible 基于容器化部署 Kubernetes Cluster（非 Kubeadm）, 并支持 Master/Node/Etcd 节点的添加。
 
 部署全局基于 TLS, 并区分 K8s Cluster CA、Etcd CA 证书, 并支持证书轮转。
@@ -23,17 +25,38 @@ CRI 支持多种服务共存部署模式, 可同时部署 docker/containerd/crio
 
 # 部署说明
 
+> 部署之前请认真读取可能会发现的问题这其中不包含 Crane 本身的问题.[Read before you Start](./docs/MattersNeedingAttention.md)
+
 部署示例请参照 [Crane Install](./docs/INSTALL.md) 文件进行部署。
+
+离线部署示例请参照 [Crane Offine Install](./docs/OFFINE_INSTALL.md) 文件进行部署。
 
 各功能示例参照 [Crane Other Features](./docs/FunctionalSpecifications.md) 文件进行部署。
 
 Add-Ons 参照 [Add-Ons Install](./crane/roles/add-ons) 文件进行部署。
 
 ---
+# 架构
+
+Crane 的架构简述:
+
+```
+|------ Keepalived(Master) or ELB
+|               |
+|               |
+|       Haproxy(Master)
+|               |
+|               |
+|       Kube-ApiServer(Master)
+
+```
+在 Crane 架构中, 可以自由使用 Keepalived 或 ELB, 如果需要使用 Keepalived 则需要事先准备好 VIP 且网络可达, 否则无法正常启动。
+
+> 使用 Keepalived 一般属于物理环境而 ELB 则属于 Cloud 环境, 请按照需求自行配置。
 
 # 模拟部署
 
-通过 Kubernetes in Docker 方式测试演练，所有操作都包含在 Docker 镜像中，不会涉及其他环境依赖，方便快捷进行测试.
+通过 Kubernetes in Docker 方式测试演练，所有操作都包含在 Docker 镜像中，不会涉及其他环境依赖，方便快捷进行测试。
 
 部署示例请参照 [Kube Simple](./kube-simple/README.md) 文件进行部署。
 

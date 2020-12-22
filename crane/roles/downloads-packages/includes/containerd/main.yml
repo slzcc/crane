@@ -1,8 +1,0 @@
----
-- name: Configure Kubernetes to execute files in localhost
-  include_tasks: "includes/containerd/local_file.yml"
-  when: is_using_local_files_deploy
-
-- name: Configure Kubernetes to execute files in image deploy
-  include_tasks: "includes/containerd/image_deploy.yml"
-  when: is_using_image_deploy and not is_using_local_files_deploy

@@ -2,7 +2,8 @@
 ## Testing..
 
 # - name: Test
-#   shell: "ls /"
+#   shell: "env;who; echo $USER"
+
 #   shell: "date"
 #   #  shell: "pwd"
 

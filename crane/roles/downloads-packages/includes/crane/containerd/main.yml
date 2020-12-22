@@ -1,0 +1,15 @@
+---
+- include_vars: "{{ item }}"
+  with_items:
+    - "roles/crane/defaults/main.yml"
+    - "roles/cri-install/vars/containerd.yaml"
+    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+
+- name: Configure Containerd to execute files in localhost
+  include_tasks: "roles/downloads-packages/includes/crane/containerd/local_file.yaml"
+  when: is_using_local_files_deploy
+
+- name: Configure Containerd to execute files in image deploy
+  include_tasks: "roles/downloads-packages/includes/crane/containerd/image_deploy.yaml"
+  when: not is_using_local_files_deploy

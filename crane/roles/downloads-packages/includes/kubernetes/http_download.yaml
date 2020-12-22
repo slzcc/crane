@@ -1,0 +1,23 @@
+---
+- include_vars: "{{ item }}"
+  with_items:
+    - "roles/crane/defaults/main.yml"
+    - "roles/kubernetes-default/defaults/configure.yaml"
+
+# Kubernetes
+## ********************************************************************************************************************************
+- name: Check Kubernetes Package
+  shell: "ls {{ temporary_dirs }}kubernetes/node/bin"
+  register: CHECK_KUBE_BIN_PACKAGE
+  ignore_errors: true
+
+- name: Download Kubernetes Ctl And Kubelet Binary Files
+  shell: "export http_proxy={{ http_proxy }} ; export https_proxy={{ https_proxy }} ; wget -qO- 'https://dl.k8s.io/{{ k8s_version }}/kubernetes-node-linux-amd64.tar.gz' | tar zx -C {{ temporary_dirs }}"
+  changed_when: true
+  when: CHECK_KUBE_BIN_PACKAGE is failed
+
+- name: Copy Kubectl
+  shell: "cp -rf {{ temporary_dirs }}kubernetes/node/bin/kubectl {{ kubernetes_ctl_path }}"
+
+- name: Copy Kubelet
+  shell: "cp -rf {{ temporary_dirs }}kubernetes/node/bin/kubelet {{ kubernetes_ctl_path }}"

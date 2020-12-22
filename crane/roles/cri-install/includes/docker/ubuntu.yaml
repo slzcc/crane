@@ -10,11 +10,17 @@
   async: 30
   poll: 2
   ignore_errors: true
- 
+
+- name: Load Kernel Module
+  include_tasks: "roles/system-initialize/includes/kernel/nf_conntrack_module.yaml"
+
 - name: Ubuntu Install Docker-ce
-  include_tasks: roles/cri-install/includes/docker/local_binary.yaml
+  include_tasks: roles/downloads-packages/includes/docker/local_download.yaml
   when: docker_install_type == 'local_binary'
 
 - name: Ubuntu Install Docker-ce
-  include_tasks: roles/cri-install/includes/docker/http_binary.yaml
+  include_tasks: roles/downloads-packages/includes/docker/http_download.yaml
   when: docker_install_type == 'http_binary'
+
+- name: Binary Install
+  include: "roles/cri-install/includes/docker/_binary_install.yaml" 

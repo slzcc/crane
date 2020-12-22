@@ -1,7 +1,4 @@
 ---
-- include_vars: "roles/cri-install/vars/docker.yaml"
-- include_vars: "roles/cri-install/vars/containerd.yaml"
-- include_vars: "roles/cri-install/vars/crio.yaml"
 
 # Create Temporary Directory
 - name: Create Temporary Directory

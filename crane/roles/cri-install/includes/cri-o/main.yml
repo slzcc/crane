@@ -1,8 +1,15 @@
 ---
+- include_vars: "{{ item }}"
+  with_items:
+    - "roles/kubernetes-manifests/defaults/main.yml"
+
 - name: Check CRIO Version
   shell: "crio -v | awk '{print $3}' | awk -F',' '{print $1}'"
   register: result
   ignore_errors: true
+
+- name: Initialize CRIO
+  include_tasks: "roles/cri-install/includes/cri-o/initialize.yaml"
 
 - name: Install CRIO
   include_tasks: "roles/cri-install/includes/cri-o/os.yaml"

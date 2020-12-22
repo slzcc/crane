@@ -17,13 +17,23 @@
   gather_facts: false
   become: yes
   become_method: sudo
+  vars_files:
+    - "roles/crane/defaults/main.yml"
   roles:
     - { role: downloads-ssh-key, tags: [copy_ssh_private_key]}
+  tasks:
+    - { include_tasks: 'roles/etcd-add-node/includes/initialize.yaml' }
 
 - hosts: etcd-cluster-add-node
   gather_facts: false
   become: yes
   become_method: sudo
+  vars_files:
+    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/etcd-install/vars/main.yml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
   tasks:
     - { include_tasks: 'roles/etcd-add-node/includes/clean.yml' }
 
@@ -35,6 +45,11 @@
     ansible_ssh_pipelining: true
   vars_files:
     - "roles/etcd-add-node/defaults/main.yml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/etcd-install/vars/main.yml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-default/defaults/configure.yaml"
   tasks:
     - { include_tasks: 'roles/etcd-add-node/includes/main.yml' }
 
@@ -46,6 +61,12 @@
     ansible_ssh_pipelining: true
   vars_files:
     - "roles/etcd-install/defaults/main.yml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/etcd-install/vars/main.yml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/etcd-install/defaults/tls.yaml"
   roles:
     - { role: etcd-add-node, tags: [etcd-add-node]}
 
@@ -55,6 +76,14 @@
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/crane/defaults/main.yml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/etcd-install/vars/main.yml"
+    - "roles/kubernetes-networks/defaults/calico.yaml"
+    - "roles/kubernetes-networks/defaults/main.yml"
   tasks:
     - { include_tasks: 'roles/etcd-add-node/includes/update-k8s-manifests.yml' }
 
@@ -64,6 +93,9 @@
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/crane/defaults/main.yml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
   tasks:
     - { include_tasks: 'roles/etcd-add-node/includes/update-etcd-manifests.yml' }
 
@@ -75,6 +107,11 @@
     ansible_ssh_pipelining: true
   vars_files:
     - "roles/etcd-add-node/defaults/main.yml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/etcd-install/vars/main.yml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
   tasks:
     - { include_tasks: 'roles/etcd-add-node/includes/check-cluster.yml' }
 
