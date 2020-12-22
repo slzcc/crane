@@ -5,7 +5,7 @@ export targetRegistry=${targetRegistry:-'slzcc'}
 
 _cri_driver=`awk '/^cri_driver/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 
-_cni_os_drive=`awk '/^cni_os_drive/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_cni_os_drive='linux-amd64'
 _dockerVersion=`awk '/^docker_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 _k8sVersion=`awk '/^k8s_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 _cni_version=`awk '/^cni_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
