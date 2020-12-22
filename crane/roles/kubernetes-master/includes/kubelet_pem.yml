@@ -35,3 +35,6 @@
   shell: "cd {{ kubernetes_pki_dirs }} && 
           {{ kubernetes_ctl_path }}kubectl config use-context system:node:{{ hostvars[inventory_hostname].ansible_nodename }}@kubernetes 
             --kubeconfig={{ kubernetes_etc_dirs }}kubelet.conf"
+
+- name: Create Kubectl Config ******
+  shell: "chown {{ ssh_connect_user }} {{ kubernetes_etc_dirs }}kubelet.conf"

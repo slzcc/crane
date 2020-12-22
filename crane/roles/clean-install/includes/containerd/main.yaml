@@ -1,50 +1,42 @@
 ---
 - include_vars: "roles/cri-install/vars/containerd.yaml"
 
-- name: Stop Containerd.
-  service:
-    name: "['containerd']"
-    state: stopped
-  ignore_errors: true
+- name: Clean Containerd Services
+  include: "roles/clean-install/includes/containerd/services.yaml"
 
-# Clean Containerd Image
-- name: Clean Docker Image
-  include: "roles/clean-install/includes/containerd/image.yaml"
-  when: is_remove_all or is_remove_k8s_images
-
-- name: Clean Containerd Binary Files
-  file:
-    path: "{{ kubernetes_ctl_path }}{{ item }}"
-    state: absent
+- name: Containerd Turn off Start Up
+  service: 
+    name: "{{ item }}"
+    enabled: no
   with_items:
     - "containerd"
-    - "containerd-shim"
-    - "containerd-shim-runc-v1"
-    - "containerd-shim-runc-v2"
-    - "ctr"
   ignore_errors: true
+  
+- name: Stop Containerd.
+  service:
+    name: "containerd"
+    state: stopped
+  ignore_errors: true
+  
+# Clean Containerd Socket
+- name: Clean Containerd Socket
+  shell: "rm -rf {{ containerd_socket_path }}"
+  ignore_errors: true
+  
+# Clean Containerd Image
+# - name: Clean Containerd Image
+#   include: "roles/clean-install/includes/containerd/image.yaml"
+#   when: is_remove_all or is_remove_k8s_images
+
+- name: Clean Containerd Config
+  include: "roles/clean-install/includes/containerd/config.yaml"
   when: is_remove_all or is_remove_containerd
 
-- name: Remove System Containerd Configs
-  shell: "mv {{ systemd_default_dirs }}containerd.service {{ temporary_dirs }}"
+- name: Clean Containerd Binary
+  include: "roles/clean-install/includes/containerd/binary.yaml"
   when: is_remove_all or is_remove_containerd
-  ignore_errors: true
 
-- name: Systemd Reload Remove Containerd
-  shell: "systemctl daemon-reload"
-  ignore_errors: true
-
-- name: Remove Containerd Configs
-  shell: "mv /etc/containerd {{ temporary_dirs }}"
-  when: is_remove_all or is_remove_containerd
-  ignore_errors: true
-
-- name: Remove Containerd Data Path
-  file:
-    path: "{{ item }}"
-    state: absent
-  with_items:
-    - "{{ containerd_data_root }}"
-    - "{{ containerd_plugin_root }}"
-  ignore_errors: true
+- name: Clean Containerd Data
+  include: "roles/clean-install/includes/containerd/data.yaml"
   when: is_remove_all or is_remove_containerd_dir
+

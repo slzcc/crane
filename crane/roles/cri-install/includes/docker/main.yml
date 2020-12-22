@@ -4,6 +4,9 @@
   register: result
   ignore_errors: true
 
+- name: Initialize Docker-ce
+  include_tasks: "roles/cri-install/includes/docker/initialize.yaml"
+
 - name: Install Docker-ce
   include_tasks: "roles/cri-install/includes/docker/os.yaml"
   when: is_mandatory_docker_install or result.stderr

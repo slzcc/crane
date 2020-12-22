@@ -1,0 +1,43 @@
+## Etcd
+## ********************************************************************************************************************************
+
+# Etcd 使用的 Client 协议, 默认 HTTPS, 不能修改
+etcd_url_scheme: "https"
+
+# Etcd 使用的 Cluster Peer 协议, 默认 HTTPS, 不能修改
+etcd_peer_url_scheme: "https"
+
+# Etcd Client TLS Auth
+etcd_client_cert_auth: true
+
+# Etcd Peer TLS Auth
+etcd_peer_client_cert_auth: true
+
+# Etcd Client Port
+etcd_client_port: 2379
+
+# Etcd Peer Port
+etcd_peer_port: 2380
+
+# Etcd Client TLS Auto
+etcd_client_tls_auto: true
+
+# Etcd Peer TLS Auto
+etcd_peer_tls_auto: true
+
+# Etcd Cluster Token
+etcd_cluster_token: 'etcd-k8s-cluster'
+
+# Etcd Cluster Type
+etcd_cluster_type: 'new'
+
+# 占位符
+etcd_interface: ""
+
+# Etcd Certs Path
+etcd_ssl_dirs: '{{ kubernetes_pki_dirs }}etcd/'
+
+# Etcd Data Path
+etcd_data_dirs: '/var/lib/etcd/'
+
+# Etcd CA Config 请参照: roles/etcd-install/defaults/main.yml

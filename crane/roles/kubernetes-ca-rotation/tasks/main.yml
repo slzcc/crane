@@ -22,6 +22,12 @@
     owner: "{{ ssh_connect_user }}"
     state: directory
 
+## Backup Old Certificate Files
+## ********************************************************************************************************************************
+
+- name: Backup Old Certificate Files
+  shell: "cp -a {{ kubernetes_pki_dirs }} {{ deploy_new_ca_retation_dirs }}/certs-old-`date +%Y%m%d%H%M%S`"
+
 ## Copy CFSSL Kubernetes Json Files
 - name: CA Rotation Copy CFSSL Kubernetes Json Files
   template:

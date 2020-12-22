@@ -1,19 +1,26 @@
 ---
 - name: Rester Kubernetes ApiServer Service
-  shell: "docker rm -f $(docker ps --filter name=k8s_kube-apiserver -q)"
+  shell: "{{ kubernetes_ctl_path }}docker rm -f $(docker ps --filter name=k8s_kube-apiserver -q)"
   ignore_errors: true
+  when: cri_k8s_default == 'docker'
 
 - name: Rester Kubernetes ControllerManager Service
-  shell: "docker rm -f $(docker ps --filter name=k8s_kube-controller-manager -q)"
+  shell: "{{ kubernetes_ctl_path }}docker rm -f $(docker ps --filter name=k8s_kube-controller-manager -q)"
   ignore_errors: true
+  when: cri_k8s_default == 'docker'
 
 - name: Rester Kubernetes Scheduler Service
-  shell: "docker rm -f $(docker ps --filter name=k8s_kube-scheduler -q)"
+  shell: "{{ kubernetes_ctl_path }}docker rm -f $(docker ps --filter name=k8s_kube-scheduler -q)"
   ignore_errors: true
+  when: cri_k8s_default == 'docker'
+
+- name: Rester Kubernetes ApiServer/Scheduler/ControllerManager Service
+  shell: "for i in $({{ kubernetes_ctl_path }}crictl ps | egrep '(kube-scheduler|kube-apiserver|kube-controller-manager)'|awk '{print $1}'); do {{ kubernetes_ctl_path }}crictl rm -f $i;done"
+  when: cri_k8s_default == 'containerd'
 
 - name: Clean Old Kubelet CA
   file:
-    path: "{{ kubelet_work_dirs }}/pki/{{ item }}"
+    path: "{{ kubelet_work_dirs }}pki/{{ item }}"
     state: absent
   with_items:
     - kubelet-client-current.pem

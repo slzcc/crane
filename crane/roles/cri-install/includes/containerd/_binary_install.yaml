@@ -18,13 +18,6 @@
   with_items:
     - "containerd.service"
 
-- name: Create Containerd Config Path
-  file:
-    path: "/etc/containerd"
-    mode: 0755
-    owner: "{{ ssh_connect_user }}"
-    state: directory
-
 - name: Create Containerd Config
   shell: "containerd config default > /etc/containerd/config.toml"
   when: not is_containerd_config_custom

@@ -1,0 +1,10 @@
+---
+- include_vars: "roles/cri-install/vars/docker.yaml"
+
+- name: Configure Docker to execute files in localhost
+  include_tasks: "roles/downloads-packages/includes/crane/docker/local_file.yaml"
+  when: is_using_local_files_deploy
+
+- name: Configure Docker to execute files in image deploy
+  include_tasks: "roles/downloads-packages/includes/crane/docker/image_deploy.yaml"
+  when: not is_using_local_files_deploy
