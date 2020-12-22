@@ -48,7 +48,6 @@ Crane 的架构简述:
 |               |
 |               |
 |       Kube-ApiServer(Master)
-
 ```
 在 Crane 架构中, 可以自由使用 Keepalived 或 ELB, 如果需要使用 Keepalived 则需要事先准备好 VIP 且网络可达, 否则无法正常启动。
 
