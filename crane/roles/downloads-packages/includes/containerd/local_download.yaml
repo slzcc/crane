@@ -9,9 +9,9 @@
 - name: Copy Containerd Binary Compressed File
   copy: 
     src: "roles/downloads-packages/files/containerd-{{ containerd_version }}-linux-amd64.tar.gz"
-    dest: "{{ temporary_dirs }}/containerd-{{ containerd_version }}-linux-amd64.tar.gz"
+    dest: "{{ temporary_dirs }}containerd-{{ containerd_version }}-linux-amd64.tar.gz"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
 
 - name: Unpack the containerd. Tar. Gz
-  shell: "tar zxf {{ temporary_dirs }}/containerd-{{ containerd_version }}-linux-amd64.tar.gz -C {{ temporary_dirs }}containerd"
+  shell: "tar zxf {{ temporary_dirs }}containerd-{{ containerd_version }}-linux-amd64.tar.gz -C {{ temporary_dirs }}containerd"

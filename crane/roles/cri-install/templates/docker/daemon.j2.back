@@ -8,6 +8,8 @@
         "max-size": "{{ docker_log_size }}"
     },
     "data-root": "{{ docker_data_root }}",
+{% if ansible_distribution != '' %}
     "storage-driver": "{{ docker_storage_driver }}",
+{% endif %}
     "insecure-registries": {{ docker_insecure_registry }}
 }

@@ -111,6 +111,7 @@
     - "roles/etcd-install/vars/main.yml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
   tasks:
     - { include_tasks: 'roles/etcd-add-node/includes/check-cluster.yml' }
 

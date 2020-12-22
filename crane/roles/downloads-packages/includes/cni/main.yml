@@ -1,8 +1,16 @@
 ---
 - name: Configure CNI to execute files in localhost
-  include_tasks: "includes/cni/http_download.yaml"
+  include_tasks: "roles/downloads-packages/includes/cni/http_download.yaml"
   when: is_using_local_files_deploy
 
 - name: Configure CNI to execute files in image deploy
-  include_tasks: "includes/cni/image_deploy.yaml"
-  when: not is_using_local_files_deploy
+  include_tasks: "roles/downloads-packages/includes/cni/docker/image_deploy.yaml"
+  when: 
+    - not is_using_local_files_deploy
+    - cri_k8s_default == 'docker'
+
+- name: Configure CNI to execute files in image deploy
+  include_tasks: "roles/downloads-packages/includes/cni/containerd/image_deploy.yaml"
+  when:
+    - not is_using_local_files_deploy
+    - cri_k8s_default == 'containerd'

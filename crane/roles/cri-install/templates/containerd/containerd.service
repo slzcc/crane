@@ -5,7 +5,7 @@ After=network.target
 
 [Service]
 ExecStartPre=-/sbin/modprobe overlay
-ExecStartPre=/sbin/modprobe br_netfilter
+#ExecStartPre=/sbin/modprobe br_netfilter
 ExecStart={{ kubernetes_ctl_path }}containerd
 Restart=always
 RestartSec=5

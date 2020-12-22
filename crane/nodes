@@ -1,12 +1,10 @@
 [kube-master]
-35.243.107.98
-34.85.14.128
+192.168.6.96
 
 [kube-node]
-35.200.23.39
 
 [etcd]
-35.243.107.98
+192.168.6.96
 
 [k8s-cluster-add-master]
 
@@ -35,4 +33,4 @@ etcd-cluster-add-node
 ansible_ssh_public_key_file='~/.ssh/id_rsa.pub'
 ansible_ssh_private_key_file='~/.ssh/id_rsa'
 ansible_ssh_port=22
-ansible_ssh_user=shilei
+ansible_ssh_user=Shi_Lei

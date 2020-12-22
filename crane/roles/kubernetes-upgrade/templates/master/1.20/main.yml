@@ -83,15 +83,15 @@
     state: started
 
 - name: Rester Kubernetes ApiServer Service
-  shell: "docker ps --filter name=k8s_kube-kube-apiserver -q | xargs -i docker rm -f {} > /dev/null 2>&1"
+  shell: "{{ kubernetes_ctl_path }}docker ps --filter name=k8s_kube-kube-apiserver -q | xargs -i {{ kubernetes_ctl_path }}docker rm -f {} > /dev/null 2>&1"
   ignore_errors: true
 
 - name: Rester Kubernetes ControllerManager Service
-  shell: "docker ps --filter name=k8s_kube-controller-manager -q | xargs -i docker rm -f {} > /dev/null 2>&1"
+  shell: "{{ kubernetes_ctl_path }}docker ps --filter name=k8s_kube-controller-manager -q | xargs -i {{ kubernetes_ctl_path }}docker rm -f {} > /dev/null 2>&1"
   ignore_errors: true
 
 - name: Rester Kubernetes Scheduler Service
-  shell: "docker ps --filter name=k8s_kube-scheduler -q | xargs -i docker rm -f {} > /dev/null 2>&1"
+  shell: "{{ kubernetes_ctl_path }}docker ps --filter name=k8s_kube-scheduler -q | xargs -i {{ kubernetes_ctl_path }}docker rm -f {} > /dev/null 2>&1"
   ignore_errors: true
 
 
