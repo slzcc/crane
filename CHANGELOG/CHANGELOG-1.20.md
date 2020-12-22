@@ -137,15 +137,30 @@ v1.20.0.1 属于重大更新修改了相当于重构了 1/3 的部署逻辑, 实
 
 > 不建议使用 1.20.0.1 之前的版本管理 Crane 集群 CRI 的驱动, 因为如 docker、Containerd 的二进制文件已经从默认的 /usr/bin/ 改为 /usr/local/bin/ 目的是为了更好的管理, 如果不涉及到 cri 请忽略此说明.
 
-修改 cri 另外一个变动比较大的是支持离线安装部分, 因穿插了 `cri-o` 和 `containerd` 则离线安装就变得异常复杂, 目前虽然已经做到可动态调整 `version` 适配部署, 但如果一旦源码产生包文件不一致则会造成某些功能的损失, 又配置文件属于 `templates` 模式则可能存在部分差异, 后续可能围绕此问题进行不向后兼容配置.
-
-cri 支持多种驱动共同部署, 可通过 `cri_k8s_default` 指定 k8s 默认 cri 驱动.
-
-Docker 的安装去掉了 http_script 方式安装, 维护成本较高.
-
 精简 crane/group_vars/all.yml 配置, 各配置项移动至各项目 defaults 中。
 > 精简比例从大概 500 行配置, 精简至 130 +
 
 目前主要解决了之前 download 部分的不统一问题, 由于 crane 部署使用了 image 方式进行属于半离线安装, 可能造成一部分的差异化.
 
 废弃 `is_using_image_deploy` 参数.
+
+## 可使用的入口配置
+
+因 Crane 变动比较大, 默认 Crane 的 CRI 驱动已经改为 Containerd, 所以部分功能无法直接使用, 请参考后续版本的支持, 目前以基于 Containerd 可正常提供使用的功能如下:
+  * main.yml
+  * add_master.yml
+  * add_nodes.yml
+  * remove_k8s_nodes.yml
+  * remove_cluster.yml
+
+其他版本可在 docker cri 中正常使用, 目前不可在 Container cri 中使用。
+
+## CRI
+
+因使用 Containerd 的 CRI, 使用时命令行工具等配置会无法直接获取数据的问题, 默认会安装 `docker`、`containerd`、`crio` 3 种 cri 其中 containerd 为 kubernetes 的默认 cri, crio 附带 crictl 工具可以直接操作 containerd, 类似 docker 的命令, 但由于 `containerd` 和 `crio` 只是容器管理服务不支持 镜像的构建 则还是需要 `docker build` 的继续使用, 所以三者是互补状况, 目前不影响正常使用.
+
+修改 cri 另外一个变动比较大的是支持离线安装部分, 因穿插了 `cri-o` 和 `containerd` 则离线安装就变得异常复杂, 目前虽然已经做到可动态调整 `version` 适配部署, 但如果一旦源码产生包文件不一致则会造成某些功能的损失, 又配置文件属于 `templates` 模式则可能存在部分差异, 后续可能围绕此问题进行不向后兼容配置.
+
+cri 支持多种驱动共同部署, 可通过 `cri_k8s_default` 指定 k8s 默认 cri 驱动.
+
+Docker 的安装去掉了 http_script 方式安装, 维护成本较高.

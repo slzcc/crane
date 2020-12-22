@@ -3,4 +3,11 @@
 ## ********************************************************************************************************************************
 
 - name: Update Etcd Server
-  shell: "docker rm -f $(docker ps --filter name=k8s_etcd -q)"
+  shell: "{{ kubernetes_ctl_path }}docker rm -f $({{ kubernetes_ctl_path }}docker ps --filter name=k8s_etcd -q)"
+  when: 
+    - cri_k8s_default == 'docker'
+
+- name: Update Etcd Server
+  shell: "for i in $({{ kubernetes_ctl_path }}crictl ps --name etcd -aq| tail -1); do {{ kubernetes_ctl_path }}crictl rm -f ${i}; done"
+  when: 
+    - cri_k8s_default == 'containerd'

@@ -3,7 +3,7 @@
 
 # Clean Docker
 - name: Clean Docker Containers.
-  shell: "docker rm -f $(docker ps -f 'name=k8s*' -aq)"
+  shell: "{{ kubernetes_ctl_path }}docker rm -f $(docker ps -f 'name=k8s*' -aq)"
   ignore_errors: true
 
 - name: Docker Turn off Start Up

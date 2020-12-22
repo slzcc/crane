@@ -1,7 +1,7 @@
 ---
 
 - name: Clean Kubernetes Containerd Image
-  shell: "ctr -n k8s.io i rm $(ctr -n k8s.io i ls | tail -1 | grep '{{ item }}' | awk '{print $1}')"
+  shell: "{{ kubernetes_ctl_path }}ctr -n k8s.io i rm $({{ kubernetes_ctl_path }}ctr -n k8s.io i ls | tail -1 | grep '{{ item }}' | awk '{print $1}')"
   with_items:
     - "k8s.gcr.io/kube-apiserver-amd64"
     - "k8s.gcr.io/kube-controller-manager"

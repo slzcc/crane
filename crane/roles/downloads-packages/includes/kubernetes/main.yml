@@ -1,9 +1,16 @@
 ---
-- name: Deploy Kubectl Tools
-  include: "roles/downloads-packages/includes/kubernetes/binary/main.yml"
+- name: Configure Kubernetes to execute files in localhost
+  include_tasks: "roles/downloads-packages/includes/kubernetes/http_download.yaml"
+  when: is_using_local_files_deploy
 
-- name: Deploy CNI Tools
-  include: "roles/downloads-packages/includes/cni/main.yml"
+- name: Configure Kubernetes to execute files in image deploy
+  include_tasks: "roles/downloads-packages/includes/kubernetes/docker/image_deploy.yaml"
+  when: 
+    - not is_using_local_files_deploy
+    - cri_k8s_default == 'docker'
 
-- name: Deploy CFSSL Tools
-  include: "roles/downloads-packages/includes/cfssl/main.yml"
+- name: Configure Kubernetes to execute files in image deploy
+  include_tasks: "roles/downloads-packages/includes/kubernetes/containerd/image_deploy.yaml"
+  when:
+    - not is_using_local_files_deploy
+    - cri_k8s_default == 'containerd'

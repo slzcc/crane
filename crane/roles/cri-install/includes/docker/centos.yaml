@@ -12,7 +12,7 @@
   ignore_errors: true
 
 - name: Load Kernel Module
-  include_tasks: "crane/roles/system-initialize/includes/kernel/nf_conntrack_module.yaml"
+  include_tasks: "roles/system-initialize/includes/kernel/nf_conntrack_module.yaml"
 
 # - name: Centos7 Http Binary Install Docker-ce
 #   include_tasks: "roles/cri-install/includes/docker/http_binary.yaml"

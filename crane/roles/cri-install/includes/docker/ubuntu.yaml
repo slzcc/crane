@@ -23,4 +23,4 @@
   when: docker_install_type == 'http_binary'
 
 - name: Binary Install
-  include: "roles/cri-install/includes/docker/_binary_install.yaml"
+  include: "roles/cri-install/includes/docker/_binary_install.yaml" 

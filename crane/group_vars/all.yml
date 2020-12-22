@@ -9,8 +9,10 @@ k8s_version: 'v1.20.0'
 # 避免大版本中组件的版本差异, 使用 build 版本作为差异配置项, 在项目中可以看做如下使用 '{{ k8s_version }}.{{ build_k8s_version }}'
 build_k8s_version: '1'
 
-# 是否使用离线方式部署.
-is_using_local_files_deploy: false
+# 是否使用离线方式部署(Kubernetes).
+# 当选择 true 时, 执行 `make local_save_image` 命令下载官方离线包到 `crane/roles/downloads-packages/files`
+# 因 kubernetes 和 cri 是分开的（可独立部署 cri）请配合 `cri_drive_install_type` 参数一同使用
+is_using_local_files_deploy: true
 
 # 是否开启 Master 节点调度, 默认为 true. 
 is_kube_master_schedule: true
@@ -33,7 +35,7 @@ haproxy_version: '2.3.2'
 # Etcd 绑定的宿主机网卡, 此配置需要在启动 Etcd 的节点上强制网卡名称一致
 # 如果配置了 Keepalived 则 Keepalived 也会绑定到这块网卡上, 支持多网卡用逗号隔开
 # 使用多网卡时, 不要使用 keepalived, 因为 keepalived 只能绑定第一个网卡, 如需要使用时请单独修改 keepalived.vip_bind_net_device 参数
-os_network_device_name: 'ens4'
+os_network_device_name: 'em1'
 
 # HTTP Proxy
 http_proxy: ""
@@ -53,7 +55,7 @@ time_location: "Asia/Shanghai"
 
 # Kubernetes ApiServer 的总入口地址, 可配置 SLB 等云服务商提供的地址, 但需要接入后端服务器的 80, 443 端口, 此地址可以写某个单实例的 IP 地址
 # 支持 Domain, 支持 AWS ELB
-k8s_load_balance_ip: 10.146.0.10
+k8s_load_balance_ip: 192.168.6.96
 
 # 其他选择参照 roles/kubernetes-manifests/defaults/main.yml
 
@@ -93,9 +95,13 @@ calico_version: 'v3.17.0'
 ## CRI
 ## ********************************************************************************************************************************
 
+# 安装的介质(在线离线)可选 local_binary/http_binary
+# 当选择 local_binary 时,执行 `make local_load_cri` 命令下载官方离线包到 `crane/roles/downloads-packages/files`
+cri_drive_install_type: 'local_binary'
+
 # cri 支持的驱动有 docker/containerd/crio
-## 各驱动独立配置项, 请参阅 crane/roles/cri-install
-cri_driver: ["docker", "containerd"]
+## 各驱动独立配置项, 请参阅 crane/roles/cri-install 并根据需求在 vars 中自定义配置各 cri 的驱动版本。
+cri_driver: ["docker", "containerd", "crio"]
 
 # 此选项配置 Kubernetes 默认 cri 驱动
 # 当使用 RuntimeClass 时此选项配合 `cri_driver` 使用

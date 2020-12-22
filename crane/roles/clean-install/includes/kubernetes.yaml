@@ -15,6 +15,10 @@
   shell: "mv {{ systemd_default_dirs }}kubelet.service {{ temporary_dirs }}"
   ignore_errors: true
 
+- name: Clean kubernetes Etc Working directory *** .
+  shell: "mv {{ systemd_etc_dirs }}kubelet.service.d {{ temporary_dirs }}"
+  ignore_errors: true
+
 - name: Clean Kubelet Systemd Config
   file:
     path: "{{ item }}"
