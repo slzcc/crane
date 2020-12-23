@@ -6,15 +6,21 @@
 
 - name: Deploy CRI to Containerd
   include: "roles/cri-install/includes/containerd/main.yml"
-  when: ("containerd" in cri_driver)
+  when: 
+    - ("containerd" in cri_driver)
+    - cri_drive_install_type != "none"
 
 - name: Deploy CRI to Docker
   include: "roles/cri-install/includes/docker/main.yml"
-  when: ("docker" in cri_driver)
+  when: 
+    - ("docker" in cri_driver)
+    - cri_drive_install_type != "none"
   
 - name: Deploy CRI to CRIO
   include: "roles/cri-install/includes/cri-o/main.yml"
-  when: ("crio" in cri_driver)
+  when: 
+    - ("crio" in cri_driver)
+    - cri_drive_install_type != "none"
 
 - name: Copy Crictl Config
   template: 
@@ -24,3 +30,5 @@
     dest: "/etc/crictl.yaml"
   with_items:
     - "crictl.yaml"
+  when:
+    - cri_drive_install_type != "none"
