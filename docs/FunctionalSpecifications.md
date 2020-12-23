@@ -24,19 +24,31 @@ $ git clone -b v1.18.x.x https://github.com/slzcc/crane.git
 
 ```
 [kube-master]
-35.236.167.32
+# Master 节点列表 (第一次部署集群), 如果目标主机没用 python 则写明 python3 地址
+35.243.68.255 ansible_python_interpreter=/usr/bin/python3
 
 [kube-node]
-34.80.142.147
+# Node 节点列表
+34.84.105.165
 
 [etcd]
-35.236.167.32
+# Etcd 节点列表(Etcd 必须部署再 Master 节点中, Master 节点可任选)
+35.243.68.255 ansible_python_interpreter=/usr/bin/python3
 
 [k8s-cluster-add-master]
+# 部署完集群后, 填写需要添加的 Master 节点列表 (第一次部署时, 这里必须留空)
 
 [k8s-cluster-add-node]
+# 部署完集群后, 填写需要添加的 Node 节点列表 (第一次部署时, 这里必须留空)
 
 [etcd-cluster-add-node]
+# 部署完集群后, 填写需要添加的 Etcd 节点列表 (第一次部署时, 这里必须留空)
+
+[k8s-cluster-del-node]
+# 部署完集群后, 填写需要移除的 Node 节点列表 (第一次部署时, 这里必须留空)
+
+[etcd-cluster-del-node]
+# 部署完集群后, 填写需要移除的 Etcd 节点列表 (第一次部署时, 这里必须留空)
 
 [k8s-cluster:children]
 kube-node
@@ -47,8 +59,11 @@ etcd
 etcd-cluster-add-node
 
 [all:vars]
-ansible_ssh_public_key_file='/Users/shilei/.ssh/id_rsa.pub'
-ansible_ssh_private_key_file='/Users/shilei/.ssh/id_rsa'
+# 部署时的 SSH 配置项, 请结合自身情况填写, 如果用非 root 身份部署, 请对此用户配置免密登入
+ansible_ssh_public_key_file='~/.ssh/id_rsa.pub'
+ansible_ssh_private_key_file='~/.ssh/id_rsa'
+ansible_ssh_port=22
+ansible_ssh_user=shilei
 ```
 第一部分为部署集群所规划的集群初始节点, 可自定义添加。(第一次创建集群时, 不能在添加 master/node/etcd 中写入节点地址, 否则会冲突)
 
@@ -77,15 +92,7 @@ os_network_device_name: < NetWork Name >
 如上述修改完成后, 可执行命令（v1.19.0.1 部署版本为例）：
 
 ```
-$ docker run --name crane --rm -i \
-         -e ANSIBLE_HOST_KEY_CHECKING=false \
-         -e TERM=xterm-256color \
-         -e COLUMNS=238 \
-         -e LINES=61 \
-         -v ~/.ssh:/root/.ssh \
-         -v ${PWD}:/crane \
-         slzcc/crane:v1.19.0.1 \
-         -i nodes main.yml -vv
+$ make run_main
 ```
 Cluster Status
 ```
@@ -155,15 +162,7 @@ kube-scheduler-instance-4                  1/1       Running             0      
 
 部署安装:
 ```
-$ docker run --name crane --rm -i \
-        -e ANSIBLE_HOST_KEY_CHECKING=false \
-        -e TERM=xterm-256color \
-        -e COLUMNS=238 \
-        -e LINES=61 \
-        -v ~/.ssh:/root/.ssh \
-        -v ${PWD}:/crane \
-        slzcc/crane:v1.19.0.1 \
-        -i nodes add_master.yml -vv
+$ make run_add_master
 ```
 查看 Cluster Status:
 ```
@@ -205,15 +204,7 @@ node-csr-xk3fBmT4OOHNAtbYJq4IXtLLpFlfyXLeX2PWFMNsrjk   45m       system:bootstra
 
 部署安装:
 ```
-$ docker run --name crane --rm -i \
-        -e ANSIBLE_HOST_KEY_CHECKING=false \
-        -e TERM=xterm-256color \
-        -e COLUMNS=238 \
-        -e LINES=61 \
-        -v ~/.ssh:/root/.ssh \
-        -v ${PWD}:/crane \
-        slzcc/crane:v1.19.0.1 \
-        -i nodes add_nodes.yml -vv
+$ make run_add_nodes
 ```
 Cluster Status
 ```
@@ -247,15 +238,7 @@ node-csr-xk3fBmT4OOHNAtbYJq4IXtLLpFlfyXLeX2PWFMNsrjk   46m       system:bootstra
 清除集群所有部署的数据信息:
 
 ```
-$ docker run --name crane --rm -i \
-        -e ANSIBLE_HOST_KEY_CHECKING=false \
-        -e TERM=xterm-256color \
-        -e COLUMNS=238 \
-        -e LINES=61 \
-        -v ~/.ssh:/root/.ssh \
-        -v ${PWD}:/crane \
-        slzcc/crane:v1.19.0.1 \
-        -i nodes remove_cluster.yml -vv
+$ make clean_main
 ```
 
 > 移除集群是对集群中所有节点来说的, 它会销毁集群中的所有安装过的应用以及配置。但不包含 docker、cfssl 等可供后续使用的应用。
@@ -278,15 +261,7 @@ $ docker run --name crane --rm -i \
 
 部署安装:
 ```
-$ docker run --name crane --rm -i \
-        -e ANSIBLE_HOST_KEY_CHECKING=false \
-        -e TERM=xterm-256color \
-        -e COLUMNS=238 \
-        -e LINES=61 \
-        -v ~/.ssh:/root/.ssh \
-        -v ${PWD}:/crane \
-        slzcc/crane:v1.19.0.1 \
-        -i nodes add_etcd.yml -vv
+$ make run_add_etcd
 ```
 > 添加的节点在现有的集群中不会被直接识别到, 因为 Etcd Endpoints 还是之前使用的, 如需要修改目前只支持手动更新, 因为牵扯太多目前不支持热更新服务配置, 否则会引起 apiServer、Calico 等应用的使用。
 
@@ -297,15 +272,7 @@ $ docker run --name crane --rm -i \
 默认创建集群时, 是可以直接部署 Add-Ons 的, 如果后续进行部署, 则直接通过 tags 方式进行部署即可:
 
 ```
-$ docker run --name crane --rm -i \
-        -e ANSIBLE_HOST_KEY_CHECKING=false \
-        -e TERM=xterm-256color \
-        -e COLUMNS=238 \
-        -e LINES=61 \
-        -v ~/.ssh:/root/.ssh \
-        -v ${PWD}:/crane \
-        slzcc/crane:v1.19.0.1 \ 
-        -i nodes main.yml --tags k8s-addons -vv
+$ make run_addons
 ```
 
 ## K8s TLS Rotation
@@ -317,15 +284,7 @@ $ docker run --name crane --rm -i \
 
 部署安装:
 ```
-$ docker run --name crane --rm -i \
-        -e ANSIBLE_HOST_KEY_CHECKING=false \
-        -e TERM=xterm-256color \
-        -e COLUMNS=238 \
-        -e LINES=61 \
-        -v ~/.ssh:/root/.ssh \
-        -v ${PWD}:/crane \
-        slzcc/crane:v1.19.0.1 \
-        -i nodes k8s_certificate_rotation.yml -vv
+$ make rotation_k8s_ca
 ```
 
 此方式会让 kubelet 重新加入到集群中, 所以可能会大面积的看到 csr 状态:
@@ -364,15 +323,7 @@ csr-zp7tr   75m   system:node:instance-template-1   Approved,Issued
 
 部署安装:
 ```
-$ docker run --name crane --rm -i \
-        -e ANSIBLE_HOST_KEY_CHECKING=false \
-        -e TERM=xterm-256color \
-        -e COLUMNS=238 \
-        -e LINES=61 \
-        -v ~/.ssh:/root/.ssh \
-        -v ${PWD}:/crane \
-        slzcc/crane:v1.15.x \
-        -i nodes upgrade_version.yml -vv
+$ make run_k8s_upgrade
 ```
 
 执行结果如下:
@@ -400,15 +351,7 @@ Server Version: version.Info{Major:"1", Minor:"15", GitVersion:"v1.15.0", GitCom
 
 部署安装:
 ```
-$ docker run --name crane --rm -i \
-        -e ANSIBLE_HOST_KEY_CHECKING=false \
-        -e TERM=xterm-256color \
-        -e COLUMNS=238 \
-        -e LINES=61 \
-        -v ~/.ssh:/root/.ssh \
-        -v ${PWD}:/crane \
-        slzcc/crane:v1.19.0.1 \
-        -i nodes etcd_certificate_rotation.yml -vv
+$ make rotation_etcd_ca
 ```
 
 ## Delete Etcd Cluster Nodes
@@ -427,15 +370,7 @@ $ docker run --name crane --rm -i \
 
 部署安装:
 ```
-$ docker run --name crane --rm -i \
-        -e ANSIBLE_HOST_KEY_CHECKING=false \
-        -e TERM=xterm-256color \
-        -e COLUMNS=238 \
-        -e LINES=61 \
-        -v ~/.ssh:/root/.ssh \
-        -v ${PWD}:/crane \
-        slzcc/crane:v1.19.0.1 \
-        -i nodes remove_etcd_nodes.yml -vv
+$ make remove_etcd_nodes
 ```
 
 ## Delete Kubernetes Cluster Nodes
@@ -454,15 +389,7 @@ $ docker run --name crane --rm -i \
 
 部署安装:
 ```
-$ docker run --name crane --rm -i \
-        -e ANSIBLE_HOST_KEY_CHECKING=false \
-        -e TERM=xterm-256color \
-        -e COLUMNS=238 \
-        -e LINES=61 \
-        -v ~/.ssh:/root/.ssh \
-        -v ${PWD}:/crane \
-        slzcc/crane:v1.19.0.1 \
-        -i nodes remove_k8s_nodes.yml -vv
+$ make clean_main
 ```
 
 ## Ansible in Docker

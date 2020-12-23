@@ -10,5 +10,5 @@
 
 - name: Clean Temporary files
   shell: "rm -rf {{ temporary_dirs }}"
-  when: is_remove_all or is_remove_temporary
+  when: is_remove_temporary
   ignore_errors: true

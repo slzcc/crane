@@ -213,3 +213,33 @@ kubelet_resolv_config: "--resolv-conf=/run/systemd/resolve/resolv.conf"
 修复名称错误:
 kubectl_gc_options => kubelet_gc_options
 ```
+
+添加 Clean Cluster 时, 部分配置移动到临时数据目录中:
+
+```
+* => {{ temporary_dirs }}clean-cluster
+```
+
+清理集群时, 补充遗漏的 docker 二进制文件的清理:
+
+```
+@crane/roles/clean-install/includes/docker/main.yaml
+
+# Clean Docker Binary
+- name: Clean Docker Binary
+  include: "roles/clean-install/includes/docker/binary.yaml"
+  when: is_remove_all or is_remove_docker_ce
+```
+
+清理集群时, 默认 is_remove_all 选项为 true:
+
+```
+@crane/roles/clean-install/defaults/main.yml
+
+# 此选项会忽略下面所有配置项
+# 主要目的是恢复安装 Crane 涉及到所有组件之前的状况
+# 如果此值为 false 它会清除 k8s Cluster 绝大部分数据, 方便下一次部署时避免重复安装如 kubelet、docker 等
+is_remove_all: true
+```
+
+> 主要考虑初次使用的用户无法正常删除部分数据.
