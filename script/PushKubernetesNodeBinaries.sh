@@ -5,7 +5,7 @@ export targetRegistry=${targetRegistry:-'slzcc'}
 
 _cri_driver=`awk '/^cri_driver/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 
-_cni_os_drive=`awk '/^cni_os_drive/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_cni_os_drive='linux-amd64'
 _dockerVersion=`awk '/^docker_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 _k8sVersion=`awk '/^k8s_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 _cni_version=`awk '/^cni_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
@@ -25,7 +25,7 @@ export cniVersion=${_cni_version:-'v0.7.5'}
 # Etcd Version
 export etcdVersion=${_etcdVersion:-'3.3.10'}
 # Pause Version
-export pauseVersion=${_pauseVersion:-'3.1'}
+export pauseVersion=${_pauseVersion:-'3.2'}
 # Calico Version
 export calicoVersion=${_calicoVersion:-'v3.7.2'}
 # HaProxy Version
