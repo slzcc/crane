@@ -1,0 +1,9 @@
+*.tar.gz
+*.tgz
+*.idea
+*.retry
+*.DS_Store
+*.swp
+tags
+crane/roles/downloads-packages/files/*.tar.gz
+crane/roles/downloads-packages/files/*.tgz

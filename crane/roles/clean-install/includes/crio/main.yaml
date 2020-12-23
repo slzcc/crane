@@ -31,7 +31,7 @@
   when: is_remove_all or is_remove_crio
 
 - name: Remove System CRIO Configs
-  shell: "mv {{ systemd_default_dirs }}crio.service {{ temporary_dirs }}"
+  shell: "mv {{ systemd_default_dirs }}crio.service {{ temporary_dirs }}clean-cluster"
   when: is_remove_all or is_remove_crio
   ignore_errors: true
 
@@ -40,17 +40,17 @@
   ignore_errors: true
 
 - name: Remove CRIO Configs
-  shell: "mv /etc/crio {{ temporary_dirs }}"
+  shell: "mv /etc/crio {{ temporary_dirs }}clean-cluster"
   when: is_remove_all or is_remove_crio
   ignore_errors: true
 
 - name: Remove CRIO Env Configs
-  shell: "mv /etc/default/crio {{ temporary_dirs }}"
+  shell: "mv /etc/default/crio {{ temporary_dirs }}clean-cluster"
   when: is_remove_all or is_remove_crio
   ignore_errors: true
 
 - name: Remove CRIO Ctrctl Configs
-  shell: "mv /etc/crictl.yaml {{ temporary_dirs }}"
+  shell: "mv /etc/crictl.yaml {{ temporary_dirs }}clean-cluster"
   when: is_remove_all or is_remove_containerd
   ignore_errors: true
 
@@ -59,6 +59,7 @@
     path: "{{ item }}"
     state: absent
   with_items:
+    - "{{ crio_run_data_root }}"
     - "{{ crio_data_root }}"
     - "/var/log/crio/pods"
     - "/var/run/crio/version"

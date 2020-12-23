@@ -1,16 +1,16 @@
 ---
 - name: Configure Kubernetes to execute files in localhost
   include_tasks: "roles/downloads-packages/includes/kubernetes/http_download.yaml"
-  when: is_using_local_files_deploy
+  when: not is_using_local_files_deploy
 
 - name: Configure Kubernetes to execute files in image deploy
   include_tasks: "roles/downloads-packages/includes/kubernetes/docker/image_deploy.yaml"
   when: 
-    - not is_using_local_files_deploy
+    - is_using_local_files_deploy
     - cri_k8s_default == 'docker'
 
 - name: Configure Kubernetes to execute files in image deploy
   include_tasks: "roles/downloads-packages/includes/kubernetes/containerd/image_deploy.yaml"
   when:
-    - not is_using_local_files_deploy
+    - is_using_local_files_deploy
     - cri_k8s_default == 'containerd'
