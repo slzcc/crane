@@ -18,11 +18,8 @@ crio_install_type: '{{ cri_drive_install_type }}'
 crio_cgroup_drive: '{{ cgroup_drive }}'
 
 # crio 存储路径
-#crio_data_root: '/var/lib/containers/storage'
-#crio_run_data_root: '/var/run/containers/storage'
-
-crio_data_root: '/data/crio/containers/storage'
-crio_run_data_root: '/data/crio/run/containers/storage'
+crio_data_root: '/var/lib/containers/storage'
+crio_run_data_root: '/var/run/containers/storage'
 
 # crio Socket 文件路径
 crio_socket_home: '/var/run/crio'

@@ -21,7 +21,7 @@ docker_install_http_binary_source: 'https://download.docker.com/linux/static/sta
 docker_registry_mirrors: '["https://4dyopx9i.mirror.aliyuncs.com"]'
 
 # Docker 存储路径
-docker_data_root: '/data/docker'
+docker_data_root: '/var/lib/docker'
 
 # Docker Image 存储驱动, 默认系统自识别
 # 因部分 xfs 底层存储 ftype=0, 会造成 overlay2 无法正常使用, 请自行解决.

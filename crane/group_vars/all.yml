@@ -7,12 +7,12 @@
 k8s_version: 'v1.20.1'
 
 # 避免大版本中组件的版本差异, 使用 build 版本作为差异配置项, 在项目中可以看做如下使用 '{{ k8s_version }}.{{ build_k8s_version }}'
-build_k8s_version: '0'
+build_k8s_version: '1'
 
 # 是否使用离线方式部署(Kubernetes).
 # 当选择 true 时, 执行 `make local_save_image` 命令下载官方离线包到 `crane/roles/downloads-packages/files`
 # 因 kubernetes 和 cri 是分开的（可独立部署 cri）请配合 `cri_drive_install_type` 参数一同使用
-is_using_local_files_deploy: true
+is_using_local_files_deploy: false
 
 # 是否开启 Master 节点调度, 默认为 true. 
 is_kube_master_schedule: true
@@ -98,7 +98,7 @@ calico_version: 'v3.17.0'
 # 安装的介质(在线离线)可选 local_binary/http_binary
 # 当选择 local_binary 时,执行 `make local_load_cri` 命令下载官方离线包到 `crane/roles/downloads-packages/files`
 # 也可以设置为 none, 则不安装任何 cri 让 kubelet 使用默认的 cri.
-cri_drive_install_type: 'none'
+cri_drive_install_type: 'http_binary'
 
 # cri 支持的驱动有 docker/containerd/crio
 ## 各驱动独立配置项, 请参阅 crane/roles/cri-install 并根据需求在 vars 中自定义配置各 cri 的驱动版本。

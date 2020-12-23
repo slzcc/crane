@@ -15,7 +15,7 @@ containerd_install_type: "{{ cri_drive_install_type }}"
 containerd_cgroup_drive: '{{ cgroup_drive }}'
 
 # Containerd 存储路径
-containerd_data_root: '/data/containerd'
+containerd_data_root: '/var/lib/containerd'
 
 # Containerd Plugin Path
 # Containerd 存储路径
