@@ -106,7 +106,7 @@ cri_driver: ["docker", "containerd", "crio"]
 
 # 此选项配置 Kubernetes 默认 cri 驱动
 # 当使用 RuntimeClass 时此选项配合 `cri_driver` 使用
-cri_k8s_default: docker
+cri_k8s_default: containerd
 
 # 具体配置请移步 crane/roles/cri-install/defaults/main.yml 进行修改
 
