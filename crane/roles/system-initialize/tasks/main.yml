@@ -182,3 +182,6 @@
 - name: IPTABLE FORWARD ACCEPT
   shell: "iptables -P FORWARD ACCEPT"
   ignore_errors: true
+
+- name: Check Systemd-resolved Systemd Status
+  include: "roles/kubernetes-default/includes/resolv.yaml"

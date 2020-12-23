@@ -13,5 +13,6 @@ kubelet_low_kernel_config: "--feature-gates SupportPodPidsLimit=false --feature-
 # 禁用 Swap
 kubelet_swap_config: "--fail-swap-on=false"
 
-# resolv 配置项
+# Systemd-resolved 配置项
+# https://wiki.archlinux.org/index.php/Systemd-resolved
 kubelet_resolv_config: "--resolv-conf=/run/systemd/resolve/resolv.conf"

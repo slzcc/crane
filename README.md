@@ -13,23 +13,27 @@ Crane 使用半离线安装, 解决国内无法使用 `k8s.gcr.io` 源问题。
 
 部署全局基于 TLS, 并区分 K8s Cluster CA、Etcd CA 证书, 并支持证书轮转。
 
-部署时支持离线、在线 kubernetes 和 CRI 的安装。
+部署时支持半离线(默认)、离线 和 在线 kubernetes 和 CRI 的安装。
 
-CRI 支持多种服务共存部署模式, 可同时部署 docker/containerd/crio, 用户自定义 RuntimeClass 运行时。
+CRI 支持多种服务共存部署模式, 可同时部署 docker/containerd/crio, 方便用户自定义 RuntimeClass 运行时。
+
+> 同时部署是有原因的:
+
+> 其中 containerd 为 kubernetes 的默认 cri, crio 附带 crictl 工具可以直接操作 containerd, 类似 docker 的命令, 但由于 `containerd` 和 `crio` 只是容器管理服务不支持 镜像的构建 则还是需要 `docker build` 的继续使用, 所以三者是互补状况, 目前不影响正常使用.
 
 部署 Crane 时可查看注意事项, 避免无效操作:
 
-> [Crane for Kubernetes 使用注意事项](docs/MattersNeedingAttention.md)
+> 部署之前请认真读取可能会发现的问题这其中不包含 Crane 本身的问题. [Crane for Kubernetes 使用注意事项](docs/MattersNeedingAttention.md)
 
 每一个 [Release](https://github.com/slzcc/crane/releases) 版本都严格按照 [Crane for Github Actions](https://github.com/slzcc/crane/actions) 进行检测, 保证服务的稳定性。
 
 # 部署说明
 
-> 部署之前请认真读取可能会发现的问题这其中不包含 Crane 本身的问题.[Read before you Start](./docs/MattersNeedingAttention.md)
-
-部署示例请参照 [Crane Install](./docs/INSTALL.md) 文件进行部署。
+默认部署示例请参照 [Crane Install](./docs/INSTALL.md) 文件进行部署。( Crane 默认属于半离线安装 )
 
 离线部署示例请参照 [Crane Offine Install](./docs/OFFINE_INSTALL.md) 文件进行部署。
+
+在线部署示例请参照 [Crane Offine Install](./docs/ONLINE_INSTALL.md) 文件进行部署。
 
 各功能示例参照 [Crane Other Features](./docs/FunctionalSpecifications.md) 文件进行部署。
 
