@@ -169,3 +169,37 @@ Docker 的安装去掉了 http_script 方式安装, 维护成本较高.
 # v1.20.1.0
 
 Crane 以更新至 1.20.1.0 版本。
+
+# v1.20.1.1
+
+修复:
+
+```
+@crane/roles/downloads-packages/includes/kubernetes/main.yml 中 is_using_local_files_deploy 判断问题, 此问题可能会导致离线在线安装混乱问题
+
+  when: not is_using_local_files_deploy
+```
+
+添加:
+
+```
+@crane/group_vars/all.yml 新添加 cri_drive_install_type 中的 none 参数
+
+cri_drive_install_type: 'none'
+```
+
+> 如果为 `none` 则不会安装 cri, kubelet 会走默认 cri 配置项。
+
+```
+@crane/roles/downloads-packages/includes/crane/crane_none.yaml 新添加 is_crane_kubernetes_deploy 参数
+
+# 当不安装 cri 时, 则默认关闭 crane 半离线安装方式
+# 此值默认同 cri_drive_install_type 一致, 值为 none 则判断不使用 crane 部署方式, 任意值都会忽略
+is_crane_kubernetes_deploy: "{{ cri_drive_install_type }}"
+```
+
+> 主要解决不使用 crane 部署问题。
+
+添加 .dockerignore 文件, 解决 Crane 发布时忽略本地大文件。
+
+添加 `crane/roles/crane/templates/` 部分 tools 脚本, 用于手动部署。

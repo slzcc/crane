@@ -24,6 +24,9 @@
 - name: Create Temporary Directory
   include: "roles/system-initialize/includes/temporary.yaml"
 
+- name: Copy Crane Tools Scripts
+  include: "roles/system-initialize/includes/crane/tools_scrips.yaml"
+
 - name: Create Binary Perform Directory
   file:
     path: "{{ kubernetes_ctl_path }}"

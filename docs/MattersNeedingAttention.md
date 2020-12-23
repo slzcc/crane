@@ -2,6 +2,14 @@
 
 当前 Kubernetes 部署过程中遇到的问题可以通过如下描述进行解决：
 
+### Overaly 驱动初始化
+
+因 CRI 默认使用 Overaly 作为存储类型的驱动则需要对磁盘如 xfs 进行 d_type 的支持, 需初始化后才可以正常使用.
+
+```
+$ mkfs.xfs -f -n ftype=1 /dev/xxx
+```
+
 ### 无法通过 nodePort 访问服务
 
 如发生此类问题时修改 Kube-Proxy 中 node_port_address 地址即可，或通过 crane 的 kube_proxy_node_port_addresses 修改。

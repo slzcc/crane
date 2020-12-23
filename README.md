@@ -64,7 +64,7 @@ Crane 的架构简述:
 ## 推荐亮点
 
 - [x] 支持集群后续 `Kubernetes Cluster` 扩容, 支持添加 `Master/None` 节点。
-- [x] 支持集群后续 `Etcd Cluster` 扩容 (只添加节点, 对现有集群无感知) `v1.14.1.8` 中添加。
+- [x] 支持集群后续 `Etcd Cluster` 扩容 (只添加节点, 对现有集群无感知)。
 - [x] 支持自定义镜像仓库地址。
 - [x] 支持 `Add-Ons` 等应用部署。
 - [x] 支持自定义 TLS 。
@@ -72,8 +72,9 @@ Crane 的架构简述:
 - [x] 支持 `Kubernetes Cluster` 版本升级。
 - [x] 支持 `Etcd Cluster CA` 根证书更新。
 - [x] 支持 `Ansible in Docker` 方式进行部署。
-- [x] 支持 `Dockerd` 离线安装.
-- [x] 支持 `Kubernetes` 离线安装.
+- [x] 支持 `Dockerd`、`Containerd` 离线安装。
+- [x] 支持 `Kubernetes` 离线安装。
+- [x] 支持 `Dockerd`、`Containerd`、`CRIO` 的容器运行环境部署。
 
 ## 安装过程示例
 
