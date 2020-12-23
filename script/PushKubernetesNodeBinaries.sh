@@ -25,7 +25,7 @@ export cniVersion=${_cni_version:-'v0.7.5'}
 # Etcd Version
 export etcdVersion=${_etcdVersion:-'3.3.10'}
 # Pause Version
-export pauseVersion=${_pauseVersion:-'3.1'}
+export pauseVersion=${_pauseVersion:-'3.2'}
 # Calico Version
 export calicoVersion=${_calicoVersion:-'v3.7.2'}
 # HaProxy Version

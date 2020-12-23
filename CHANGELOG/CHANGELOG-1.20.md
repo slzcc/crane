@@ -203,3 +203,13 @@ is_crane_kubernetes_deploy: "{{ cri_drive_install_type }}"
 添加 .dockerignore 文件, 解决 Crane 发布时忽略本地大文件。
 
 添加 `crane/roles/crane/templates/` 部分 tools 脚本, 用于手动部署。
+
+```
+@crane/roles/kubernetes-default/vars/kubelet.yaml 新添加 --resolv-conf 参数项
+
+# resolv 配置项
+kubelet_resolv_config: "--resolv-conf=/run/systemd/resolve/resolv.conf"
+
+修复名称错误:
+kubectl_gc_options => kubelet_gc_options
+```

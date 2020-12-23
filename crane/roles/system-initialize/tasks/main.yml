@@ -25,7 +25,7 @@
   include: "roles/system-initialize/includes/temporary.yaml"
 
 - name: Copy Crane Tools Scripts
-  include: "roles/system-initialize/includes/crane/tools_scrips.yaml"
+  include: "roles/system-initialize/includes/crane/tools_script.yaml"
 
 - name: Create Binary Perform Directory
   file:
