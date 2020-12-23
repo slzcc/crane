@@ -1,0 +1,20 @@
+---
+
+- name: Check Systemd-resolved Systemd Status
+  shell: "systemctl is-active systemd-resolved --no-pager"
+  register: result
+  ignore_errors: true
+
+- name: Create Systemd-resolved Path
+  file:
+    path: "/run/systemd/resolve"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+  when: result.stderr or result.stdout != 'active'
+  ignore_errors: true
+
+- name: Soft Connection Systemd-resolved Config
+  shell: "ln -sf /etc/resolv.conf /run/systemd/resolve/resolv.conf"
+  when: result.stderr or result.stdout != 'active'
+  ignore_errors: true

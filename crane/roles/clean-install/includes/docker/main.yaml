@@ -24,6 +24,11 @@
     - "docker"
     - "docker.socket"
 
+# Clean Docker Image
+- name: Clean Docker Image
+  include: "roles/clean-install/includes/docker/image.yaml"
+  when: is_remove_all or is_remove_k8s_images
+
 # Clean Docker Configs
 - name: Clean Docker Configs
   include: "roles/clean-install/includes/docker/config.yaml"
@@ -35,19 +40,14 @@
   when: is_remove_all or is_remove_docker_ce
 
 # Clean Docker Binary
-# - name: Clean Docker Binary
-#   include: "roles/clean-install/includes/docker/binary.yaml"
-#   when: is_remove_all or is_remove_docker_ce
+- name: Clean Docker Binary
+  include: "roles/clean-install/includes/docker/binary.yaml"
+  when: is_remove_all or is_remove_docker_ce
 
 # Clean Docker Data
 - name: Clean Docker Data
   include: "roles/clean-install/includes/docker/data.yaml"
   when: is_remove_all or (is_remove_docker_ce and is_remove_docker_dir)
-
-# Clean Docker Image
-- name: Clean Docker Image
-  include: "roles/clean-install/includes/docker/image.yaml"
-  when: is_remove_all or is_remove_k8s_images
   
 # Clean Docker Socket
 - name: Clean Docker Socket

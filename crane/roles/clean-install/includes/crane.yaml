@@ -3,3 +3,10 @@
 - name: Close Old kubectl Check CMD
   shell: "ps aux | grep 'until {{ kubernetes_ctl_path }}kubectl get pod'|grep -v grep |awk '{print $2}'|xargs -i kill -9 {}"
   ignore_errors: true
+
+- name: Create Clean Cluster Directory
+  file:
+    path: "{{ temporary_dirs }}clean-cluster"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
