@@ -24,6 +24,9 @@
 - name: Create Temporary Directory
   include: "roles/system-initialize/includes/temporary.yaml"
 
+- name: Copy Crane Tools Scripts
+  include: "roles/system-initialize/includes/crane/tools_script.yaml"
+
 - name: Create Binary Perform Directory
   file:
     path: "{{ kubernetes_ctl_path }}"
@@ -179,3 +182,6 @@
 - name: IPTABLE FORWARD ACCEPT
   shell: "iptables -P FORWARD ACCEPT"
   ignore_errors: true
+
+- name: Check Systemd-resolved Systemd Status
+  include: "roles/kubernetes-default/includes/resolv.yaml"

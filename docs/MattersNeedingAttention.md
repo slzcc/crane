@@ -2,6 +2,14 @@
 
 当前 Kubernetes 部署过程中遇到的问题可以通过如下描述进行解决：
 
+### Overaly 驱动初始化
+
+因 CRI 默认使用 Overaly 作为存储类型的驱动则需要对磁盘如 xfs 进行 d_type 的支持, 需初始化后才可以正常使用.
+
+```
+$ mkfs.xfs -f -n ftype=1 /dev/xxx
+```
+
 ### 无法通过 nodePort 访问服务
 
 如发生此类问题时修改 Kube-Proxy 中 node_port_address 地址即可，或通过 crane 的 kube_proxy_node_port_addresses 修改。
@@ -419,3 +427,19 @@ fatal: [192.168.6.96]: FAILED! => {"changed": true, "cmd": "ctr -n k8s.io i impo
 ```
 
 因 Crane 默认把组件下载到 `/usr/local/bin` 目前已经把所有涉及到二进制的文件加入了 `{{ kubernetes_ctl_path }}` 参数头, 如还发现类似问题请自行解决。
+
+## Docker build
+
+此问题不只是 build 会出现, run 时也会出现:(docker 19.03.12)
+
+```
+ ---> Running in db89287c9932
+OCI runtime create failed: container_linux.go:349: starting container process caused "process_linux.go:319: getting the final child's pid from pipe caused \"EOF\"": unknown
+
+$ uname -a
+Linux ip-10-200-1-206.ap-southeast-1.compute.internal 3.10.0-1127.el7.x86_64 #1 SMP Tue Mar 31 23:36:51 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
+```
+
+> 相关文档: https://github.com/moby/moby/issues/40835
+
+此问题升级内核解决.

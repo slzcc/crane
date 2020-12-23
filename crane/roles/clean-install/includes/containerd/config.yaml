@@ -1,6 +1,6 @@
 ---
 - name: Remove System Containerd Configs
-  shell: "mv {{ systemd_default_dirs }}containerd.service {{ temporary_dirs }}"
+  shell: "mv {{ systemd_default_dirs }}containerd.service {{ temporary_dirs }}clean-cluster"
   ignore_errors: true
 
 - name: Systemd Reload Remove Containerd
@@ -8,5 +8,5 @@
   ignore_errors: true
 
 - name: Remove Containerd Configs
-  shell: "mv /etc/containerd {{ temporary_dirs }}"
+  shell: "mv /etc/containerd {{ temporary_dirs }}clean-cluster"
   ignore_errors: true
