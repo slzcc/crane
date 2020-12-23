@@ -33,7 +33,7 @@ CRI 支持多种服务共存部署模式, 可同时部署 docker/containerd/crio
 
 离线部署示例请参照 [Crane Offine Install](./docs/OFFINE_INSTALL.md) 文件进行部署。
 
-在线部署示例请参照 [Crane Offine Install](./docs/ONLINE_INSTALL.md) 文件进行部署。
+在线部署示例请参照 [Crane Online Install](./docs/ONLINE_INSTALL.md) 文件进行部署。
 
 各功能示例参照 [Crane Other Features](./docs/FunctionalSpecifications.md) 文件进行部署。
 
