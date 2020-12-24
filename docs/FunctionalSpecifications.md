@@ -8,149 +8,11 @@ $ git clone -b v1.18.x.x https://github.com/slzcc/crane.git
 
 > v1.15.x.x 最末尾一位属于编写 Ansible 脚本的迭代版本, 不属于 Kubernetes 自身版本。
 
-## Docker 安装
-
-默认会检测是否有 Docker 可执行文件, 如果没有则可以通过三种方式安装 Docker, 参见 [Docker install](../crane/roles/docker-install)
-
-安装 Docker 时会添加 `daemon.json` 配置, 如果不需要可设置 `is_docker_daemon_config` 进行关闭。
-
-> Docker 19.03 中默认支持 GPU 驱动不需要额外添加，[Nvidia-Docker](https://github.com/NVIDIA/nvidia-docker#quickstart)
-
-> 以下所有的部署全部使用 Ubuntu 16.04 为环境进行示例演练。个人部署时请使用最新版进行尝试。
-
-## 使用说明
-
-在 nodes 文件中, 分为三大块:
-
-```
-[kube-master]
-# Master 节点列表 (第一次部署集群), 如果目标主机没用 python 则写明 python3 地址
-35.243.68.255 ansible_python_interpreter=/usr/bin/python3
-
-[kube-node]
-# Node 节点列表
-34.84.105.165
-
-[etcd]
-# Etcd 节点列表(Etcd 必须部署再 Master 节点中, Master 节点可任选)
-35.243.68.255 ansible_python_interpreter=/usr/bin/python3
-
-[k8s-cluster-add-master]
-# 部署完集群后, 填写需要添加的 Master 节点列表 (第一次部署时, 这里必须留空)
-
-[k8s-cluster-add-node]
-# 部署完集群后, 填写需要添加的 Node 节点列表 (第一次部署时, 这里必须留空)
-
-[etcd-cluster-add-node]
-# 部署完集群后, 填写需要添加的 Etcd 节点列表 (第一次部署时, 这里必须留空)
-
-[k8s-cluster-del-node]
-# 部署完集群后, 填写需要移除的 Node 节点列表 (第一次部署时, 这里必须留空)
-
-[etcd-cluster-del-node]
-# 部署完集群后, 填写需要移除的 Etcd 节点列表 (第一次部署时, 这里必须留空)
-
-[k8s-cluster:children]
-kube-node
-kube-master
-
-[etcd-cluster:children]
-etcd
-etcd-cluster-add-node
-
-[all:vars]
-# 部署时的 SSH 配置项, 请结合自身情况填写, 如果用非 root 身份部署, 请对此用户配置免密登入
-ansible_ssh_public_key_file='~/.ssh/id_rsa.pub'
-ansible_ssh_private_key_file='~/.ssh/id_rsa'
-ansible_ssh_port=22
-ansible_ssh_user=shilei
-```
-第一部分为部署集群所规划的集群初始节点, 可自定义添加。(第一次创建集群时, 不能在添加 master/node/etcd 中写入节点地址, 否则会冲突)
-
-第二部分为后续集群需要添加的节点可分为 master/node/etcd 。
-
-第三部分为集群内所有节点均可使用的 SSH 秘钥。
-
-在初次部署时, 应先修改基础配置文件 group_vars/all.yml 文件, 下面列出初始部署时应修改的选项：
-```
-# apiServer 的入口, 也就是 apiServer 的负载均衡层, 可支持 lvs/keepalived 组合, 如第一次部署请不要开启 lvs/keepalived , 如公有云环境也不支持 lvs/keepalived 。
-k8s_load_balance_ip: < SLB 或 某节点 IP >
-
-# Ansible 使用的远程服务器用户, 可使用普通用户但必须属于 Sudo 组
-ssh_connect_user: < SSH USER >
-
-# 所有节点统一的网卡名称, 否则会出现环境不一致的问题, 此配置被 Etcd/LVS 服务依赖。
-os_network_device_name: < NetWork Name >
-```
-
-> 如有不明确的问题, 请参照上方的 Wiki 链接, 如果还有问题请提交 issue。
-
-> 普通用户需要具有 Sudo 组, 并且配置 Sudo 免密。
-
-## Deploy Kubernetes Cluster
-
-如上述修改完成后, 可执行命令（v1.19.0.1 部署版本为例）：
-
-```
-$ make run_main
-```
-Cluster Status
-```
-$ kubectl get csr
-NAME                                                   AGE       REQUESTOR                 CONDITION
-csr-5hl64                                              11m       system:node:instance-3    Approved,Issued
-csr-758h6                                              11m       system:node:instance-4    Approved,Issued
-csr-fdf9g                                              11m       system:node:instance-2    Approved,Issued
-node-csr-4PjnAlcpExzHYlotBexV1yaev40khyc3RjIlWj-JFMU   10m       system:bootstrap:b53294   Approved,Issued
-node-csr-9qRs7kA959MOtQHx-5XXuMvmwl3vT6M1QkmmzUgvteQ   10m       system:bootstrap:b53294   Approved,Issued
-node-csr-GJqCuRzlL6KzLvxLRgNo1fEswguU6RLaETPjw2SNzs4   10m       system:bootstrap:b53294   Approved,Issued
-
-$ kubectl get nodes
-NAME         STATUS     ROLES     AGE       VERSION
-instance-2   Ready      master    11m       v1.19.0
-instance-3   Ready      master    11m       v1.19.0
-instance-4   Ready      master    11m       v1.19.0
-instance-5   NotReady   node      10m       v1.19.0
-instance-6   NotReady   node      10m       v1.19.0
-instance-7   NotReady   node      10m       v1.19.0
-
-$ kubectl -n kube-system get pod -o wide
-NAME                                       READY     STATUS              RESTARTS   AGE       IP            NODE
-calico-kube-controllers-7779fd5f4c-v95ps   1/1       Running             0          34m       10.30.0.204   instance-4
-calico-node-6fcbj                          2/2       Running             0          34m       10.30.0.204   instance-4
-calico-node-9tzx9                          0/2       ContainerCreating   0          34m       10.30.0.205   instance-5
-calico-node-hhd5b                          2/2       Running             0          34m       10.30.0.202   instance-2
-calico-node-hjzx7                          2/2       Running             0          34m       10.30.0.203   instance-3
-calico-node-nfqqs                          0/2       ContainerCreating   0          34m       10.30.0.207   instance-7
-calico-node-sm454                          0/2       ContainerCreating   0          34m       10.30.0.206   instance-6
-etcd-instance-2                            1/1       Running             0          34m       10.30.0.202   instance-2
-etcd-instance-3                            1/1       Running             0          35m       10.30.0.203   instance-3
-etcd-instance-4                            1/1       Running             0          35m       10.30.0.204   instance-4
-haproxy-instance-2                         1/1       Running             0          35m       10.30.0.202   instance-2
-haproxy-instance-3                         1/1       Running             0          35m       10.30.0.203   instance-3
-haproxy-instance-4                         1/1       Running             0          35m       10.30.0.204   instance-4
-keepalived-instance-2                      1/1       Running             0          35m       10.30.0.202   instance-2
-keepalived-instance-3                      1/1       Running             0          35m       10.30.0.203   instance-3
-keepalived-instance-4                      1/1       Running             0          35m       10.30.0.204   instance-4
-kube-apiserver-instance-2                  1/1       Running             0          35m       10.30.0.202   instance-2
-kube-apiserver-instance-3                  1/1       Running             0          35m       10.30.0.203   instance-3
-kube-apiserver-instance-4                  1/1       Running             0          35m       10.30.0.204   instance-4
-kube-controller-manager-instance-2         1/1       Running             0          35m       10.30.0.202   instance-2
-kube-controller-manager-instance-3         1/1       Running             0          35m       10.30.0.203   instance-3
-kube-controller-manager-instance-4         1/1       Running             0          35m       10.30.0.204   instance-4
-kube-dns-654684d656-jkprr                  0/3       Pending             0          34m       <none>        <none>
-kube-proxy-4dtr6                           1/1       Running             0          34m       10.30.0.204   instance-4
-kube-proxy-4lc6x                           1/1       Running             0          34m       10.30.0.203   instance-3
-kube-proxy-84vzq                           0/1       ContainerCreating   0          34m       10.30.0.207   instance-7
-kube-proxy-cxkdl                           0/1       ContainerCreating   0          34m       10.30.0.206   instance-6
-kube-proxy-h2vgj                           0/1       ContainerCreating   0          34m       10.30.0.205   instance-5
-kube-proxy-w9rxj                           1/1       Running             0          34m       10.30.0.202   instance-2
-kube-scheduler-instance-2                  1/1       Running             0          35m       10.30.0.202   instance-2
-kube-scheduler-instance-3                  1/1       Running             0          35m       10.30.0.203   instance-3
-kube-scheduler-instance-4                  1/1       Running             0          35m       10.30.0.204   instance-4
-```
-
 ## Add K8s Cluster Manager Node.
+
+[详细说明](./ADD_KUBERNETES_MASTER.md)
+
+---
 
 批量添加 Master 节点到集群, 首先在 `nodes` 文件中 `k8s-cluster-add-master` 下添加需要添加的节点: (支持批量)
 
@@ -190,6 +52,10 @@ node-csr-xk3fBmT4OOHNAtbYJq4IXtLLpFlfyXLeX2PWFMNsrjk   45m       system:bootstra
 > 在添加完相应的类型节点后, 请把 nodes 文件中对应添加节点的地址, 移动至 master/node 中, 以防止后续操作时遗漏。
 
 ## Add K8s Cluster Worker Node.
+
+[详细说明](./ADD_KUBERNETES_NODES.md)
+
+---
 
 > 重要说明：
 > 降低风险操作, nodes.kube-master 只保留第一个其余全部注释, 避免误操作执行其他的模式导致集群不可用。
@@ -235,6 +101,10 @@ node-csr-xk3fBmT4OOHNAtbYJq4IXtLLpFlfyXLeX2PWFMNsrjk   46m       system:bootstra
 
 ## Clean Kubernetes Cluster
 
+[详细说明](./REMOVE_CLUSTER.md)
+
+---
+
 清除集群所有部署的数据信息:
 
 ```
@@ -246,6 +116,10 @@ $ make clean_main
 > 清除集群时 IPVS 默认不会清除规则, 所以需要自己执行 `ipvsadm -C` 来解决.
 
 ## Add Etcd Cluster Node
+
+[详细说明](./ADD_ETCD.md)
+
+---
 
 对现有集群添加支持 TLS 的 Etcd 节点, 批量添加 Node 节点到集群, 首先在 `nodes` 文件中 `etcd-cluster-add-node` 下添加需要添加的节点: (支持批量)
 
@@ -276,6 +150,10 @@ $ make run_addons
 ```
 
 ## K8s TLS Rotation
+
+[详细说明](./KUBERNETES_CERTIFICATE_ROTATION.md)
+
+---
 
 默认通过 CFSSL 创建出的 CA 根证书只有 5 年时效, 如果更新根证书不当可能会涉及到 Master/Node 上大面积的应用不可用的问题, 下面的集群证书更新方式只适用于通过上述安装部署的集群使用, 其他服务集群请自行尝试, 目前没有发现问题:
 > 需要保证 nodes 文件中不要有 add.* 开头的 Group, 在部署时会重新启动 Calico 网络, 但经过大量测试没有发现对集群访问的影响.
@@ -317,6 +195,10 @@ csr-zp7tr   75m   system:node:instance-template-1   Approved,Issued
 
 ## Upgrade Version
 
+[详细说明](./UPGRADE_KUBERNETES.md)
+
+---
+
 支持集群版本升级, 执行命令如下: (目前支持 1.14.x 升级 1.15.x 其他版本请自行尝试)
 
 只需要配置 `k8s_version` 参数指定版本即可。
@@ -347,6 +229,10 @@ Server Version: version.Info{Major:"1", Minor:"15", GitVersion:"v1.15.0", GitCom
 
 ## Etcd TLS Rotation
 
+[详细说明](./ETCD_CERTIFICATE_ROTATION.md)
+
+---
+
 与 K8s TLS Rotation 方式类似, 当更换证书时, 则集群中的 Etcd 需要重启服务, 可能会造成一定范围时间内的服务不可用, 启动完成时会对 Master 中的 apiServer 以及 Calico 进行重新配置并启动的过程.
 
 部署安装:
@@ -355,6 +241,10 @@ $ make rotation_etcd_ca
 ```
 
 ## Delete Etcd Cluster Nodes
+
+[详细说明](./REMOVE_ETCD_NODES.md)
+
+---
 
 删除 Etcd Cluster 中的一个或多个 Node, 注意修改 nodes 中的 etcd-cluster-del-node 列表, 并且移除 etcd 列表对应的值。如下：
 
@@ -374,6 +264,10 @@ $ make remove_etcd_nodes
 ```
 
 ## Delete Kubernetes Cluster Nodes
+
+[详细说明](./ADD_KUBERNETES_NODES.md)
+
+---
 
 删除 Kubernetes Cluster 中的一个或多个 Node, 注意修改 nodes 中的 k8s-cluster-del-node 列表, 并且移除 kube-node 列表对应的值。如下：
 

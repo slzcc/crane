@@ -6,13 +6,13 @@
 
 - name: Clean Clean Cert Directory
   file:
-    path: "{{ deploy_new_ca_retation_dirs }}"
+    path: "{{ deploy_new_ca_rotation_dirs }}"
     state: absent
   ignore_errors: true
 
 - name: Create Temporary New Cert Directory
   file:
-    path: "{{ deploy_new_ca_retation_dirs }}/cert"
+    path: "{{ deploy_new_ca_rotation_dirs }}/cert"
     mode: 0755
     owner: "{{ ssh_connect_user }}"
     state: directory
@@ -20,7 +20,7 @@
 - name: Copy CFSSL Etcd Json Files
   template:
     src: roles/etcd-install/templates/{{ item }}
-    dest: "{{ deploy_new_ca_retation_dirs }}/cert/{{ item }}"
+    dest: "{{ deploy_new_ca_rotation_dirs }}/cert/{{ item }}"
     owner: "{{ ssh_connect_user }}" 
     mode: 0644
   with_items:
@@ -28,14 +28,19 @@
     - etcd-ca-csr.json
     - etcd-csr.json
 
+## Backup Old Certs
+- name: Backup Old Certs
+  shell: 'cp -a {{ etcd_ssl_dirs }} {{ deploy_new_ca_rotation_dirs }}/certs-old-`date +%Y%m%d%H%M%S`'
+  ignore_errors: true
+
 ## Create Certificate Files
 ## ********************************************************************************************************************************
 
 - name: Create Certificate Files
-  shell: cd {{ deploy_new_ca_retation_dirs }}/cert && {{ kubernetes_ctl_path }}cfssl gencert -initca etcd-ca-csr.json | {{ kubernetes_ctl_path }}cfssljson -bare etcd-ca
+  shell: cd {{ deploy_new_ca_rotation_dirs }}/cert && {{ kubernetes_ctl_path }}cfssl gencert -initca etcd-ca-csr.json | {{ kubernetes_ctl_path }}cfssljson -bare etcd-ca
 
 - name: Create Etcd Certificate Files
-  shell: "cd {{ deploy_new_ca_retation_dirs }}/cert && {{ kubernetes_ctl_path }}cfssl gencert \
+  shell: "cd {{ deploy_new_ca_rotation_dirs }}/cert && {{ kubernetes_ctl_path }}cfssl gencert \
             -ca=etcd-ca.pem \
             -ca-key=etcd-ca-key.pem \
             -config=ca-config.json \
@@ -46,7 +51,7 @@
 ## Copy Etcd CA in Nodes
 ## ********************************************************************************************************************************
 
-- shell: "for ITEM in $(ls {{ deploy_new_ca_retation_dirs }}/cert); do 
+- shell: "for ITEM in $(ls {{ deploy_new_ca_rotation_dirs }}/cert); do 
             chown {{ ssh_connect_user }} {{ etcd_ssl_dirs }}${ITEM}; 
           done"
 
@@ -54,7 +59,7 @@
   shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
             -i {{ ssh_public_key }} \
             -P {{ ssh_connect_port }} \
-            {{ deploy_new_ca_retation_dirs }}/cert/{{ item[1] }} \
+            {{ deploy_new_ca_rotation_dirs }}/cert/{{ item[1] }} \
             {{ ssh_connect_user }}@{{ item[0] }}:{{ etcd_ssl_dirs }}{{ item[1] }}"
   with_nested:
     - "{{ etcd_master_ip_list }}"
@@ -64,7 +69,7 @@
   shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
             -i {{ ssh_public_key }} \
             -P {{ ssh_connect_port }} \
-            {{ deploy_new_ca_retation_dirs }}/cert/{{ item[1] }} \
+            {{ deploy_new_ca_rotation_dirs }}/cert/{{ item[1] }} \
             {{ ssh_connect_user }}@{{ item[0] }}:{{ etcd_ssl_dirs }}{{ item[1] }}"
   with_nested:
     - "{{ k8s_master_ip_list }}"

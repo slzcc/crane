@@ -1,23 +1,16 @@
 ---
 # CA
 ## ********************************************************************************************************************************
-
-- name: Clean Clean Cert Directory
-  file:
-    path: "{{ deploy_new_ca_retation_dirs }}"
-    state: absent
-  ignore_errors: true
-
 - name: Create Temporary New Cert Directory
   file:
-    path: "{{ deploy_new_ca_retation_dirs }}/cert"
+    path: "{{ deploy_new_ca_rotation_dirs }}/cert"
     mode: 0755
     owner: "{{ ssh_connect_user }}"
     state: directory
 
 - name: Create Temporary New KuberConfig Directory
   file:
-    path: "{{ deploy_new_ca_retation_dirs }}/kubeconfig"
+    path: "{{ deploy_new_ca_rotation_dirs }}/kubeconfig"
     mode: 0755
     owner: "{{ ssh_connect_user }}"
     state: directory
@@ -26,13 +19,13 @@
 ## ********************************************************************************************************************************
 
 - name: Backup Old Certificate Files
-  shell: "cp -a {{ kubernetes_pki_dirs }} {{ deploy_new_ca_retation_dirs }}/certs-old-`date +%Y%m%d%H%M%S`"
+  shell: "cp -a {{ kubernetes_pki_dirs }} {{ deploy_new_ca_rotation_dirs }}/certs-old-`date +%Y%m%d%H%M%S`"
 
 ## Copy CFSSL Kubernetes Json Files
 - name: CA Rotation Copy CFSSL Kubernetes Json Files
   template:
     src: "roles/kubernetes-default/templates/{{ item }}"
-    dest: "{{ deploy_new_ca_retation_dirs }}/cert/{{ item }}"
+    dest: "{{ deploy_new_ca_rotation_dirs }}/cert/{{ item }}"
     owner: "{{ ssh_connect_user }}" 
     mode: 0644
   with_items:
@@ -48,10 +41,10 @@
 
 ## Create Kubernetes CA
 - name: CA Rotation Create Kubernetes Certificate Files
-  shell: cd {{ deploy_new_ca_retation_dirs }}/cert && {{ kubernetes_ctl_path }}cfssl gencert -initca ca-csr.json | {{ kubernetes_ctl_path }}cfssljson -bare ca
+  shell: cd {{ deploy_new_ca_rotation_dirs }}/cert && {{ kubernetes_ctl_path }}cfssl gencert -initca ca-csr.json | {{ kubernetes_ctl_path }}cfssljson -bare ca
 
 - name: CA Rotation Create Kubernetes API Server Certificate Files
-  shell: "cd {{ deploy_new_ca_retation_dirs }}/cert && {{ kubernetes_ctl_path }}cfssl gencert \
+  shell: "cd {{ deploy_new_ca_rotation_dirs }}/cert && {{ kubernetes_ctl_path }}cfssl gencert \
             -ca=ca.pem \
             -ca-key=ca-key.pem \
             -config=ca-config.json \
@@ -60,11 +53,11 @@
             apiserver-csr.json | {{ kubernetes_ctl_path }}cfssljson -bare apiserver"
 
 - name: CA Rotation Create Kubernetes Front Proxy Certificate Files
-  shell: "cd {{ deploy_new_ca_retation_dirs }}/cert && {{ kubernetes_ctl_path }}cfssl gencert \
+  shell: "cd {{ deploy_new_ca_rotation_dirs }}/cert && {{ kubernetes_ctl_path }}cfssl gencert \
             -initca front-proxy-ca-csr.json | {{ kubernetes_ctl_path }}cfssljson -bare front-proxy-ca"
 
 - name: CA Rotation Create Kubernetes Front Proxy Client Certificate Files
-  shell: "cd {{ deploy_new_ca_retation_dirs }}/cert && {{ kubernetes_ctl_path }}cfssl gencert \
+  shell: "cd {{ deploy_new_ca_rotation_dirs }}/cert && {{ kubernetes_ctl_path }}cfssl gencert \
             -ca=front-proxy-ca.pem \
             -ca-key=front-proxy-ca-key.pem \
             -config=ca-config.json \
@@ -72,7 +65,7 @@
             front-proxy-client-csr.json | {{ kubernetes_ctl_path }}cfssljson -bare front-proxy-client"
 
 - name: CA Rotation Create Kubernetes Admin Certificate Files
-  shell: "cd {{ deploy_new_ca_retation_dirs }}/cert && {{ kubernetes_ctl_path }}cfssl gencert \
+  shell: "cd {{ deploy_new_ca_rotation_dirs }}/cert && {{ kubernetes_ctl_path }}cfssl gencert \
             -ca=ca.pem \
             -ca-key=ca-key.pem \
             -config=ca-config.json \
@@ -80,7 +73,7 @@
             admin-csr.json | {{ kubernetes_ctl_path }}cfssljson -bare admin"
 
 - name: CA Rotation Create Kubernetes Controller Manager Certificate Files
-  shell: "cd {{ deploy_new_ca_retation_dirs }}/cert && {{ kubernetes_ctl_path }}cfssl gencert \
+  shell: "cd {{ deploy_new_ca_rotation_dirs }}/cert && {{ kubernetes_ctl_path }}cfssl gencert \
             -ca=ca.pem \
             -ca-key=ca-key.pem \
             -config=ca-config.json \
@@ -88,7 +81,7 @@
             manager-csr.json | {{ kubernetes_ctl_path }}cfssljson -bare controller-manager"
 
 - name: CA Rotation Create Kubernetes Scheduler Certificate Files
-  shell: "cd {{ deploy_new_ca_retation_dirs }}/cert && {{ kubernetes_ctl_path }}cfssl gencert \
+  shell: "cd {{ deploy_new_ca_rotation_dirs }}/cert && {{ kubernetes_ctl_path }}cfssl gencert \
             -ca=ca.pem \
             -ca-key=ca-key.pem \
             -config=ca-config.json \
@@ -100,14 +93,14 @@
 
 ## Create Kubernetes Kubelet CA and Copy in Nodes
 - name: Create Kubernetes Kubelet CA Files
-  shell: 'cd {{ deploy_new_ca_retation_dirs }}/cert && cp kubelet-csr.json kubelet-{{ item[0] }}-csr.json;
-          sed -i "s/\$NODE/{{ item[0] }}/g" {{ deploy_new_ca_retation_dirs }}/cert/kubelet-{{ item[0] }}-csr.json;'
+  shell: 'cd {{ deploy_new_ca_rotation_dirs }}/cert && cp kubelet-csr.json kubelet-{{ item[0] }}-csr.json;
+          sed -i "s/\$NODE/{{ item[0] }}/g" {{ deploy_new_ca_rotation_dirs }}/cert/kubelet-{{ item[0] }}-csr.json;'
   with_nested:
   - "{{ k8s_master_name_list }}"
   - "-"
 
 - name: Create CA *
-  shell: 'cd {{ deploy_new_ca_retation_dirs }}/cert && {{ kubernetes_ctl_path }}cfssl gencert \
+  shell: 'cd {{ deploy_new_ca_rotation_dirs }}/cert && {{ kubernetes_ctl_path }}cfssl gencert \
             -ca=ca.pem \
             -ca-key=ca-key.pem \
             -config=ca-config.json \
@@ -127,7 +120,7 @@
   shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
             -i {{ ssh_public_key }} \
             -P {{ ssh_connect_port }} \
-            {{ deploy_new_ca_retation_dirs }}/cert/kubelet-{{ item[1] }}-key.pem \
+            {{ deploy_new_ca_rotation_dirs }}/cert/kubelet-{{ item[1] }}-key.pem \
             {{ ssh_connect_user }}@{{ item[0] }}:{{ kubernetes_pki_dirs }}kubelet-{{ item[1] }}-key.pem"
   with_nested:
     - "{{ k8s_master_ip_list }}"
@@ -137,7 +130,7 @@
   shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
             -i {{ ssh_public_key }} \
             -P {{ ssh_connect_port }} \
-            {{ deploy_new_ca_retation_dirs }}/cert/kubelet-{{ item[1] }}.pem \
+            {{ deploy_new_ca_rotation_dirs }}/cert/kubelet-{{ item[1] }}.pem \
             {{ ssh_connect_user }}@{{ item[0] }}:{{ kubernetes_pki_dirs }}kubelet-{{ item[1] }}.pem"
   with_nested:
     - "{{ k8s_master_ip_list }}"
@@ -147,7 +140,7 @@
   shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
             -i {{ ssh_public_key }} \
             -P {{ ssh_connect_port }} \
-            {{ deploy_new_ca_retation_dirs }}/cert/ca.pem \
+            {{ deploy_new_ca_rotation_dirs }}/cert/ca.pem \
             {{ ssh_connect_user }}@{{ item[0] }}:{{ kubernetes_pki_dirs }}ca.pem"
   with_nested:
     - "{{ k8s_master_ip_list }}"
@@ -157,78 +150,78 @@
 ## ********************************************************************************************************************************
 ## Create Kubernetes Admin Kubeconfig
 - name: CA Rotation Create Kubernetes Admin Kubeconfig
-  shell: "cd {{ deploy_new_ca_retation_dirs }}/cert && 
+  shell: "cd {{ deploy_new_ca_rotation_dirs }}/cert && 
             {{ kubernetes_ctl_path }}kubectl config set-cluster kubernetes \
               --certificate-authority=ca.pem \
               --embed-certs=true \
               --server={{ k8s_apiserver_https_bind }} \
-              --kubeconfig={{ deploy_new_ca_retation_dirs }}/kubeconfig/admin.conf &&
+              --kubeconfig={{ deploy_new_ca_rotation_dirs }}/kubeconfig/admin.conf &&
             {{ kubernetes_ctl_path }}kubectl config set-credentials kubernetes-admin 
               --client-certificate=admin.pem 
               --client-key=admin-key.pem 
               --embed-certs=true 
-              --kubeconfig={{ deploy_new_ca_retation_dirs }}/kubeconfig/admin.conf && 
+              --kubeconfig={{ deploy_new_ca_rotation_dirs }}/kubeconfig/admin.conf && 
             {{ kubernetes_ctl_path }}kubectl config set-context kubernetes-admin@kubernetes \
               --cluster=kubernetes \
               --user=kubernetes-admin \
-              --kubeconfig={{ deploy_new_ca_retation_dirs }}/kubeconfig/admin.conf && 
+              --kubeconfig={{ deploy_new_ca_rotation_dirs }}/kubeconfig/admin.conf && 
             {{ kubernetes_ctl_path }}kubectl config use-context kubernetes-admin@kubernetes \
-              --kubeconfig={{ deploy_new_ca_retation_dirs }}/kubeconfig/admin.conf"
+              --kubeconfig={{ deploy_new_ca_rotation_dirs }}/kubeconfig/admin.conf"
 
 ## Create Kubernetes Controller Manager  Kubeconfig
 - name: CA Rotation Create Kubernetes Controller Manager  Kubeconfig
-  shell: "cd {{ deploy_new_ca_retation_dirs }}/cert && 
+  shell: "cd {{ deploy_new_ca_rotation_dirs }}/cert && 
           {{ kubernetes_ctl_path }}kubectl config set-cluster kubernetes 
             --certificate-authority=ca.pem 
             --embed-certs=true 
             --server={{ k8s_apiserver_https_bind }} 
-            --kubeconfig={{ deploy_new_ca_retation_dirs }}/kubeconfig/controller-manager.conf && 
+            --kubeconfig={{ deploy_new_ca_rotation_dirs }}/kubeconfig/controller-manager.conf && 
           {{ kubernetes_ctl_path }}kubectl config set-credentials system:kube-controller-manager 
               --client-certificate=controller-manager.pem 
               --client-key=controller-manager-key.pem 
               --embed-certs=true 
-              --kubeconfig={{ deploy_new_ca_retation_dirs }}/kubeconfig/controller-manager.conf && 
+              --kubeconfig={{ deploy_new_ca_rotation_dirs }}/kubeconfig/controller-manager.conf && 
           {{ kubernetes_ctl_path }}kubectl config set-context system:kube-controller-manager@kubernetes 
               --cluster=kubernetes 
               --user=system:kube-controller-manager 
-              --kubeconfig={{ deploy_new_ca_retation_dirs }}/kubeconfig/controller-manager.conf &&
+              --kubeconfig={{ deploy_new_ca_rotation_dirs }}/kubeconfig/controller-manager.conf &&
           {{ kubernetes_ctl_path }}kubectl config use-context system:kube-controller-manager@kubernetes
-              --kubeconfig={{ deploy_new_ca_retation_dirs }}/kubeconfig/controller-manager.conf"
+              --kubeconfig={{ deploy_new_ca_rotation_dirs }}/kubeconfig/controller-manager.conf"
 
 ## Create Kubernetes Scheduler Kubeconfig
 - name: CA Rotation Create Kubernetes Scheduler Kubeconfig
-  shell: "cd {{ deploy_new_ca_retation_dirs }}/cert && 
+  shell: "cd {{ deploy_new_ca_rotation_dirs }}/cert && 
           {{ kubernetes_ctl_path }}kubectl config set-cluster kubernetes 
               --certificate-authority=ca.pem 
               --embed-certs=true 
               --server={{ k8s_apiserver_https_bind }} 
-              --kubeconfig={{ deploy_new_ca_retation_dirs }}/kubeconfig/scheduler.conf &&
+              --kubeconfig={{ deploy_new_ca_rotation_dirs }}/kubeconfig/scheduler.conf &&
           {{ kubernetes_ctl_path }}kubectl config set-credentials system:kube-scheduler 
               --client-certificate=scheduler.pem 
               --client-key=scheduler-key.pem 
               --embed-certs=true 
-              --kubeconfig={{ deploy_new_ca_retation_dirs }}/kubeconfig/scheduler.conf && 
+              --kubeconfig={{ deploy_new_ca_rotation_dirs }}/kubeconfig/scheduler.conf && 
           {{ kubernetes_ctl_path }}kubectl config set-context system:kube-scheduler@kubernetes 
               --cluster=kubernetes 
               --user=system:kube-scheduler 
-              --kubeconfig={{ deploy_new_ca_retation_dirs }}/kubeconfig/scheduler.conf && 
+              --kubeconfig={{ deploy_new_ca_rotation_dirs }}/kubeconfig/scheduler.conf && 
           {{ kubernetes_ctl_path }}kubectl config use-context system:kube-scheduler@kubernetes 
-              --kubeconfig={{ deploy_new_ca_retation_dirs }}/kubeconfig/scheduler.conf"
+              --kubeconfig={{ deploy_new_ca_rotation_dirs }}/kubeconfig/scheduler.conf"
 
 # Copy CA and Kubeconfig in Nodes
 ## ********************************************************************************************************************************
 
 ## Create Kubernetes Service Account Key
 - name: Create Kubernetes Service Account Key
-  shell: "cd {{ deploy_new_ca_retation_dirs }}/cert && 
+  shell: "cd {{ deploy_new_ca_rotation_dirs }}/cert && 
           openssl genrsa -out sa.key 2048 && openssl rsa -in sa.key -pubout -out sa.pub"
           
 - name: Clean Files *
-  shell: 'rm -rf {{ deploy_new_ca_retation_dirs }}/cert/*.json \
-                 {{ deploy_new_ca_retation_dirs }}/cert/*.csr \
-                 {{ deploy_new_ca_retation_dirs }}/cert/scheduler*.pem \
-                 {{ deploy_new_ca_retation_dirs }}/cert/controller-manager*.pem \
-                 {{ deploy_new_ca_retation_dirs }}/cert/admin*.pem'
+  shell: 'rm -rf {{ deploy_new_ca_rotation_dirs }}/cert/*.json \
+                 {{ deploy_new_ca_rotation_dirs }}/cert/*.csr \
+                 {{ deploy_new_ca_rotation_dirs }}/cert/scheduler*.pem \
+                 {{ deploy_new_ca_rotation_dirs }}/cert/controller-manager*.pem \
+                 {{ deploy_new_ca_rotation_dirs }}/cert/admin*.pem'
 
 - name: Clean Files **
   shell: "for ITEM in $(ls {{ kubernetes_etc_dirs }}); do 
@@ -242,13 +235,13 @@
 
 ## Copy CA Files in Nodes
 - name: Copy CA Files in Nodes
-  shell: "for FILE in $(ls {{ deploy_new_ca_retation_dirs }}/cert); do
+  shell: "for FILE in $(ls {{ deploy_new_ca_rotation_dirs }}/cert); do
             sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no -i {{ ssh_public_key }} \
-            -P {{ ssh_connect_port }} {{ deploy_new_ca_retation_dirs }}/cert/${FILE} {{ ssh_connect_user }}@{{ item[0] }}:{{ kubernetes_pki_dirs }}${FILE};
+            -P {{ ssh_connect_port }} {{ deploy_new_ca_rotation_dirs }}/cert/${FILE} {{ ssh_connect_user }}@{{ item[0] }}:{{ kubernetes_pki_dirs }}${FILE};
           done;
           for FILE in admin.conf controller-manager.conf scheduler.conf; do
             sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no -i {{ ssh_public_key }} \
-            -P {{ ssh_connect_port }} {{ deploy_new_ca_retation_dirs }}/kubeconfig/${FILE} {{ ssh_connect_user }}@{{ item[0] }}:{{ kubernetes_etc_dirs }}${FILE};
+            -P {{ ssh_connect_port }} {{ deploy_new_ca_rotation_dirs }}/kubeconfig/${FILE} {{ ssh_connect_user }}@{{ item[0] }}:{{ kubernetes_etc_dirs }}${FILE};
           done"
   with_nested:
     - "{{ k8s_master_ip_list }}"

@@ -2,9 +2,17 @@
 ## Restart apiServer
 ## ********************************************************************************************************************************
 
-- name: Copy Kubernetes ApiServer Config Files
-  template: 
-    src: "roles/kubernetes-manifests/templates/kube-apiserver.j2"
-    dest: "{{ kubernetes_manifests_dirs }}kube-apiserver.yml"
-    mode: 0644
-    owner: "{{ ssh_connect_user }}" 
+- name: Backup Kubernetes ApiServer Config Files
+  shell: 'cp -a {{ kubernetes_manifests_dirs }}kube-apiserver.yml {{ temporary_dirs }}etcd-ca-rotation/kube-apiserver.yml-`date +%Y%m%d%H%M%S`'
+  when: is_kube_master
+  ignore_errors: true
+
+- name: Update Kubernetes ApiServer Server for Docker
+  shell: "{{ kubernetes_ctl_path }}docker rm -f $({{ kubernetes_ctl_path }}docker ps --filter name=POD_kube-apiserver -q) ; sleep 2"
+  when: 
+    - cri_k8s_default == 'docker'
+
+- name: Update Kubernetes ApiServer Server for Containerd
+  shell: "for i in $({{ kubernetes_ctl_path }}crictl ps --name kube-apiserver -aq); do {{ kubernetes_ctl_path }}crictl rm -f ${i}; sleep 2 ; done"
+  when: 
+    - cri_k8s_default == 'containerd'

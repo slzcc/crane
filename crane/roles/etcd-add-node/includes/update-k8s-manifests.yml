@@ -13,21 +13,3 @@
     mode: 0644
     owner: "{{ ssh_connect_user }}" 
   when: is_kube_master
-
-# - name: Copy Calico Config Files
-#   template: 
-#     src: "roles/kubernetes-networks/templates/calico.j2"
-#     dest: "{{ temporary_dirs }}etcd-add-node/calico.yml"
-#     mode: 0644
-#     owner: "{{ ssh_connect_user }}"
-#   delegate_to: "{{ groups['kube-master'][0] }}"
-    
-# - name: Deploy Calico
-#   shell: '{{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}etcd-add-node/calico.yml'
-#   ignore_errors: true
-#   delegate_to: "{{ groups['kube-master'][0] }}"
-
-# - name: Backup Kubernetes ApiServer Config Files
-#   shell: 'mv { temporary_dirs }}etcd-add-node/calico.yml { temporary_dirs }}etcd-add-node/calico.yml-`date +%Y%m%d%H%M%S`'
-#   ignore_errors: true
-#   delegate_to: "{{ groups['kube-master'][0] }}"

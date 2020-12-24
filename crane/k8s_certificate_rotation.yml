@@ -9,9 +9,12 @@
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/crane/defaults/main.yml"
+    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
   tasks:
-    - name: Check all Nodes
-      ping: 
+    - { include_tasks: 'roles/kubernetes-ca-rotation/includes/initialize.yaml' }
 
 - hosts: k8s-cluster:etcd
   gather_facts: false
@@ -58,23 +61,6 @@
     - { include_tasks: 'roles/kubernetes-master/includes/kubelet_pem.yml' }
     - { include_tasks: 'roles/kubernetes-ca-rotation/includes/update-cluster-master.yml' }
 
-- name: Update Cluster Network
-  hosts: kube-master[0]
-  become: yes
-  become_method: sudo
-  vars:
-    ansible_ssh_pipelining: true
-  vars_files:
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/crane/defaults/main.yml"
-    - "roles/etcd-install/vars/main.yml"
-    - "roles/kubernetes-networks/defaults/calico.yaml"
-    - "roles/kubernetes-networks/defaults/main.yml"
-    - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
-  tasks:
-    - { include_tasks: 'roles/kubernetes-ca-rotation/includes/update-network.yml' }
-
 - name: Create New Bootstrap Config Files to Nodes.
   hosts: kube-master[0]
   become: yes
@@ -95,7 +81,7 @@
     - { include_tasks: 'roles/kubernetes-bootstraps/includes/create-bootstrap.yml' }
     - { include_tasks: 'roles/kubernetes-ca-rotation/includes/update-cluster-node-ca.yml' }
 
-- name: Create New CA
+- name: Copy Kubelet CA for Nodes
   hosts: kube-node
   become: yes
   become_method: sudo
@@ -109,3 +95,20 @@
     - "roles/kubernetes-manifests/defaults/main.yml"
   tasks:
     - { include_tasks: 'roles/kubernetes-ca-rotation/includes/update-cluster-node.yml' }
+
+- name: Update Cluster Network
+  hosts: kube-master[0]
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/etcd-install/vars/main.yml"
+    - "roles/kubernetes-networks/defaults/calico.yaml"
+    - "roles/kubernetes-networks/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-default/defaults/configure.yaml"
+  tasks:
+    - { include_tasks: 'roles/kubernetes-ca-rotation/includes/update-network.yml' }
