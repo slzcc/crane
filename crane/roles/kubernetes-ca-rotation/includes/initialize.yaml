@@ -1,0 +1,11 @@
+---
+
+- name: Create Kubernetes Rotation Path
+  file:
+    path: "{{ temporary_dirs }}kubernetes-ca-rotation"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
+- name: Backup Old Kubernetes Etc Files
+  shell: "cp -a {{ kubernetes_etc_dirs }} {{ temporary_dirs }}kubernetes-ca-rotation/kubernetes-etc-`date +%Y%m%d%H%M%S`"

@@ -12,7 +12,7 @@
     src: "roles/crane/templates/{{ item }}"
     dest: "{{ temporary_dirs }}tools/{{ item }}"
     owner: "{{ ssh_connect_user }}"
-    mode: 0644
+    mode: 0755
   with_items:
   - "load_containerd_binary.sh"
   - "load_containerd_images.sh"

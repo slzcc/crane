@@ -2,12 +2,16 @@
 ## Restart Etcd Server
 ## ********************************************************************************************************************************
 
-- name: Update Etcd Server
-  shell: "{{ kubernetes_ctl_path }}docker rm -f $({{ kubernetes_ctl_path }}docker ps --filter name=k8s_etcd -q)"
+- name: Update Etcd Server for Docker
+  shell: "{{ kubernetes_ctl_path }}docker rm -f $({{ kubernetes_ctl_path }}docker ps --filter name=k8s_etcd -q) ; sleep 15"
   when: 
     - cri_k8s_default == 'docker'
 
-- name: Update Etcd Server
-  shell: "for i in $({{ kubernetes_ctl_path }}crictl ps --name etcd -aq| tail -1); do {{ kubernetes_ctl_path }}crictl rm -f ${i}; done"
+- name: Update Etcd Server for Containerd
+  shell: "for i in $({{ kubernetes_ctl_path }}crictl ps --name etcd -aq); do {{ kubernetes_ctl_path }}crictl rm -f ${i}; sleep 15 ; done"
   when: 
     - cri_k8s_default == 'containerd'
+
+- name: Check Cluster Status
+  shell: 'until {{ kubernetes_ctl_path }}kubectl get pod ; do >&2 echo "Kubenetes Cluster Starting..." && sleep 1 ; done'
+  register: result

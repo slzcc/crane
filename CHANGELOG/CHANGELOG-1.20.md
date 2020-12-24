@@ -1,8 +1,10 @@
-- [v1.20.0.0](#v11900)
+- [v1.20](#v120)
   - [Updated Instructions](#updated-instructions)
-    - [v1.20.0.0 更新内容](#v12000-更新内容)
-    - [v1.20.0.1 更新内容](#v12001-更新内容)
-    - [v1.20.1.0 更新内容](#v12010-更新内容)
+    - [v1.20.0.0 更新内容](#v12000)
+    - [v1.20.0.1 更新内容](#v12001)
+    - [v1.20.1.0 更新内容](#v12010)
+    - [v1.20.1.1 更新内容](#v12011)
+    - [v1.20.1.2 更新内容](#v12012)
 
 # v1.20.0.0
 
@@ -243,3 +245,83 @@ is_remove_all: true
 ```
 
 > 主要考虑初次使用的用户无法正常删除部分数据.
+
+# v1.20.1.2
+
+### 修复
+
+修复如果值为 none 则 kubelet runtime 的配置走默认 cri.
+
+```
+@crane/roles/cri-install/vars/kubelet.yaml 
+
+kubelet_containerd_cri_options: >-
+  {% if cri_drive_install_type == 'none' %}
+  {% elif cri_k8s_default == 'crio' %}
+  --container-runtime=remote --container-runtime-endpoint=unix://{{ crio_socket_path }}
+  {%- elif cri_k8s_default == "containerd" -%}
+  --container-runtime=remote --container-runtime-endpoint=unix://{{ containerd_socket_path }}
+  {% endif %}
+```
+
+修复 etcd_del_nodes 中存在无法获取 node 节点信息而导致的删除失败的问题。
+
+```
+@crane/roles/etcd-del-node/tasks/main.yml
+
+- name: Delete Etcd Cluster Nodes
+  shell: >
+    echo -e "{{ result['stdout'] }}" | grep '{{ item[0] }}' | awk -F, '{print $1}' | xargs -i {{ kubernetes_ctl_path }}docker run --rm -i -v {{ etcd_ssl_dirs }}:{{ etcd_ssl_dirs }} -w {{ etcd_ssl_dirs }} {{ k8s_cluster_component_registry }}/etcd:{{ etcd_version }} etcdctl --cacert {{ etcd_ssl_dirs }}etcd-ca.pem --key {{ etcd_ssl_dirs }}etcd-key.pem --cert {{ etcd_ssl_dirs }}etcd.pem --endpoints {{ etcd_cluster_str }} member remove {}
+  with_nested:
+    - "{{ etcd_del_node_ip_list }}"
+    - "-"
+```
+
+修复 etcd_add_nodes 中更新 Calico 的 Etcd Config:
+
+```
+@add_etcd.yml
+
+- name: Update K8s Cluster Calico Network Config
+  hosts: kube-master
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/crane/defaults/main.yml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/etcd-install/vars/main.yml"
+    - "roles/kubernetes-networks/defaults/calico.yaml"
+    - "roles/kubernetes-networks/defaults/main.yml"
+  tasks:
+    - { include_tasks: 'roles/etcd-add-node/includes/update-k8s-calico.yml' }
+```
+
+因可能会存在多次执行的问题, 但不影响使用。
+
+> etcd_add_nodes 时需要保证 etcd 节点数在 2 个以上。
+
+修复所有 retation 错别字 => rotation .
+
+修复 etcd_certificate_rotation 在 containerd 下的变更问题, 如果在 containerd 下则变更必须使用 crictl 执行, 否则会报错。
+
+### 优化
+
+Ansible for Docker 使用 `alpine` 底层镜像, 镜像缩减至 202M+, 之前 `ubuntu` 底层镜像构建出的大小可能在 390M+ 。
+
+> Ansible 升级 2.8 => 2.9.14.
+
+### 可使用的入口配置
+
+因 Crane 变动比较大, 默认 Crane 的 CRI 驱动已经改为 Containerd, 所以部分功能无法直接使用, 请参考后续版本的支持, 目前以基于 Containerd 可正常提供使用的功能如下:
+  * remove_etcd_nodes.yml
+  * add_etcd.yml
+  * etcd_certificate_rotation.yml
+  * k8s_certificate_rotation.yml
+
+### 升级
+
+Containerd 1.3.9 => 1.4.3。`@crane/roles/cri-install/vars/containerd.yaml`

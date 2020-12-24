@@ -415,6 +415,24 @@ Dec 21 13:01:03 BJ-M8-HADOOP-105-145 kubelet[353352]: F1221 13:01:03.777407  353
 
 > 相关文档 http://blog.ittour.net/2019/09/25/container-runtime-is-down-pleg-is-not-healthy/
 
+kubelet 由于 kernel 较旧引起的 Qos 错误:(kernel 3.10.0-327.el7.x86_64)
+
+```
+Dec 24 10:30:01 BJ-M8-HADOOP-105-144 kubelet[350845]: E1224 10:30:01.932321  350845 dns.go:135] Nameserver limits were exceeded, some nameservers have been omitted, the applied nameserver line is: 10.100.20.105 10.100.105.11 10.100.21.240
+Dec 24 10:30:08 BJ-M8-HADOOP-105-144 kubelet[350845]: E1224 10:30:08.150179  350845 qos_container_manager_linux.go:328] [ContainerManager]: Failed to update QoS cgroup configuration
+Dec 24 10:30:08 BJ-M8-HADOOP-105-144 kubelet[350845]: W1224 10:30:08.150199  350845 qos_container_manager_linux.go:138] [ContainerManager] Failed to reserve QoS requests: failed to set supported cgroup subsystems for cgroup [kubepods burstable]: failed to find subsystem mount for required subsystem: pids
+```
+
+升级内核值 4.14 以上解决。此问题会导致服务启动后容器异常崩溃。
+
+
+kubelet DNS 错误:
+
+```
+Dec 24 11:13:31 BJ-M8-HADOOP-105-144 kubelet[3680]: E1224 11:13:31.677889    3680 dns.go:135] Nameserver limits were exceeded, some nameservers have been omitted, the applied nameserver line is: 10.100.20.105 10.100.105.11 10.100.21.240
+```
+
+修改 /etc/resolv.conf 中 nameserver 数量 <= 3 即可.
 
 ## Ansible Bug
 
