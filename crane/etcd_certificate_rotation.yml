@@ -17,6 +17,8 @@
   gather_facts: false
   become: yes
   become_method: sudo
+  vars_files:
+    - "roles/crane/defaults/main.yml"
   roles:
     - { role: downloads-ssh-key, tags: [copy_ssh_private_key]}
 
@@ -43,6 +45,12 @@
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/etcd-install/vars/main.yml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
   tasks:
     - { include_tasks: 'roles/etcd-ca-rotation/includes/update-cluster-etcd.yml' }
 
@@ -61,7 +69,7 @@
     - { include_tasks: 'roles/etcd-ca-rotation/includes/update-cluster-apiserver.yml' }
 
 - name: Update Kubernetes Cluster Network Server Config
-  hosts: k8s-cluster
+  hosts: k8s-cluster[0]
   become: yes
   become_method: sudo
   vars:

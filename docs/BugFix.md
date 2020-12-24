@@ -19,7 +19,8 @@
 - [x] 修复 `TZ` 时区问题, 由于是挂载宿主机 `/usr/share/zoneinfo` 目录所以一定要保证此目录存在, `v1.16.1.4` 中修复。
 - [x] 修复 `Crane` 部署版本存在服务版本问题, 统一镜像方式部署的版本强一致, `v1.16.2.2` 中修复。
 - [x] 修复 `v1.16.2.3` 中无法对 `Kubernetes etc` 目录的清除操作, 造成遗留历史配置造成无法加入新集群或重新部署集群的问题, `v1.16.2.4` 中修复。
-- [ ] 修复 main.yml => containerd (kube-api 等服务端口占用)。
+- [x] 修复 main.yml => containerd (kube-api 等服务端口占用)。
 - [ ] 修复 add_master.yml => node 无法直接升级 master，它实际上是直接从头安装。
 - [ ] 修复 无法直接移除 kubernetes master 节点。
 - [ ] 修复 删除 docker 时, 判定是否删除 containerd。
+- [ ] 修复 安装 Crane 时, master 与 etcd 拆分安装。
