@@ -31,21 +31,3 @@
 #   shell: 'mv { temporary_dirs }}etcd-add-node/calico.yml { temporary_dirs }}etcd-add-node/calico.yml-`date +%Y%m%d%H%M%S`'
 #   ignore_errors: true
 #   delegate_to: "{{ groups['kube-master'][0] }}"
-
-- name: Delete Calico Old Etcd Secrets
-  shell: '{{ kubernetes_ctl_path }}kubectl delete secret calico-etcd-secrets -n kube-system'
-  delegate_to: "{{ groups['kube-master'][0] }}"
-  ignore_errors: true
-
-- name: Deploy Calico Etcd Secrets
-  shell: '{{ kubernetes_ctl_path }}kubectl create secret generic calico-etcd-secrets -n kube-system \
-                                                         --from-literal=etcd-ca={{ etcd_ssl_dirs }}etcd-ca.pem \
-                                                         --from-literal=etcd-cert={{ etcd_ssl_dirs }}etcd.pem
-                                                         --from-literal=etcd-key={{ etcd_ssl_dirs }}etcd-key.pem'
-  delegate_to: "{{ groups['kube-master'][0] }}"
-
-- name: Reload Calico Controllers
-  shell: "kubectl rollout restart deployment/calico-kube-controllers -n kube-system"
-
-- name: Reload Calico Nodes
-  shell: "kubectl rollout restart daemonset/calico-node -n kube-system"
