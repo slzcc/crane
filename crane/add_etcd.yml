@@ -87,6 +87,23 @@
   tasks:
     - { include_tasks: 'roles/etcd-add-node/includes/update-k8s-manifests.yml' }
 
+- name: Update K8s Cluster Calico Network Config
+  hosts: kube-master[0]
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/crane/defaults/main.yml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/etcd-install/vars/main.yml"
+    - "roles/kubernetes-networks/defaults/calico.yaml"
+    - "roles/kubernetes-networks/defaults/main.yml"
+  tasks:
+    - { include_tasks: 'roles/etcd-add-node/includes/update-k8s-calico.yml' }
+
 - name: Update Etcd Cluster Manifests
   hosts: etcd
   become: yes
