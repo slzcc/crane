@@ -21,13 +21,6 @@
     - etcd-csr.json
   delegate_to: "{{ groups['etcd-cluster-add-node'][0] }}"
 
-## Backup Old Certificate Files
-## ********************************************************************************************************************************
-
-- name: Backup Old Certificate Files
-  shell: "cp -a {{ etcd_ssl_dirs }} {{ temporary_dirs }}etcd-add-node/certs-old-`date +%Y%m%d%H%M%S`"
-  delegate_to: "{{ groups['etcd-cluster-add-node'][0] }}"
-
 ## Create Certificate Files
 ## ********************************************************************************************************************************
 
