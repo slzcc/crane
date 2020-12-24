@@ -1,4 +1,4 @@
-FROM slzcc/ansible:2.8
+FROM slzcc/ansible:2.9.14-alpine
 
 USER root
 

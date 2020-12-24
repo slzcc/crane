@@ -1,0 +1,5 @@
+## Backup Old Certificate Files
+## ********************************************************************************************************************************
+
+- name: Backup Old Certificate Files
+  shell: "cp -a {{ etcd_ssl_dirs }} {{ temporary_dirs }}etcd-add-node/certs-old-`date +%Y%m%d%H%M%S`"
