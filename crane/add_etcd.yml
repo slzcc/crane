@@ -51,6 +51,7 @@
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-default/defaults/configure.yaml"
   tasks:
+    - { include_tasks: 'roles/etcd-add-node/includes/backups.yml' }
     - { include_tasks: 'roles/etcd-add-node/includes/main.yml' }
 
 - name: Create New Etcd Node

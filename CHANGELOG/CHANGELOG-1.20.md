@@ -248,7 +248,7 @@ is_remove_all: true
 
 # v1.20.1.2
 
-###修复
+### 修复
 
 修复如果值为 none 则 kubelet runtime 的配置走默认 cri.
 
@@ -302,14 +302,24 @@ kubelet_containerd_cri_options: >-
 
 因可能会存在多次执行的问题, 但不影响使用。
 
-###优化
+> etcd_add_nodes 时需要保证 etcd 节点数在 2 个以上。
+
+修复所有 retation 错别字 => rotation .
+
+修复 etcd_certificate_rotation 在 containerd 下的变更问题, 如果在 containerd 下则变更必须使用 crictl 执行, 否则会报错。
+
+### 优化
 
 Ansible for Docker 使用 `alpine` 底层镜像, 镜像缩减至 202M+, 之前 `ubuntu` 底层镜像构建出的大小可能在 390M+ 。
 
 > Ansible 升级 2.8 => 2.9.14.
 
-## 可使用的入口配置
+### 可使用的入口配置
 
 因 Crane 变动比较大, 默认 Crane 的 CRI 驱动已经改为 Containerd, 所以部分功能无法直接使用, 请参考后续版本的支持, 目前以基于 Containerd 可正常提供使用的功能如下:
   * remove_etcd_nodes.yml
   * add_etcd.yml
+
+### 升级
+
+Containerd 1.3.9 => 1.4.3。`@crane/roles/cri-install/vars/containerd.yaml`
