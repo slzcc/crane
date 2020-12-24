@@ -319,6 +319,8 @@ Ansible for Docker 使用 `alpine` 底层镜像, 镜像缩减至 202M+, 之前 `
 因 Crane 变动比较大, 默认 Crane 的 CRI 驱动已经改为 Containerd, 所以部分功能无法直接使用, 请参考后续版本的支持, 目前以基于 Containerd 可正常提供使用的功能如下:
   * remove_etcd_nodes.yml
   * add_etcd.yml
+  * etcd_certificate_rotation.yml
+  * k8s_certificate_rotation.yml
 
 ### 升级
 
