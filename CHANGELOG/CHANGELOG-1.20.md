@@ -245,3 +245,19 @@ is_remove_all: true
 ```
 
 > 主要考虑初次使用的用户无法正常删除部分数据.
+
+# v1.20.1.2
+
+修复
+
+```
+@crane/roles/cri-install/vars/kubelet.yaml 修复如果值为 none 则 kubelet runtime 的配置走默认 cri.
+
+kubelet_containerd_cri_options: >-
+  {% if cri_drive_install_type == 'none' %}
+  {% elif cri_k8s_default == 'crio' %}
+  --container-runtime=remote --container-runtime-endpoint=unix://{{ crio_socket_path }}
+  {%- elif cri_k8s_default == "containerd" -%}
+  --container-runtime=remote --container-runtime-endpoint=unix://{{ containerd_socket_path }}
+  {% endif %}
+```
