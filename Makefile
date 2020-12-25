@@ -36,6 +36,10 @@ run_main:
 	@docker rm -f crane > /dev/null 2>&1 || true
 	@docker run --name crane --net host --rm -it -e ANSIBLE_HOST_KEY_CHECKING=false -e TERM=xterm-256color -e COLUMNS=238 -e LINES=61 -v ~/.ssh:/root/.ssh -v ${PWD}:/crane -v ${PWD}/crane/ansible.cfg:/etc/ansible/ansible.cfg -w /crane/crane  ${DockerHubRepoName}/${ProjectName}:${VERSION} -i nodes ${CRANE_ENTRANCE} ${OPTION}
 
+run_main_cri:
+	@docker rm -f crane > /dev/null 2>&1 || true
+	@docker run --name crane --net host --rm -it -e ANSIBLE_HOST_KEY_CHECKING=false -e TERM=xterm-256color -e COLUMNS=238 -e LINES=61 -v ~/.ssh:/root/.ssh -v ${PWD}:/crane -v ${PWD}/crane/ansible.cfg:/etc/ansible/ansible.cfg -w /crane/crane  ${DockerHubRepoName}/${ProjectName}:${VERSION} -i nodes main.yml --tags cri ${OPTION}
+
 run_addons:
 	@docker rm -f crane > /dev/null 2>&1 || true
 	@docker run --name crane --net host --rm -it -e ANSIBLE_HOST_KEY_CHECKING=false -e TERM=xterm-256color -e COLUMNS=238 -e LINES=61 -v ~/.ssh:/root/.ssh -v ${PWD}:/crane -v ${PWD}/crane/ansible.cfg:/etc/ansible/ansible.cfg -w /crane/crane  ${DockerHubRepoName}/${ProjectName}:${VERSION} -i nodes main.yml --tags k8s-addons

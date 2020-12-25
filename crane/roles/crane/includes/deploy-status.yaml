@@ -1,0 +1,41 @@
+---
+
+- name: Update Crane Status
+  shell: >
+    cat > /etc/crane/status <<EOF
+      {
+          "version" : {
+              "crane": "{{ k8s_version }}.{{ build_k8s_version }}",
+              "haproxy": "{{ haproxy_version }}",
+              "etcd": "{{ etcd_version }}",
+              "k8s": "{{ k8s_version }}",
+              "network": {
+                "calico": "{{ calico_version }}",
+                "cni": "{{ cni_version }}",
+                "coredns": "{{ dns_version }}"
+              },
+              "system": {
+                "http_proxy": "{{ http_proxy }}",
+                "https_proxy": "{{ https_proxy }}",
+                "no_proxy": "{{ no_proxy }}",
+                "time_location": "{{ time_location }}"
+              },
+              "cri": {
+                "cri_k8s_default": "{{ cri_k8s_default }}",
+        {%- if "docker" in cri_driver -%}
+                "docker": "{{ docker_version }}",
+        {%- endif -%}
+        {%-if "containerd" in cri_driver -%}
+                "containerd": "{{ containerd_version }}",
+        {%- endif -%}
+        {%- if "crio" in cri_driver -%}
+                "crio": "{{ crio_version }}",
+        {%- endif -%}
+                "cri_driver": "{{ cri_driver }}"
+              }
+          },
+          "status": "successful", 
+          "crane_type": "{{ crane_deploy_type }}",
+          "timestamp": "$(date +%Y%m%d%H%M%S)"
+      }
+    EOF

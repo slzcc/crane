@@ -17,3 +17,5 @@ is_remove_all: false
 ```
 $ make clean_main
 ```
+
+> 如果有网络限制等于等因素存在的不建议全部清除, 因半离线会下载全部所需的包.

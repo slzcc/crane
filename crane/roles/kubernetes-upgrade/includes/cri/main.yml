@@ -1,0 +1,16 @@
+---
+
+- name: Check Docker Bin, Ensure that the command line is available.
+  include_tasks: 'roles/kubernetes-upgrade/includes/cri/docker.yaml'
+  when: 
+    - cri_k8s_default == 'docker'
+
+- name: Check CRIO Bin, Ensure that the command line is available.
+  include_tasks: 'roles/kubernetes-upgrade/includes/cri/crio.yaml'
+  when: 
+    - cri_k8s_default != 'docker'
+
+- name: Check CRIO Bin, Ensure that the command line is available.
+  include_tasks: 'roles/kubernetes-upgrade/includes/cri/containerd.yaml'
+  when: 
+    - cri_k8s_default != 'docker'
