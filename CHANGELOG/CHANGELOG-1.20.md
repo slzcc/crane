@@ -350,3 +350,7 @@ Containerd 1.3.9 => 1.4.3。`@crane/roles/cri-install/vars/containerd.yaml`
 ### 增加
 
 新增 Crane 部署的版本信息, 主要保证向后兼容的问题.
+
+### 修复 
+
+补之前发布的 v1.20.1.3 版本中还残留 `temporary.yaml` 执行文件, 对其进行销毁。
