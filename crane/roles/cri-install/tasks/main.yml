@@ -1,9 +1,5 @@
 ---
 
-# Create Temporary Directory
-- name: Create Temporary Directory
-  include: "roles/system-initialize/includes/temporary.yaml"
-
 - name: Deploy CRI to Containerd
   include: "roles/cri-install/includes/containerd/main.yml"
   when: 
