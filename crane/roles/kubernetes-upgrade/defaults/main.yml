@@ -1,1 +1,3 @@
 k8s_upgrade_version: '{{ ".".join(k8s_version.split(".")[0:2]).split("v")[1:][0] }}'
+
+is_k8s_upgrade_calico: false

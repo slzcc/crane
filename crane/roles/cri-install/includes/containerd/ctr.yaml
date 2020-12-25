@@ -1,0 +1,16 @@
+---
+
+- name: Install Containerd for local...
+  include_tasks: roles/downloads-packages/includes/containerd/local_download.yaml
+  when: containerd_install_type == 'local_binary'
+
+- name: Install Containerd for http...
+  include_tasks: roles/downloads-packages/includes/containerd/http_download.yaml
+  when: containerd_install_type == 'http_binary'
+
+- name: Move Containerd Ctr binray to bin Path
+  shell: "cp -a {{ temporary_dirs }}containerd/bin/{{ item }} {{ kubernetes_ctl_path }}"
+  with_items:
+    - "ctr"
+    - "containerd-shim-runc-v2"
+  ignore_errors: true
