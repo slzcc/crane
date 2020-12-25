@@ -31,10 +31,11 @@
         {%- if "crio" in cri_driver -%}
                 "crio": "{{ crio_version }}",
         {%- endif -%}
-                "cri_driver": {{ cri_driver }}
+                "cri_driver": "{{ cri_driver }}"
               }
           },
           "status": "successful", 
+          "crane_type": "{{ crane_deploy_type }}",
           "timestamp": "$(date +%Y%m%d%H%M%S)"
       }
     EOF

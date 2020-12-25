@@ -7,7 +7,7 @@
 k8s_version: 'v1.20.1'
 
 # 避免大版本中组件的版本差异, 使用 build 版本作为差异配置项, 在项目中可以看做如下使用 '{{ k8s_version }}.{{ build_k8s_version }}'
-build_k8s_version: '2'
+build_k8s_version: '3'
 
 # 是否使用离线方式部署(Kubernetes).
 # 当选择 true 时, 执行 `make local_save_image` 命令下载官方离线包到 `crane/roles/downloads-packages/files`
@@ -106,7 +106,7 @@ cri_driver: ["docker", "containerd", "crio"]
 
 # 此选项配置 Kubernetes 默认 cri 驱动
 # 当使用 RuntimeClass 时此选项配合 `cri_driver` 使用
-cri_k8s_default: docker
+cri_k8s_default: containerd
 
 # 具体配置请移步 crane/roles/cri-install/defaults/main.yml 进行修改
 
