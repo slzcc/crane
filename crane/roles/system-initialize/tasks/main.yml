@@ -20,13 +20,6 @@
   when: result is failed
   ignore_errors: true
 
-# Create Temporary Directory
-- name: Create Temporary Directory
-  include: "roles/system-initialize/includes/temporary.yaml"
-
-- name: Copy Crane Tools Scripts
-  include: "roles/system-initialize/includes/crane/tools_script.yaml"
-
 - name: Create Binary Perform Directory
   file:
     path: "{{ kubernetes_ctl_path }}"

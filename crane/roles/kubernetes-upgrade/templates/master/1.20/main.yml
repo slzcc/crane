@@ -56,24 +56,6 @@
     owner: "{{ ssh_connect_user }}" 
   when: is_kube_master or is_add_master
 
-- name: Copy Kubernetes Proxy Config Files
-  template: 
-    src: roles/kubernetes-upgrade/templates/master/{{ k8s_upgrade_version }}/network/kube-proxy.j2
-    dest: "{{ temporary_dirs }}kube-proxy.yml"
-    mode: 0644
-    owner: "{{ ssh_connect_user }}" 
-  delegate_to: "{{ groups['kube-master'][0] }}"
-
-- name: Update Kuberneres Proxy *
-  shell: '{{ kubernetes_ctl_path }}kubectl delete -f {{ temporary_dirs }}kube-proxy.yml'
-  ignore_errors: true
-  delegate_to: "{{ groups['kube-master'][0] }}"
-
-- name: Update Kuberneres Proxy **
-  shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}kube-proxy.yml ; do >&2 echo "Starting..." && sleep 1 ; done'
-  ignore_errors: true
-  delegate_to: "{{ groups['kube-master'][0] }}"
-  
 - name: System Reload
   shell: "systemctl daemon-reload"
 
@@ -82,16 +64,7 @@
     name: kubelet
     state: started
 
-- name: Rester Kubernetes ApiServer Service
-  shell: "{{ kubernetes_ctl_path }}docker ps --filter name=k8s_kube-kube-apiserver -q | xargs -i {{ kubernetes_ctl_path }}docker rm -f {} > /dev/null 2>&1"
-  ignore_errors: true
-
-- name: Rester Kubernetes ControllerManager Service
-  shell: "{{ kubernetes_ctl_path }}docker ps --filter name=k8s_kube-controller-manager -q | xargs -i {{ kubernetes_ctl_path }}docker rm -f {} > /dev/null 2>&1"
-  ignore_errors: true
-
-- name: Rester Kubernetes Scheduler Service
-  shell: "{{ kubernetes_ctl_path }}docker ps --filter name=k8s_kube-scheduler -q | xargs -i {{ kubernetes_ctl_path }}docker rm -f {} > /dev/null 2>&1"
-  ignore_errors: true
-
+- name: Initialize Master Manifests
+  include_tasks: "roles/kubernetes-upgrade/includes/update-k8s-manifests.yaml"
+  when: is_kube_master
 

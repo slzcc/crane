@@ -1,0 +1,19 @@
+---
+
+- name: Rester Kubernetes ApiServer/ControllerManager/Scheduler Service for Docker
+  shell: "{{ kubernetes_ctl_path }}docker ps --filter name={{ item }} -q | xargs -i {{ kubernetes_ctl_path }}docker rm -f {} > /dev/null 2>&1"
+  when: 
+    - cri_k8s_default == 'docker'
+  with_items:
+    - "k8s_kube-kube-apiserver"
+    - "k8s_kube-controller-manager"
+    - "k8s_kube-scheduler"
+    
+- name: Update Kubernetes ApiServer/ControllerManager/Scheduler Server for Containerd
+  shell: "for i in $({{ kubernetes_ctl_path }}crictl ps --name {{ item }} -aq); do {{ kubernetes_ctl_path }}crictl rm -f ${i}; sleep 2 ; done"
+  when: 
+    - cri_k8s_default == 'containerd'
+  with_items:
+    - "kube-apiserver"
+    - "kube-controller-manager"
+    - "kube-scheduler"
