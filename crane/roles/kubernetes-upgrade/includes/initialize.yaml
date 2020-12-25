@@ -1,0 +1,26 @@
+---
+
+- name: Get Current TimeStamp
+  shell: "date +%Y%m%d%H%M%S"
+  register: result
+
+- name: Create Kubernetes Upgrade Path
+  file:
+    path: "{{ temporary_dirs }}kubernetes-upgrade/{{ item }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+  with_items:
+    - "etc"
+    - "kubelet"
+
+- name: Backup Old Kubernetes Etc Files
+  shell: "cp -a {{ kubernetes_etc_dirs }} {{ temporary_dirs }}kubernetes-upgrade/etc/kubernetes-etc-{{ result.stdout }}"
+
+- name: Backup Old Kubernetes Etc Files
+  shell: "cp -a {{ kubelet_work_dirs }}{{ item }} {{ temporary_dirs }}kubernetes-upgrade/kubelet/{{ item }}-{{ result.stdout }}"
+  ignore_errors: true
+  with_items:
+    - "config.yaml"
+    - "kubernetes-flags.env"
+    - "pki"

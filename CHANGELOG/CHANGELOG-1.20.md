@@ -5,6 +5,7 @@
     - [v1.20.1.0 更新内容](#v12010)
     - [v1.20.1.1 更新内容](#v12011)
     - [v1.20.1.2 更新内容](#v12012)
+    - [v1.20.1.3 更新内容](#v12013)
 
 # v1.20.0.0
 
@@ -325,3 +326,27 @@ Ansible for Docker 使用 `alpine` 底层镜像, 镜像缩减至 202M+, 之前 `
 ### 升级
 
 Containerd 1.3.9 => 1.4.3。`@crane/roles/cri-install/vars/containerd.yaml`
+
+# v1.20.1.2
+
+此版本主要修复了 v1.20.x 版本中 Upgrade 与之前版本不兼容的问题, 因 cri 不一致可能存在的命令不一致报错问题。
+
+> 目前版本不支持动态感知 cri, 但后续版本会进行添加.
+
+
+### 文档
+
+添加或修复文档说明:
+  * docs/REMOVE_CLUSTER.md
+  * docs/UPGRADE_KUBERNETES.md
+
+
+### 可使用的入口配置
+
+因 Crane 变动比较大, 默认 Crane 的 CRI 驱动已经改为 Containerd, 所以部分功能无法直接使用, 请参考后续版本的支持, 目前以基于 Containerd 可正常提供使用的功能如下:
+  * upgrade_version.yml
+
+
+### 增加
+
+新增 Crane 部署的版本信息, 主要保证向后兼容的问题.

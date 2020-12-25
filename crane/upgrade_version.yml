@@ -3,31 +3,109 @@
   gather_facts: false
   roles:
     - { role: local-task }
-    
-- hosts: all
-  become: yes
-  become_method: sudo
-  vars:
-    ansible_ssh_pipelining: true
-  tasks:
-    - name: Check all Nodes
-      ping: 
 
-- name: Update Node Cluster Version
-  hosts: kube-master:kube-node
+# - hosts: k8s-cluster:etcd
+#   gather_facts: true
+#   become: yes
+#   become_method: sudo
+#   vars_files:
+#     - "roles/crane/defaults/main.yml"
+#   roles:
+#     - { role: downloads-ssh-key, tags: [copy_ssh_private_key]}
+    
+- name: Initialize Crane Env
+  hosts: all
   become: yes
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
   vars_files:
-    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/cri-install/vars/containerd.yaml"
+    - "roles/cri-install/vars/crio.yaml"
+    - "roles/cri-install/vars/docker.yaml"
+    - "roles/crane/defaults/main.yml"
     - "roles/kubernetes-default/defaults/configure.yaml"
     - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/system-initialize/defaults/main.yml"
-    - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-default/vars/kubelet.yaml"
-    - "roles/cri-install/vars/kubelet.yaml"
-    - "roles/cri-install/vars/crio.yaml"
-    - "roles/cri-install/vars/containerd.yaml"
   roles:
-    - { role: kubernetes-upgrade, tags: [k8s-upgrade]}
+    - { role: crane, tags: [crane] }
+  # tasks:
+
+#     - { include_tasks: 'roles/kubernetes-upgrade/includes/initialize.yaml' }
+
+# - name: Initialize Update Kubernetes Cluster Operation
+#   hosts: kube-master[0]
+#   become: yes
+#   become_method: sudo
+#   vars:
+#     ansible_ssh_pipelining: true
+#   vars_files:
+#     - "roles/crane/defaults/main.yml"
+#     - "roles/downloads-ssh-key/defaults/main.yml"
+#     - "roles/kubernetes-manifests/defaults/main.yml"
+#     - "roles/kubernetes-default/defaults/configure.yaml"
+#     - "roles/etcd-install/vars/main.yml"
+#     - "roles/kubernetes-networks/defaults/calico.yaml"
+#     - "roles/kubernetes-networks/defaults/main.yml"
+#   tasks:
+#     - { include_tasks: 'roles/kubernetes-upgrade/includes/update-k8s-networks.yaml' }
+
+# - name: Update Node Cluster Version
+#   hosts: kube-master:kube-node
+#   become: yes
+#   become_method: sudo
+#   vars:
+#     ansible_ssh_pipelining: true
+#   vars_files:
+#     - "roles/crane/defaults/main.yml"
+#     - "roles/cri-install/vars/main.yml"
+#     - "roles/cri-install/vars/containerd.yaml"
+#     - "roles/cri-install/vars/crio.yaml"
+#     - "roles/cri-install/vars/docker.yaml"
+#     - "roles/cri-install/vars/kubelet.yaml"
+#     - "roles/downloads-ssh-key/defaults/main.yml"
+#     - "roles/etcd-install/defaults/tls.yaml"
+#     - "roles/etcd-install/vars/main.yml"
+#     - "roles/kubernetes-default/defaults/configure.yaml"
+#     - "roles/kubernetes-default/defaults/main.yml"
+#     - "roles/kubernetes-default/defaults/tls.yaml"
+#     - "roles/kubernetes-default/vars/haproxy.yaml"
+#     - "roles/kubernetes-default/vars/kubelet.yaml"
+#     - "roles/kubernetes-manifests/defaults/main.yml"
+#     - "roles/kubernetes-networks/defaults/calico.yaml"
+#     - "roles/kubernetes-networks/defaults/keepalived.yaml"
+#     - "roles/kubernetes-networks/defaults/main.yml"
+#     - "roles/system-initialize/defaults/main.yml"
+#   roles:
+#     - { role: kubernetes-upgrade, tags: [k8s-upgrade]}
+
+# - name: Update Kubernetes Cluster Networks
+#   hosts: kube-master[0]
+#   become: yes
+#   become_method: sudo
+#   vars:
+#     ansible_ssh_pipelining: true
+#   vars_files:
+#     - "roles/crane/defaults/main.yml"
+#     - "roles/downloads-ssh-key/defaults/main.yml"
+#     - "roles/kubernetes-manifests/defaults/main.yml"
+#     - "roles/kubernetes-default/defaults/configure.yaml"
+#     - "roles/etcd-install/vars/main.yml"
+#     - "roles/kubernetes-networks/defaults/calico.yaml"
+#     - "roles/kubernetes-networks/defaults/main.yml"
+#   tasks:
+#     - { include_tasks: 'roles/kubernetes-upgrade/includes/update-k8s-networks.yaml' }
+
+- name: Update Kubernetes Cluster Tools
+  hosts: kube-master[0]
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/kubernetes-upgrade/defaults/main.yml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+  tasks:
+    - { include_tasks: 'roles/kubernetes-upgrade/includes/update-k8s-calico.yaml', when: is_k8s_upgrade_calico }
+    - { include_tasks: 'roles/kubernetes-upgrade/includes/check-cluster.yaml' }
