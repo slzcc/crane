@@ -6,3 +6,10 @@
     mode: 0755
     owner: "{{ ssh_connect_user }}"
     state: directory
+
+- name: Create Crane Private Directory
+  file:
+    path: "/etc/crane"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory

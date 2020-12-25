@@ -1,0 +1,9 @@
+---
+- name: Detect cluster information
+  shell: "{{ kubernetes_ctl_path }}kubectl version"
+  register: result
+  ignore_errors: true
+
+- debug:
+    msg: |
+      {{ result.stdout }}

@@ -1,0 +1,5 @@
+---
+
+- name: Check Docker Binary Path for Crane install, Otherwise soft connect to...
+  shell: "if [ ! -e '{{ kubernetes_ctl_path }}docker' ]; then ln -sf /usr/bin/docker {{ kubernetes_ctl_path }}docker ; fi"
+  ignore_errors: true
