@@ -1,0 +1,13 @@
+---
+
+# - name: Deploy CRI to CRIO
+#   include: "roles/cri-install/includes/cri-o/main.yml"
+
+- name: Copy Crictl Config
+  template: 
+    src: "roles/cri-install/templates/{{ item }}"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+    dest: "/etc/crictl.yaml"
+  with_items:
+    - "crictl.yaml"

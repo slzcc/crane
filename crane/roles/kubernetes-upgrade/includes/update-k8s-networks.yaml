@@ -1,0 +1,22 @@
+- name: Copy Kubernetes DNS Config Files
+  template: 
+    src: "roles/kubernetes-networks/templates/CoreDNS.j2"
+    dest: "{{ temporary_dirs }}kubernetes-upgrade/CoreDNS.yml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+
+- name: Copy Kubernetes Proxy Config Files
+  template: 
+    src: roles/kubernetes-upgrade/templates/master/{{ k8s_upgrade_version }}/network/kube-proxy.j2
+    dest: "{{ temporary_dirs }}kubernetes-upgrade/kube-proxy.yml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+
+- name: Update Kuberneres Proxy *
+  shell: '{{ kubernetes_ctl_path }}kubectl delete -f {{ temporary_dirs }}kubernetes-upgrade/kube-proxy.yml'
+  ignore_errors: true
+
+- name: Update Kuberneres Proxy **
+  shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}kubernetes-upgrade/kube-proxy.yml ; do >&2 echo "Starting..." && sleep 1 ; done'
+  ignore_errors: true
+  

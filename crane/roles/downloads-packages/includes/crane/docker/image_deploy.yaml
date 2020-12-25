@@ -20,7 +20,7 @@
 - name: Pull the Image
   shell: "{{ kubernetes_ctl_path }}docker rm -f import-kubernetes-temporary | true && {{ kubernetes_ctl_path }}docker run --name import-kubernetes-temporary -d -v /var/run/docker.sock:/var/run/docker.sock:ro {{ k8s_image_deploy_repo }}:{{ k8s_version }}.{{ build_k8s_version }} sleep 1234567"
   when: (check_kubectl_version.stdout != k8s_version) or (check_k8s_image is failed) or (check_binary_files is failed)
-
+  
 - name: Export the Image
   shell: 'until {{ kubernetes_ctl_path }}docker exec -i import-kubernetes-temporary bash /docker-image-import.sh ; do >&2 echo "Starting..." && sleep 1 ; done'
   when: check_k8s_image is failed
