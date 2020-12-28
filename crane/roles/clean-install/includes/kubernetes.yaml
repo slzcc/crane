@@ -60,3 +60,9 @@
     path: "{{ kubernetes_etc_dirs }}"
     state: absent
   ignore_errors: true
+
+- name: Clean Dockershim directory.
+  file:
+    path: "/var/lib/dockershim"
+    state: absent
+  ignore_errors: true

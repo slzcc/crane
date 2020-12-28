@@ -52,7 +52,7 @@ spec:
     - --peer-trusted-ca-file={{ etcd_ssl_dirs }}etcd-ca.pem
     - --initial-cluster={{ initial_cluster() }}
     - --initial-cluster-token={{ etcd_cluster_token }}
-    - --initial-cluster-state=existing
+    - --initial-cluster-state={{ etcd_cluster_type }}
     - --data-dir={{ etcd_data_dirs }}
     livenessProbe:
       failureThreshold: 8

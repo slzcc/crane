@@ -14,7 +14,7 @@
 # Clean CNI
 - name: Clean CNI
   include: "roles/clean-install/includes/cni.yaml"
-  when: is_remove_cni
+  when: is_remove_all or is_remove_cni
   
 # Clean Haproxy
 - name: Clean CNI
@@ -39,6 +39,10 @@
   include: "roles/clean-install/includes/crio/main.yaml"
   when: is_remove_all or is_remove_crio
 
+# Clean Calico
+- name: Clean Other
+  include: "roles/clean-install/includes/calico.yaml"
+  
 # Clean Other
 - name: Clean Other
   include: "roles/clean-install/includes/other.yaml"

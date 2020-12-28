@@ -330,6 +330,8 @@ Containerd 1.3.9 => 1.4.3。`@crane/roles/cri-install/vars/containerd.yaml`
 
 # v1.20.1.3
 
+## v1.20.1.3 有重大 BUG, 请使用后续版本, 此版本只标记修改过程内容的存在
+
 此版本主要修复了 v1.20.x 版本中 Upgrade 与之前版本不兼容的问题, 因 cri 不一致可能存在的命令不一致报错问题。
 
 > 目前版本不支持动态感知 cri, 但后续版本会进行添加.
@@ -412,8 +414,19 @@ Containerd 1.3.9 => 1.4.3。`@crane/roles/cri-install/vars/containerd.yaml`
 is_mandatory_docker_install: true => false
 ```
 
+修复清除 docker 时, 各组件顺序执行造成的报错问题。
+
+修复 v1.20.1.2/3 测试时修改的 etcd.j2 文件造成 etcd 无法正常启动的 BUG:
+
+```
+@crane/roles/etcd-install/templates/etcd.j2
+    - --initial-cluster-state=existing
+=>
+    - --initial-cluster-state=new
+```
+
 ### 优化
 
-Containerd 可以通过 `is_mandatory_containerd_install` 参数强制安装 containerd.
+Containerd 可以通过 `is_mandatory_containerd_install` 参数强制安装 containerd. 强制安装可以解决 docker 默认安装 containerd 无法直接使用的问题, 但会暂存 docker 启动的服务不可用.
 
 老版本的 docker 安装默认安装在 `/usr/bin` 与 Crane 的默认安装目录 `/usr/local/bin` 有不一样的地方, 目前已经添加 `@crane/roles/clean-install/defaults/main.yml => is_remove_not_crane_docker_ce` 参数, 在清除集群时, 可以清除非 Crane 安装的 docker.

@@ -5,7 +5,8 @@
     name: ["docker-ce"]
     autoremove: yes
     purge: yes
-  when: ansible_lsb.id == 'Ubuntu'
+  when: 
+    - ansible_lsb.id == 'Ubuntu'
   ignore_errors: true
 
 - name: Clean Docker for Centos
@@ -13,5 +14,6 @@
     name: ["docker-ce"]
     state: removed
     autoremove: yes
-  when: ansible_lsb.id == 'Centos'
+  when: 
+    - ansible_lsb.id == 'Centos'
   ignore_errors: true
