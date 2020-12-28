@@ -23,3 +23,6 @@ containerd_plugin_root: '/opt/containerd'
 
 # Containerd Socket 文件路径
 containerd_socket_path: '/run/containerd/containerd.sock'
+
+# 强制安装 containerd, 当可能存在不同版本 containerd 可以强制安装统一版本
+is_mandatory_containerd_install: false

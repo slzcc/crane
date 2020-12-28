@@ -12,6 +12,9 @@ is_remove_all: true
 # 清除集群时是否删除 Docker.
 is_remove_docker_ce: false
 
+# 清除集群时是否删除不是基于 Crane 安装的 Docker.
+is_remove_not_crane_docker_ce: false
+
 # 清除 Docker CE 时清除数据目录.
 is_remove_docker_dir: false
 
