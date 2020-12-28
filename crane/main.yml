@@ -94,6 +94,7 @@
     - "roles/system-initialize/defaults/main.yml"
     - "roles/crane/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-networks/defaults/main.yml"
   roles:
     - { role: kubernetes-default, tags: [k8s-default]}
 
