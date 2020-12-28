@@ -425,6 +425,8 @@ is_mandatory_docker_install: true => false
     - --initial-cluster-state=new
 ```
 
+修复 containerd 启动容器删除不干净的问题。
+
 ### 优化
 
 Containerd 可以通过 `is_mandatory_containerd_install` 参数强制安装 containerd. 强制安装可以解决 docker 默认安装 containerd 无法直接使用的问题, 但会暂存 docker 启动的服务不可用.

@@ -7,4 +7,5 @@
   with_items:
     - "{{ containerd_data_root }}"
     - "{{ containerd_plugin_root }}"
+    - "{{ containerd_run_path }}"
   ignore_errors: true
