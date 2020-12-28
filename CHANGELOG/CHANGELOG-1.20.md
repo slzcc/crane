@@ -432,3 +432,8 @@ is_mandatory_docker_install: true => false
 Containerd 可以通过 `is_mandatory_containerd_install` 参数强制安装 containerd. 强制安装可以解决 docker 默认安装 containerd 无法直接使用的问题, 但会暂存 docker 启动的服务不可用.
 
 老版本的 docker 安装默认安装在 `/usr/bin` 与 Crane 的默认安装目录 `/usr/local/bin` 有不一样的地方, 目前已经添加 `@crane/roles/clean-install/defaults/main.yml => is_remove_not_crane_docker_ce` 参数, 在清除集群时, 可以清除非 Crane 安装的 docker.
+
+
+### 增加
+
+可以直接通过 crio 在线方式部署。
