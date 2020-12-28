@@ -17,6 +17,7 @@
     dest: "{{ kubelet_work_dirs }}kubernetes-flags.env"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
+  when: is_k8s_upgrade_calico_node_kubelet_env_config
 
 - name: Copy 10-kubelet.conf Files
   template: 

@@ -6,6 +6,7 @@
     - [v1.20.1.1 更新内容](#v12011)
     - [v1.20.1.2 更新内容](#v12012)
     - [v1.20.1.3 更新内容](#v12013)
+    - [v1.20.1.4 更新内容](#v12014)
 
 # v1.20.0.0
 
@@ -354,3 +355,65 @@ Containerd 1.3.9 => 1.4.3。`@crane/roles/cri-install/vars/containerd.yaml`
 ### 修复 
 
 补之前发布的 v1.20.1.3 版本中还残留 `temporary.yaml` 执行文件, 对其进行销毁。
+
+# v1.20.1.4
+
+### 修复
+
+修复 `@crane/upgrade_version.yml` 中遗漏的配置项:
+
+```
+- name: Update Kubernetes Cluster Networks
+  hosts: kube-master[0]
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/crane/defaults/main.yml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/etcd-install/vars/main.yml"
+    - "roles/kubernetes-networks/defaults/calico.yaml"
+    - "roles/kubernetes-networks/defaults/main.yml"
++/+    
+    - "roles/kubernetes-upgrade/defaults/main.yml"
++/+
+  tasks:
+    - { include_tasks: 'roles/kubernetes-upgrade/includes/update-k8s-networks.yaml' }
+
+删除: 重叠的配置项, 会造成 bug 阻塞
+-/-
+- name: Initialize Update Kubernetes Cluster Operation
+  hosts: kube-master[0]
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/crane/defaults/main.yml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/etcd-install/vars/main.yml"
+    - "roles/kubernetes-networks/defaults/calico.yaml"
+    - "roles/kubernetes-networks/defaults/main.yml"
+    - "roles/kubernetes-upgrade/defaults/main.yml"
+  tasks:
+    - { include_tasks: 'roles/kubernetes-upgrade/includes/update-k8s-networks.yaml' }
+-/-
+```
+
+修复 `crane/roles/cri-install/vars/docker.yaml => ```
+` 的配置项, 此值是个人测试时未及时修改的问题。
+
+```
+is_mandatory_docker_install: true => false
+```
+
+### 优化
+
+Containerd 可以通过 `is_mandatory_containerd_install` 参数强制安装 containerd.
+
+老版本的 docker 安装默认安装在 `/usr/bin` 与 Crane 的默认安装目录 `/usr/local/bin` 有不一样的地方, 目前已经添加 `@crane/roles/clean-install/defaults/main.yml => is_remove_not_crane_docker_ce` 参数, 在清除集群时, 可以清除非 Crane 安装的 docker.

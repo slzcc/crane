@@ -1,3 +1,8 @@
 k8s_upgrade_version: '{{ ".".join(k8s_version.split(".")[0:2]).split("v")[1:][0] }}'
 
+# 是否更新 Calico, 默认不更新实际不需要更新
 is_k8s_upgrade_calico: false
+
+# 是否更新 kubelet env => "/var/lib/kubelet/kubernetes-flags.env" 配置文件, 因存在 cri 可能存在不统一问题。
+is_k8s_upgrade_calico_master_kubelet_env_config: true
+is_k8s_upgrade_calico_node_kubelet_env_config: true
