@@ -1,0 +1,7 @@
+---
+
+- name: Clean Calico directory.
+  file:
+    path: "/var/lib/calico"
+    state: absent
+  ignore_errors: true

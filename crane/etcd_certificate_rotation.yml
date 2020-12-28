@@ -101,3 +101,18 @@
     - "roles/kubernetes-networks/defaults/main.yml"
   tasks:
     - { include_tasks: 'roles/etcd-ca-rotation/includes/update-cluster-network.yml' }
+
+- name: Sync Crane Delploy Files to Instance
+  hosts: kube-master[0]
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+    crane_deploy_type: 'etcd_certifcate_rotation'
+  vars_files:
+    - "roles/crane/defaults/main.yml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-default/defaults/configure.yaml"
+  tasks:
+    - { include_tasks: 'roles/crane/includes/sync-crane.yaml' }
