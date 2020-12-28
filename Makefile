@@ -19,10 +19,10 @@ CONTAINERD_VERSION := `awk '/^containerd_version/' ./crane/roles/cri-install/var
 #        main.yml
 #        test.yml
 CRANE_ENTRANCE := main.yml
-OPTION := -vv
+OPTION :=
 
 build:
-	@docker build -t ${DockerHubRepoName}/${ProjectName}:${VERSION} . --no-cache
+	@docker build -t ${DockerHubRepoName}/${ProjectName}:${VERSION} . --no-cache --pull
 	
 push:
 	@docker push ${DockerHubRepoName}/${ProjectName}:${VERSION}

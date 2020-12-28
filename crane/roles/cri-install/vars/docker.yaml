@@ -48,7 +48,7 @@ is_docker_daemon_config: true
 docker_systemd_env_option: ''
 
 # 强制安装 Docker, 当可能存在不同版本 Docker 可以强制安装统一版本
-is_mandatory_docker_install: true
+is_mandatory_docker_install: false
 
 # 强制覆盖 daemon.json 配置文件
 is_mandatory_docker_config: false

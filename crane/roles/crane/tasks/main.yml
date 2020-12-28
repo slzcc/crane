@@ -13,6 +13,8 @@
 
 - name: Set Crane Deploy Kubernetes Version in..
   include: 'roles/crane/includes/deploy-status.yaml'
-
+    
 - name: Copy Manual Scripts
   include: 'roles/crane/includes/tools-script.yaml'
+  when: 
+    - crane_deploy_type != 'remove_cluster'
