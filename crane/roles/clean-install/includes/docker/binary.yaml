@@ -15,7 +15,7 @@
 
 - name: Clean Docker Binary Files (Not a crane install)
   file:
-    path: "{{ kubernetes_ctl_path }}{{ item }}"
+    path: "/usr/bin/{{ item }}"
     state: absent
   with_items:
     - "ctr"

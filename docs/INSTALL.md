@@ -120,4 +120,18 @@ $ make clean_main
 
 ### 第一次部署潜在问题
 
-1、部署时需要部署的服务器存在 cri, 但 Crane 是默认根据规则按照 cri 的如果不需要安装 cri 请设置 `cri_drive_install_type` 为 `none` 此时由于是 `v1.20` 官方明确说明准备弃用 docker 但还可以继续使用所以 kubelet 走默认 cri 配置不做任何配置, 但由于 Crane 受 cri 的方式进行半离线安装所以一旦修改了 `cri_drive_install_type: 'node'` 则 Kubernetes 的安装走默认官方 github 在线安装包方式部署, 如果还需要走半离线安装, 则需要修改 `@crane/roles/downloads-packages/defaults/main.yml => is_crane_kubernetes_deploy` 为 `crane` 或任意其他值(只有不等于 none 即可), 此时离线安装会根据 `cri_k8s_default` 的值对应进行离线安装, 并且 kubelet 的 cri 会根据 `cri_k8s_default` 进行修改。
+1、Crane 默认使用 Ansible in Docker 安装, 所以部署时首先准备一台已经安装 docker 的节点然后通过此件点执行 make 命令启动容器执行 ansibe 命令安装, 所以架构应为:
+
+```
+CraneManage  =>  K8sMaster + N
+             =>  K8sNones  + N
+             ...
+```
+
+如果不想使用 Ansible in Docker 架构部署, 可以通过本地安装 ansible 后, 执行本地文件 .crane_env 并参照 Makefile 中执行的命令本地执行 ansible 命令。
+
+2、部署时需要部署的服务器存在 cri, 会引起调用 docker 或 ctr 命令报错的问题, 有两种方式解决此问题:
+
+  1) 卸载所有机器 docker 解决此问题, 修改 `@crane/roles/clean-install/defaults/main.yml => is_remove_not_crane_docker_ce` 为 true 然后执行 `make clean_main` 后安装 Crane.
+
+  2) Crane 是默认根据规则按照 cri 的如果不需要安装 cri 请设置 `cri_drive_install_type` 为 `none` 此时由于是 `v1.20` 官方明确说明准备弃用 docker 但还可以继续使用所以 kubelet 走默认 cri 配置不做任何配置, 但由于 Crane 受 cri 的方式进行半离线安装所以一旦修改了 `cri_drive_install_type: 'node'` 则 Kubernetes 的安装走默认官方 github 在线安装包方式部署, 如果还需要走半离线安装, 则需要修改 `@crane/roles/downloads-packages/defaults/main.yml => is_crane_kubernetes_deploy` 为 `crane` 或任意其他值(只有不等于 none 即可), 此时离线安装会根据 `cri_k8s_default` 的值对应进行离线安装, 并且 kubelet 的 cri 会根据 `cri_k8s_default` 进行修改。

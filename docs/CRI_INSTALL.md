@@ -70,3 +70,6 @@ $ make run_main_cri
 # 重点说明
 
 docker 默认集成 containerd, 如果不是通过 Crane 安装的 Docker, 则使用 Containerd 可能会造成冲突问题(后续版本会优化), 所以默认的 CRI 可以修改为 docker 继续使用, 或卸载自定义安装 docker.
+
+> 如果默认使用 docker 则升级版本中使用了 containerd 进行部署, 则会引发 ctr 等命令无法正常使用造成过程失败报错退出的问题, 严重可能影响集群使用, 所以执行时一定要进行检测。
+> ctr 不可用是因为 docker 附带的 containerd 的配置文件中关闭了绝大部分功能造成的, 如果需要使用 ctr 删除 `/etc/containerd/config.toml => disabled_plugins = ["cri"]` 重启 containerd 生效.

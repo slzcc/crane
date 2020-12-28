@@ -60,10 +60,11 @@
     state: absent
   with_items:
     - "{{ crio_run_data_root }}"
-    - "{{ crio_data_root }}"
+    - "{{ crio_data }}"
     - "/var/log/crio/pods"
     - "/var/run/crio/version"
     - "/var/run/crio/crio.sock"
+    - "/var/lib/crio"
   ignore_errors: true
   when: is_remove_all or is_remove_crio_dir
 
