@@ -9,7 +9,7 @@
 
 - name: Install Containerd
   include_tasks: "roles/cri-install/includes/containerd/os.yaml"
-  when: result.stderr
+  when: is_mandatory_containerd_install or result.stderr
   
 - name: Systemd Reload Config Cache
   shell: "systemctl daemon-reload"

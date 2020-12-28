@@ -12,3 +12,21 @@
     - "docker-proxy"
     - "runc"
   ignore_errors: true
+
+- name: Clean Docker Binary Files (Not a crane install)
+  file:
+    path: "/usr/bin/{{ item }}"
+    state: absent
+  with_items:
+    - "ctr"
+    - "docker"
+    - "dockerd"
+    - "docker-entrypoint.sh"
+    - "docker-init"
+    - "docker-proxy"
+    - "runc"
+    - "containerd"
+    - "containerd-shim"
+    - "containerd-shim-runc-v2"
+  ignore_errors: true
+  when: is_remove_not_crane_docker_ce

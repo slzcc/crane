@@ -4,6 +4,8 @@
 
 目前升级集群不会做任何升级 cri 的操作, 这可能造成整个集群出现异常的风险造成不必要的损失。
 
+[CRI Install](./CRI_INSTALL.md) 部署方式依赖 CRI 类型的安装, 以便后续维护 离线 或 半离线安装.
+
 ## Configure
 
 升级版本是以当前 Crane 部署的版本升级至 `{{ k8s_version }}.{{ build_k8s_version }}` 版本, 请根据需求自定义此版本号, 比如当前版本为:
@@ -28,6 +30,12 @@ build_k8s_version: '2'
 # 1.20 以前的版本请设为 docker (如果 cri 使用的 docker)
 cri_k8s_default: docker
 ```
+
+升级时 `cri_drive_install_type` 值最好为 `none` 因避免集群中存在 CRI 不一致而导致集群配置信息混乱的问题。
+
+> 但由于 `cri_drive_install_type` 值为 `none`, 则 Kubernetes 的安装默认为 在线 安装, 所以需要通过自身解决科学上网问题。否则查看 [CRI Install](./CRI_INSTALL.md) 解决思路。 
+
+> 升级之前请阅读 Crane 部署的逻辑过程, 以极大程度避免与自身环境不一致遇到的问题造成集群无法正常使用, 虽然在执行所有操作之前都会备份至 `/tmp/crane` 目录中, 但有些执行策略是不可逆的。
 
 ## 执行
 

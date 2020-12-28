@@ -48,23 +48,6 @@
   tasks:
     - { include_tasks: 'roles/kubernetes-upgrade/includes/initialize.yaml' }
 
-- name: Initialize Update Kubernetes Cluster Operation
-  hosts: kube-master[0]
-  become: yes
-  become_method: sudo
-  vars:
-    ansible_ssh_pipelining: true
-  vars_files:
-    - "roles/crane/defaults/main.yml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
-    - "roles/etcd-install/vars/main.yml"
-    - "roles/kubernetes-networks/defaults/calico.yaml"
-    - "roles/kubernetes-networks/defaults/main.yml"
-  tasks:
-    - { include_tasks: 'roles/kubernetes-upgrade/includes/update-k8s-networks.yaml' }
-
 - name: Update Node Cluster Version
   hosts: kube-master:kube-node
   become: yes
@@ -108,6 +91,7 @@
     - "roles/etcd-install/vars/main.yml"
     - "roles/kubernetes-networks/defaults/calico.yaml"
     - "roles/kubernetes-networks/defaults/main.yml"
+    - "roles/kubernetes-upgrade/defaults/main.yml"
   tasks:
     - { include_tasks: 'roles/kubernetes-upgrade/includes/update-k8s-networks.yaml' }
 
@@ -125,3 +109,18 @@
   tasks:
     - { include_tasks: 'roles/kubernetes-upgrade/includes/update-k8s-calico.yaml', when: is_k8s_upgrade_calico }
     - { include_tasks: 'roles/kubernetes-upgrade/includes/check-cluster.yaml' }
+
+- name: Sync Crane Delploy Files to Instance
+  hosts: kube-master[0]
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+    crane_deploy_type: 'upgrade_version'
+  vars_files:
+    - "roles/crane/defaults/main.yml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-default/defaults/configure.yaml"
+  tasks:
+    - { include_tasks: 'roles/crane/includes/sync-crane.yaml' }

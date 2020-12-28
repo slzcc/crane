@@ -1,0 +1,193 @@
+#!/bin/bash
+object=$1
+type=$2
+
+source ../crane_env
+
+mkdir -p $temporary_dirs
+
+function set_docker_config() {
+mkdir -p /etc/docker
+cat > /etc/docker/daemon.json <<EOF
+{
+    "registry-mirrors": ["https://4dyopx9i.mirror.aliyuncs.com"],
+    "exec-opts": ["native.cgroupdriver=cgroupfs"],
+    "log-driver": "json-file",
+    "log-opts": {
+        "max-size": "1G"
+    },
+    "data-root": "/var/lib/docker",
+    "storage-driver": "overlay2",
+    "insecure-registry": []
+}
+EOF
+
+cat > /lib/systemd/system/docker.service <<EOF
+[Unit]
+Description=Docker Application Container Engine
+Documentation=https://docs.docker.com
+BindsTo=containerd.service
+After=network-online.target firewalld.service containerd.service
+Wants=network-online.target
+Requires=docker.socket
+
+[Service]
+Type=notify
+ExecStartPre=-/sbin/modprobe overlay
+# the default is not to use systemd for cgroups because the delegate issues still
+# exists and systemd currently does not support the cgroup feature set required
+# for containers run by docker
+ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+ExecReload=/bin/kill -s HUP \$MAINPID
+TimeoutSec=0
+RestartSec=2
+Restart=always
+
+# Note that StartLimit* options were moved from "Service" to "Unit" in systemd 229.
+# Both the old, and new location are accepted by systemd 229 and up, so using the old location
+# to make them work for either version of systemd.
+StartLimitBurst=3
+
+# Note that StartLimitInterval was renamed to StartLimitIntervalSec in systemd 230.
+# Both the old, and new name are accepted by systemd 230 and up, so using the old name to make
+# this option work for either version of systemd.
+StartLimitInterval=60s
+
+# Having non-zero Limit*s causes performance problems due to accounting overhead
+# in the kernel. We recommend using cgroups to do container-local accounting.
+LimitNOFILE=infinity
+LimitNPROC=infinity
+LimitCORE=infinity
+
+# Comment TasksMax if your systemd version does not supports it.
+# Only systemd 226 and above support this option.
+TasksMax=infinity
+
+# set delegate yes so that systemd does not reset the cgroups of docker containers
+Delegate=yes
+
+# kill only the docker process, not all processes in the cgroup
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+cat > /lib/systemd/system/docker.socket <<EOF
+[Unit]
+Description=Docker Socket for the API
+PartOf=docker.service
+
+[Socket]
+ListenStream=/var/run/docker.sock
+SocketMode=0660
+SocketUser=root
+SocketGroup=docker
+
+[Install]
+WantedBy=sockets.target
+EOF
+
+groupadd docker
+
+systemctl daemon-reload
+systemctl enable docker docker.socket
+systemctl start docker docker.socket
+
+}
+
+function set_containerd_config() {
+mkdir -p /etc/containerd
+containerd config default > /etc/containerd/config.toml
+
+cat > /lib/systemd/system/containerd.service <<EOF
+[Unit]
+Description=containerd container runtime
+Documentation=https://containerd.io
+After=network.target
+
+[Service]
+ExecStartPre=-/sbin/modprobe overlay
+ExecStart=/usr/local/bin/containerd
+Restart=always
+RestartSec=5
+KillMode=process
+OOMScoreAdjust=-999
+Delegate=yes
+LimitNOFILE=1048576
+# Having non-zero Limit*s causes performance problems due to accounting overhead
+# in the kernel. We recommend using cgroups to do container-local accounting.
+LimitNPROC=infinity
+LimitCORE=infinity
+TasksMax=infinity
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl daemon-reload
+systemctl enable containerd
+systemctl start containerd
+}
+
+function uninstall_docker() {
+    systemctl disable docker docker.socket
+    systemctl stop docker docker.socket
+    systemctl daemon-reload
+
+    rm -rf /lib/systemd/system/{docker.service,docker.socket}
+    rm -rf {{ temporary_dirs }}/{docker,docker-init,docker-proxy,dockerd,runc}
+    rm -rf /usr/bin/{docker,docker-init,docker-proxy,dockerd,runc}
+    
+    rm -rf /etc/docker
+}
+
+function install_containerd() {
+    wget -qO- https://github.com/containerd/containerd/releases/download/v${CONTAINERD_VERSION}/containerd-${CONTAINERD_VERSION}-linux-amd64.tar.gz > ${temporary_dirs}/containerd-${CONTAINERD_VERSION}-linux-amd64.tar.gz
+
+    tar zxf {{ temporary_dirs }}containerd-{{ containerd_version }}-linux-amd64.tar.gz -C {{ temporary_dirs }}containerd
+
+    cp -a {{ temporary_dirs }}containerd/bin/{containerd,containerd-shim,containerd-shim-runc-v1,containerd-shim-runc-v2,ctr} {{ kubernetes_ctl_path }}
+}
+
+function uninstall_containerd() {
+    systemctl disable containerd
+    systemctl stop containerd
+    systemctl daemon-reload
+
+    rm -rf /lib/systemd/system/containerd.service
+    rm -rf {{ temporary_dirs }}/{containerd,containerd-shim,containerd-shim-runc-v1,containerd-shim-runc-v2,ctr}
+    rm -rf /usr/bin/{containerd,containerd-shim,containerd-shim-runc-v1,containerd-shim-runc-v2,ctr}
+
+    rm -rf /etc/containerd
+}
+
+if [ "$1" == "docker" ]; then
+  if [ "$2" == "install" ]; then
+    wget -qO- https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz > ${temporary_dirs}/docker-${DOCKER_VERSION}.tar.gz
+
+    tar zxf {{ temporary_dirs }}docker-{{ DOCKER_VERSION }}.tar.gz -C {{ temporary_dirs }}
+
+    cp -a {{ temporary_dirs }}docker/{docker,docker-init,docker-proxy,dockerd,runc} {{ kubernetes_ctl_path }}
+    
+    install_containerd
+
+    set_containerd_config
+
+    set_docker_config
+  elif [ "$2" == "uninstall" ]; then
+    uninstall_docker
+    
+    uninstall_containerd
+  fi
+fi
+
+if [ "$1" == "containerd" ]; then
+  if [ "$2" == "install" ]; then
+    install_containerd
+
+    set_containerd_config
+  elif [ "$2" == "uninstall" ]; then
+    uninstall_containerd
+  fi
+fi
