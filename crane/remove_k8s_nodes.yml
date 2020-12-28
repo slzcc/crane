@@ -67,3 +67,18 @@
     - "roles/kubernetes-default/defaults/configure.yaml"
   roles:
     - { role: clean-install, tags: [clean]}
+
+- name: Sync Crane Delploy Files to Instance
+  hosts: kube-master[0]
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+    crane_deploy_type: 'remove_k8s_nodes'
+  vars_files:
+    - "roles/crane/defaults/main.yml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-default/defaults/configure.yaml"
+  tasks:
+    - { include_tasks: 'roles/crane/includes/sync-crane.yaml' }

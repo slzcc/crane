@@ -13,7 +13,7 @@
 
 - name: Install CRIO
   include_tasks: "roles/cri-install/includes/cri-o/os.yaml"
-  when: result.stderr
+  when: is_mandatory_crio_install or result.stderr
   
 - name: Systemd Reload Config Cache
   shell: "systemctl daemon-reload"

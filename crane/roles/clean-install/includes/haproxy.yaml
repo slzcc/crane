@@ -6,3 +6,9 @@
     path: "{{ haproxy_etc_dirs }}"
     state: absent
   ignore_errors: true
+
+# 清除当前残留的 Haproxy
+- name: Clean Haproxy Containerd...
+  shell: >
+    netstat -lnput | grep haproxy | grep {{ haproxy_stats_port }} | awk  '{print $7}' | awk -F/ '{print $1}' | xargs -i kill -9
+  ignore_errors: true
