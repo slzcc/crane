@@ -1,0 +1,21 @@
+---
+
+- name: Create Crane Deploy Temporary Directory
+  file:
+    path: "{{ temporary_dirs }}/deploy"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
+# https://docs.ansible.com/ansible/latest/collections/ansible/posix/synchronize_module.html
+# https://docs.ansible.com/ansible/2.3/synchronize_module.html
+- name: Synchronize Crane for instance
+  synchronize:
+    src: "../crane/"
+    dest: "{{ temporary_dirs }}deploy/crane-{{ crane_deploy_type }}.{{ ansible_date_time.iso8601 }}"
+    rsync_opts:
+      - "--no-motd"
+      - "--exclude=*.tar.gz"
+      - "--exclude=.git"
+    rsync_path: /usr/bin/rsync
+  ignore_errors: true

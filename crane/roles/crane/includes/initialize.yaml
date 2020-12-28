@@ -1,6 +1,6 @@
 ---
 
-- name: Create Temporary Directory
+- name: Create Crane Temporary Directory
   file:
     path: "{{ temporary_dirs }}"
     mode: 0755
