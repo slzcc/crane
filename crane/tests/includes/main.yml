@@ -45,3 +45,8 @@
 #     dest: "{{ temporary_dirs }}kube-proxy.yml"
 #     mode: 0644
 #     owner: "{{ ssh_connect_user }}"
+
+# - name: test Path
+#   shell: env
+#   environment:
+#     PATH: /usr/local/bin:{{ ansible_facts.env.PATH }}

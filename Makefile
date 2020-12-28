@@ -22,7 +22,7 @@ CRANE_ENTRANCE := main.yml
 OPTION := -vv
 
 build:
-	@docker build -t ${DockerHubRepoName}/${ProjectName}:${VERSION} . --no-cache
+	@docker build -t ${DockerHubRepoName}/${ProjectName}:${VERSION} . --no-cache --pull
 	
 push:
 	@docker push ${DockerHubRepoName}/${ProjectName}:${VERSION}
