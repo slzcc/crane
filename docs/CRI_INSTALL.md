@@ -59,6 +59,10 @@ Crane 的安装是依赖于 CRI 的类型的, 所以 `cri_k8s_default` 是基于
 
 如果修改了 `cri_drive_install_type` 为 `none` ,则根据需要修改 `@crane/roles/downloads-packages/defaults/main.yml => is_crane_kubernetes_deploy` 为 `crane` 或任意其他值(只有不等于 none 即可), 此时离线安装会根据 `cri_k8s_default` 的值对应进行离线安装, 并且 kubelet 的 cri 会根据 `cri_k8s_default` 进行修改。
 
+### cri_driver
+
+此值主要是安装那些 CRI 驱动, 默认全部安装 `["docker", "containerd", "crio"]` 配置比较灵活, 如果只选 `docker` 则 `cri_k8s_default` 值为 `containerd` 也是可以正常安装的.
+
 # CRI install
 
 CRI 可以独立安装, 它基于 `nodes` 文件使用 all 方式进行安装, 所以不需要安装的可以注释掉, 执行如下命令可以进行安装, 它所需的配置项完全基于 Crane 模式:
