@@ -26,5 +26,5 @@
 - name: CRI is ciro..
   include_tasks: "roles/downloads-packages/includes/crane/crane_none.yaml"
   when: 
-    - ( cri_driver | lenght ) == 1 and ("crio" in cri_driver)
+    - cri_driver | lenght == 1 and ("crio" in cri_driver)
   ignore_errors: true
