@@ -474,3 +474,7 @@ runC 没有执行权限。
 修复 Crane Tools 脚本名称不统一问题。
 
 修复 Github Actions Deploy Testing..
+
+### 优化
+
+如果本地存在 docker 则会默认检查并软连接到 /usr/local/bin 下.
