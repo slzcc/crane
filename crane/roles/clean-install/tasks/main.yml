@@ -39,6 +39,11 @@
   include: "roles/clean-install/includes/crio/main.yaml"
   when: is_remove_all or is_remove_crio
 
+# Clean CRIO
+- name: Clean runC
+  include: "roles/clean-install/includes/runc.yaml"
+  when: is_remove_all or is_remove_runc
+
 # Clean Calico
 - name: Clean Other
   include: "roles/clean-install/includes/calico.yaml"

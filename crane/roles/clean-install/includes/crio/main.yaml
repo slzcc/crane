@@ -26,7 +26,6 @@
     - "crio-status"
     - "crun"
     - "pinns"
-    - "runc"
   ignore_errors: true
   when: is_remove_all or is_remove_crio
 
