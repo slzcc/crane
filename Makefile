@@ -113,9 +113,11 @@ local_load_crio:
 
 local_load_containerd:
 	@wget -qO- https://github.com/containerd/containerd/releases/download/v${CONTAINERD_VERSION}/containerd-${CONTAINERD_VERSION}-linux-amd64.tar.gz > ${PWD}/crane/roles/downloads-packages/files/containerd-${CONTAINERD_VERSION}-linux-amd64.tar.gz
+
+local_load_runc:
 	@wget -qO- https://github.com/opencontainers/runc/releases/download/v1.0.0-rc92/runc.amd64 > ${PWD}/crane/roles/downloads-packages/files/runc
 		
-local_load_cri: local_load_dockerd local_load_containerd local_load_crio
+local_load_cri: local_load_dockerd local_load_containerd local_load_crio local_load_runc
 
 test_main:
 	@docker rm -f crane > /dev/null 2>&1 || true
