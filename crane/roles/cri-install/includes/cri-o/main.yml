@@ -14,7 +14,13 @@
 - name: Install CRIO
   include_tasks: "roles/cri-install/includes/cri-o/os.yaml"
   when: is_mandatory_crio_install or result.stderr
-  
+
+- name: Install Containers
+  include_tasks: "roles/cri-install/includes/containers/initialize.yaml"
+
+- name: Copy Containers Config
+  include_tasks: "roles/cri-install/includes/containers/config.yaml"
+
 - name: Systemd Reload Config Cache
   shell: "systemctl daemon-reload"
 

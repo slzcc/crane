@@ -6,3 +6,4 @@
 *.swp
 tags
 ./crane/nodes
+./crane/roles/downloads-packages/files/runc

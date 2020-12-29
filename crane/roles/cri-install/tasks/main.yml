@@ -1,5 +1,8 @@
 ---
 
+- name: Deploy CRI to runC
+  include: "roles/cri-install/includes/runc/main.yml"
+
 - name: Deploy CRI to Containerd
   include: "roles/cri-install/includes/containerd/main.yml"
   when: 
