@@ -8,7 +8,7 @@
 
 - name: Deploy Containerd CRI to runC
   include: "roles/cri-install/includes/runc/main.yml"
-  when: (len(cri_driver) == 1 and cri_driver[0] == "containerd")
+  when: (cri_driver | lenght ) == 1 and cri_driver[0] == "containerd"
 
 - name: Deploy CRI to Docker
   include: "roles/cri-install/includes/docker/main.yml"
