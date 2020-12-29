@@ -442,6 +442,8 @@ Containerd 可以通过 `is_mandatory_containerd_install` 参数强制安装 con
 
 # v1.20.1.5
 
+此版本对 CRI 独立安装及组合安装进行了多方面的测试.
+
 ### 修复
 
 解决独立使用 Containerd 作为 CRI 时没有 runC 的问题.
