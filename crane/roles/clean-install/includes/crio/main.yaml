@@ -77,6 +77,10 @@
   shell: "for i in `cat /proc/mounts | grep '{{ crio_data_root }}' | awk '{print $2}'`;do umount $i; done"
   ignore_errors: true
 
-- name: Umount CRIO Run Drive
+- name: Umount CRIO Run Drive >
   shell: "for i in `cat /proc/mounts | grep '{{ crio_run_data_root }}' | awk '{print $2}'`;do umount $i; done"
+  ignore_errors: true
+
+- name: Umount CRIO Run Drive >>
+  shell: "for i in `cat /proc/mounts | grep '/run/containers/storage' | awk '{print $2}'`;do umount $i; done"
   ignore_errors: true
