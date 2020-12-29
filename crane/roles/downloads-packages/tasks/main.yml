@@ -20,11 +20,6 @@
 - name: Not Crane Deploys..
   include_tasks: "roles/downloads-packages/includes/crane/crane_none.yaml"
   when: 
-    - is_crane_kubernetes_deploy == 'none'
-  ignore_errors: true
-
-- name: CRI is ciro..
-  include_tasks: "roles/downloads-packages/includes/crane/crane_none.yaml"
-  when: 
-    - cri_driver | lenght == 1 and ("crio" in cri_driver)
+    - is_crane_kubernetes_deploy == 'none' or
+      cri_driver == "['crio']"
   ignore_errors: true
