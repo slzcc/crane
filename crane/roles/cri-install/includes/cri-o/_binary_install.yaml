@@ -8,7 +8,6 @@
     - "crio-status"
     - "crun"
     - "pinns"
-    - "runc"
 
 - name: Copy cri-o Systemd Config
   template: 
