@@ -13,3 +13,9 @@
     state: absent
   when: is_remove_all or is_remove_cni
   ignore_errors: true
+
+- name: Clean CNI var/lib Config
+  file:
+    path: "/var/lib/cni"
+    state: absent
+  ignore_errors: true

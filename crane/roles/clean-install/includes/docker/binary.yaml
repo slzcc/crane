@@ -10,7 +10,6 @@
     - "docker-entrypoint.sh"
     - "docker-init"
     - "docker-proxy"
-    - "runc"
   ignore_errors: true
 
 - name: Clean Docker Binary Files (Not a crane install)

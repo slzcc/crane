@@ -21,9 +21,10 @@ is_mandatory_crio_install: false
 crio_cgroup_drive: '{{ cgroup_drive }}'
 
 # crio 存储路径
-crio_data: 'var/lib/containers'
+crio_data: '/var/lib/containers'
 crio_data_root: '{{ crio_data }}/storage'
-crio_run_data_root: '/var/run/containers/storage'
+crio_run_root: '/var/run/containers'
+crio_run_data_root: '{{ crio_run_root }}/storage'
 
 # crio Socket 文件路径
 crio_socket_home: '/var/run/crio'
