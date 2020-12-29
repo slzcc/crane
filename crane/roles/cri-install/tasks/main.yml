@@ -1,14 +1,13 @@
 ---
 
+- name: Deploy CRI to runC
+  include: "roles/cri-install/includes/runc/main.yml"
+
 - name: Deploy CRI to Containerd
   include: "roles/cri-install/includes/containerd/main.yml"
   when: 
     - ("containerd" in cri_driver)
     - cri_drive_install_type != "none"
-
-- name: Deploy Containerd CRI to runC
-  include: "roles/cri-install/includes/runc/main.yml"
-  when: (cri_driver | lenght ) == 1 and ("containerd" in cri_driver)
 
 - name: Deploy CRI to Docker
   include: "roles/cri-install/includes/docker/main.yml"
