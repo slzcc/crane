@@ -1,4 +1,13 @@
 ---
+
+- name: Install runC local..
+  include_tasks: roles/downloads-packages/includes/runc/local_download.yaml
+  when: containerd_install_type == 'local_binary'
+
+- name: Install runC HTTP..
+  include_tasks: roles/downloads-packages/includes/runc/http_download.yaml
+  when: containerd_install_type == 'http_binary'
+
 - name: Move runC binray to bin Path
   shell: "cp -a {{ temporary_dirs }}runC/{{ item }} {{ kubernetes_ctl_path }}"
   with_items:
