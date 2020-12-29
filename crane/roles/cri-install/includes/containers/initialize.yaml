@@ -1,0 +1,15 @@
+---
+
+- name: Create Containers Config Path
+  file:
+    path: "/etc/containers"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
+- name: Create Containers Registries Config Path
+  file:
+    path: "/etc/containers/registries.d"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory

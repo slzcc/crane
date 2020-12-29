@@ -7,7 +7,6 @@
     - "docker-init"
     - "docker-proxy"
     - "dockerd"
-    - "runc"
   ignore_errors: true
 
 - name: Check Containerd Systemd Status

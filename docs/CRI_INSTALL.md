@@ -32,11 +32,14 @@ $ make local_load_cri
 ```
 
 > 此配置会把 docker/containerd/crio 都在下载到本地, 如修改了 `cri_driver` 请根据 `Makefile` 中执行所需命令:
+
 > ```
-> $ local_load_dockerd
-> $ local_load_containerd
-> $ local_load_crio
+> $ local_load_runc && local_load_dockerd
+> $ local_load_runc && local_load_containerd
+> $ local_load_runc && local_load_crio
 > ```
+
+> 注意: 如果独立安装 CRI 首先需要执行 local_load_runc 在执行相应的本地下载, 因所有组件都依赖 runc。
 
 如果值为 `none` 则会忽略安装 CRI, 但需要保证被操作的 实例 节点中已经安装所需的 CRI（如 docker）, 在 Kubernetes v1.20.x 以上（包含 v1.20）版本中, kubelet 的默认 CRI 还是 docker。
 

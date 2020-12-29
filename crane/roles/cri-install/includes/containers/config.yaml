@@ -1,0 +1,15 @@
+---
+
+- name: Copy Containers Config...
+  template: 
+    src: "roles/cri-install/templates/containers/{{ item }}"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+    dest: "/etc/containers/{{ item }}"
+  with_items:
+    - "registries.conf"
+    - "storage.conf"
+    - "policy.json"
+    - "containers.conf"
+    - "registries.d/default.yaml"
+    - "registries.d/shortnames.conf"
