@@ -71,3 +71,11 @@
 - name: Clean CRIO Socket
   shell: "rm -rf {{ crio_socket_path }}"
   ignore_errors: true
+
+- name: Umount CRIO Drive
+  shell: "for i in `cat /proc/mounts | grep '{{ crio_data_root }}' | awk '{print $2}'`;do umount $i; done"
+  ignore_errors: true
+
+- name: Umount CRIO Run Drive
+  shell: "for i in `cat /proc/mounts | grep '{{ crio_run_data_root }}' | awk '{print $2}'`;do umount $i; done"
+  ignore_errors: true
