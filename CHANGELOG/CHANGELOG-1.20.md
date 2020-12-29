@@ -446,6 +446,8 @@ Containerd 可以通过 `is_mandatory_containerd_install` 参数强制安装 con
 
 解决独立使用 Containerd 作为 CRI 时没有 runC 的问题.
 
+runC 没有执行权限。
+
 ### 优化
 
 优化判断 crio 作为 CRI 时判断不严谨的问题。
@@ -453,3 +455,7 @@ Containerd 可以通过 `is_mandatory_containerd_install` 参数强制安装 con
 卸载 CNI 时一同清理 var/lib 目录。
 
 优化重复测试执行时会造成大量 rc.local 重复数据注入的问题。
+
+### 增加
+
+安装 CRI 时 runC 独立安装, 并清除集群时独立删除 runC.

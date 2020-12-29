@@ -10,5 +10,5 @@
   copy: 
     src: "roles/downloads-packages/files/runc"
     dest: "{{ temporary_dirs }}runC/runc"
-    mode: 0644
+    mode: 0755
     owner: "{{ ssh_connect_user }}"
