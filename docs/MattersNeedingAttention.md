@@ -461,3 +461,21 @@ Linux ip-10-200-1-206.ap-southeast-1.compute.internal 3.10.0-1127.el7.x86_64 #1 
 > 相关文档: https://github.com/moby/moby/issues/40835
 
 此问题升级内核解决.
+
+## Docker Load
+
+通过 containerd 导入 docker 镜像时报错:
+
+```
+$ ctr image export crane-v1.20.1.5-image.tar.gz docker.io/slzcc/crane:v1.20.1.5
+
+$ docker load -i crane-v1.20.1.5-image.tar.gz
+open /data/docker/tmp/docker-import-011951360/blobs/json: no such file or directory
+```
+
+解决方法:
+
+```
+$ cat crane-v1.20.1.5-image.tar.gz |docker import - slzcc/crane
+sha256:c7849d33e7d813be764ebd0669a33eec0d4d95818e2761aff14d3de1b833e0e4
+```

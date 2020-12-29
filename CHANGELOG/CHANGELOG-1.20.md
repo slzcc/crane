@@ -452,6 +452,8 @@ runC 没有执行权限。
 
 使用 CRIO 时没有配置 containers 配置文件操作的 crio 无法正常使用.
 
+修复 crane/upgrade_version.yml 重复初始化 Crane 的配置项.
+
 ### 优化
 
 优化判断 crio 作为 CRI 时判断不严谨的问题。

@@ -30,24 +30,6 @@
   roles:
     - { role: downloads-ssh-key, tags: [copy_ssh_private_key]}
     
-- name: Initialize Crane Env
-  hosts: all
-  become: yes
-  become_method: sudo
-  vars:
-    ansible_ssh_pipelining: true
-  vars_files:
-    - "roles/cri-install/vars/containerd.yaml"
-    - "roles/cri-install/vars/crio.yaml"
-    - "roles/cri-install/vars/docker.yaml"
-    - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
-  roles:
-    - { role: crane, tags: [crane] }
-  tasks:
-    - { include_tasks: 'roles/kubernetes-upgrade/includes/initialize.yaml' }
-
 - name: Update Node Cluster Version
   hosts: kube-master:kube-node
   become: yes
