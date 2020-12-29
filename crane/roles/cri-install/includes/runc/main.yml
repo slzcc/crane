@@ -1,0 +1,6 @@
+---
+- name: Move runC binray to bin Path
+  shell: "cp -a {{ temporary_dirs }}runC/{{ item }} {{ kubernetes_ctl_path }}"
+  with_items:
+    - "runc"
+  ignore_errors: true
