@@ -449,3 +449,5 @@ Containerd 可以通过 `is_mandatory_containerd_install` 参数强制安装 con
 ### 优化
 
 优化判断 crio 作为 CRI 时判断不严谨的问题。
+
+卸载 CNI 时一同清理 var/lib 目录。
