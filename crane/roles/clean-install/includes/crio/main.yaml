@@ -64,6 +64,7 @@
     - "/var/run/crio/version"
     - "/var/run/crio/crio.sock"
     - "/var/lib/crio"
+    - "/etc/containers"
   ignore_errors: true
   when: is_remove_all or is_remove_crio_dir
 

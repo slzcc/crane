@@ -448,6 +448,8 @@ Containerd 可以通过 `is_mandatory_containerd_install` 参数强制安装 con
 
 runC 没有执行权限。
 
+使用 CRIO 时没有配置 containers 配置文件操作的 crio 无法正常使用.
+
 ### 优化
 
 优化判断 crio 作为 CRI 时判断不严谨的问题。
