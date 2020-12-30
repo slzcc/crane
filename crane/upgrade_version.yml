@@ -5,7 +5,7 @@
     - { role: local-task }
 
 - name: Initialize Crane Env
-  hosts: all
+  hosts: k8s-cluster:etcd
   become: yes
   become_method: sudo
   vars:
