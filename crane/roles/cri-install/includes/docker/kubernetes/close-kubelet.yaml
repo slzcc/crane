@@ -13,3 +13,7 @@
 # Clean IPVS and Iptables
 - name: Clean Iptables
   include: "roles/clean-install/includes/iptables.yaml"
+
+# Clean Calico
+- name: Clean Other
+  include: "roles/clean-install/includes/calico.yaml"

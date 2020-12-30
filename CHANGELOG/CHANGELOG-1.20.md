@@ -485,6 +485,8 @@ docker 可以安装时区分 17/18/19/20 版本放置不同的 binray 文件。
 
 > 但安装时一定要保证旧的 docker 通过 Crane 或自定义删除掉。
 
+清除 Calico 时, 清除 设备和 route 。
+
 ### 增加
 
 在安装 docker 之前清除旧的 dockerd.
