@@ -1,6 +1,0 @@
----
-
-- name: Clean Old Containerd shim servers
-  shell: >
-    ps aux|grep containerd-shim|awk '{print $2}'|xargs -i kill -9 {}
-    

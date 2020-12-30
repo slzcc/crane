@@ -61,3 +61,7 @@
 - name: Clean Docker Users
   include: "roles/clean-install/includes/docker/system.yaml"
   when: is_remove_all or is_remove_docker_ce
+
+- name: Clean Containerd Shim Services
+  include: "roles/clean-install/includes/containerd/shim.yaml"
+  when: is_remove_all or is_remove_docker_ce
