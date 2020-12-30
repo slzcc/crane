@@ -4,12 +4,15 @@
     path: "{{ kubernetes_ctl_path }}{{ item }}"
     state: absent
   with_items:
-    - "ctr"
     - "docker"
     - "dockerd"
     - "docker-entrypoint.sh"
     - "docker-init"
     - "docker-proxy"
+    - "docker-containerd"
+    - "docker-containerd-ctr"
+    - "docker-containerd-shim"
+    - "docker-runc"
   ignore_errors: true
 
 - name: Clean Docker Binary Files (Not a crane install)
@@ -27,5 +30,9 @@
     - "containerd"
     - "containerd-shim"
     - "containerd-shim-runc-v2"
+    - "docker-containerd"
+    - "docker-containerd-ctr"
+    - "docker-containerd-shim"
+    - "docker-runc"
   ignore_errors: true
   when: is_remove_not_crane_docker_ce

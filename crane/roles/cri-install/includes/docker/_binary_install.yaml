@@ -1,13 +1,7 @@
 ---
 
-- name: Move Docker binray to bin Path
-  shell: "cp -a {{ temporary_dirs }}docker/{{ item }} {{ kubernetes_ctl_path }}"
-  with_items:
-    - "docker"
-    - "docker-init"
-    - "docker-proxy"
-    - "dockerd"
-  ignore_errors: true
+- name: Install Docker Binray
+  include: "roles/cri-install/includes/docker/version/main.yml"
 
 - name: Check Containerd Systemd Status
   shell: "systemctl is-active containerd --no-pager"

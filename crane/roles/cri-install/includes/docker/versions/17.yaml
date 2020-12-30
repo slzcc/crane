@@ -1,0 +1,12 @@
+- name: Move v17 Docker binray to bin Path
+  shell: "cp -a {{ temporary_dirs }}docker/{{ item }} {{ kubernetes_ctl_path }}"
+  with_items:
+    - "docker"
+    - "docker-init"
+    - "docker-proxy"
+    - "dockerd"
+    - "docker-containerd"
+    - "docker-containerd-ctr"
+    - "docker-containerd-shim"
+    - "docker-runc"
+  ignore_errors: true

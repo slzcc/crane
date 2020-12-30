@@ -92,7 +92,7 @@ rotation_etcd_ca:
 	@docker rm -f crane > /dev/null 2>&1 || true
 	@docker run --name crane --rm -it -e ANSIBLE_HOST_KEY_CHECKING=false -e TERM=xterm-256color -e COLUMNS=238 -e LINES=61 -v ~/.ssh:/root/.ssh -v ${PWD}:/crane -w /crane/crane -v ${PWD}/crane/ansible.cfg:/etc/ansible/ansible.cfg ${DockerHubRepoName}/${ProjectName}:${VERSION} -i nodes etcd_certificate_rotation.yml ${OPTION}
 
-local_load_dockerd:
+local_load_dockerd: local_load_containerd
 	@wget -qO- https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz > ${PWD}/crane/roles/downloads-packages/files/docker-${DOCKER_VERSION}.tar.gz
 
 # Ready to scrap
@@ -108,16 +108,16 @@ local_load_image:
 	@until docker exec -i import-kubernetes-temporary bash /docker-image-import.sh ; do >&2 echo "Starting..." && sleep 1 ; done
 	@docker rm -f import-kubernetes-temporary
 
-local_load_crio:
+local_load_crio: local_load_runc
 	@wget -qO- https://storage.googleapis.com/k8s-conform-cri-o/artifacts/crio-${CRIO_VERSION}.tar.gz > ${PWD}/crane/roles/downloads-packages/files/crio-${CRIO_VERSION}.tar.gz
 
-local_load_containerd:
+local_load_containerd: local_load_runc
 	@wget -qO- https://github.com/containerd/containerd/releases/download/v${CONTAINERD_VERSION}/containerd-${CONTAINERD_VERSION}-linux-amd64.tar.gz > ${PWD}/crane/roles/downloads-packages/files/containerd-${CONTAINERD_VERSION}-linux-amd64.tar.gz
 
 local_load_runc:
 	@wget -qO- https://github.com/opencontainers/runc/releases/download/v1.0.0-rc92/runc.amd64 > ${PWD}/crane/roles/downloads-packages/files/runc
 		
-local_load_cri: local_load_dockerd local_load_containerd local_load_crio local_load_runc
+local_load_cri: local_load_dockerd local_load_crio
 
 test_main:
 	@docker rm -f crane > /dev/null 2>&1 || true
