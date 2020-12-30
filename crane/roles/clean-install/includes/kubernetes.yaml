@@ -8,7 +8,7 @@
   ignore_errors: true
 
 - name: Umount K8s Drive
-  shell: "for i in `cat /proc/mounts | grep '{{ kubelet_work_dirs }}' | awk '{print $2}'`;do umount $i; done"
+  shell: "for i in `cat /proc/mounts | grep '{{ kubelet_work_dirs }}' | awk '{print $2}'`;do umount -l $i; done"
   ignore_errors: true
 
 - name: Clean kubernetes Etc Working directory ** .
