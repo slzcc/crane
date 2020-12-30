@@ -5,3 +5,13 @@
     path: "/var/lib/calico"
     state: absent
   ignore_errors: true
+
+- name: Clean Calico IP Route
+  shell: >
+    ip route | grep 'cali' | awk '{print $1}' | xargs -i ip route delete {}
+  ignore_errors: true
+
+- name: Clean Calico IP Equipment
+  shell: >
+    ip neigh | grep 'cali' | awk '{print $3}' | xargs -i ip link delete {}
+  ignore_errors: true
