@@ -86,7 +86,7 @@
     - { include_tasks: 'roles/etcd-ca-rotation/includes/update-cluster-apiserver.yml' }
 
 - name: Update Kubernetes Cluster Network Server Config
-  hosts: k8s-cluster[0]
+  hosts: k8s-master[0]
   become: yes
   become_method: sudo
   vars:
