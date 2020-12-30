@@ -22,7 +22,14 @@
 - name: Clean Containerd Socket
   shell: "rm -rf {{ containerd_socket_path }}"
   ignore_errors: true
-  
+
+- name: Umount Containerd Drive
+  shell: "for i in `cat /proc/mounts | grep '{{ containerd_run_path }}' | awk '{print $2}'`;do umount -l $i; done"
+  ignore_errors: true
+
+- name: Clean Containerd Shim Services
+  include: "roles/clean-install/includes/containerd/shim.yaml"
+
 # Clean Containerd Image
 # - name: Clean Containerd Image
 #   include: "roles/clean-install/includes/containerd/image.yaml"

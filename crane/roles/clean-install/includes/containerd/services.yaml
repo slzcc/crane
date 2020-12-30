@@ -8,10 +8,6 @@
   shell: "{{ kubernetes_ctl_path }}ctr -n k8s.io c rm $({{ kubernetes_ctl_path }}ctr -n k8s.io c ls -q)"
   ignore_errors: true
 
-- name: Umount Containerd Drive
-  shell: "for i in `cat /proc/mounts | grep '{{ containerd_run_path }}' | awk '{print $2}'`;do umount $i; done"
-  ignore_errors: true
-
 - name: Clean Containerd Socket to Servers
   shell: >
     ps aux | grep '{{ containerd_socket_path }}' | grep -v grep | grep 'k8s.io' | awk '{print $2}' | xargs -i kill -9 {}

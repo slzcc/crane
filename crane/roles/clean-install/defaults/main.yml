@@ -43,6 +43,8 @@ is_remove_containerd: false
 # 是否清除 Containerd 数据目录
 is_remove_containerd_dir: false
 
+# 清除集群时是否删除不是基于 Crane 安装的 Containerd.
+is_remove_not_crane_containerd: false
 
 ## runC
 ## ********************************************************************************************************************************

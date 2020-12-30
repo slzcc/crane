@@ -4,6 +4,7 @@
 *.retry
 *.DS_Store
 *.swp
+*.runc
 tags
 ./crane/nodes
 ./crane/roles/downloads-packages/files/runc

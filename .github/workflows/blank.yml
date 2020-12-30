@@ -77,12 +77,14 @@ jobs:
 
         sed -i "s/os_network_device_name:\ .*/os_network_device_name:\ ${INSTANCE_NET_NAME}/g" ${WORKDIR}/crane/group_vars/all.yml
         sed -i "s/k8s_load_balance_ip:\ .*/k8s_load_balance_ip:\ ${INSTANCE_IP}/g" ${WORKDIR}/crane/group_vars/all.yml
-        sed -i "s/is_docker_daemon_config:\ .*/is_docker_daemon_config:\ false/g" ${WORKDIR}/crane/group_vars/all.yml
+        sed -i "s/is_docker_daemon_config:\ .*/is_docker_daemon_config:\ false/g" ${WORKDIR}/crane/roles/cri-install/vars/docker.yaml
         sed -i "s/is_kube_simple:\ .*/is_kube_simple:\ true/g" ${WORKDIR}/crane/group_vars/all.yml
+        sed -i "s/cri_driver:\ .*/cri_driver:\ ['docker']/g" ${WORKDIR}/crane/group_vars/all.yml
+        sed -i "s/cri_k8s_default:\ .*/cri_k8s_default:\ docker/g" ${WORKDIR}/crane/group_vars/all.yml
         sed -i "s/172.20.0.2/${INSTANCE_IP}/g" ${WORKDIR}/kube-simple/nodes
         sed -i 's/false/true/g' ${WORKDIR}/crane/roles/add-ons/defaults/main.yml
         sed -i 's/is_deploy_istio:\ .*/is_deploy_istio: false/g' ${WORKDIR}/crane/roles/add-ons/defaults/main.yml
-        sed -i "s/docker_install_type:\ \"http_binary\"/docker_install_type:\ \"local_binary\"/g" ${WORKDIR}/crane/group_vars/all.yml
+        sed -i "s/docker_install_type:\ \"http_binary\"/docker_install_type:\ \"local_binary\"/g" ${WORKDIR}/crane/roles/cri-install/vars/docker.yaml
 
         sudo cp -a crane/ansible.cfg /etc/ansible/ansible.cfg
         sudo usermod -aG docker runner
