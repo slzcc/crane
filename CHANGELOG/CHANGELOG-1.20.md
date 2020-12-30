@@ -479,6 +479,10 @@ runC 没有执行权限。
 
 如果本地存在 docker 则会默认检查并软连接到 /usr/local/bin 下.
 
+在 Makefile 优化具有与迷惑性的配置。
+
+docker 可以安装 17 和 19 版本并区分不同的 binray 文件。
+
 ### 增加
 
 在安装 docker 之前清除旧的 dockerd.
