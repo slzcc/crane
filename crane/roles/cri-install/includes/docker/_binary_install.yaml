@@ -76,8 +76,8 @@
     - containerd_install_type == 'http_binary'
     - cct.stderr
 
-- name: Move Containerd Plugin binray to bin Path
-  shell: "cp -a {{ temporary_dirs }}docker/{{ item }} {{ kubernetes_ctl_path }}"
+- name: Move Containerd Component binray to bin Path
+  shell: "cp -a {{ temporary_dirs }}containerd/bin/{{ item }} {{ kubernetes_ctl_path }}"
   with_items:
     - "containerd-shim"
     - "containerd-shim-runc-v1"

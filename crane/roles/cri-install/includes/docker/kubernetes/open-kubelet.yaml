@@ -1,5 +1,9 @@
 ---
 
+- name: Start Up Clean Containers
+  shell: "docker rm -f $(docker ps -f status=exited -aq)"
+  ignore_errors: true
+  
 - name: Start Kubelet
   service: 
     name: kubelet
