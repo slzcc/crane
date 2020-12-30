@@ -58,3 +58,9 @@ docker_socket_path: '/var/run/docker.sock'
 
 # NVIDIA 驱动
 # Docs: https://github.com/NVIDIA/nvidia-docker
+
+# 安装之前清理旧的 Docker
+clean_up_old_before_installing: false
+
+# 安装之前 close kubelet 保证后续启动服务时出现不必要的损失
+is_docker_install_close_kubelet: false

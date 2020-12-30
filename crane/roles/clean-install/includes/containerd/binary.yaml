@@ -11,3 +11,16 @@
     - "containerd-shim-runc-v2"
     - "ctr"
   ignore_errors: true
+
+- name: Clean Containerd Binary Files (Not a crane install)
+  file:
+    path: "/usr/bin/{{ item }}"
+    state: absent
+  with_items:
+    - "containerd"
+    - "containerd-shim"
+    - "containerd-shim-runc-v1"
+    - "containerd-shim-runc-v2"
+    - "ctr"
+  ignore_errors: true
+  when: is_remove_not_crane_containerd
