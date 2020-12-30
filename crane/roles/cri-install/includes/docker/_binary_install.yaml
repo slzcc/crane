@@ -53,7 +53,7 @@
     state: directory
 
 - name: Check Containerd Plugin Files
-  shell: "ls -l /usr/local/bin/containerd-shim-runc-v2"
+  shell: "ls -l {{ kubernetes_ctl_path }}containerd-shim-runc-v2"
   register: cplugin
   ignore_errors: true
 
@@ -69,12 +69,14 @@
   when: 
     - containerd_install_type == 'local_binary'
     - cct.stderr
+  ignore_errors: true
 
 - name: Install Containerd to Http
   include_tasks: roles/downloads-packages/includes/containerd/http_download.yaml
   when: 
     - containerd_install_type == 'http_binary'
     - cct.stderr
+  ignore_errors: true
 
 - name: Move Containerd Component binray to bin Path
   shell: "cp -a {{ temporary_dirs }}containerd/bin/{{ item }} {{ kubernetes_ctl_path }}"
