@@ -24,7 +24,7 @@
   ignore_errors: true
 
 - name: Umount Containerd Drive
-  shell: "for i in `cat /proc/mounts | grep '{{ containerd_run_path }}' | awk '{print $2}'`;do umount $i; done"
+  shell: "for i in `cat /proc/mounts | grep '{{ containerd_run_path }}' | awk '{print $2}'`;do umount -l $i; done"
   ignore_errors: true
 
 - name: Clean Containerd Shim Services
