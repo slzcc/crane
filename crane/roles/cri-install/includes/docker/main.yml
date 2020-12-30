@@ -2,8 +2,13 @@
 
 - include_vars: "roles/clean-install/defaults/main.yml"
 
-- name: Clean Docker
+- name: Clean Docker..
   include: "roles/clean-install/includes/docker/main.yaml"
+  when: clean_up_old_before_installing
+
+- name: Close Kubelet..
+  include: "roles/cri-install/includes/docker/kubernetes/close-kubelet.yaml"
+  when: is_docker_install_close_kubelet
 
 - name: Check Docker-ce Version
   shell: "docker -v | awk '{print $3}' | awk -F',' '{print $1}'"
@@ -96,3 +101,7 @@
     state: started
   ignore_errors: true
   when: not is_kube_simple
+
+- name: Open Kubelet..
+  include: "roles/cri-install/includes/docker/kubernetes/open-kubelet.yaml"
+  when: is_docker_install_close_kubelet
