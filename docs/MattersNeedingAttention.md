@@ -479,3 +479,19 @@ open /data/docker/tmp/docker-import-011951360/blobs/json: no such file or direct
 $ cat crane-v1.20.1.5-image.tar.gz |docker import - slzcc/crane
 sha256:c7849d33e7d813be764ebd0669a33eec0d4d95818e2761aff14d3de1b833e0e4
 ```
+
+## Docker Run
+
+启动是可能存在如下问题:(17.12.1-ce)
+
+```
+$ docker run ..
+/usr/local/bin/docker: Error response from daemon: OCI runtime create failed: container_linux.go:348: starting container process caused "process_linux.go:301: running exec setns process for init caused \"exit status 40\"": unknown.
+```
+
+此问题属于系统内存 Bug, 执行内存清除命令即可解决。
+
+```
+$ sync
+$ echo 1 > /proc/sys/vm/drop_caches
+```

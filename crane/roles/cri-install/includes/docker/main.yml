@@ -1,4 +1,15 @@
 ---
+
+- include_vars: "roles/clean-install/defaults/main.yml"
+
+- name: Clean Docker..
+  include: "roles/clean-install/includes/docker/main.yaml"
+  when: clean_up_old_before_installing
+
+- name: Close Kubelet..
+  include: "roles/cri-install/includes/docker/kubernetes/close-kubelet.yaml"
+  when: is_docker_install_close_kubelet
+
 - name: Check Docker-ce Version
   shell: "docker -v | awk '{print $3}' | awk -F',' '{print $1}'"
   register: result
@@ -6,6 +17,12 @@
 
 - name: Initialize Docker-ce
   include_tasks: "roles/cri-install/includes/docker/initialize.yaml"
+
+- name: Check Docker Bin, Ensure that the command line is available.
+  include_tasks: 'roles/kubernetes-upgrade/includes/cri/docker.yaml'
+  when: 
+    - cri_k8s_default == 'docker'
+    - result.stderr == ''
 
 - name: Install Docker-ce
   include_tasks: "roles/cri-install/includes/docker/os.yaml"
@@ -84,3 +101,7 @@
     state: started
   ignore_errors: true
   when: not is_kube_simple
+
+- name: Open Kubelet..
+  include: "roles/cri-install/includes/docker/kubernetes/open-kubelet.yaml"
+  when: is_docker_install_close_kubelet

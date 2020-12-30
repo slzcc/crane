@@ -22,6 +22,8 @@ Crane 是由我个人独立创作并维护的, 在使用范围上可能得不到
 * Etcd: v3.4.9
 * pause: v3.2
 
+> Crane 默认使用 Calico 网络, Calico 依赖 Etcd 数据源, 涉及到所有的更新配置操作都是围绕 Calico 设计的, 如果不想使用 Calico 则自行解决 add_etcd/upgrade_version 时可能存在的问题。
+
 ### 开始使用 Crane
 
 使用 Crane 很简单, 有可能在一定程度上比 Kubeadm 都简单(国内源问题), 可以通过如下方式获取源码进行安装:

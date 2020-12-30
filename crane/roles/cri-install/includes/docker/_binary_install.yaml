@@ -1,13 +1,7 @@
 ---
 
-- name: Move Docker binray to bin Path
-  shell: "cp -a {{ temporary_dirs }}docker/{{ item }} {{ kubernetes_ctl_path }}"
-  with_items:
-    - "docker"
-    - "docker-init"
-    - "docker-proxy"
-    - "dockerd"
-  ignore_errors: true
+- name: Install Docker Binray
+  include: "roles/cri-install/includes/docker/versions/main.yml"
 
 - name: Check Containerd Systemd Status
   shell: "systemctl is-active containerd --no-pager"
@@ -59,12 +53,33 @@
     state: directory
 
 - name: Check Containerd Plugin Files
-  shell: "ls -l /usr/local/bin/containerd-shim-runc-v2"
+  shell: "ls -l {{ kubernetes_ctl_path }}containerd-shim-runc-v2"
   register: cplugin
   ignore_errors: true
 
-- name: Move Containerd Plugin binray to bin Path
-  shell: "cp -a {{ temporary_dirs }}docker/{{ item }} {{ kubernetes_ctl_path }}"
+- name: Check Containerd Temporarys
+  shell: "ls -l {{ temporary_dirs }}containerd/bin"
+  register: cct
+  ignore_errors: true
+  when: 
+    - cplugin.stderr
+
+- name: Install Containerd to Local
+  include_tasks: roles/downloads-packages/includes/containerd/local_download.yaml
+  when: 
+    - containerd_install_type == 'local_binary'
+    - cct.stderr
+  ignore_errors: true
+
+- name: Install Containerd to Http
+  include_tasks: roles/downloads-packages/includes/containerd/http_download.yaml
+  when: 
+    - containerd_install_type == 'http_binary'
+    - cct.stderr
+  ignore_errors: true
+
+- name: Move Containerd Component binray to bin Path
+  shell: "cp -a {{ temporary_dirs }}containerd/bin/{{ item }} {{ kubernetes_ctl_path }}"
   with_items:
     - "containerd-shim"
     - "containerd-shim-runc-v1"
