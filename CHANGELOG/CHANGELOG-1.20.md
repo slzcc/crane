@@ -475,6 +475,8 @@ runC 没有执行权限。
 
 修复 Github Actions Deploy Testing..
 
+修复 Etcd CA 轮转时使用 kube-cluster[1] 作为 hosts 操作节点。
+
 ### 优化
 
 如果本地存在 docker 则会默认检查并软连接到 /usr/local/bin 下.
