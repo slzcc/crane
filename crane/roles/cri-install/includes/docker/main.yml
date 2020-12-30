@@ -1,4 +1,10 @@
 ---
+
+- include_vars: "roles/clean-install/defaults/main.yml"
+
+- name: Clean Docker
+  include: "roles/clean-install/includes/docker/main.yaml"
+
 - name: Check Docker-ce Version
   shell: "docker -v | awk '{print $3}' | awk -F',' '{print $1}'"
   register: result
@@ -11,7 +17,8 @@
   include_tasks: 'roles/kubernetes-upgrade/includes/cri/docker.yaml'
   when: 
     - cri_k8s_default == 'docker'
-    
+    - result.stderr == ''
+
 - name: Install Docker-ce
   include_tasks: "roles/cri-install/includes/docker/os.yaml"
   when: is_mandatory_docker_install or result.stderr

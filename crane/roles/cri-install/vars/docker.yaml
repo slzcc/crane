@@ -58,3 +58,6 @@ docker_socket_path: '/var/run/docker.sock'
 
 # NVIDIA 驱动
 # Docs: https://github.com/NVIDIA/nvidia-docker
+
+# 安装之前清理旧的 Docker
+clean_up_old_before_installing: false
