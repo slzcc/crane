@@ -1,7 +1,7 @@
 ---
 
 - name: Install Docker Binray
-  include: "roles/cri-install/includes/docker/version/main.yml"
+  include: "roles/cri-install/includes/docker/versions/main.yml"
 
 - name: Check Containerd Systemd Status
   shell: "systemctl is-active containerd --no-pager"
