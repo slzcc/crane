@@ -1,0 +1,6 @@
+---
+
+- name: Clean ContainerdShim Servers
+  shell: >
+    ps aux | egrep 'containerd-shim*' | grep -v grep | awk '{print $2}' | xargs -i kill -9 {}
+  ignore_errors: true

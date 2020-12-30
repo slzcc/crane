@@ -6,6 +6,10 @@
   shell: "{{ kubernetes_ctl_path }}docker rm -f $(docker ps -f 'name=k8s*' -aq)"
   ignore_errors: true
 
+- name: Clean Containerd Shim Services
+  include: "roles/clean-install/includes/containerd/shim.yaml"
+  when: is_remove_all or is_remove_docker_ce
+
 - name: Docker Turn off Start Up
   service: 
     name: "{{ item }}"
@@ -28,7 +32,11 @@
   with_items:
     - "docker"
     - "docker.socket"
-    
+
+- name: Umount Docker Drive
+  shell: "for i in `cat /proc/mounts | grep '{{ docker_data_root }}' | awk '{print $2}'`;do umount -l $i; done"
+  ignore_errors: true
+
 # Clean Docker Configs
 - name: Clean Docker Configs
   include: "roles/clean-install/includes/docker/config.yaml"

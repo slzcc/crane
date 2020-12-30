@@ -478,3 +478,19 @@ runC 没有执行权限。
 ### 优化
 
 如果本地存在 docker 则会默认检查并软连接到 /usr/local/bin 下.
+
+在 Makefile 优化具有与迷惑性的配置。
+
+docker 可以安装时区分 17/18/19/20 版本放置不同的 binray 文件。
+
+> 但安装时一定要保证旧的 docker 通过 Crane 或自定义删除掉。
+
+清除 Calico 时, 清除 设备和 route 。
+
+### 增加
+
+安装 docker 时是否先清除旧的 dockerd, 通过 `clean_up_old_before_installing` 参数判断。
+
+卸载 docker 时清除 mount 驱动。
+
+安装 docker 时通过 `is_docker_install_close_kubelet` 参数判断, 是否关闭当前 kubelet 以便安装 docker（这里属于强制安装）时存在脏数据无法启动成功的问题。
