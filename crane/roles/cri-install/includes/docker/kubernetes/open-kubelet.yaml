@@ -1,0 +1,7 @@
+---
+
+- name: Start Kubelet
+  service: 
+    name: kubelet
+    state: started
+  ignore_errors: true

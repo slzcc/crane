@@ -28,7 +28,11 @@
   with_items:
     - "docker"
     - "docker.socket"
-    
+
+- name: Umount Docker Drive
+  shell: "for i in `cat /proc/mounts | grep '{{ docker_data_root }}' | awk '{print $2}'`;do umount $i; done"
+  ignore_errors: true
+
 # Clean Docker Configs
 - name: Clean Docker Configs
   include: "roles/clean-install/includes/docker/config.yaml"

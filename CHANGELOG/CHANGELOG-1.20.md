@@ -481,8 +481,12 @@ runC 没有执行权限。
 
 在 Makefile 优化具有与迷惑性的配置。
 
-docker 可以安装 17 和 19 版本并区分不同的 binray 文件。
+docker 可以安装时区分 17/18/19/20 版本放置不同的 binray 文件。
+
+> 但安装时一定要保证旧的 docker 通过 Crane 或自定义删除掉。
 
 ### 增加
 
 在安装 docker 之前清除旧的 dockerd.
+
+卸载 docker 时清除 mount 驱动。

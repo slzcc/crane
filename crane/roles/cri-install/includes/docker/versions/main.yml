@@ -4,6 +4,14 @@
   include: "roles/cri-install/includes/docker/versions/17.yaml"
   when: ( docker_version.split('.')[0] == '17' )
 
+- name: Install Docker Binray in v18
+  include: "roles/cri-install/includes/docker/versions/17.yaml"
+  when: ( docker_version.split('.')[0] == '18' )
+
 - name: Install Docker Binray in v19
   include: "roles/cri-install/includes/docker/versions/19.yaml"
   when: ( docker_version.split('.')[0] == '19' )
+
+- name: Install Docker Binray in v20
+  include: "roles/cri-install/includes/docker/versions/20.yaml"
+  when: ( docker_version.split('.')[0] == '20' )

@@ -22,6 +22,10 @@
 - name: Clean Containerd Socket
   shell: "rm -rf {{ containerd_socket_path }}"
   ignore_errors: true
+
+- name: Umount Containerd Drive
+  shell: "for i in `cat /proc/mounts | grep '{{ containerd_run_path }}' | awk '{print $2}'`;do umount $i; done"
+  ignore_errors: true
   
 # Clean Containerd Image
 # - name: Clean Containerd Image
