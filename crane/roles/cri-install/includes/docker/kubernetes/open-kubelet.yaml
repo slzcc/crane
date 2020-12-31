@@ -1,7 +1,7 @@
 ---
 
 - name: Start Up Clean Containers
-  shell: "{{ kubernetes_ctl_path }}docker rm -f $(docker ps -f status=exited -aq)"
+  shell: "{{ kubernetes_ctl_path }}docker rm -f $({{ kubernetes_ctl_path }}docker ps -f status=exited -aq)"
   ignore_errors: true
   
 - name: Start Kubelet

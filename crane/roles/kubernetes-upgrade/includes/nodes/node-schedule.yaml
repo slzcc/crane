@@ -1,0 +1,12 @@
+---
+# https://kubernetes.io/zh/docs/concepts/scheduling-eviction/taint-and-toleration/
+# https://kubernetes.io/zh/docs/concepts/architecture/nodes/
+# https://kubernetes.io/zh/docs/concepts/workloads/controllers/daemonset/
+
+- name: Turn on Cluster Scheduling
+  shell: >
+    for node in $({{ kubernetes_ctl_path }}kubectl get node | sed '1d' | awk '{print $1}'); do
+      {{ kubernetes_ctl_path }}kubectl uncordon $node
+      {{ kubernetes_ctl_path }}kubectl taint nodes $node crane:NoSchedule-
+    done
+  ignore_errors: true
