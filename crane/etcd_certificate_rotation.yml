@@ -20,6 +20,7 @@
   vars:
     ansible_ssh_pipelining: true
     crane_deploy_type: 'etcd_certifcate_rotation'
+    crane_tasks: 'etcd-ca-rotation'
   vars_files:
     - "roles/cri-install/vars/containerd.yaml"
     - "roles/cri-install/vars/crio.yaml"

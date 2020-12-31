@@ -1,0 +1,25 @@
+---
+
+- name: Update New Master Label >
+  shell: >
+    {{ kubernetes_ctl_path }}kubectl label node {{ item[0] }} node-role.kubernetes.io/master=''
+  with_nested:
+    - "{{ add_master_name_list }}"
+    - "-"
+  ignore_errors: true
+
+- name: Update New Master Label >>
+  shell: >
+    {{ kubernetes_ctl_path }}kubectl label node {{ item[0] }} node-role.kubernetes.io/control-plane=''
+  with_nested:
+    - "{{ add_master_name_list }}"
+    - "-"
+  ignore_errors: true
+
+- name: Update New Master Label >>
+  shell: >
+    {{ kubernetes_ctl_path }}kubectl label node {{ item[0] }} node-role.kubernetes.io/node-
+  with_nested:
+    - "{{ add_master_name_list }}"
+    - "-"
+  ignore_errors: true

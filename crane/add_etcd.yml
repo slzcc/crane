@@ -20,6 +20,7 @@
   vars:
     ansible_ssh_pipelining: true
     crane_deploy_type: 'add_etcd'
+    crane_tasks: 'add-etcd-node'
   vars_files:
     - "roles/cri-install/vars/containerd.yaml"
     - "roles/cri-install/vars/crio.yaml"
@@ -39,7 +40,7 @@
   roles:
     - { role: downloads-ssh-key, tags: [copy_ssh_private_key]}
   tasks:
-    - { include_tasks: 'roles/etcd-add-node/includes/initialize.yaml' }
+    - { include_tasks: 'roles/etcd-add-nodes/includes/initialize.yaml' }
 
 - hosts: etcd-cluster-add-node
   gather_facts: false
@@ -52,7 +53,7 @@
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
   tasks:
-    - { include_tasks: 'roles/etcd-add-node/includes/clean.yml' }
+    - { include_tasks: 'roles/etcd-add-nodes/includes/clean.yml' }
 
 - name: Copy Etcd Old TLS for New Etcd Node
   hosts: etcd[0]
@@ -61,15 +62,15 @@
   vars:
     ansible_ssh_pipelining: true
   vars_files:
-    - "roles/etcd-add-node/defaults/main.yml"
+    - "roles/etcd-add-nodes/defaults/main.yml"
     - "roles/crane/defaults/main.yml"
     - "roles/etcd-install/vars/main.yml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-default/defaults/configure.yaml"
   tasks:
-    - { include_tasks: 'roles/etcd-add-node/includes/backups.yml' }
-    - { include_tasks: 'roles/etcd-add-node/includes/main.yml' }
+    - { include_tasks: 'roles/etcd-add-nodes/includes/backups.yml' }
+    - { include_tasks: 'roles/etcd-add-nodes/includes/main.yml' }
 
 - name: Create New Etcd Node
   hosts: etcd-cluster-add-node
@@ -86,7 +87,7 @@
     - "roles/kubernetes-default/defaults/configure.yaml"
     - "roles/etcd-install/defaults/tls.yaml"
   roles:
-    - { role: etcd-add-node, tags: [etcd-add-node]}
+    - { role: etcd-add-nodes, tags: [etcd-add-nodes]}
 
 - name: Update K8s Cluster Manifests
   hosts: kube-master
@@ -103,7 +104,7 @@
     - "roles/kubernetes-networks/defaults/calico.yaml"
     - "roles/kubernetes-networks/defaults/main.yml"
   tasks:
-    - { include_tasks: 'roles/etcd-add-node/includes/update-k8s-manifests.yml' }
+    - { include_tasks: 'roles/etcd-add-nodes/includes/update-k8s-manifests.yml' }
 
 - name: Update K8s Cluster Calico Network Config
   hosts: kube-master[0]
@@ -120,7 +121,7 @@
     - "roles/kubernetes-networks/defaults/calico.yaml"
     - "roles/kubernetes-networks/defaults/main.yml"
   tasks:
-    - { include_tasks: 'roles/etcd-add-node/includes/update-k8s-calico.yml' }
+    - { include_tasks: 'roles/etcd-add-nodes/includes/update-k8s-calico.yml' }
 
 - name: Update Etcd Cluster Manifests
   hosts: etcd
@@ -132,7 +133,7 @@
     - "roles/crane/defaults/main.yml"
     - "roles/downloads-ssh-key/defaults/main.yml"
   tasks:
-    - { include_tasks: 'roles/etcd-add-node/includes/update-etcd-manifests.yml' }
+    - { include_tasks: 'roles/etcd-add-nodes/includes/update-etcd-manifests.yml' }
 
 - name: Check Etcd Cluster Info
   hosts: kube-master[0]
@@ -141,14 +142,14 @@
   vars:
     ansible_ssh_pipelining: true
   vars_files:
-    - "roles/etcd-add-node/defaults/main.yml"
+    - "roles/etcd-add-nodes/defaults/main.yml"
     - "roles/crane/defaults/main.yml"
     - "roles/etcd-install/vars/main.yml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-default/defaults/configure.yaml"
     - "roles/kubernetes-manifests/defaults/main.yml"
   tasks:
-    - { include_tasks: 'roles/etcd-add-node/includes/check-cluster.yml' }
+    - { include_tasks: 'roles/etcd-add-nodes/includes/check-cluster.yml' }
 
 # Etcd 添加完集群后, 其配置 --initial-cluster-state=existing 应该为 --initial-cluster-state=new
 

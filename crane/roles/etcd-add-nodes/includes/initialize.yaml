@@ -2,7 +2,7 @@
 
 - name: Create etcd add node Path
   file:
-    path: "{{ temporary_dirs }}etcd-add-node"
+    path: "{{ temporary_dirs }}etcd-add-nodes"
     mode: 0755
     owner: "{{ ssh_connect_user }}"
     state: directory

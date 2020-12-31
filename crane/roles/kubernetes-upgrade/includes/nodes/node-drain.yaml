@@ -1,0 +1,5 @@
+---
+# https://kubernetes.io/zh/docs/tasks/administer-cluster/safely-drain-node/
+
+- shell: >
+    {{ kubernetes_ctl_path }}kubectl drain <node_name> --force --ignore-daemonsets --delete-local-data
