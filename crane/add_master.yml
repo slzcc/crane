@@ -131,6 +131,7 @@
     - "roles/crane/defaults/main.yml"
     - "roles/kubernetes-default/vars/haproxy.yaml"
     - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-default/defaults/configure.yaml"
   tasks:
     - { include_tasks: roles/k8s-add-master/includes/update-haproxy.yml }
 
