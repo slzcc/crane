@@ -1,0 +1,8 @@
+---
+- name: Move Etcd DataDir
+  shell: "mv {{ etcd_data_dirs }} {{ temporary_dirs }}etcd-del-nodes/etcd-`date +%Y%m%d%H%M%S`"
+  ignore_errors: true
+
+- name: Move Etcd Kubernetes Manifests Config
+  shell: "mv {{ kubernetes_manifests_dirs }}etcd.yml {{ temporary_dirs }}etcd-del-nodes/etcd.yml.`date +%Y%m%d%H%M%S`"
+  ignore_errors: true

@@ -503,3 +503,60 @@ docker 可以安装时区分 17/18/19/20 版本放置不同的 binray 文件。
 ### 优化
 
 对 k8s-del-nodes 和 kubernetes-upgrade 增加停止集群调度以及排除 node 等操作.
+
+etcd-add-node 和 etcd-del-node 重命名 xx.nodes
+
+### 修复
+
+各 Tasks 中可能存在遗漏创建临时操作目录的配置, 造成无法继续执行.
+
+删除 Etcd 节点后, 遗漏的 Etcd 启动文件进行删除.
+
+清除 k8s node 时 遗漏配置:
+
+```
+@crane/remove_k8s_nodes.yml
+
+- name: Clean Kubernetes Nodes DataDir
+  hosts: k8s-cluster-del-node
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/crane/defaults/main.yml"
+    - "roles/system-initialize/defaults/main.yml"
+    - "roles/kubernetes-networks/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-default/defaults/configure.yaml"
++/+
+    - "roles/downloads-ssh-key/defaults/main.yml"
++/+
+  roles:
+    - { role: clean-install, tags: [clean]}
+```
+
+修复删除 node 时, 安装 jq 时没有正常安装, 造成后续删除节点失败。
+
+修复增加 Master 时 Haproxy etc 目录没有存在的问题。
+
+修复 kubelet 生成的 kubelet.conf 具有 root 权限, 造成升级 Master 时无法进行修改的问题。
+
+### 增加
+
+因增加 cordon 和 drain 修改的执行过程:
+
+```
+@crane/roles/k8s-del-nodes/tasks/main.yml
+- name: Delete Kubernetes Cluster Nodes
+  shell: >
+    export DELETE_NONE=`{{ kubernetes_ctl_path }}kubectl get node -o json | jq '.items[].status.addresses'| jq '{IP:.[0].address,HOSTNAME:.[1].address}' -c | jq '. | select(.IP | contains("{{ item[0] }}"))' | jq --raw-output .HOSTNAME`
+    {{ kubernetes_ctl_path }}kubectl cordon $DELETE_NONE
+    {{ kubernetes_ctl_path }}kubectl drain $DELETE_NONE --force --ignore-daemonsets --delete-local-data
+    sleep 12
+    {{ kubernetes_ctl_path }}kubectl delete node $$DELETE_NONE
+  with_nested:
+    - "{{ k8s_del_node_ip_list }}"
+    - "-"
+  ignore_errors: true
+```

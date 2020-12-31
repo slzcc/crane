@@ -33,7 +33,7 @@
     - { role: downloads-ssh-key, tags: [copy_ssh_private_key]}
 
 - name: Stop Cluster Scheduling
-  hosts: k8s-master[0]
+  hosts: kube-master[0]
   become: yes
   become_method: sudo
   vars:
@@ -108,7 +108,7 @@
     - { include_tasks: 'roles/kubernetes-upgrade/includes/check-cluster.yaml' }
 
 - name: Turn on Cluster Scheduling
-  hosts: k8s-master[0]
+  hosts: kube-master[0]
   become: yes
   become_method: sudo
   vars:
