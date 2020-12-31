@@ -3,7 +3,7 @@
 - name: Copy Calico Config Files
   template: 
     src: "roles/kubernetes-networks/templates/calico.j2"
-    dest: "{{ temporary_dirs }}etcd-add-node/calico.yml"
+    dest: "{{ temporary_dirs }}etcd-add-nodes/calico.yml"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
 
@@ -26,9 +26,9 @@
 #   shell: "kubectl rollout restart daemonset/calico-node -n kube-system"
 
 - name: Clean Calico
-  shell: '{{ kubernetes_ctl_path }}kubectl delete -f {{ temporary_dirs }}etcd-add-node/calico.yml'
+  shell: '{{ kubernetes_ctl_path }}kubectl delete -f {{ temporary_dirs }}etcd-add-nodes/calico.yml'
   ignore_errors: true
 
 - name: Deploy Calico
-  shell: '{{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}etcd-add-node/calico.yml'
+  shell: '{{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}etcd-add-nodes/calico.yml'
   ignore_errors: true
