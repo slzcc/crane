@@ -2,19 +2,19 @@
 
 - name: Ubuntu Install JQ
   apt: 
-    name: ["jq"]
+    name: jq
     state: present
   environment:
     http_proxy: "{{ http_proxy }}"
     https_proxy: "{{ https_proxy }}"
-  when: ansible_distribution == 'Ubuntu'
+  when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
   async: 30
   poll: 2
   ignore_errors: true
 
 - name: Centos Install JQ
   yum: 
-    name: ["jq"]
+    name: jq
     state: present
   environment:
     http_proxy: "{{ http_proxy }}"
