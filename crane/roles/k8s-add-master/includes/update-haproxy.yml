@@ -1,5 +1,12 @@
 ---
 
+- name: Create Haproxy cfg Path
+  file:
+    path: "{{ haproxy_etc_dirs }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
 - name: Copy New Haproxy cfg Files
   template: 
     src: roles/kubernetes-manifests/templates/haproxy.cfg.j2

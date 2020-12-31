@@ -538,6 +538,8 @@ etcd-add-node 和 etcd-del-node 重命名 xx.nodes
 
 修复删除 node 时, 安装 jq 时没有正常安装, 造成后续删除节点失败。
 
+修复增加 Master 时 Haproxy etc 目录没有存在的问题。
+
 ### 增加
 
 因增加 cordon 和 drain 修改的执行过程:
