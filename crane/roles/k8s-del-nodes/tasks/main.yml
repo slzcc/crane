@@ -30,7 +30,7 @@
     {{ kubernetes_ctl_path }}kubectl cordon $DELETE_NONE ; \
     {{ kubernetes_ctl_path }}kubectl drain $DELETE_NONE --force --ignore-daemonsets --delete-local-data ; \
     sleep 12 ; \
-    {{ kubernetes_ctl_path }}kubectl delete node $$DELETE_NONE
+    {{ kubernetes_ctl_path }}kubectl delete node $DELETE_NONE
   with_nested:
     - "{{ k8s_del_node_ip_list }}"
     - "-"
