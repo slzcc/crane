@@ -26,7 +26,7 @@
 
 - name: Delete Kubernetes Cluster Nodes
   shell: >
-    export DELETE_NONE=`{{ kubernetes_ctl_path }}kubectl get node -o json | jq '.items[].status.addresses'| jq '{IP:.[0].address,HOSTNAME:.[1].address}' -c | jq '. | select(.IP | contains(\"{{ item[0] }}\"))' | jq --raw-output .HOSTNAME`
+    export DELETE_NONE=`{{ kubernetes_ctl_path }}kubectl get node -o json | jq '.items[].status.addresses'| jq '{IP:.[0].address,HOSTNAME:.[1].address}' -c | jq '. | select(.IP | contains("{{ item[0] }}"))' | jq --raw-output .HOSTNAME`
     {{ kubernetes_ctl_path }}kubectl cordon $DELETE_NONE
     {{ kubernetes_ctl_path }}kubectl drain $DELETE_NONE --force --ignore-daemonsets --delete-local-data
     sleep 12

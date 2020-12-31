@@ -537,3 +537,22 @@ etcd-add-node 和 etcd-del-node 重命名 xx.nodes
 ```
 
 修复删除 node 时, 安装 jq 时没有正常安装, 造成后续删除节点失败。
+
+### 增加
+
+因增加 cordon 和 drain 修改的执行过程:
+
+```
+@crane/roles/k8s-del-nodes/tasks/main.yml
+- name: Delete Kubernetes Cluster Nodes
+  shell: >
+    export DELETE_NONE=`{{ kubernetes_ctl_path }}kubectl get node -o json | jq '.items[].status.addresses'| jq '{IP:.[0].address,HOSTNAME:.[1].address}' -c | jq '. | select(.IP | contains("{{ item[0] }}"))' | jq --raw-output .HOSTNAME`
+    {{ kubernetes_ctl_path }}kubectl cordon $DELETE_NONE
+    {{ kubernetes_ctl_path }}kubectl drain $DELETE_NONE --force --ignore-daemonsets --delete-local-data
+    sleep 12
+    {{ kubernetes_ctl_path }}kubectl delete node $$DELETE_NONE
+  with_nested:
+    - "{{ k8s_del_node_ip_list }}"
+    - "-"
+  ignore_errors: true
+```
