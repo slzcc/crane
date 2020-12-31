@@ -24,4 +24,4 @@
 - [ ] 修复 无法直接移除 kubernetes master 节点。
 - [ ] 修复 删除 docker 时, 判定是否删除 containerd。
 - [ ] 修复 安装 Crane 时, master 与 etcd 拆分安装。
-- [ ] 修复 升级或停止 kubelet 时对当前节点抑制和和亲配置。
+- [x] 修复 升级或停止 kubelet 时对当前节点抑制和和亲配置。

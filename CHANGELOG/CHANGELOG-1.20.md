@@ -509,3 +509,5 @@ etcd-add-node 和 etcd-del-node 重命名 xx.nodes
 ### 修复
 
 各 Tasks 中可能存在遗漏创建临时操作目录的配置, 造成无法继续执行.
+
+删除 Etcd 节点后, 遗漏的 Etcd 启动文件进行删除.
