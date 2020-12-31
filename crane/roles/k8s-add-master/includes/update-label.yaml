@@ -2,9 +2,9 @@
 
 - name: Update New Master Label
   shell: >
-    {{ kubernetes_ctl_path }}kubectl label node {{ item[1] }} node-role.kubernetes.io/master='' ; \
-    {{ kubernetes_ctl_path }}kubectl label node {{ item[1] }} node-role.kubernetes.io/control-plane='' ; \
-    {{ kubernetes_ctl_path }}kubectl delete label node {{ item[1] }} node-role.kubernetes.io/node=''
+    {{ kubernetes_ctl_path }}kubectl label node {{ item[0] }} node-role.kubernetes.io/master='' ; \
+    {{ kubernetes_ctl_path }}kubectl label node {{ item[0] }} node-role.kubernetes.io/control-plane='' ; \
+    {{ kubernetes_ctl_path }}kubectl delete label node {{ item[0] }} node-role.kubernetes.io/node=''
   with_nested:
     - "{{ add_master_name_list }}"
     - "-"
