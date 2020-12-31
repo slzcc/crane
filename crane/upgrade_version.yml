@@ -32,6 +32,19 @@
   roles:
     - { role: downloads-ssh-key, tags: [copy_ssh_private_key]}
 
+- name: Stop Cluster Scheduling
+  hosts: k8s-master[0]
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/crane/defaults/main.yml"
+    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+  tasks:
+    - { include_tasks: 'roles/kubernetes-upgrade/includes/nodes/node-no-schedule.yaml' }
+
 - name: Update Node Cluster Version
   hosts: kube-master:kube-node
   become: yes
@@ -93,6 +106,19 @@
   tasks:
     - { include_tasks: 'roles/kubernetes-upgrade/includes/update-k8s-calico.yaml', when: is_k8s_upgrade_calico }
     - { include_tasks: 'roles/kubernetes-upgrade/includes/check-cluster.yaml' }
+
+- name: Turn on Cluster Scheduling
+  hosts: k8s-master[0]
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/crane/defaults/main.yml"
+    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+  tasks:
+    - { include_tasks: 'roles/kubernetes-upgrade/includes/nodes/node-schedule.yaml' }
 
 - name: Sync Crane Delploy Files to Instance
   hosts: kube-master[0]
