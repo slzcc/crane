@@ -1,5 +1,12 @@
 ---
 
+- name: Create Haproxy cfg Path
+  file:
+    path: "{{ haproxy_etc_dirs }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
 - name: Copy New Haproxy cfg Files
   template: 
     src: roles/kubernetes-manifests/templates/haproxy.cfg.j2
@@ -7,6 +14,14 @@
     mode: 0644
     owner: "{{ ssh_connect_user }}"
     
-- name: Restart Kubernetes Master HaProxy Containers
-  shell: "{{ kubernetes_ctl_path }}docker rm -f $(docker ps --filter name=k8s_haproxy -q)"
+- name: Restart Kubernetes Master HaProxy Containers for docker
+  shell: "{{ kubernetes_ctl_path }}docker rm -f $({{ kubernetes_ctl_path }}docker ps --filter name=k8s_haproxy -q)"
+  when: 
+    - cri_k8s_default == 'docker'
+  ignore_errors: true
+
+- name: Restart Kubernetes Master HaProxy Containers for containerd
+  shell: "for i in $({{ kubernetes_ctl_path }}crictl ps --name k8s_haproxy -aq); do {{ kubernetes_ctl_path }}crictl rm -f ${i}; sleep 2 ; done"
+  when: 
+    - cri_k8s_default != 'docker'
   ignore_errors: true
