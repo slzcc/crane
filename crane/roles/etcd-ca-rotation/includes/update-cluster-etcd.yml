@@ -10,7 +10,7 @@
 - name: Update Etcd Server for Containerd
   shell: "for i in $({{ kubernetes_ctl_path }}crictl ps --name etcd -aq); do {{ kubernetes_ctl_path }}crictl rm -f ${i}; sleep 15 ; done"
   when: 
-    - cri_k8s_default == 'containerd'
+    - cri_k8s_default != 'docker'
 
 - name: Check Cluster Status
   shell: 'until {{ kubernetes_ctl_path }}kubectl get pod ; do >&2 echo "Kubenetes Cluster Starting..." && sleep 1 ; done'

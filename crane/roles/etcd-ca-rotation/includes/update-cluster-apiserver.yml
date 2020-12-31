@@ -15,4 +15,4 @@
 - name: Update Kubernetes ApiServer Server for Containerd
   shell: "for i in $({{ kubernetes_ctl_path }}crictl ps --name kube-apiserver -aq); do {{ kubernetes_ctl_path }}crictl rm -f ${i}; sleep 2 ; done"
   when: 
-    - cri_k8s_default == 'containerd'
+    - cri_k8s_default != 'docker'
