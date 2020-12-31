@@ -31,3 +31,9 @@
   with_nested:
     - "{{ add_master_ip_list }}"
     - ['etcd-ca.pem', 'etcd.pem', 'etcd-key.pem', 'etcd-ca-key.pem']
+
+## Permissions
+- name: Move location Kubelet.conf in Crane Home
+  shell: >
+    find /etc/kubernetes | xargs -i chown shilei {}
+  ignore_errors: true

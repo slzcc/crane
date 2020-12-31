@@ -21,6 +21,7 @@
   vars:
     ansible_ssh_pipelining: true
     crane_deploy_type: 'remove_k8s_nodes'
+    crane_tasks: 'remove-k8s-node'
   vars_files:
     - "roles/cri-install/vars/containerd.yaml"
     - "roles/cri-install/vars/crio.yaml"
@@ -65,6 +66,7 @@
     - "roles/kubernetes-networks/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
   roles:
     - { role: clean-install, tags: [clean]}
 

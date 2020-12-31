@@ -20,6 +20,7 @@
   vars:
     ansible_ssh_pipelining: true
     crane_deploy_type: 'add_master'
+    crane_tasks: 'k8s-add-master'
   vars_files:
     - "roles/cri-install/vars/containerd.yaml"
     - "roles/cri-install/vars/crio.yaml"
@@ -130,6 +131,7 @@
     - "roles/crane/defaults/main.yml"
     - "roles/kubernetes-default/vars/haproxy.yaml"
     - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-default/defaults/configure.yaml"
   tasks:
     - { include_tasks: roles/k8s-add-master/includes/update-haproxy.yml }
 
@@ -145,8 +147,9 @@
     - "roles/crane/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-default/defaults/configure.yaml"
-  roles:
-    - { role: kubernetes-afterward, tags: [k8s-afterward]}
+    - "roles/k8s-add-master/defaults/main.yml"
+  tasks:
+    - { include_tasks: roles/k8s-add-master/includes/update-label.yaml }
 
 - name: Sync Crane Delploy Files to Instance
   hosts: kube-master[0]

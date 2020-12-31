@@ -11,6 +11,7 @@
   vars:
     ansible_ssh_pipelining: true
     crane_deploy_type: 'remove_cluster'
+    crane_tasks: 'remove-cluster'
   vars_files:
     - "roles/cri-install/vars/containerd.yaml"
     - "roles/cri-install/vars/crio.yaml"

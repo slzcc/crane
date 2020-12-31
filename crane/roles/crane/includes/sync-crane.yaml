@@ -2,7 +2,7 @@
 
 - name: Create Crane Deploy Temporary Directory
   file:
-    path: "{{ temporary_dirs }}/deploy"
+    path: "{{ temporary_dirs }}deploy"
     mode: 0755
     owner: "{{ ssh_connect_user }}"
     state: directory
