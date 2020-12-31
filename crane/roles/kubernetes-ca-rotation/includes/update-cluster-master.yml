@@ -16,7 +16,7 @@
 
 - name: Rester Kubernetes ApiServer/Scheduler/ControllerManager Service
   shell: "for i in $({{ kubernetes_ctl_path }}crictl ps | egrep '(kube-scheduler|kube-apiserver|kube-controller-manager)'|awk '{print $1}'); do {{ kubernetes_ctl_path }}crictl rm -f $i;done"
-  when: cri_k8s_default == 'containerd'
+  when: cri_k8s_default != 'docker'
 
 - name: Clean Old Kubelet CA
   file:
