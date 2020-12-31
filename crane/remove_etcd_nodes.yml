@@ -21,7 +21,7 @@
   vars:
     ansible_ssh_pipelining: true
     crane_deploy_type: 'remove_etcd_nodes'
-    crane_tasks: 'remove-etcd-nodes'
+    crane_tasks: 'etcd-del-node'
   vars_files:
     - "roles/cri-install/vars/containerd.yaml"
     - "roles/cri-install/vars/crio.yaml"
@@ -56,7 +56,7 @@
     - "roles/kubernetes-default/defaults/configure.yaml"
     - "roles/etcd-install/defaults/tls.yaml"
   roles:
-    - { role: etcd-del-node, tags: [etcd-del-node]}
+    - { role: etcd-del-nodes, tags: [etcd-del-nodes]}
 
 - name: Clean Etcd Nodes DataDir
   hosts: etcd-cluster-del-node
@@ -73,7 +73,7 @@
     - "roles/kubernetes-default/defaults/configure.yaml"
     - "roles/etcd-install/defaults/tls.yaml"
   tasks:
-    - { include_tasks: 'roles/etcd-del-node/includes/clean-nodes.yml' }
+    - { include_tasks: 'roles/etcd-del-nodes/includes/clean-nodes.yml' }
 
 - name: Set Kubernetes Cluster Etcd Config
   hosts: kube-master[0]
@@ -88,7 +88,7 @@
     - "roles/kubernetes-default/defaults/configure.yaml"
     - "roles/etcd-install/vars/main.yml"
   tasks:
-    - { include_tasks: 'roles/etcd-add-node/includes/update-k8s-manifests.yml' }
+    - { include_tasks: 'roles/etcd-add-nodes/includes/update-k8s-manifests.yml' }
 
 - name: Set K8s Cluster Calico Network Config
   hosts: kube-master[0]
@@ -105,7 +105,7 @@
     - "roles/kubernetes-networks/defaults/calico.yaml"
     - "roles/kubernetes-networks/defaults/main.yml"
   tasks:
-    - { include_tasks: 'roles/etcd-add-node/includes/update-k8s-calico.yml' }
+    - { include_tasks: 'roles/etcd-del-nodes/includes/update-k8s-calico.yml' }
 
 - name: Sync Crane Delploy Files to Instance
   hosts: kube-master[0]

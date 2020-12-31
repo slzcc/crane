@@ -2,7 +2,7 @@
 - include_vars: "roles/kubernetes-default/vars/haproxy.yaml"
 
 - name: Backup Kubernetes ApiServer Config Files
-  shell: 'cp -a {{ kubernetes_manifests_dirs }}kube-apiserver.yml {{ temporary_dirs }}etcd-add-node/kube-apiserver.yml-`date +%Y%m%d%H%M%S`'
+  shell: 'cp -a {{ kubernetes_manifests_dirs }}kube-apiserver.yml {{ temporary_dirs }}etcd-add-nodes/kube-apiserver.yml-`date +%Y%m%d%H%M%S`'
   when: is_kube_master
   ignore_errors: true
 
