@@ -7,6 +7,13 @@
     owner: "{{ ssh_connect_user }}"
     state: directory
 
+- name: Create Crane Tasks Temporary Directory
+  file:
+    path: "{{ temporary_dirs }}{{ crane_tasks }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
 - name: Create Crane Private Directory
   file:
     path: "/etc/crane"

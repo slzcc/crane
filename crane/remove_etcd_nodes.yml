@@ -4,23 +4,6 @@
   roles:
     - { role: local-task }
 
-- name: Initialize Crane Env
-  hosts: all
-  become: yes
-  become_method: sudo
-  vars:
-    ansible_ssh_pipelining: true
-    crane_deploy_type: 'remove_etcd_nodes'
-  vars_files:
-    - "roles/cri-install/vars/containerd.yaml"
-    - "roles/cri-install/vars/crio.yaml"
-    - "roles/cri-install/vars/docker.yaml"
-    - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
-  roles:
-    - { role: crane, tags: [crane] }
-    
 - hosts: kube-master[0]:etcd:etcd-cluster-del-node
   become: yes
   gather_facts: true
@@ -30,6 +13,24 @@
   tasks:
     - name: Check all Nodes
       ping: 
+
+- name: Initialize Crane Env
+  hosts: all
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+    crane_deploy_type: 'remove_etcd_nodes'
+    crane_tasks: 'remove-etcd-nodes'
+  vars_files:
+    - "roles/cri-install/vars/containerd.yaml"
+    - "roles/cri-install/vars/crio.yaml"
+    - "roles/cri-install/vars/docker.yaml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+  roles:
+    - { role: crane, tags: [crane] }
 
 - hosts: kube-master
   gather_facts: false
