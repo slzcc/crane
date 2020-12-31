@@ -503,3 +503,7 @@ docker 可以安装时区分 17/18/19/20 版本放置不同的 binray 文件。
 ### 优化
 
 对 k8s-del-nodes 和 kubernetes-upgrade 增加停止集群调度以及排除 node 等操作.
+
+### 修复
+
+各 Tasks 中可能存在遗漏创建临时操作目录的配置, 造成无法继续执行.
