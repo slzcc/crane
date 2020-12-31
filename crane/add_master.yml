@@ -20,7 +20,7 @@
   vars:
     ansible_ssh_pipelining: true
     crane_deploy_type: 'add_master'
-    crane_tasks: 'add-master'
+    crane_tasks: 'k8s-add-master'
   vars_files:
     - "roles/cri-install/vars/containerd.yaml"
     - "roles/cri-install/vars/crio.yaml"

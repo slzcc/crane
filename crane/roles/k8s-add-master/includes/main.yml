@@ -22,6 +22,10 @@
     - "{{ add_master_ip_list }}"
     - ['admin.conf', 'bootstrap-kubelet.conf', 'controller-manager.conf', 'scheduler.conf']
 
+- name: Move location Kubelet.conf in Crane Home
+  shell: "mv {{ kubernetes_etc_dirs }}kubelet.conf {{ temporary_dirs }}k8s-add-master/kubelet.conf.`date +%Y%m%d%H%M%S`"
+  ignore_errors: true
+
 ## Etcd
 ## ********************************************************************************************************************************
 
