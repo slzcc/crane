@@ -511,3 +511,27 @@ etcd-add-node 和 etcd-del-node 重命名 xx.nodes
 各 Tasks 中可能存在遗漏创建临时操作目录的配置, 造成无法继续执行.
 
 删除 Etcd 节点后, 遗漏的 Etcd 启动文件进行删除.
+
+清除 k8s node 时 遗漏配置:
+
+```
+@crane/remove_k8s_nodes.yml
+
+- name: Clean Kubernetes Nodes DataDir
+  hosts: k8s-cluster-del-node
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/crane/defaults/main.yml"
+    - "roles/system-initialize/defaults/main.yml"
+    - "roles/kubernetes-networks/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-default/defaults/configure.yaml"
++/+
+    - "roles/downloads-ssh-key/defaults/main.yml"
++/+
+  roles:
+    - { role: clean-install, tags: [clean]}
+```
