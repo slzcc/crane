@@ -540,6 +540,8 @@ etcd-add-node 和 etcd-del-node 重命名 xx.nodes
 
 修复增加 Master 时 Haproxy etc 目录没有存在的问题。
 
+修复 kubelet 生成的 kubelet.conf 具有 root 权限, 造成升级 Master 时无法进行修改的问题。
+
 ### 增加
 
 因增加 cordon 和 drain 修改的执行过程:

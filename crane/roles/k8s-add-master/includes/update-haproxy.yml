@@ -24,3 +24,4 @@
   shell: "for i in $({{ kubernetes_ctl_path }}crictl ps --name k8s_haproxy -aq); do {{ kubernetes_ctl_path }}crictl rm -f ${i}; sleep 2 ; done"
   when: 
     - cri_k8s_default == 'containerd'
+  ignore_errors: true
