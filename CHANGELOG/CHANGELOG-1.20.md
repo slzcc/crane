@@ -535,3 +535,5 @@ etcd-add-node 和 etcd-del-node 重命名 xx.nodes
   roles:
     - { role: clean-install, tags: [clean]}
 ```
+
+修复删除 node 时, 安装 jq 时没有正常安装, 造成后续删除节点失败。
