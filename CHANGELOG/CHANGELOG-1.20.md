@@ -10,6 +10,7 @@
     - [v1.20.1.5 更新内容](#v12015)
     - [v1.20.1.6 更新内容](#v12016)
     - [v1.20.1.7 更新内容](#v12017)
+    - [v1.20.1.8 更新内容](#v12018)
 
 # v1.20.0.0
 
@@ -560,3 +561,25 @@ etcd-add-node 和 etcd-del-node 重命名 xx.nodes
     - "-"
   ignore_errors: true
 ```
+
+# v1.20.1.8
+
+
+### 优化 
+
+因资源的增加对默认的 nf_conntrack 配置修改为如下:
+
+
+```
+kernel_nf_conntrack_buckets: 262144
+kernel_nf_conntrack_max: 1048576
+
+=>
+
+kernel_nf_conntrack_buckets: 1048576
+kernel_nf_conntrack_max: 4194304
+```
+
+> nf_conntrack https://opengers.github.io/openstack/openstack-base-netfilter-framework-overview/
+
+对 nf_conntrack_buckets 开机启动不在写入 rc.local 配置为 modprobe.d 模式启动。
