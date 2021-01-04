@@ -135,7 +135,7 @@
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-default/defaults/configure.yaml"
     - "roles/etcd-install/vars/main.yml"
-    - "roles/etcd-install/default/main.yml"
+    - "roles/etcd-install/defaults/main.yml"
     - "roles/kubernetes-networks/defaults/calico.yaml"
     - "roles/kubernetes-networks/defaults/main.yml"
   tasks:

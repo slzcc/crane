@@ -32,3 +32,7 @@
 - name: Deploy Calico
   shell: '{{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}etcd-del-nodes/calico.yml'
   ignore_errors: true
+
+- name: Backup Calico Config
+  shell: 'mv {{ temporary_dirs }}etcd-del-nodes/calico.yml {{ temporary_dirs }}etcd-del-nodes/calico.yml-`date +%Y%m%d%H%M%S`'
+  ignore_errors: true
