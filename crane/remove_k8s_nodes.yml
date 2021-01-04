@@ -12,7 +12,7 @@
     ansible_ssh_pipelining: true
   tasks:
     - name: Check all Nodes
-      ping: 
+      setup:
 
 - name: Initialize Crane Env
   hosts: all
