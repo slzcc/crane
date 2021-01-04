@@ -132,6 +132,12 @@
   vars_files:
     - "roles/crane/defaults/main.yml"
     - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/etcd-install/vars/main.yml"
+    - "roles/etcd-install/default/main.yml"
+    - "roles/kubernetes-networks/defaults/calico.yaml"
+    - "roles/kubernetes-networks/defaults/main.yml"
   tasks:
     - { include_tasks: 'roles/etcd-add-nodes/includes/update-etcd-manifests.yml' }
 
