@@ -3,7 +3,6 @@
 
 - name: Backup Kubernetes ApiServer Config Files
   shell: 'cp -a {{ kubernetes_manifests_dirs }}kube-apiserver.yml {{ temporary_dirs }}etcd-add-nodes/kube-apiserver.yml-`date +%Y%m%d%H%M%S`'
-  when: is_kube_master
   ignore_errors: true
 
 - name: Copy Kubernetes ApiServer Config Files
@@ -12,4 +11,4 @@
     dest: "{{ kubernetes_manifests_dirs }}kube-apiserver.yml"
     mode: 0644
     owner: "{{ ssh_connect_user }}" 
-  when: is_kube_master
+    force: no
