@@ -88,7 +88,7 @@
     - "roles/kubernetes-default/defaults/configure.yaml"
     - "roles/etcd-install/vars/main.yml"
   tasks:
-    - { include_tasks: 'roles/etcd-del-nodes/includes/update-k8s-manifests.yml' }
+    - { include_tasks: 'roles/etcd-del-nodes/includes/update-k8s-manifests.yaml' }
 
 - name: Set Etcd Manifests Config
   hosts: etcd
@@ -103,7 +103,7 @@
     - "roles/kubernetes-default/defaults/configure.yaml"
     - "roles/etcd-install/vars/main.yml"
   tasks:
-    - { include_tasks: 'roles/etcd-del-nodes/includes/update-etcd-manifests.yml' }
+    - { include_tasks: 'roles/etcd-del-nodes/includes/update-etcd-manifests.yaml' }
 
 - name: Set Kubernetes Cluster Calico Network Config
   hosts: kube-master[0]
