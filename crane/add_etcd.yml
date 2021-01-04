@@ -101,8 +101,8 @@
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-default/defaults/configure.yaml"
     - "roles/etcd-install/vars/main.yml"
-    - "roles/kubernetes-networks/defaults/calico.yaml"
     - "roles/kubernetes-networks/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
   tasks:
     - { include_tasks: 'roles/etcd-add-nodes/includes/update-k8s-manifests.yml' }
 
