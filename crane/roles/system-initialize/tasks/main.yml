@@ -171,9 +171,9 @@
     mode: 0644
   ignore_errors: true
 
-- name: Empowerment for rc.local
-  shell: "chmod +x /etc/rc.local"
-  ignore_errors: true
+# - name: Empowerment for rc.local
+#   shell: "chmod +x /etc/rc.local"
+#   ignore_errors: true
 
 - name: Centos Stop Firewalld
   service: 

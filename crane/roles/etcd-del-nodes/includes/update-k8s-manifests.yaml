@@ -1,0 +1,15 @@
+--- 
+- include_vars: "roles/kubernetes-default/vars/haproxy.yaml"
+
+- name: Backup Kubernetes ApiServer Config Files
+  shell: 'cp -a {{ kubernetes_manifests_dirs }}kube-apiserver.yml {{ temporary_dirs }}etcd-del-nodes/kube-apiserver.yml-`date +%Y%m%d%H%M%S`'
+  ignore_errors: true
+
+- name: Copy Kubernetes ApiServer Config Files
+  template: 
+    src: "roles/kubernetes-manifests/templates/kube-apiserver.j2"
+    dest: "{{ kubernetes_manifests_dirs }}kube-apiserver.yml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+
+- shell: sleep 10

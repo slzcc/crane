@@ -204,12 +204,12 @@
                  {{ kubernetes_pki_dirs }}controller-manager*.pem \
                  {{ kubernetes_pki_dirs }}admin*.pem'
 
-- name: Clean Files **
+- name: Set Etcd CA Files Permissions
   shell: "for ITEM in $(ls {{ kubernetes_etc_dirs }}); do 
             chown {{ ssh_connect_user }} {{ kubernetes_etc_dirs }}${ITEM}; 
           done"
 
-- name: Clean Files ***
+- name: Set Kubernetes CA Files Permissions
   shell: "for ITEM in $(ls {{ kubernetes_pki_dirs }}); do 
             chown {{ ssh_connect_user }} {{ kubernetes_pki_dirs }}${ITEM}; 
           done"
