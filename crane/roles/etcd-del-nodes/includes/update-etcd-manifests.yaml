@@ -9,5 +9,6 @@
     dest: "{{ kubernetes_manifests_dirs }}etcd.yml"
     mode: 0644
     owner: "{{ ssh_connect_user }}" 
-
+    force: no
+    
 - shell: sleep 20
