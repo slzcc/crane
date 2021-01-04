@@ -606,4 +606,7 @@ kernel_nf_conntrack_max: 4194304
     - "roles/etcd-install/vars/main.yml"
   tasks:
     - { include_tasks: 'roles/etcd-del-nodes/includes/update-k8s-manifests.yml' } => - { include_tasks: 'roles/etcd-add-nodes/includes/update-k8s-manifests.yml' }
+...
 ```
+
+> 主要问题出在 etcd.j2 文件使用 etcd-cluster, 在 etcd-del-nodes 时不适用。

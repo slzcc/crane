@@ -1,0 +1,83 @@
+{% macro initial_cluster() -%}
+{% for host in groups['etcd'] -%}
+  {{ hostvars[host]['ansible_nodename'] }}={{ etcd_peer_url_scheme }}://
+  {%- if etcd_interface != "" -%}
+    {{ hostvars[host]['ansible_' + etcd_interface].ipv4.address }}
+  {%- else -%}
+    {{ hostvars[host].ansible_default_ipv4.address }}
+  {%- endif -%}
+:{{ etcd_peer_port }}
+  {%- if not loop.last -%},{%- endif -%}
+{%- endfor -%}
+{% endmacro -%}
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    scheduler.alpha.kubernetes.io/critical-pod: ""
+  labels:
+    component: etcd
+    tier: control-plane
+  name: etcd
+  namespace: kube-system
+spec:
+  hostNetwork: true
+  containers:
+  - name: etcd
+    image: {{ k8s_cluster_component_registry }}/etcd:{{ etcd_version }}
+    env:
+    - name: TZ
+      value: "{{ time_location }}"
+    command:
+    - etcd
+    - --name={{ hostvars[inventory_hostname].ansible_nodename }}
+    - --listen-client-urls={{ etcd_url_scheme }}://0.0.0.0:{{ etcd_client_port }}
+    - --listen-peer-urls={{ etcd_peer_url_scheme }}://0.0.0.0:{{ etcd_peer_port }}
+    - --advertise-client-urls={{ etcd_url_scheme }}://{{ hostvars[inventory_hostname].ansible_default_ipv4.address }}:{{ etcd_client_port }}
+    - --initial-advertise-peer-urls={{ etcd_peer_url_scheme }}://{{ hostvars[inventory_hostname].ansible_default_ipv4.address }}:{{ etcd_peer_port }}
+{% if etcd_client_cert_auth %}
+    - --client-cert-auth
+{% endif %}{% if etcd_peer_client_cert_auth %}
+    - --peer-client-cert-auth
+{% endif %}{% if etcd_client_tls_auto %}
+    - --auto-tls
+{% endif %}{% if etcd_peer_tls_auto %}
+    - --peer-auto-tls
+{% endif %}
+    - --cert-file={{ etcd_ssl_dirs }}etcd.pem
+    - --key-file={{ etcd_ssl_dirs }}etcd-key.pem
+    - --trusted-ca-file={{ etcd_ssl_dirs }}etcd-ca.pem
+    - --peer-cert-file={{ etcd_ssl_dirs }}etcd.pem
+    - --peer-key-file={{ etcd_ssl_dirs }}etcd-key.pem
+    - --peer-trusted-ca-file={{ etcd_ssl_dirs }}etcd-ca.pem
+    - --initial-cluster={{ initial_cluster() }}
+    - --initial-cluster-token={{ etcd_cluster_token }}
+    - --initial-cluster-state={{ etcd_cluster_type }}
+    - --data-dir={{ etcd_data_dirs }}
+    livenessProbe:
+      failureThreshold: 8
+      tcpSocket:
+        port: {{ etcd_client_port }}
+      initialDelaySeconds: 15
+      timeoutSeconds: 15
+    volumeMounts:
+    - mountPath: {{ etcd_ssl_dirs }}
+      name: etcd
+    - mountPath: {{ etcd_data_dirs }}
+      name: data
+    - mountPath: /usr/share/zoneinfo
+      name: usr-local-timezone
+      readOnly: true
+  volumes:
+  - hostPath:
+      path: {{ etcd_ssl_dirs }}
+      type: DirectoryOrCreate
+    name: etcd
+  - hostPath:
+      path: {{ etcd_data_dirs }}
+      type: DirectoryOrCreate
+    name: data
+  - hostPath:
+      path: /usr/share/zoneinfo
+      type: DirectoryOrCreate
+    name: usr-local-timezone
