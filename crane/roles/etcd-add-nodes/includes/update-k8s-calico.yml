@@ -6,9 +6,6 @@
     dest: "{{ temporary_dirs }}etcd-add-nodes/calico.yml"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
-
-- name: Sleep 10
-  shell: "sleep 10"
   
 # - name: Delete Calico Old Etcd Secrets
 #   shell: '{{ kubernetes_ctl_path }}kubectl delete secret calico-etcd-secrets -n kube-system'
@@ -36,3 +33,6 @@
 - name: Backup Calico Config
   shell: 'mv {{ temporary_dirs }}etcd-add-nodes/calico.yml {{ temporary_dirs }}etcd-add-nodes/calico.yml-`date +%Y%m%d%H%M%S`'
   ignore_errors: true
+
+- name: Sleep 20
+  shell: "sleep 20"
