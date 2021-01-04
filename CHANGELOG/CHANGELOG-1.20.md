@@ -583,3 +583,27 @@ kernel_nf_conntrack_max: 4194304
 > nf_conntrack https://opengers.github.io/openstack/openstack-base-netfilter-framework-overview/
 
 对 nf_conntrack_buckets 开机启动不在写入 rc.local 配置为 modprobe.d 模式启动。
+
+
+### 修复
+
+修复 删除 etcd 节点时，只更新一个 k8s master 节点的 etcd 配置，并修复使用了 etcd-add-nodes 的配置项。
+
+```
+@crane/remove_etcd_nodes.yml
+
+- name: Set Kubernetes Cluster Etcd Config
+  hosts: kube-master[0] => hosts: kube-master
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/etcd-install/vars/main.yml"
+  tasks:
+    - { include_tasks: 'roles/etcd-del-nodes/includes/update-k8s-manifests.yml' } => - { include_tasks: 'roles/etcd-add-nodes/includes/update-k8s-manifests.yml' }
+```

@@ -1,6 +1,6 @@
 --- 
 - name: Backup Etcd Config Files
-  shell: 'cp -a {{ kubernetes_manifests_dirs }}etcd.yml {{ temporary_dirs }}etcd-add-nodes/etcd.yml-`date +%Y%m%d%H%M%S`'
+  shell: 'cp -a {{ kubernetes_manifests_dirs }}etcd.yml {{ temporary_dirs }}etcd-del-nodes/etcd.yml-`date +%Y%m%d%H%M%S`'
   ignore_errors: true
 
 - name: Copy Etcd Static Pod Config files

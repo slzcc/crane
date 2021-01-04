@@ -75,8 +75,8 @@
   tasks:
     - { include_tasks: 'roles/etcd-del-nodes/includes/clean-nodes.yml' }
 
-- name: Set Kubernetes Cluster Etcd Config
-  hosts: kube-master[0]
+- name: Set Kubernetes Cluster Manifests Etcd Config
+  hosts: kube-master
   become: yes
   become_method: sudo
   vars:
@@ -88,9 +88,24 @@
     - "roles/kubernetes-default/defaults/configure.yaml"
     - "roles/etcd-install/vars/main.yml"
   tasks:
-    - { include_tasks: 'roles/etcd-add-nodes/includes/update-k8s-manifests.yml' }
+    - { include_tasks: 'roles/etcd-del-nodes/includes/update-k8s-manifests.yml' }
 
-- name: Set K8s Cluster Calico Network Config
+- name: Set Etcd Manifests Config
+  hosts: etcd
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/etcd-install/vars/main.yml"
+  tasks:
+    - { include_tasks: 'roles/etcd-del-nodes/includes/update-etcd-manifests.yml' }
+
+- name: Set Kubernetes Cluster Calico Network Config
   hosts: kube-master[0]
   become: yes
   become_method: sudo
