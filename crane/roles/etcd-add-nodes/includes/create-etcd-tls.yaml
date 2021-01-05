@@ -1,11 +1,17 @@
 ---
 - include_vars: "roles/etcd-install/vars/main.yml"
 
+- name: Check CFSSL Binary File
+  shell: "ls {{ kubernetes_ctl_path }}cfssl"
+  register: result
+  ignore_errors: true
+
 # CFSSL install
 ## ********************************************************************************************************************************
 - name: Download CFSSL 
   include: "roles/downloads-packages/includes/cfssl/main.yml"
-  
+  when: result.stderr
+
 ## Copy CFSSL Etcd Json Files
 ## ********************************************************************************************************************************
 
