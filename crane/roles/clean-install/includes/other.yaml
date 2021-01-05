@@ -1,7 +1,15 @@
 ---
 
+- name: Create Other Path
+  file:
+    path: "{{ temporary_dirs }}tools"
+    owner: "{{ ssh_connect_user }}" 
+    mode: 0755
+    state: directory
+  ignore_errors: true
+
 - name: Clean Cfssl files
-  shell: "mv {{ kubernetes_ctl_path }}{{ item }} {{ temporary_dirs }}"
+  shell: "mv {{ kubernetes_ctl_path }}{{ item }} {{ temporary_dirs }}tools"
   with_items:
     - "cfssl"
     - "cfssljson"

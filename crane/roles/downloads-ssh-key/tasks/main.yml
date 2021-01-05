@@ -5,7 +5,7 @@
 
 - name: Create Temporary Directory
   file:
-    path: "{{ temporary_dirs }}"
+    path: "{{ temporary_dirs }}/.ssh"
     mode: 0755
     owner: "{{ ssh_connect_user }}"
     state: directory
