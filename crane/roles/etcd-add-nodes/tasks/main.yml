@@ -1,6 +1,4 @@
 ---
-- include_vars: "roles/etcd-install/vars/main.yml"
-
 ## Etcd
 ## ********************************************************************************************************************************
 
@@ -10,7 +8,7 @@
 
 - name: Copy Etcd Config Files to Kubernetes Master/None
   template: 
-    src: etcd.j2
+    src: "roles/etcd-add-nodes/templates/etcd.j2"
     dest: "{{ kubernetes_manifests_dirs }}etcd.yml"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
