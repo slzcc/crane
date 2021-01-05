@@ -11,4 +11,4 @@
     dest: "{{ kubernetes_manifests_dirs }}kube-apiserver.yml"
     mode: 0644
     owner: "{{ ssh_connect_user }}" 
-    force: no
+    force: on
