@@ -45,7 +45,7 @@
 - name: Check DockerD Daemon.js MD5 **
   template: 
     src: "roles/cri-install/templates/docker/daemon.j2"
-    dest: "{{ temporary_dirs }}/.daemon.json"
+    dest: "{{ temporary_dirs }}main/.daemon.json"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
   when: 
@@ -53,7 +53,7 @@
     - check_daemon_file.stderr != ''
 
 - name: Check DockerD Daemon.js MD5 **
-  shell: "md5sum /tmp/.daemon.json | awk '{print $1}'"
+  shell: "md5sum {{ temporary_dirs }}main/.daemon.json | awk '{print $1}'"
   register: check_new_md5
   ignore_errors: true
   when: 

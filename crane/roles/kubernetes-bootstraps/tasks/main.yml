@@ -7,12 +7,12 @@
 - name: Add Kubernetes Apiserver to Kubelet Rbac And Perform.
   copy:
     src: "apiserver-to-kubelet-rbac.yml.conf"
-    dest: "{{ temporary_dirs }}apiserver-to-kubelet-rbac.yml"
+    dest: "{{ temporary_dirs }}main/apiserver-to-kubelet-rbac.yml"
     owner: "{{ ssh_connect_user }}"
     mode: 0644
 
 - name: Add Apiserver to Kubelet RBAC.
-  shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}apiserver-to-kubelet-rbac.yml ; do >&2 echo "Starting..." && sleep 1 ; done'
+  shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}main/apiserver-to-kubelet-rbac.yml ; do >&2 echo "Starting..." && sleep 1 ; done'
   ignore_errors: true
 
 - name: Create 3 Byte Secret
@@ -78,12 +78,12 @@
 - name: Copy Kubelet Bootstrap RBAC.
   copy: 
     src: kubelet-bootstrap-rbac.yml.conf
-    dest: "{{ temporary_dirs }}kubelet-bootstrap-rbac.yml"
+    dest: "{{ temporary_dirs }}main/kubelet-bootstrap-rbac.yml"
     owner: "{{ ssh_connect_user }}"
     mode: 0644
 
 - name: Deploy Bootstrap RBAC
-  shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}kubelet-bootstrap-rbac.yml ; do >&2 echo "Starting..." && sleep 1 ; done'
+  shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}main/kubelet-bootstrap-rbac.yml ; do >&2 echo "Starting..." && sleep 1 ; done'
 
 - name: Deploy Kubernetes Certification Files
   include: includes/main.yml

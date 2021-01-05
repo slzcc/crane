@@ -1,7 +1,7 @@
 ---
 # Clean IPVS and Iptables
 - name: IPTABLES SAVE
-  shell: "iptables-save > {{ temporary_dirs }}$(date +%F-%H-%M-%S.iptables)"
+  shell: "iptables-save > {{ temporary_dirs }}clean-cluster/$(date +%F-%H-%M-%S.iptables)"
   ignore_errors: true
 
 - name: Clean IPVS Rules
