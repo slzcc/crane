@@ -32,8 +32,10 @@
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/crane/defaults/main.yml"
     - "roles/system-initialize/defaults/main.yml"
+    - "roles/etcd-add-nodes/defaults/main.yml"
     - "roles/etcd-install/defaults/main.yml"
     - "roles/etcd-install/defaults/tls.yaml"
+    - "roles/etcd-install/vars/main.yml"
     - "roles/kubernetes-default/defaults/configure.yaml"
   tasks:
     - { include_tasks: 'roles/etcd-install/includes/backups.yaml' }
