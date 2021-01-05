@@ -612,3 +612,5 @@ kernel_nf_conntrack_max: 4194304
 > 主要问题出在 etcd.j2 文件使用 etcd-cluster, 在 etcd-del-nodes 时不适用。
 
 修复 add etcd node 时可能存在的重复执行步骤。
+
+修复放入 Crane 临时目录时部分文件过乱的问题。

@@ -35,3 +35,21 @@ $ make remove_etcd_nodes
 ## 恢复
 
 此操作不可逆, 不可恢复。
+
+
+## 问题
+
+目前如下状态的 node 无法正常删除:
+
+```
+$ /usr/local/bin/docker run --rm -i -v /etc/kubernetes/pki/etcd/:/etc/kubernetes/pki/etcd/ -w /etc/kubernetes/pki/etcd/ k8s.gcr.io/etcd:3.4.9 etcdctl --cacert /etc/kubernetes/pki/etcd/etcd-ca.pem --key /etc/kubernetes/pki/etcd/etcd-key.pem --cert /etc/kubernetes/pki/etcd/etcd.pem --endpoints https://10.146.0.10:2379,https://10.146.0.12:2379 member list
+35507ce955c2e3b2, unstarted, , https://10.146.0.13:2380, , false
+452a756c0ce3c1b0, started, instance-1, https://10.146.0.10:2380, https://10.146.0.10:2379, false
+5d80ed6e5a218aae, started, instance-3, https://10.146.0.12:2380, https://10.146.0.12:2379, false
+```
+
+请自行通过命令解决,或执行如下命令:
+
+```
+$ /usr/local/bin/docker run --rm -i -v /etc/kubernetes/pki/etcd/:/etc/kubernetes/pki/etcd/ -w /etc/kubernetes/pki/etcd/ k8s.gcr.io/etcd:3.4.9 etcdctl --cacert /etc/kubernetes/pki/etcd/etcd-ca.pem --key /etc/kubernetes/pki/etcd/etcd-key.pem --cert /etc/kubernetes/pki/etcd/etcd.pem --endpoints https://10.146.0.10:2379,https://10.146.0.12:2379 member remove 35507ce955c2e3b2
+```
