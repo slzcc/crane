@@ -86,7 +86,7 @@
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-default/defaults/configure.yaml"
     - "roles/etcd-install/defaults/tls.yaml"
-    - "roles/etcd-install/defaults/main.yml"
+    - "roles/etcd-add-nodes/defaults/main.yml"
   tasks:
     - { include_tasks: 'roles/etcd-add-nodes/includes/create-etcd-tls.yaml' }
 
