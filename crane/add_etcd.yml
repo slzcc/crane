@@ -104,6 +104,7 @@
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-default/defaults/configure.yaml"
     - "roles/etcd-install/defaults/tls.yaml"
+    - "roles/etcd-add-nodes/defaults/main.yml"
   roles:
     - { role: etcd-add-nodes, tags: [etcd-add-nodes]}
 
