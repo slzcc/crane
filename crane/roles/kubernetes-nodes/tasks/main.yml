@@ -57,3 +57,9 @@
   service: 
     name: kubelet
     state: started
+
+## Permissions
+- name: Set Files Permissions
+  shell: >
+    chown {{ ssh_connect_user }} {{ kubernetes_etc_dirs }}kubelet.conf
+  ignore_errors: true
