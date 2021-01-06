@@ -1,6 +1,11 @@
 ---
 ## Kubernetes
 ## ********************************************************************************************************************************
+## Permissions
+- name: Move location Kubelet.conf in Crane Home
+  shell: >
+    find {{ kubernetes_etc_dirs }} | xargs -i chown {{ ssh_connect_user }} {}
+  ignore_errors: true
 
 - name: Copy Master CA Files.
   shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
@@ -31,9 +36,3 @@
   with_nested:
     - "{{ add_master_ip_list }}"
     - ['etcd-ca.pem', 'etcd.pem', 'etcd-key.pem', 'etcd-ca-key.pem']
-
-## Permissions
-- name: Move location Kubelet.conf in Crane Home
-  shell: >
-    find /etc/kubernetes | xargs -i chown shilei {}
-  ignore_errors: true
