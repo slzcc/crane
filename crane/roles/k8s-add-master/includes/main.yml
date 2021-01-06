@@ -2,13 +2,13 @@
 ## Kubernetes
 ## ********************************************************************************************************************************
 ## Permissions
-- name: Move location Kubelet.conf in Crane Home
-  shell: >
-    find {{ kubernetes_etc_dirs }} | xargs -i chown {{ ssh_connect_user }} {}
-  ignore_errors: true
+# - name: Move location Kubelet.conf in Crane Home
+#   shell: >
+#     find {{ kubernetes_etc_dirs }} | xargs -i chown {{ ssh_connect_user }} {}
+#   ignore_errors: true
 
 - name: Copy Master CA Files.
-  shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
+  shell: "scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
             -i {{ ssh_public_key }} \
             -P {{ ssh_connect_port }} \
             {{ kubernetes_pki_dirs }}{{ item[1] }} \
@@ -18,7 +18,7 @@
     - ['apiserver-key.pem', 'apiserver.pem', 'ca-key.pem', 'ca.pem', 'front-proxy-ca-key.pem', 'front-proxy-ca.pem', 'front-proxy-client-key.pem', 'front-proxy-client.pem', 'sa.key', 'sa.pub']
 
 - name: Copy Cluster Config Files.
-  shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
+  shell: "scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
             -i {{ ssh_public_key }} \
             -P {{ ssh_connect_port }} \
             {{ kubernetes_etc_dirs }}{{ item[1] }} \
@@ -31,7 +31,7 @@
 ## ********************************************************************************************************************************
 
 - name: Copy Etcd CA Files in Nodes
-  shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no -i {{ ssh_public_key }} \
+  shell: "scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no -i {{ ssh_public_key }} \
             -P {{ ssh_connect_port }} {{ etcd_ssl_dirs }}{{ item[1] }}  {{ ssh_connect_user }}@{{ item[0] }}:{{ etcd_ssl_dirs }}{{ item[1] }}"
   with_nested:
     - "{{ add_master_ip_list }}"
