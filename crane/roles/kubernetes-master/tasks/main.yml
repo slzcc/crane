@@ -1,26 +1,24 @@
 ---
-
 # System
 ## ********************************************************************************************************************************
+- name: Create Systemd Kubelet Config Dir
+  file:
+    path: "{{ systemd_etc_dirs }}kubelet.service.d/"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
 
 - name: Copy kubelet.service Files
   template: 
     src: kubelet.service.j2
-    dest: "{{ systemd_default_dirs }}kubelet.service"
+    dest: "{{ systemd_etc_dirs }}kubelet.service"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
 
 - name: Copy 10-kubelet.conf Files
   template: 
-    src: 10-kubelet.j2
+    src: "10-kubelet.j2"
     dest: "{{ systemd_etc_dirs }}kubelet.service.d/10-kubelet.conf"
-    mode: 0644
-    owner: "{{ ssh_connect_user }}"
-    
-- name: Copy Kubelet Config
-  template: 
-    src: "config.j2"
-    dest: "{{ kubelet_work_dirs }}config.yaml"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
 
@@ -31,7 +29,12 @@
     mode: 0644
     owner: "{{ ssh_connect_user }}"
 
+- name: Copy Kubelet Config
+  template: 
+    src: "config.j2"
+    dest: "{{ kubelet_work_dirs }}config.yaml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+
 # - name: Create Kubelet PEM
 #   include_tasks: includes/kubelet_pem.yml
-  
-- include_tasks: 'roles/kubernetes-default/includes/start-kubelet.yaml'
