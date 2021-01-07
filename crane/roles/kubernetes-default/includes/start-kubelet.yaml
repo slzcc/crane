@@ -1,9 +1,6 @@
 ---
 
-- name: Relaod Config
-  service: 
-    name: kubelet
-    state: reloaded
+- shell: "systemctl daemon-reload"
   
 - name: Kubelet Powered UP And Startd
   service: 
