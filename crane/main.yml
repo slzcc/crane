@@ -152,6 +152,22 @@
   roles:
     - { role: kubernetes-master, tags: [k8s-master]}
 
+- name:  Add Kubernetes Apiserver to Kubelet and Bootstrap RBAC and Copy Nodes Config to Worker.
+  hosts: kube-master[0]
+  gather_facts: true
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/system-initialize/defaults/main.yml"
+    - "roles/crane/defaults/main.yml"
+  roles:
+    - { role: kubernetes-bootstraps, tags: [k8s-bootstraps]}
+    
 - name: Create Kubernetes Cluster Nodes
   hosts: kube-node
   gather_facts: true
@@ -169,40 +185,6 @@
     - "roles/kubernetes-default/vars/kubelet.yaml"
   roles:
     - { role: kubernetes-nodes, tags: [k8s-nodes]}
-
-- name: Start Kubernetes Cluster Kubelet.
-  hosts: kube-master:kube-node
-  gather_facts: true
-  become: yes
-  become_method: sudo
-  vars:
-    ansible_ssh_pipelining: true
-  vars_files:
-    - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/system-initialize/defaults/main.yml"
-    - "roles/crane/defaults/main.yml"
-    - "roles/cri-install/vars/kubelet.yaml"
-    - "roles/kubernetes-default/vars/kubelet.yaml"
-  tasks:
-    - { include_tasks: 'roles/kubernetes-default/includes/start-kubelet.yaml' }
-
-- name:  Add Kubernetes Apiserver to Kubelet and Bootstrap RBAC and Copy Nodes Config to Worker.
-  hosts: kube-master[0]
-  gather_facts: true
-  become: yes
-  become_method: sudo
-  vars:
-    ansible_ssh_pipelining: true
-  vars_files:
-    - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/system-initialize/defaults/main.yml"
-    - "roles/crane/defaults/main.yml"
-  roles:
-    - { role: kubernetes-bootstraps, tags: [k8s-bootstraps]}
     
 - name: Create Kubernetes Network
   hosts: kube-master[0]
