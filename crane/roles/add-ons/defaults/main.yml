@@ -121,6 +121,10 @@ harbor_ingress_notary_domain: "notary.example.com"
 # example: "domain1,domain2,..."
 harbor_tls_option_domain: "{{ harbor_ingress_default_domain }},{{ harbor_ingress_notary_domain }}"
 
+# 是否轮转 Harbor 证书
+# 如果为 true 则不会部署 harbor, 会在原有的 harbor 更新 ca 证书
+is_harbor_ca_rotation: false
+
 # CFSSL 生成证书的加密方式
 tls_harbor_server_encryption_algorithm: "rsa"
 tls_harbor_client_encryption_algorithm: "rsa"
