@@ -17,7 +17,7 @@
   ignore_errors: true
 
 - name: Prepare Harbor CA
-  include_tasks: roles/add-ons/includes/harbor_create_tls.yaml
+  include_tasks: roles/add-ons/includes/harbor-create-tls.yaml
 
 - name: Deploy Harbor **
   template: 
@@ -167,7 +167,7 @@
 
 - name: Yum Install JQ
   yum: 
-    name: ["jq"]
+    name: jq
     state: present
   environment:
     http_proxy: "{{ http_proxy }}"
@@ -177,7 +177,7 @@
 
 - name: Apt Install JQ
   apt: 
-    name: ["jq"]
+    name: jq
     state: present
   environment:
     http_proxy: "{{ http_proxy }}"
@@ -202,3 +202,4 @@
 
 - name: Copy Client CA Files in All K8s Nodes
   include_tasks: roles/add-ons/includes/harbor-deploy-client-cert.yaml
+  

@@ -194,5 +194,3 @@ spec:
           secretName: "{{ harbor_project_name_prefix }}harbor-ingress"
       - name: psc
         emptyDir: {}
-
-
