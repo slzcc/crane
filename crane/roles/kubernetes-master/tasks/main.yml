@@ -34,18 +34,3 @@
 # - name: Create Kubelet PEM
 #   include_tasks: includes/kubelet_pem.yml
   
-- name: System Reload
-  shell: "systemctl daemon-reload"
-
-- name: Kubelet Powered UP And Startd
-  service: 
-    name: kubelet
-    enabled: yes
-
-- name: Copy admin.yml To Home
-  include_tasks: includes/admin.yml
-  
-- name: Run Kubelet
-  service:
-    name: kubelet
-    state: started

@@ -10,7 +10,6 @@
     owner: "{{ ssh_connect_user }}"
     state: directory
 
-
 - name: Copy kubelet.service Files
   template: 
     src: kubelet.service.j2
@@ -40,26 +39,3 @@
     dest: "{{ kubelet_work_dirs }}config.yaml"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
-
-- shell: systemctl daemon-reload
-
-- name: Kubelet Powered UP And Startd
-  service: 
-    name: kubelet
-    enabled: yes
-
-- name: Relaod Config
-  service: 
-    name: kubelet
-    state: reloaded
-
-- name: Startd
-  service: 
-    name: kubelet
-    state: started
-
-## Permissions
-- name: Set Files Permissions
-  shell: >
-    chown {{ ssh_connect_user }} {{ kubernetes_etc_dirs }}kubelet.conf
-  ignore_errors: true

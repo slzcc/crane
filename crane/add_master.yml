@@ -79,6 +79,8 @@
     - "roles/crane/defaults/main.yml"
     - "roles/k8s-add-master/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-bootstraps/defaults/main.yml"
+    - "roles/kubernetes-default/vars/kubelet.yaml"
   tasks:
     - { include_tasks: roles/k8s-add-master/includes/main.yml }
     
