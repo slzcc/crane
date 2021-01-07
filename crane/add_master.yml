@@ -64,22 +64,6 @@
   tasks:
     - { include_tasks: 'roles/kubernetes-default/includes/main.yml' }
 
-- name: Run Nodes
-  hosts: k8s-cluster-add-master
-  become: yes
-  become_method: sudo
-  vars:
-    ansible_ssh_pipelining: true
-  vars_files:
-    - "roles/etcd-install/vars/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/system-initialize/defaults/main.yml"
-    - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-default/vars/haproxy.yaml"
-  roles:
-    - { role: kubernetes-manifests, tags: [kubernetes-manifests]}
-
 - name: Copy Cluster CA Files to Nodes.
   hosts: kube-master[0]
   become: yes
@@ -98,6 +82,22 @@
   tasks:
     - { include_tasks: roles/k8s-add-master/includes/main.yml }
     
+- name: Run Nodes
+  hosts: k8s-cluster-add-master
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/etcd-install/vars/main.yml"
+    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/system-initialize/defaults/main.yml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/kubernetes-default/vars/haproxy.yaml"
+  roles:
+    - { role: kubernetes-manifests, tags: [kubernetes-manifests]}
+
 - name: Add Nodes
   hosts: k8s-cluster-add-master
   become: yes
