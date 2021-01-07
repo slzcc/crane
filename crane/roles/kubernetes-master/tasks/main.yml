@@ -31,8 +31,8 @@
     mode: 0644
     owner: "{{ ssh_connect_user }}"
 
-- name: Create Kubelet PEM
-  include_tasks: includes/kubelet_pem.yml
+# - name: Create Kubelet PEM
+#   include_tasks: includes/kubelet_pem.yml
   
 - name: System Reload
   shell: "systemctl daemon-reload"
@@ -45,11 +45,6 @@
 - name: Copy admin.yml To Home
   include_tasks: includes/admin.yml
   
-# - name: Relaod Config
-#   service: 
-#     name: kubelet
-#     state: reloaded
-
 - name: Run Kubelet
   service:
     name: kubelet
