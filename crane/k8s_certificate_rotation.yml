@@ -76,7 +76,7 @@
     - "roles/kubernetes-manifests/defaults/main.yml"
   tasks:
     - { include_tasks: 'roles/kubernetes-master/includes/admin.yml' }
-    # - { include_tasks: 'roles/kubernetes-master/includes/kubelet_pem.yml' }
+    - { include_tasks: 'roles/kubernetes-master/includes/kubelet_pem.yml' }
     - { include_tasks: 'roles/kubernetes-ca-rotation/includes/update-cluster-master.yml' }
 
 - name: Create New Bootstrap Config Files to Nodes.

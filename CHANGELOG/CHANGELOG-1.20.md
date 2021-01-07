@@ -623,3 +623,9 @@ kernel_nf_conntrack_max: 4194304
 ### 增加
 
 对 Harbor 支持 CA Rotation 只需要对 `@crane/roles/add-ons/defaults/main.yml => is_harbor_ca_rotation` 值为 `true` 即可, 它会抑制 harbor 安装只会更新当前 harbor ca 证书。
+
+<!-- ### 调整
+
+在此版本后对 Master 与 Node 进行无差别部署, 不在使用 Master 通过 kubelet.conf 启动。
+
+> 因通过 kubelet.conf 是比较老的方式比较繁琐目前一律通过 bootstraps 方式进行注册。 -->
