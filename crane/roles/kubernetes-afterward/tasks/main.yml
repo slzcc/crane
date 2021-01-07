@@ -1,4 +1,7 @@
 ---
+
+- shell: sleep 8
+
 - name: Remove the master Schedule status.
   shell: '{{ kubernetes_ctl_path }}kubectl taint nodes node-role.kubernetes.io/master="":NoSchedule --all'
   when: not is_kube_master_schedule

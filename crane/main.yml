@@ -132,6 +132,22 @@
   roles:
     - { role: kubernetes-manifests, tags: [k8s-manifests]}
 
+- name:  Add Kubernetes Apiserver to Kubelet and Bootstrap RBAC and Copy Nodes Config to Worker.
+  hosts: kube-master[0]
+  gather_facts: true
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/system-initialize/defaults/main.yml"
+    - "roles/crane/defaults/main.yml"
+  roles:
+    - { role: kubernetes-bootstraps, tags: [k8s-bootstraps]}
+    
 - name: Create Kubernetes Kubelet Config and Run Kubelet
   hosts: kube-master
   gather_facts: true
@@ -151,22 +167,6 @@
     - "roles/cri-install/vars/containerd.yaml"
   roles:
     - { role: kubernetes-master, tags: [k8s-master]}
-
-- name:  Add Kubernetes Apiserver to Kubelet and Bootstrap RBAC and Copy Nodes Config to Worker.
-  hosts: kube-master[0]
-  gather_facts: true
-  become: yes
-  become_method: sudo
-  vars:
-    ansible_ssh_pipelining: true
-  vars_files:
-    - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/system-initialize/defaults/main.yml"
-    - "roles/crane/defaults/main.yml"
-  roles:
-    - { role: kubernetes-bootstraps, tags: [k8s-bootstraps]}
 
 - name: Create Nodes
   hosts: kube-node
