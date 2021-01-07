@@ -31,7 +31,7 @@
     mode: 0644
     owner: "{{ ssh_connect_user }}"
 
-- name: Create Kubelet PEM
-  include_tasks: includes/kubelet_pem.yml
+# - name: Create Kubelet PEM
+#   include_tasks: includes/kubelet_pem.yml
   
 - include_tasks: 'roles/kubernetes-default/includes/start-kubelet.yaml'
