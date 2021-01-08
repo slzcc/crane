@@ -41,6 +41,13 @@
     owner: "{{ ssh_connect_user }}"
     state: directory
 
+- name: Create Kubernetes Manifests WorkDir
+  file:
+    path: "{{ kubernetes_etc_dirs }}manifests"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
 - name: Create CNI Cluster Config
   file:
     path: "{{ cni_config_dir }}"
