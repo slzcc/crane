@@ -1,13 +1,13 @@
 ---
 - name: Copy CFSSL Kubernetes Json Files
   template:
-    src: "{{ item }}"
+    src: "roles/kubernetes-cluster-management/templates/{{ item }}"
     dest: "{{ kubernetes_pki_dirs }}{{ item }}"
     owner: "{{ ssh_connect_user }}" 
     mode: 0644
   with_items:
-    - "roles/kubernetes-cluster-management/templates/ca-config.json"
-    - "roles/kubernetes-cluster-management/templates/ca-csr.json"
+    - "ca-config.json"
+    - "ca-csr.json"
 
 - name: Create Kubernetes Kubelet CA Files
   shell: >
