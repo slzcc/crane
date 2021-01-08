@@ -18,4 +18,4 @@
     mode: 0400
 
 - name: Check SSH Known
-  include_tasks: "roles/system-initialize/includes/ssh/main.yml"
+  include: "roles/system-initialize/includes/ssh/main.yml"

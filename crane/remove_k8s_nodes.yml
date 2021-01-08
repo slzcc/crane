@@ -44,7 +44,7 @@
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/kubernetes-cluster-management/defaults/main.yml"
   tasks:
-    - { include_tasks: 'roles/kubernetes-cluster-management/includes/k8s-del-nodes.yaml' }
+    - { include: 'roles/kubernetes-cluster-management/includes/k8s-del-nodes.yaml' }
 
 - name: Clean Kubernetes Nodes DataDir
   hosts: k8s-cluster-del-node
@@ -75,4 +75,4 @@
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   tasks:
-    - { include_tasks: 'roles/crane/includes/sync-crane.yaml' }
+    - { include: 'roles/crane/includes/sync-crane.yaml' }

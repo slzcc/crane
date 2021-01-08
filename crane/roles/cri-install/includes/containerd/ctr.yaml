@@ -1,11 +1,11 @@
 ---
 
 - name: Install Containerd for local...
-  include_tasks: roles/downloads-packages/includes/containerd/local_download.yaml
+  include: roles/downloads-packages/includes/containerd/local_download.yaml
   when: containerd_install_type == 'local_binary'
 
 - name: Install Containerd for http...
-  include_tasks: roles/downloads-packages/includes/containerd/http_download.yaml
+  include: roles/downloads-packages/includes/containerd/http_download.yaml
   when: containerd_install_type == 'http_binary'
 
 - name: Move Containerd Ctr binray to bin Path

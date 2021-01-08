@@ -70,7 +70,7 @@
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
   tasks:
-    - { include_tasks: 'roles/etcd-ca-rotation/includes/update-cluster-etcd.yml' }
+    - { include: 'roles/etcd-ca-rotation/includes/update-cluster-etcd.yml' }
 
 - name: Update Kubernetes Cluster ApiServer Server Config
   hosts: k8s-master
@@ -84,7 +84,7 @@
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   tasks:
-    - { include_tasks: 'roles/etcd-ca-rotation/includes/update-cluster-apiserver.yml' }
+    - { include: 'roles/etcd-ca-rotation/includes/update-cluster-apiserver.yml' }
 
 - name: Update Kubernetes Cluster Network Server Config
   hosts: k8s-master[0]
@@ -101,7 +101,7 @@
     - "roles/kubernetes-networks/defaults/calico.yaml"
     - "roles/kubernetes-networks/defaults/main.yml"
   tasks:
-    - { include_tasks: 'roles/etcd-ca-rotation/includes/update-cluster-network.yml' }
+    - { include: 'roles/etcd-ca-rotation/includes/update-cluster-network.yml' }
 
 - name: Sync Crane Delploy Files to Instance
   hosts: kube-master[0]
@@ -116,4 +116,4 @@
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   tasks:
-    - { include_tasks: 'roles/crane/includes/sync-crane.yaml' }
+    - { include: 'roles/crane/includes/sync-crane.yaml' }

@@ -5,10 +5,10 @@
   ignore_errors: true
 
 - name: Initialize Containerd
-  include_tasks: "roles/cri-install/includes/containerd/initialize.yaml"
+  include: "roles/cri-install/includes/containerd/initialize.yaml"
 
 - name: Install Containerd
-  include_tasks: "roles/cri-install/includes/containerd/os.yaml"
+  include: "roles/cri-install/includes/containerd/os.yaml"
   when: is_mandatory_containerd_install or result.stderr
   
 - name: Systemd Reload Config Cache
