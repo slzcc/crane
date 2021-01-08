@@ -8,7 +8,7 @@
 
 - name: Deploy OpenLDAP Service **
   template: 
-    src: "roles/add-ons/templates/openldap/{{ item }}"
+    src: "roles/kubernetes-addons/templates/openldap/{{ item }}"
     dest: "{{ temporary_dirs }}openldap/{{ item }}"
     mode: 0644
     owner: "{{ ssh_connect_user }}" 

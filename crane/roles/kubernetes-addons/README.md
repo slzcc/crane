@@ -1,8 +1,8 @@
-# ADD-ONS
+# kubernetes-addons
 
-Crane install add-ons .
+Crane install kubernetes-addons .
 
-支持的 Add-ons 如下表:
+支持的 kubernetes-addons 如下表:
 
 |||||
 ---|:--:|:--:|---:|

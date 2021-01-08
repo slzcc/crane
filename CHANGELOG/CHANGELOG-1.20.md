@@ -618,11 +618,11 @@ kernel_nf_conntrack_max: 4194304
 
 ### 移除
 
-将部分 addons 进行了移除, 一部分以因为无法跟进时代潮流, 另一部分是没有过多精力维护, 项目配置项在 1.2x 中不会移除, 但对 `@crane/roles/add-ons/defaults/main.yml` 入口文件进行了移除。
+将部分 addons 进行了移除, 一部分以因为无法跟进时代潮流, 另一部分是没有过多精力维护, 项目配置项在 1.2x 中不会移除, 但对 `@crane/roles/kubernetes-addons/defaults/main.yml` 入口文件进行了移除。
 
 ### 增加
 
-对 Harbor 支持 CA Rotation 只需要对 `@crane/roles/add-ons/defaults/main.yml => is_harbor_ca_rotation` 值为 `true` 即可, 它会抑制 harbor 安装只会更新当前 harbor ca 证书。
+对 Harbor 支持 CA Rotation 只需要对 `@crane/roles/kubernetes-addons/defaults/main.yml => is_harbor_ca_rotation` 值为 `true` 即可, 它会抑制 harbor 安装只会更新当前 harbor ca 证书。
 
 ### 调整
 

@@ -8,7 +8,7 @@
 
 - name: Deploy Webmin Service **
   template: 
-    src: "roles/add-ons/templates/webmin/{{ item }}"
+    src: "roles/kubernetes-addons/templates/webmin/{{ item }}"
     dest: "{{ temporary_dirs }}webmin/{{ item }}"
     mode: 0644
     owner: "{{ ssh_connect_user }}" 

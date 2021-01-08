@@ -11,7 +11,7 @@
 
 - name: Deploy NextCloud Service **
   template: 
-    src: "roles/add-ons/templates/nextcloud/{{ item }}"
+    src: "roles/kubernetes-addons/templates/nextcloud/{{ item }}"
     dest: "{{ temporary_dirs }}nextcloud/{{ item }}"
     mode: 0644
     owner: "{{ ssh_connect_user }}" 
