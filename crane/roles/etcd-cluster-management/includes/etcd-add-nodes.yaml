@@ -8,7 +8,7 @@
 
 - name: Copy Etcd Config Files to Kubernetes Master/None
   template: 
-    src: "roles/etcd-cluster-management/templates/{{ crane_tasks }}etcd.j2"
+    src: "roles/etcd-cluster-management/templates/{{ crane_tasks }}/etcd.j2"
     dest: "{{ kubernetes_manifests_dirs }}etcd.yml"
     mode: 0644
     owner: "{{ ssh_connect_user }}"

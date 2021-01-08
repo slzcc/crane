@@ -52,6 +52,7 @@
   vars:
     ansible_ssh_pipelining: true
   vars_files:
+    - "roles/etcd-cluster-management/defaults/etcd-add-nodes.yaml"
     - "roles/etcd-cluster-management/defaults/main.yml"
     - "roles/etcd-cluster-management/defaults/tls.yaml"
     - "roles/crane/defaults/main.yml"
