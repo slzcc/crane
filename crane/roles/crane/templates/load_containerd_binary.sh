@@ -17,7 +17,7 @@ ctr -n k8s.io run --null-io --net-host -d \
 
 {{ kubernetes_ctl_path }}ctr -n k8s.io snapshot mounts {{ temporary_dirs }}import-kubernetes-temporary import-kubernetes-temporary | xargs sudo
 
-cp -a {{ temporary_dirs }}import-kubernetes-temporary/cni {{ kubernetes_cni_dirs }}
+cp -a {{ temporary_dirs }}import-kubernetes-temporary/cni/* {{ kubernetes_cni_dirs }}
 
 cp -a {{ temporary_dirs }}import-kubernetes-temporary/cfssl {{ kubernetes_ctl_path }}
 
