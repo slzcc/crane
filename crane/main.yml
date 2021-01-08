@@ -119,7 +119,7 @@
     - "roles/etcd-cluster-management/defaults/main.yml"
     - "roles/etcd-cluster-management/vars/main.yml"
   tasks:
-    - { include_tasks: 'roles/kubernetes-cluster-management/includes/deploy-etcd-manifests.yaml' }
+    - { include_tasks: 'roles/etcd-cluster-management/includes/deploy-etcd-manifests.yaml' }
 
 - name: Create Kubernetes Cluster Master/Nodes Config
   hosts: kube-master:kube-node
