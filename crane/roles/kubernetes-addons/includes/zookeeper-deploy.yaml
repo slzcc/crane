@@ -11,7 +11,7 @@
 
 - name: Deploy Zookeeper Service **
   template: 
-    src: "roles/add-ons/templates/zookeeper/{{ item }}"
+    src: "roles/kubernetes-addons/templates/zookeeper/{{ item }}"
     dest: "{{ temporary_dirs }}zookeeper/{{ item }}"
     mode: 0644
     owner: "{{ ssh_connect_user }}" 

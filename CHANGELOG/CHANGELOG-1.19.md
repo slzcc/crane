@@ -132,10 +132,10 @@ Crane 以更新至 1.19.3.0 版本。
 Crane 以更新至 1.19.4.0 版本。
 
 ```
-@crane/roles/add-ons/defaults/main.yml
+@crane/roles/kubernetes-addons/defaults/main.yml
 添加 Domain 使用注释。
 
-@crane/roles/add-ons/includes/harbor_create_tls.yaml
+@crane/roles/kubernetes-addons/includes/harbor_create_tls.yaml
 修复 Harbor 创建 TLS 有重复 DNS 记录。
 
 @docs/MattersNeedingAttention.md

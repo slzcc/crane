@@ -1,21 +1,21 @@
 ---
 - name: Deploy Prometheus Operator *
   copy: 
-    src: roles/add-ons/templates/prometheus-operator
+    src: roles/kubernetes-addons/templates/prometheus-operator
     dest: "{{ temporary_dirs }}"
     mode: 0644
     owner: "{{ ssh_connect_user }}" 
 
 - name: Deploy Prometheus Operator **
   template: 
-    src: roles/add-ons/templates/prometheus-operator/ingress.j2
+    src: roles/kubernetes-addons/templates/prometheus-operator/ingress.j2
     dest: "{{ temporary_dirs }}prometheus-operator/ingress.yaml"
     mode: 0644
     owner: "{{ ssh_connect_user }}" 
 
 - name: Deploy Prometheus Operator ***
   template: 
-    src: roles/add-ons/templates/prometheus-operator/grafana-configmap.j2
+    src: roles/kubernetes-addons/templates/prometheus-operator/grafana-configmap.j2
     dest: "{{ temporary_dirs }}prometheus-operator/grafana-configmap.j2"
     mode: 0644
     owner: "{{ ssh_connect_user }}" 

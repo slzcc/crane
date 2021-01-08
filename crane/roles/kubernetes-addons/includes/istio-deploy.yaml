@@ -23,7 +23,7 @@
 
 - name: Deploy Istio ****
   template: 
-    src: roles/add-ons/templates/istio/ingress.yml
+    src: roles/kubernetes-addons/templates/istio/ingress.yml
     dest: "{{ istio_home }}istio-ingress.yml"
     mode: 0644
     owner: "{{ ssh_connect_user }}" 
@@ -33,7 +33,7 @@
 
 - name: Deploy Istio ******
   template: 
-    src: roles/add-ons/templates/istio/kiali-secret.yml
+    src: roles/kubernetes-addons/templates/istio/kiali-secret.yml
     dest: "{{ istio_home }}kiali-secret.yml"
     mode: 0644
     owner: "{{ ssh_connect_user }}" 

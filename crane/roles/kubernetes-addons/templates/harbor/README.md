@@ -75,7 +75,7 @@ $ tree /etc/kubernetes/harbor/
 
 # UploadServer Deploy
 
-安装 Harbor 需要注意 `/crane/crane/roles/add-ons/defaults/main.yml` 中 `is_deploy_upload_service` 为 `true`, 并且修改 Domain:
+安装 Harbor 需要注意 `/crane/crane/roles/kubernetes-addons/defaults/main.yml` 中 `is_deploy_upload_service` 为 `true`, 并且修改 Domain:
 
 ```
 is_deploy_upload_service: true

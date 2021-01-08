@@ -110,9 +110,9 @@ cri_k8s_default: containerd
 
 # 具体配置请移步 crane/roles/cri-install/defaults/main.yml 进行修改
 
-## Add-Ons
+## kubernetes-addons
 ## ********************************************************************************************************************************
-# Add-Ons 配置 请参照 roles/add-ons/defaults/main.yml
+# kubernetes-addons 配置 请参照 roles/kubernetes-addons/defaults/main.yml
 
 ## Clean Kubernetes Cluster
 ## ********************************************************************************************************************************

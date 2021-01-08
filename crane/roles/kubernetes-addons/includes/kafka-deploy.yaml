@@ -11,7 +11,7 @@
 
 - name: Deploy Kafka Service **
   template: 
-    src: "roles/add-ons/templates/kafka/{{ item }}"
+    src: "roles/kubernetes-addons/templates/kafka/{{ item }}"
     dest: "{{ temporary_dirs }}kafka/{{ item }}"
     mode: 0644
     owner: "{{ ssh_connect_user }}" 

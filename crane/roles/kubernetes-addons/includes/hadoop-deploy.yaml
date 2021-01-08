@@ -11,7 +11,7 @@
 
 - name: Deploy Hadoop Service **
   template: 
-    src: "roles/add-ons/templates/hadoop/{{ item }}"
+    src: "roles/kubernetes-addons/templates/hadoop/{{ item }}"
     dest: "{{ temporary_dirs }}hadoop/{{ item }}"
     mode: 0644
     owner: "{{ ssh_connect_user }}" 

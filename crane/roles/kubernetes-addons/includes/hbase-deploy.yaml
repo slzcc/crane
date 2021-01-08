@@ -11,7 +11,7 @@
 
 - name: Deploy Hbase Service **
   template: 
-    src: "roles/add-ons/templates/hbase/{{ item }}"
+    src: "roles/kubernetes-addons/templates/hbase/{{ item }}"
     dest: "{{ temporary_dirs }}hbase/{{ item }}"
     mode: 0644
     owner: "{{ ssh_connect_user }}" 

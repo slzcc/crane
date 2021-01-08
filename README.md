@@ -37,7 +37,7 @@ CRI 支持多种服务共存部署模式, 可同时部署 docker/containerd/crio
 
 各功能示例参照 [Crane Other Features](./docs/FunctionalSpecifications.md) 文件进行部署。
 
-Add-Ons 参照 [Add-Ons Install](./crane/roles/add-ons) 文件进行部署。
+kubernetes-addons 参照 [kubernetes-addons Install](./crane/roles/kubernetes-addons) 文件进行部署。
 
 ---
 # 架构
@@ -70,7 +70,7 @@ Crane 的架构简述:
 - [x] 支持集群后续 `Kubernetes Cluster` 扩容, 支持添加 `Master/None` 节点。
 - [x] 支持集群后续 `Etcd Cluster` 扩容 (只添加节点, 对现有集群无感知)。
 - [x] 支持自定义镜像仓库地址。
-- [x] 支持 `Add-Ons` 等应用部署。
+- [x] 支持 `kubernetes-addons` 等应用部署。
 - [x] 支持自定义 TLS 。
 - [x] 支持 `Kubernetes Cluster CA` 根证书更新。
 - [x] 支持 `Kubernetes Cluster` 版本升级。

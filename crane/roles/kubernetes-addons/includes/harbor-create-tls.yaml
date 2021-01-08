@@ -1,7 +1,7 @@
 ---
 - name: Copy CFSSL Harbor CA Json Files
   template:
-    src: "roles/add-ons/templates/harbor/{{ item }}"
+    src: "roles/kubernetes-addons/templates/harbor/{{ item }}"
     dest:  "{{ kubernetes_etc_dirs }}harbor/cert"
     owner: "{{ ssh_connect_user }}" 
     mode: 0644
