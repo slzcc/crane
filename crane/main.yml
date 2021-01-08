@@ -65,8 +65,6 @@
     - "roles/kubernetes-cluster-management/defaults/tls.yaml"
   roles:
     - { role: downloads-packages, tags: [packages]}
-  tasks:
-    - { include: 'roles/kubernetes-cluster-management/includes/initialize-kubelet.yaml' }
 
 - name: Cluster Master Configuration File Deployment, CFSSL Generated CA And Sync All Master.
   hosts: kube-master[0]
@@ -133,6 +131,7 @@
   vars_files:
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/main.yml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/system-initialize/defaults/main.yml"
     - "roles/crane/defaults/main.yml"
@@ -141,6 +140,7 @@
     - "roles/cri-install/vars/crio.yaml"
     - "roles/cri-install/vars/containerd.yaml"
   tasks:
+    - { include: 'roles/kubernetes-cluster-management/includes/initialize-kubelet.yaml' }
     - { include: 'roles/kubernetes-cluster-management/includes/configuretion-kubelet.yaml' }
     - { include: 'roles/kubernetes-cluster-management/includes/create-kubelet-pki.yaml' }
     - { include: 'roles/kubernetes-cluster-management/includes/create-kubelet-conf.yaml' }
