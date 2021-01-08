@@ -39,7 +39,7 @@
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   tasks:
-    - { include_tasks: 'roles/etcd-cluster-management/includes/backups-etcd-data.yaml' }
+    - { include: 'roles/etcd-cluster-management/includes/backups-etcd-data.yaml' }
 
 - name: Clean Kubernetes Cluster
   hosts: all
@@ -70,4 +70,4 @@
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   tasks:
-    - { include_tasks: 'roles/crane/includes/sync-crane.yaml' }
+    - { include: 'roles/crane/includes/sync-crane.yaml' }

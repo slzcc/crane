@@ -1,10 +1,10 @@
 ---
 - name: Deploy CFSSL Binary Files
-  include_tasks: "roles/downloads-packages/includes/cfssl/http_download.yaml"
+  include: "roles/downloads-packages/includes/cfssl/http_download.yaml"
   when: is_kube_master
   
 - name: Deploy Kubernetes Binary Files
-  include_tasks: "roles/downloads-packages/includes/kubernetes/http_download.yaml"
+  include: "roles/downloads-packages/includes/kubernetes/http_download.yaml"
 
 - name: Deploy CNI Binary Files
-  include_tasks: "roles/downloads-packages/includes/cni/http_download.yaml"
+  include: "roles/downloads-packages/includes/cni/http_download.yaml"

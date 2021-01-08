@@ -32,4 +32,4 @@
   roles:
     - { role: tests, tags: [tests]}
   tasks:
-    - { include_tasks: 'roles/crane/includes/sync-crane.yaml' }
+    - { include: 'roles/crane/includes/sync-crane.yaml' }

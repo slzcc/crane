@@ -48,7 +48,7 @@
     - "roles/kubernetes-bootstraps/defaults/main.yml"
     - "roles/kubernetes-cluster-management/vars/kubelet.yaml"
   tasks:
-    - { include_tasks: 'roles/kubernetes-cluster-management/includes/copy-master-kubeconfig-to-new-master.yaml' }
+    - { include: 'roles/kubernetes-cluster-management/includes/copy-master-kubeconfig-to-new-master.yaml' }
     
 - name: Create Cluster Master Kubernetes Manifests Files
   hosts: k8s-cluster-add-master
@@ -85,8 +85,8 @@
     - "roles/cri-install/vars/containerd.yaml"
     - "roles/kubernetes-cluster-management/defaults/main.yml"
   tasks:
-    - { include_tasks: 'roles/kubernetes-cluster-management/includes/configuretion-kubelet.yaml' }
-    - { include_tasks: 'roles/kubernetes-cluster-management/includes/restart-kubelet.yaml' }
+    - { include: 'roles/kubernetes-cluster-management/includes/configuretion-kubelet.yaml' }
+    - { include: 'roles/kubernetes-cluster-management/includes/restart-kubelet.yaml' }
 
 - name: Update Master Cluster HaProxy Config
   hosts: kube-master
@@ -102,7 +102,7 @@
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   tasks:
-    - { include_tasks: roles/kubernetes-cluster-management/includes/update-k8s-haproxy.yaml }
+    - { include: roles/kubernetes-cluster-management/includes/update-k8s-haproxy.yaml }
 
 - name: Deployment Kubernetes Cluster Afterward CMD
   hosts: kube-master[0]
@@ -118,7 +118,7 @@
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/kubernetes-cluster-management/defaults/main.yml"
   tasks:
-    - { include_tasks: roles/kubernetes-cluster-management/includes/update-k8s-label.yaml }
+    - { include: roles/kubernetes-cluster-management/includes/update-k8s-label.yaml }
 
 - name: Sync Crane Delploy Files to Instance
   hosts: kube-master[0]
@@ -133,4 +133,4 @@
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   tasks:
-    - { include_tasks: 'roles/crane/includes/sync-crane.yaml' }
+    - { include: 'roles/crane/includes/sync-crane.yaml' }

@@ -17,7 +17,7 @@
   ignore_errors: true
 
 - name: Prepare Harbor CA
-  include_tasks: roles/kubernetes-addons/includes/harbor-create-tls.yaml
+  include: roles/kubernetes-addons/includes/harbor-create-tls.yaml
 
 - name: Deploy Harbor **
   template: 
@@ -201,5 +201,5 @@
   when: check_upload_service_ip is defined and check_upload_service_ip.stdout != ""
 
 - name: Copy Client CA Files in All K8s Nodes
-  include_tasks: roles/kubernetes-addons/includes/harbor-deploy-client-cert.yaml
+  include: roles/kubernetes-addons/includes/harbor-deploy-client-cert.yaml
   

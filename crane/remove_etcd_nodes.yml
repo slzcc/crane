@@ -47,8 +47,8 @@
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/etcd-cluster-management/defaults/etcd-del-nodes.yaml"
   tasks:
-    - { include_tasks: 'roles/etcd-cluster-management/includes/backups-etcd-configure.yaml' }
-    - { include_tasks: 'roles/etcd-cluster-management/includes/backups-etcd-data.yaml' }
+    - { include: 'roles/etcd-cluster-management/includes/backups-etcd-configure.yaml' }
+    - { include: 'roles/etcd-cluster-management/includes/backups-etcd-data.yaml' }
 
 - name: Delete Etcd Clster Nodes
   hosts: kube-master[0]
@@ -66,7 +66,7 @@
     - "roles/etcd-cluster-management/defaults/tls.yaml"
     - "roles/etcd-cluster-management/defaults/etcd-del-nodes.yaml"
   tasks:
-    - { include_tasks: 'roles/etcd-cluster-management/includes/etcd-del-nodes.yaml' }
+    - { include: 'roles/etcd-cluster-management/includes/etcd-del-nodes.yaml' }
 
 - name: Clean Etcd Nodes DataDir
   hosts: etcd-cluster-del-node
@@ -83,7 +83,7 @@
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/etcd-cluster-management/defaults/tls.yaml"
   tasks:
-    - { include_tasks: 'roles/etcd-cluster-management/includes/remove-etcd-configure.yaml' }
+    - { include: 'roles/etcd-cluster-management/includes/remove-etcd-configure.yaml' }
 
 - name: Set Kubernetes Cluster Manifests Etcd Config
   hosts: kube-master
@@ -99,7 +99,7 @@
     - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/etcd-cluster-management/defaults/etcd-del-nodes.yaml"
   tasks:
-    - { include_tasks: 'roles/etcd-cluster-management/includes/update-k8s-manifests.yaml' }
+    - { include: 'roles/etcd-cluster-management/includes/update-k8s-manifests.yaml' }
 
 - name: Set Etcd Manifests Config
   hosts: etcd
@@ -115,7 +115,7 @@
     - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/etcd-cluster-management/defaults/etcd-del-nodes.yaml"
   tasks:
-    - { include_tasks: 'roles/etcd-cluster-management/includes/update-etcd-manifests.yaml' }
+    - { include: 'roles/etcd-cluster-management/includes/update-etcd-manifests.yaml' }
 
 - name: Set Kubernetes Cluster Calico Network Config
   hosts: kube-master[0]
@@ -133,7 +133,7 @@
     - "roles/kubernetes-networks/defaults/main.yml"
     - "roles/etcd-cluster-management/defaults/etcd-del-nodes.yaml"
   tasks:
-    - { include_tasks: 'roles/etcd-cluster-management/includes/update-k8s-calico.yml' }
+    - { include: 'roles/etcd-cluster-management/includes/update-k8s-calico.yml' }
 
 - name: Sync Crane Delploy Files to Instance
   hosts: kube-master[0]
@@ -148,4 +148,4 @@
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   tasks:
-    - { include_tasks: 'roles/crane/includes/sync-crane.yaml' }
+    - { include: 'roles/crane/includes/sync-crane.yaml' }

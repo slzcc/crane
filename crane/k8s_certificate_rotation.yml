@@ -32,7 +32,7 @@
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/downloads-ssh-key/defaults/main.yml"
   tasks:
-    - { include_tasks: 'roles/kubernetes-ca-rotation/includes/initialize.yaml' }
+    - { include: 'roles/kubernetes-ca-rotation/includes/initialize.yaml' }
 
 - hosts: k8s-cluster:etcd
   gather_facts: false
@@ -75,8 +75,8 @@
     - "roles/crane/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
   tasks:
-    - { include_tasks: 'roles/kubernetes-cluster-management/includes/copy-kubelet-admin.yaml' }
-    - { include_tasks: 'roles/kubernetes-ca-rotation/includes/update-cluster-master.yml' }
+    - { include: 'roles/kubernetes-cluster-management/includes/copy-kubelet-admin.yaml' }
+    - { include: 'roles/kubernetes-ca-rotation/includes/update-cluster-master.yml' }
 
 - name: Create New Bootstrap Config Files to Nodes.
   hosts: kube-master[0]
@@ -95,8 +95,8 @@
     - "roles/cri-install/vars/kubelet.yaml"
     - "roles/kubernetes-cluster-management/vars/kubelet.yaml"
   tasks:
-    - { include_tasks: 'roles/kubernetes-bootstraps/includes/create-bootstrap.yml' }
-    - { include_tasks: 'roles/kubernetes-ca-rotation/includes/update-cluster-node-ca.yml' }
+    - { include: 'roles/kubernetes-bootstraps/includes/create-bootstrap.yml' }
+    - { include: 'roles/kubernetes-ca-rotation/includes/update-cluster-node-ca.yml' }
 
 - name: Copy Kubelet CA for Nodes
   hosts: kube-node
@@ -111,7 +111,7 @@
     - "roles/kubernetes-networks/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
   tasks:
-    - { include_tasks: 'roles/kubernetes-ca-rotation/includes/update-cluster-node.yml' }
+    - { include: 'roles/kubernetes-ca-rotation/includes/update-cluster-node.yml' }
 
 - name: Update Cluster Network
   hosts: kube-master[0]
@@ -128,7 +128,7 @@
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   tasks:
-    - { include_tasks: 'roles/kubernetes-ca-rotation/includes/update-cluster-network.yml' }
+    - { include: 'roles/kubernetes-ca-rotation/includes/update-cluster-network.yml' }
 
 - name: Sync Crane Delploy Files to Instance
   hosts: kube-master[0]
@@ -143,4 +143,4 @@
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   tasks:
-    - { include_tasks: 'roles/crane/includes/sync-crane.yaml' }
+    - { include: 'roles/crane/includes/sync-crane.yaml' }

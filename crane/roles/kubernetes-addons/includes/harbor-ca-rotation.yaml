@@ -29,7 +29,7 @@
   ignore_errors: true
 
 - name: Prepare Harbor CA
-  include_tasks: roles/kubernetes-addons/includes/harbor-create-tls.yaml
+  include: roles/kubernetes-addons/includes/harbor-create-tls.yaml
 
 - name: Remove Harbor Secret in Kubernetes Cluster
   shell: >
@@ -119,4 +119,4 @@
   ignore_errors: true
 
 - name: Copy Client CA Files in All K8s Nodes
-  include_tasks: roles/kubernetes-addons/includes/harbor-deploy-client-cert.yaml
+  include: roles/kubernetes-addons/includes/harbor-deploy-client-cert.yaml

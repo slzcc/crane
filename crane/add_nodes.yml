@@ -56,7 +56,7 @@
     - { role: system-initialize, tags: [system]}
     - { role: downloads-packages, tags: [packages]}
   tasks:
-    - { include_tasks: 'roles/kubernetes-cluster-management/includes/initialize-kubelet.yaml' }
+    - { include: 'roles/kubernetes-cluster-management/includes/initialize-kubelet.yaml' }
 
 - name: Create Bootstrap Config Files to Nodes, Copy Cluster CA Files to Nodes.
   hosts: kube-master[0]
@@ -79,8 +79,8 @@
     - "roles/cri-install/vars/crio.yaml"
     - "roles/cri-install/vars/containerd.yaml"
   tasks:
-    - { include_tasks: 'roles/kubernetes-bootstraps/includes/create-bootstrap.yml' }
-    - { include_tasks: 'roles/kubernetes-cluster-management/includes/k8s-add-nodes.yaml' }
+    - { include: 'roles/kubernetes-bootstraps/includes/create-bootstrap.yml' }
+    - { include: 'roles/kubernetes-cluster-management/includes/k8s-add-nodes.yaml' }
 
 - name: Create Kubernetes Cluster Nodes Config
   hosts: k8s-cluster-add-node
@@ -100,8 +100,8 @@
     - "roles/cri-install/vars/crio.yaml"
     - "roles/cri-install/vars/containerd.yaml"
   tasks:
-    - { include_tasks: 'roles/kubernetes-cluster-management/includes/configuretion-kubelet.yaml' }
-    - { include_tasks: 'roles/kubernetes-cluster-management/includes/start-kubelet.yaml' }
+    - { include: 'roles/kubernetes-cluster-management/includes/configuretion-kubelet.yaml' }
+    - { include: 'roles/kubernetes-cluster-management/includes/start-kubelet.yaml' }
     
 - name: Kubernetes Cluster Setup
   hosts: kube-master[0]
@@ -116,7 +116,7 @@
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   tasks:
-    - { include_tasks: 'roles/kubernetes-cluster-management/includes/kubernetes-cluster-setup.yaml' }
+    - { include: 'roles/kubernetes-cluster-management/includes/kubernetes-cluster-setup.yaml' }
 
 - name: Sync Crane Delploy Files to Instance
   hosts: kube-master[0]
@@ -131,4 +131,4 @@
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   tasks:
-    - { include_tasks: 'roles/crane/includes/sync-crane.yaml' }
+    - { include: 'roles/crane/includes/sync-crane.yaml' }

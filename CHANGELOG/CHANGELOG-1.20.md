@@ -303,7 +303,7 @@ kubelet_containerd_cri_options: >-
     - "roles/kubernetes-networks/defaults/calico.yaml"
     - "roles/kubernetes-networks/defaults/main.yml"
   tasks:
-    - { include_tasks: 'roles/etcd-add-node/includes/update-k8s-calico.yml' }
+    - { include: 'roles/etcd-add-node/includes/update-k8s-calico.yml' }
 ```
 
 因可能会存在多次执行的问题, 但不影响使用。
@@ -387,7 +387,7 @@ Containerd 1.3.9 => 1.4.3。`@crane/roles/cri-install/vars/containerd.yaml`
     - "roles/kubernetes-upgrade/defaults/main.yml"
 +/+
   tasks:
-    - { include_tasks: 'roles/kubernetes-upgrade/includes/update-k8s-networks.yaml' }
+    - { include: 'roles/kubernetes-upgrade/includes/update-k8s-networks.yaml' }
 
 删除: 重叠的配置项, 会造成 bug 阻塞
 -/-
@@ -407,7 +407,7 @@ Containerd 1.3.9 => 1.4.3。`@crane/roles/cri-install/vars/containerd.yaml`
     - "roles/kubernetes-networks/defaults/main.yml"
     - "roles/kubernetes-upgrade/defaults/main.yml"
   tasks:
-    - { include_tasks: 'roles/kubernetes-upgrade/includes/update-k8s-networks.yaml' }
+    - { include: 'roles/kubernetes-upgrade/includes/update-k8s-networks.yaml' }
 -/-
 ```
 
@@ -605,7 +605,7 @@ kernel_nf_conntrack_max: 4194304
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/etcd-cluster-management/vars/main.yml"
   tasks:
-    - { include_tasks: 'roles/etcd-del-nodes/includes/update-k8s-manifests.yml' } => - { include_tasks: 'roles/etcd-add-nodes/includes/update-k8s-manifests.yml' }
+    - { include: 'roles/etcd-del-nodes/includes/update-k8s-manifests.yml' } => - { include: 'roles/etcd-add-nodes/includes/update-k8s-manifests.yml' }
 ...
 ```
 

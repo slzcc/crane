@@ -43,7 +43,7 @@
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
   tasks:
-    - { include_tasks: 'roles/etcd-cluster-management/includes/initialize-etcd-home.yaml' }
+    - { include: 'roles/etcd-cluster-management/includes/initialize-etcd-home.yaml' }
 
 - name: Backups Current Cluster Status
   hosts: etcd
@@ -60,8 +60,8 @@
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   tasks:
-    - { include_tasks: 'roles/etcd-cluster-management/includes/backups-etcd-configure.yaml' }
-    - { include_tasks: 'roles/etcd-cluster-management/includes/backups-etcd-data.yaml' }
+    - { include: 'roles/etcd-cluster-management/includes/backups-etcd-configure.yaml' }
+    - { include: 'roles/etcd-cluster-management/includes/backups-etcd-data.yaml' }
 
 - name: Copy Etcd Old TLS for New Etcd Node
   hosts: etcd[0]
@@ -77,7 +77,7 @@
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   tasks:
-    - { include_tasks: 'roles/etcd-cluster-management/includes/copy-ca-to-new-etcd-node.yaml' }
+    - { include: 'roles/etcd-cluster-management/includes/copy-ca-to-new-etcd-node.yaml' }
 
 - name: Create New Etcd Node CA
   hosts: etcd[0]
@@ -95,7 +95,7 @@
     - "roles/etcd-cluster-management/defaults/tls.yaml"
     - "roles/etcd-cluster-management/defaults/main.yml"
   tasks:
-    - { include_tasks: 'roles/etcd-cluster-management/includes/create-new-etcd-node-tls.yaml' }
+    - { include: 'roles/etcd-cluster-management/includes/create-new-etcd-node-tls.yaml' }
 
 - name: Create New Etcd Node
   hosts: etcd-cluster-add-node
@@ -113,7 +113,7 @@
     - "roles/etcd-cluster-management/defaults/tls.yaml"
     - "roles/etcd-cluster-management/defaults/etcd-add-nodes.yaml"
   tasks:
-    - { include_tasks: 'roles/etcd-cluster-management/includes/etcd-add-nodes.yaml' }
+    - { include: 'roles/etcd-cluster-management/includes/etcd-add-nodes.yaml' }
 
 - name: Update K8s Cluster Manifests
   hosts: kube-master
@@ -131,7 +131,7 @@
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/etcd-cluster-management/defaults/etcd-add-nodes.yaml"
   tasks:
-    - { include_tasks: 'roles/etcd-cluster-management/includes/update-k8s-manifests.yml' }
+    - { include: 'roles/etcd-cluster-management/includes/update-k8s-manifests.yml' }
 
 - name: Update K8s Cluster Calico Network Config
   hosts: kube-master[0]
@@ -149,7 +149,7 @@
     - "roles/kubernetes-networks/defaults/main.yml"
     - "roles/etcd-cluster-management/defaults/etcd-add-nodes.yaml"
   tasks:
-    - { include_tasks: 'roles/etcd-cluster-management/includes/update-k8s-calico.yml' }
+    - { include: 'roles/etcd-cluster-management/includes/update-k8s-calico.yml' }
 
 - name: Update Etcd Cluster Manifests
   hosts: etcd
@@ -168,7 +168,7 @@
     - "roles/kubernetes-networks/defaults/main.yml"
     - "roles/etcd-cluster-management/defaults/etcd-add-nodes.yaml"
   tasks:
-    - { include_tasks: 'roles/etcd-cluster-management/includes/update-etcd-manifests.yml' }
+    - { include: 'roles/etcd-cluster-management/includes/update-etcd-manifests.yml' }
 
 - name: Check Etcd Cluster Info
   hosts: kube-master[0]
@@ -184,7 +184,7 @@
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/kubernetes-manifests/defaults/main.yml"
   tasks:
-    - { include_tasks: 'roles/etcd-cluster-management/includes/check-cluster-list.yaml' }
+    - { include: 'roles/etcd-cluster-management/includes/check-cluster-list.yaml' }
 
 # Etcd 添加完集群后, 其配置 --initial-cluster-state=existing 应该为 --initial-cluster-state=new
 
@@ -201,4 +201,4 @@
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   tasks:
-    - { include_tasks: 'roles/crane/includes/sync-crane.yaml' }
+    - { include: 'roles/crane/includes/sync-crane.yaml' }

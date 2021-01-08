@@ -355,7 +355,7 @@ runAsUser: 33 => runAsUser: 101
 
 修复部署 Crane 时, 走 k8s-addone 时耗时较长, 并把 `include` 改为 `import_tasks`。
 
-修改 Crane 在 Ansible 中使用的 `include` 改为 `include_tasks`。因 `include` 后续会被弃用。
+修改 Crane 在 Ansible 中使用的 `include` 改为 `include`。因 `include` 后续会被弃用。
 
 ### v1.18.8.0 更新内容
 
