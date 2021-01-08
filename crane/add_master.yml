@@ -45,7 +45,6 @@
     - "roles/crane/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-bootstraps/defaults/main.yml"
     - "roles/kubernetes-cluster-management/vars/kubelet.yaml"
   tasks:
     - { include: 'roles/kubernetes-cluster-management/includes/copy-master-kubeconfig-to-new-master.yaml' }
