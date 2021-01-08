@@ -120,7 +120,7 @@
     - "roles/cri-install/vars/containerd.yaml"
   tasks:
     - { include_tasks: 'roles/kubernetes-cluster-management/includes/configuretion-kubelet.yaml' }
-    - { include_tasks: 'roles/kubernetes-cluster-management/includes/create-kubelet-config.yaml' }
+    - { include_tasks: 'roles/kubernetes-cluster-management/includes/create-kubelet-conf.yaml' }
 
 - name: Create Cluster Master Kubernetes Manifests Files
   hosts: kube-master
@@ -207,7 +207,7 @@
   roles:
     - { role: kubernetes-addons, tags: [k8s-addons]}
 
-- name: Deployment Kubernetes Cluster Afterward CMD
+- name: Kubernetes Cluster Setup
   hosts: kube-master[0]
   gather_facts: true
   become: yes
@@ -219,8 +219,8 @@
     - "roles/crane/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-  roles:
-    - { role: kubernetes-afterward, tags: [k8s-afterward]}
+  tasks:
+    - { include_tasks: 'roles/kubernetes-cluster-management/includes/kubernetes-cluster-setup.yaml' }
 
 - name: Sync Crane Delploy Files to Instance
   hosts: kube-master[0]

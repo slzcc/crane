@@ -102,7 +102,7 @@
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   tasks:
-    - { include_tasks: roles/kubernetes-cluster-management/includes/update-k8s-haproxy.yml }
+    - { include_tasks: roles/kubernetes-cluster-management/includes/update-k8s-haproxy.yaml }
 
 - name: Deployment Kubernetes Cluster Afterward CMD
   hosts: kube-master[0]
