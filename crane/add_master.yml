@@ -75,6 +75,8 @@
   vars_files:
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/main.yml"
+    - "roles/kubernetes-cluster-management/defaults/tls.yaml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/system-initialize/defaults/main.yml"
     - "roles/crane/defaults/main.yml"
@@ -82,7 +84,6 @@
     - "roles/cri-install/vars/kubelet.yaml"
     - "roles/cri-install/vars/crio.yaml"
     - "roles/cri-install/vars/containerd.yaml"
-    - "roles/kubernetes-cluster-management/defaults/main.yml"
   tasks:
     - { include: 'roles/kubernetes-cluster-management/includes/configuretion-kubelet.yaml' }
     - { include: 'roles/kubernetes-cluster-management/includes/restart-kubelet.yaml' }

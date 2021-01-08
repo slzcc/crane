@@ -34,7 +34,8 @@
   tasks:
     - { include: 'roles/kubernetes-ca-rotation/includes/initialize.yaml' }
 
-- hosts: k8s-cluster:etcd
+- name: Initialize SSH Secret Key
+  hosts: k8s-cluster:etcd
   gather_facts: false
   become: yes
   become_method: sudo
@@ -85,7 +86,7 @@
   vars:
     ansible_ssh_pipelining: true
   vars_files:
-    - "roles/kubernetes-bootstraps/defaults/main.yml"
+    - "roles/kubernetes-cluster-management/defaults/main.yml"
     - "roles/kubernetes-ca-rotation/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
@@ -95,7 +96,7 @@
     - "roles/cri-install/vars/kubelet.yaml"
     - "roles/kubernetes-cluster-management/vars/kubelet.yaml"
   tasks:
-    - { include: 'roles/kubernetes-bootstraps/includes/create-bootstrap.yml' }
+    - { include: 'roles/kubernetes-cluster-management/includes/create-bootstrap.yaml' }
     - { include: 'roles/kubernetes-ca-rotation/includes/update-cluster-node-ca.yml' }
 
 - name: Copy Kubelet CA for Nodes
