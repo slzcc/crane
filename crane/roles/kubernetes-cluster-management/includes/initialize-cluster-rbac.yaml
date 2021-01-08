@@ -24,6 +24,3 @@
 
 - name: Deploy Bootstrap RBAC
   shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}main/kubelet-bootstrap-rbac.yml ; do >&2 echo "Starting..." && sleep 1 ; done'
-
-- name: Deploy Kubernetes Certification Files
-  include: "roles/kubernetes-cluster-management/includes/copy-kubelet-config-to-nodes.yaml"

@@ -83,7 +83,9 @@
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-networks/defaults/main.yml"
   roles:
-    - { role: kubernetes-cluster-management, tags: [k8s-default]}
+    - { role: kubernetes-cluster-management, tags: [k8s-kcm]}
+  tasks:
+    - { include: 'roles/kubernetes-cluster-management/includes/copy-kubelet-ca-to-nodes.yaml' }
 
 - name: Initialize Etcd Cluster CA Config
   hosts: etcd[0]
@@ -173,9 +175,6 @@
     - "roles/system-initialize/defaults/main.yml"
     - "roles/crane/defaults/main.yml"
     - "roles/kubernetes-cluster-management/vars/kubelet.yaml"
-    - "roles/cri-install/vars/kubelet.yaml"
-    - "roles/cri-install/vars/crio.yaml"
-    - "roles/cri-install/vars/containerd.yaml"
   tasks:
     - { include: 'roles/kubernetes-cluster-management/includes/start-kubelet.yaml' }
 
