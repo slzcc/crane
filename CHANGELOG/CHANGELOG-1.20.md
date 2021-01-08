@@ -299,7 +299,7 @@ kubelet_containerd_cri_options: >-
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/etcd-install/vars/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/kubernetes-networks/defaults/calico.yaml"
     - "roles/kubernetes-networks/defaults/main.yml"
   tasks:
@@ -380,7 +380,7 @@ Containerd 1.3.9 => 1.4.3。`@crane/roles/cri-install/vars/containerd.yaml`
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/etcd-install/vars/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/kubernetes-networks/defaults/calico.yaml"
     - "roles/kubernetes-networks/defaults/main.yml"
 +/+    
@@ -402,7 +402,7 @@ Containerd 1.3.9 => 1.4.3。`@crane/roles/cri-install/vars/containerd.yaml`
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/etcd-install/vars/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/kubernetes-networks/defaults/calico.yaml"
     - "roles/kubernetes-networks/defaults/main.yml"
     - "roles/kubernetes-upgrade/defaults/main.yml"
@@ -423,7 +423,7 @@ is_mandatory_docker_install: true => false
 修复 v1.20.1.2/3 测试时修改的 etcd.j2 文件造成 etcd 无法正常启动的 BUG:
 
 ```
-@crane/roles/etcd-install/templates/etcd.j2
+@crane/roles/etcd-cluster-management/templates/etcd.j2
     - --initial-cluster-state=existing
 =>
     - --initial-cluster-state=new
@@ -603,7 +603,7 @@ kernel_nf_conntrack_max: 4194304
     - "roles/crane/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/etcd-install/vars/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
   tasks:
     - { include_tasks: 'roles/etcd-del-nodes/includes/update-k8s-manifests.yml' } => - { include_tasks: 'roles/etcd-add-nodes/includes/update-k8s-manifests.yml' }
 ...

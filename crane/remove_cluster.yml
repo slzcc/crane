@@ -33,9 +33,9 @@
     - "roles/crane/defaults/main.yml"
     - "roles/system-initialize/defaults/main.yml"
     - "roles/etcd-cluster-management/defaults/main.yml"
-    - "roles/etcd-install/defaults/main.yml"
-    - "roles/etcd-install/defaults/tls.yaml"
-    - "roles/etcd-install/vars/main.yml"
+    - "roles/etcd-cluster-management/defaults/main.yml"
+    - "roles/etcd-cluster-management/defaults/tls.yaml"
+    - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   tasks:

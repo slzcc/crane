@@ -40,4 +40,4 @@ etcd_ssl_dirs: '{{ kubernetes_pki_dirs }}etcd/'
 # Etcd Data Path
 etcd_data_dirs: '/var/lib/etcd/'
 
-# Etcd CA Config 请参照: roles/etcd-install/defaults/main.yml
+# Etcd CA Config 请参照: roles/etcd-cluster-management/defaults/main.yml

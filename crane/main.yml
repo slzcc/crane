@@ -85,21 +85,37 @@
   roles:
     - { role: kubernetes-cluster-management, tags: [k8s-default]}
 
-- name: Initialize Etcd Cluster Config
+- name: Initialize Etcd Cluster CA Config
+  hosts: etcd[0]
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/etcd-cluster-management/defaults/tls.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/system-initialize/defaults/main.yml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+  tasks:
+    - { include_tasks: 'roles/kubernetes-cluster-management/includes/create-etcd-ca.yaml' }
+
+- name: Deploy Etcd Manifests
   hosts: etcd
   become: yes
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
   vars_files:
-    - "roles/etcd-install/defaults/tls.yaml"
+    - "roles/etcd-cluster-management/defaults/tls.yaml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/system-initialize/defaults/main.yml"
     - "roles/crane/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
-  roles:
-    - { role: etcd-install, tags: [etcd]}
+  tasks:
+    - { include_tasks: 'roles/kubernetes-cluster-management/includes/deploy-etcd-manifests.yaml' }
 
 - name: Create Kubernetes Cluster Master/Nodes Config
   hosts: kube-master:kube-node
@@ -129,7 +145,7 @@
   vars:
     ansible_ssh_pipelining: true
   vars_files:
-    - "roles/etcd-install/vars/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/system-initialize/defaults/main.yml"
@@ -184,7 +200,7 @@
   vars_files:
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/crane/defaults/main.yml"
-    - "roles/etcd-install/vars/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/kubernetes-networks/defaults/calico.yaml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"

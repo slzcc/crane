@@ -41,7 +41,7 @@
   vars_files:
     - "roles/etcd-cluster-management/defaults/main.yml"
     - "roles/crane/defaults/main.yml"
-    - "roles/etcd-install/vars/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
@@ -57,13 +57,13 @@
   vars:
     ansible_ssh_pipelining: true
   vars_files:
-    - "roles/etcd-install/defaults/main.yml"
+    - "roles/etcd-cluster-management/defaults/main.yml"
     - "roles/crane/defaults/main.yml"
-    - "roles/etcd-install/vars/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/etcd-install/defaults/tls.yaml"
+    - "roles/etcd-cluster-management/defaults/tls.yaml"
     - "roles/etcd-cluster-management/defaults/etcd-del-nodes.yaml"
   tasks:
     - { include_tasks: 'roles/etcd-cluster-management/includes/etcd-del-nodes.yaml' }
@@ -75,13 +75,13 @@
   vars:
     ansible_ssh_pipelining: true
   vars_files:
-    - "roles/etcd-install/defaults/main.yml"
+    - "roles/etcd-cluster-management/defaults/main.yml"
     - "roles/crane/defaults/main.yml"
-    - "roles/etcd-install/vars/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/etcd-install/defaults/tls.yaml"
+    - "roles/etcd-cluster-management/defaults/tls.yaml"
   tasks:
     - { include_tasks: 'roles/etcd-cluster-management/includes/remove-etcd-configure.yaml' }
 
@@ -96,7 +96,7 @@
     - "roles/crane/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/etcd-install/vars/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/etcd-cluster-management/defaults/etcd-del-nodes.yaml"
   tasks:
     - { include_tasks: 'roles/etcd-cluster-management/includes/update-k8s-manifests.yaml' }
@@ -112,7 +112,7 @@
     - "roles/crane/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/etcd-install/vars/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/etcd-cluster-management/defaults/etcd-del-nodes.yaml"
   tasks:
     - { include_tasks: 'roles/etcd-cluster-management/includes/update-etcd-manifests.yaml' }
@@ -128,7 +128,7 @@
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/etcd-install/vars/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/kubernetes-networks/defaults/calico.yaml"
     - "roles/kubernetes-networks/defaults/main.yml"
     - "roles/etcd-cluster-management/defaults/etcd-del-nodes.yaml"

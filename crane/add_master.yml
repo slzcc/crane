@@ -37,7 +37,7 @@
   vars:
     ansible_ssh_pipelining: true
   vars_files:
-    - "roles/etcd-install/vars/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/kubernetes-cluster-management/defaults/tls.yaml"
     - "roles/downloads-ssh-key/defaults/main.yml"
@@ -57,7 +57,7 @@
   vars:
     ansible_ssh_pipelining: true
   vars_files:
-    - "roles/etcd-install/vars/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/system-initialize/defaults/main.yml"

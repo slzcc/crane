@@ -75,8 +75,7 @@
     - "roles/crane/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
   tasks:
-    - { include_tasks: 'roles/kubernetes-master/includes/copy-kubelet-admin.yaml' }
-    # - { include_tasks: 'roles/kubernetes-master/includes/create-kubelet-conf.yaml' }
+    - { include_tasks: 'roles/kubernetes-cluster-management/includes/copy-kubelet-admin.yaml' }
     - { include_tasks: 'roles/kubernetes-ca-rotation/includes/update-cluster-master.yml' }
 
 - name: Create New Bootstrap Config Files to Nodes.
@@ -123,7 +122,7 @@
   vars_files:
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/crane/defaults/main.yml"
-    - "roles/etcd-install/vars/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/kubernetes-networks/defaults/calico.yaml"
     - "roles/kubernetes-networks/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"

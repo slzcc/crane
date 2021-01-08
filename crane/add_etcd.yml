@@ -39,7 +39,7 @@
   vars_files:
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/crane/defaults/main.yml"
-    - "roles/etcd-install/vars/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
   tasks:
@@ -54,7 +54,7 @@
   vars_files:
     - "roles/etcd-cluster-management/defaults/main.yml"
     - "roles/crane/defaults/main.yml"
-    - "roles/etcd-install/vars/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
@@ -71,7 +71,7 @@
   vars_files:
     - "roles/etcd-cluster-management/defaults/main.yml"
     - "roles/crane/defaults/main.yml"
-    - "roles/etcd-install/vars/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
@@ -85,16 +85,16 @@
   vars:
     ansible_ssh_pipelining: true
   vars_files:
-    - "roles/etcd-install/defaults/main.yml"
+    - "roles/etcd-cluster-management/defaults/main.yml"
     - "roles/crane/defaults/main.yml"
-    - "roles/etcd-install/vars/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/etcd-install/defaults/tls.yaml"
+    - "roles/etcd-cluster-management/defaults/tls.yaml"
     - "roles/etcd-cluster-management/defaults/main.yml"
   tasks:
-    - { include_tasks: 'roles/etcd-cluster-management/includes/create-etcd-tls.yaml' }
+    - { include_tasks: 'roles/etcd-cluster-management/includes/create-new-etcd-node-tls.yaml' }
 
 - name: Create New Etcd Node
   hosts: etcd-cluster-add-node
@@ -103,13 +103,13 @@
   vars:
     ansible_ssh_pipelining: true
   vars_files:
-    - "roles/etcd-install/defaults/main.yml"
+    - "roles/etcd-cluster-management/defaults/main.yml"
     - "roles/crane/defaults/main.yml"
-    - "roles/etcd-install/vars/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/etcd-install/defaults/tls.yaml"
+    - "roles/etcd-cluster-management/defaults/tls.yaml"
     - "roles/etcd-cluster-management/defaults/etcd-add-nodes.yaml"
   tasks:
     - { include_tasks: 'roles/etcd-cluster-management/includes/etcd-add-nodes.yaml' }
@@ -125,7 +125,7 @@
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/etcd-install/vars/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/kubernetes-networks/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/etcd-cluster-management/defaults/etcd-add-nodes.yaml"
@@ -143,7 +143,7 @@
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/etcd-install/vars/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/kubernetes-networks/defaults/calico.yaml"
     - "roles/kubernetes-networks/defaults/main.yml"
     - "roles/etcd-cluster-management/defaults/etcd-add-nodes.yaml"
@@ -161,8 +161,8 @@
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/etcd-install/vars/main.yml"
-    - "roles/etcd-install/defaults/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
+    - "roles/etcd-cluster-management/defaults/main.yml"
     - "roles/kubernetes-networks/defaults/calico.yaml"
     - "roles/kubernetes-networks/defaults/main.yml"
     - "roles/etcd-cluster-management/defaults/etcd-add-nodes.yaml"
@@ -178,7 +178,7 @@
   vars_files:
     - "roles/etcd-cluster-management/defaults/main.yml"
     - "roles/crane/defaults/main.yml"
-    - "roles/etcd-install/vars/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/kubernetes-manifests/defaults/main.yml"
