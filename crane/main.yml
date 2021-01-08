@@ -122,7 +122,7 @@
     - { include_tasks: 'roles/etcd-cluster-management/includes/deploy-etcd-manifests.yaml' }
 
 - name: Create Kubernetes Cluster Master/Nodes Config
-  hosts: kube-master:kube-node
+  hosts: k8s-cluster
   gather_facts: true
   become: yes
   become_method: sudo
@@ -160,7 +160,7 @@
     - { role: kubernetes-manifests, tags: [k8s-manifests]}
 
 - name: Start Kubernetes Cluster Maste/Nones Kubelet.
-  hosts: kube-master:kube-node
+  hosts: k8s-cluster
   gather_facts: true
   become: yes
   become_method: sudo

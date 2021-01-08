@@ -1,5 +1,4 @@
 ---
-
 - shell: "systemctl daemon-reload"
   
 - name: Kubelet Powered UP And Startd
