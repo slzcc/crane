@@ -58,11 +58,11 @@ k8s_master_name_list: >-
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}]
 
-k8s_master_ip_str: >-
-  {% for host in groups['kube-master'] -%}
-    {{ host }}
-    {%- if not loop.last -%},{%- endif -%}
-  {%- endfor -%}
+# k8s_master_ip_str: >-
+#   {% for host in groups['kube-master'] -%}
+#     {{ host }}
+#     {%- if not loop.last -%},{%- endif -%}
+#   {%- endfor -%}
 
 all_hostname_str: >-
   {% for host in groups['kube-master'] -%}

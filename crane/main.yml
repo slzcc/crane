@@ -172,8 +172,10 @@
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/system-initialize/defaults/main.yml"
     - "roles/crane/defaults/main.yml"
-    - "roles/cri-install/vars/kubelet.yaml"
     - "roles/kubernetes-cluster-management/vars/kubelet.yaml"
+    - "roles/cri-install/vars/kubelet.yaml"
+    - "roles/cri-install/vars/crio.yaml"
+    - "roles/cri-install/vars/containerd.yaml"
   tasks:
     - { include: 'roles/kubernetes-cluster-management/includes/start-kubelet.yaml' }
 
