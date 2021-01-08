@@ -1,0 +1,57 @@
+---
+# Clean Crane
+- name: Clean Crane
+  include: "roles/remove-cluster/includes/crane.yaml"
+
+# Clean Etcd
+- name: Clean Etcd
+  include: "roles/remove-cluster/includes/etcd.yaml"
+
+# Clean Kubernetes
+- name: Clean Kubernetes
+  include: "roles/remove-cluster/includes/kubernetes.yaml"
+
+# Clean CNI
+- name: Clean CNI
+  include: "roles/remove-cluster/includes/cni.yaml"
+  when: is_remove_all or is_remove_cni
+  
+# Clean Haproxy
+- name: Clean CNI
+  include: "roles/remove-cluster/includes/haproxy.yaml"
+
+# Clean IPVS and Iptables
+- name: Clean Iptables
+  include: "roles/remove-cluster/includes/iptables.yaml"
+
+# Clean Docker
+- name: Clean Docker
+  include: "roles/remove-cluster/includes/docker/main.yaml"
+  when: is_remove_all or is_remove_docker_ce
+
+# Clean Containerd
+- name: Clean Containerd
+  include: "roles/remove-cluster/includes/containerd/main.yaml"
+  when: is_remove_all or is_remove_containerd
+  
+# Clean CRIO
+- name: Clean CRIO
+  include: "roles/remove-cluster/includes/crio/main.yaml"
+  when: is_remove_all or is_remove_crio
+
+# Clean CRIO
+- name: Clean runC
+  include: "roles/remove-cluster/includes/runc.yaml"
+  when: is_remove_all or is_remove_runc
+
+# Clean Calico
+- name: Clean Other
+  include: "roles/remove-cluster/includes/calico.yaml"
+  
+# Clean Other
+- name: Clean Other
+  include: "roles/remove-cluster/includes/other.yaml"
+  
+# Reload Systemd
+- name: Systemd Reload
+  shell: "systemctl daemon-reload"

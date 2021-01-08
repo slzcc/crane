@@ -22,7 +22,7 @@
   ignore_errors: true
 
 - name: Export the CNI
-  shell: "cp -a {{ temporary_dirs }}import-kubernetes-temporary/cni {{ kubernetes_cni_dirs }}"
+  shell: "cp -a {{ temporary_dirs }}import-kubernetes-temporary/cni/* {{ kubernetes_cni_dirs }}"
   
 - name: Temportay uMount to.
   shell: "umount -l {{ temporary_dirs }}import-kubernetes-temporary"
@@ -30,6 +30,6 @@
   ignore_errors: true
 
 - name: Clean Temporary Container
-  include: "roles/clean-install/includes/crane/containerd/import-kubernetes-temporary.yaml"
+  include: "roles/remove-cluster/includes/crane/containerd/import-kubernetes-temporary.yaml"
   when: check_cmd.rc == 0
   ignore_errors: true

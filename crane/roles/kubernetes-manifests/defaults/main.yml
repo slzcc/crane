@@ -44,7 +44,7 @@ k8s_cluster_component_registry: 'k8s.gcr.io'
 # 是否使用 RBAC, 集群默认是 RBAC 认证, 但可以在部署完集群之后创建超级用户取消所有限制
 is_rbac: false
 
-# kubernetes CA Config 请参照: roles/kubernetes-default/defaults/main.yml
+# kubernetes CA Config 请参照: roles/kubernetes-cluster-management/defaults/main.yml
 
 # kubernetes 最低 kernel 否则关闭相应的功能
 min_kernel_version: 4.3

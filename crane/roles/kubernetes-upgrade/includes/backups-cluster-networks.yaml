@@ -1,0 +1,11 @@
+---
+
+# Backup Kubernetes Cluster Kube-System Configmap
+- name: Backup KubeProxy Configmap
+  shell: '{{ kubernetes_ctl_path }}kubectl get configmap -n kube-system {{ item }} -o yaml > {{ temporary_dirs }}{{ item }}-`date +%Y%m%d%H%M%S`'
+  ignore_errors: true
+  with_items:    
+    - "kube-proxy"
+    - "coredns"
+    - "calico-config"
+    - "extension-apiserver-authentication"

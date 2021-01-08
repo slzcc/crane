@@ -12,14 +12,14 @@
   ignore_errors: true
 
 - name: Load Kernel Module
-  include_tasks: "roles/system-initialize/includes/kernel/nf_conntrack_module.yaml"
+  include: "roles/system-initialize/includes/kernel/nf_conntrack_module.yaml"
   
 - name: Ubuntu Install Containerd
-  include_tasks: roles/downloads-packages/includes/containerd/local_download.yaml
+  include: roles/downloads-packages/includes/containerd/local_download.yaml
   when: containerd_install_type == 'local_binary'
 
 - name: Ubuntu Install Containerd
-  include_tasks: roles/downloads-packages/includes/containerd/http_download.yaml
+  include: roles/downloads-packages/includes/containerd/http_download.yaml
   when: containerd_install_type == 'http_binary'
 
 - name: Binary Install

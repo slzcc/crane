@@ -1,0 +1,23 @@
+---
+- name: Deploy Zookeeper Service *
+  file:
+    path: "{{ item }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+  with_items:
+  - "{{ temporary_dirs }}zookeeper"
+  ignore_errors: true
+
+- name: Deploy Zookeeper Service **
+  template: 
+    src: "roles/kubernetes-addons/templates/zookeeper/{{ item }}"
+    dest: "{{ temporary_dirs }}zookeeper/{{ item }}"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+  with_items:
+    - "0_zookeeper_configmap.yaml"
+    - "1_zookeeper.yaml"
+
+- name: Deploy Zookeeper Service ***
+  shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}zookeeper/ ; do >&2 echo "Starting..." && sleep 1 ; done'

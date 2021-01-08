@@ -1,0 +1,61 @@
+---
+- name: Create bootstrap-kubelet.conf .
+  shell: "openssl rand -hex 3"
+  register: TOKEN_ID
+  changed_when: false
+
+- shell: "openssl rand -hex 8"
+  register: TOKEN_SECRET
+  changed_when: false
+
+- set_fact:
+    bootstrap_token_id: "{{ item[0] }}"
+    bootstrap_token_secret: "{{ item[1] }}"
+  with_nested:
+    - "{{ TOKEN_ID['stdout_lines'] }}"
+    - "{{ TOKEN_SECRET['stdout_lines'] }}"
+
+- name: Create Systemd Kubelet Config Dir
+  file:
+    path: "{{ temporary_dirs }}bootstrap/"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
+- name: Clean Cluster in TLS bootstrap secret.
+  shell: "{{ kubernetes_ctl_path }}kubectl delete -f {{ temporary_dirs }}bootstrap/bootstrappers-default-node-token.yml"
+  ignore_errors: true
+  
+- name: If the old bootstrap-kubelet. Conf file is moved to TMP.
+  shell: "mv {{ kubernetes_etc_dirs }}bootstrap-kubelet.conf {{ temporary_dirs }}bootstrap/bootstrap-kubelet.conf-`date +%Y%m%d%H%M%S`"
+  ignore_errors: true
+
+- shell: "cd {{ kubernetes_pki_dirs }} &&
+          {{ kubernetes_ctl_path }}kubectl config set-cluster kubernetes 
+            --certificate-authority=ca.pem 
+            --embed-certs=true 
+            --server={{ k8s_apiserver_https_bind }} 
+            --kubeconfig={{ kubernetes_etc_dirs }}bootstrap-kubelet.conf &&
+          {{ kubernetes_ctl_path }}kubectl config set-credentials tls-bootstrap-token-user 
+            --token={{ bootstrap_token_id }}.{{ bootstrap_token_secret }}
+            --kubeconfig={{ kubernetes_etc_dirs }}bootstrap-kubelet.conf && 
+          {{ kubernetes_ctl_path }}kubectl config set-context tls-bootstrap-token-user@kubernetes 
+            --cluster=kubernetes 
+            --user=tls-bootstrap-token-user 
+            --kubeconfig={{ kubernetes_etc_dirs }}bootstrap-kubelet.conf && 
+          {{ kubernetes_ctl_path }}kubectl config use-context tls-bootstrap-token-user@kubernetes 
+            --kubeconfig={{ kubernetes_etc_dirs }}bootstrap-kubelet.conf"
+
+- shell: chown {{ ssh_connect_user }} {{ kubernetes_etc_dirs }}bootstrap-kubelet.conf
+  
+- name: Create TLS Bootstrap Secret.
+  template:
+    src: "roles/kubernetes-cluster-management/templates/bootstrappers-default-node-token.j2"
+    dest: "{{ temporary_dirs }}bootstrap/bootstrappers-default-node-token.yml"
+    owner: "{{ ssh_connect_user }}"
+    mode: 0644
+
+- name: Deploy Bootstrap.
+  shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}bootstrap/bootstrappers-default-node-token.yml ; do >&2 echo "Starting..." && sleep 1 ; done'
+  async: 30
+  poll: 2

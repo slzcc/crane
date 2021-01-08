@@ -7,6 +7,10 @@ systemd_etc_dirs: '/etc/systemd/system/'
 # Systemd 主配置文件目录
 systemd_default_dirs: '/lib/systemd/system/'
 
-# 内核配置
-kernel_nf_conntrack_buckets: 262144
-kernel_nf_conntrack_max: 1048576
+# 内核 nf_conntrack 32GB 配置
+# kernel_nf_conntrack_buckets: 262144
+# kernel_nf_conntrack_max: 1048576
+
+# 内核 nf_conntrack 64GB 配置
+kernel_nf_conntrack_buckets: 1048576
+kernel_nf_conntrack_max: 4194304

@@ -4,16 +4,6 @@
   roles:
     - { role: local-task }
 
-- hosts: kube-master[0]:k8s-cluster-del-node
-  become: yes
-  gather_facts: true
-  become_method: sudo
-  vars:
-    ansible_ssh_pipelining: true
-  tasks:
-    - name: Check all Nodes
-      ping: 
-
 - name: Initialize Crane Env
   hosts: all
   become: yes
@@ -27,12 +17,13 @@
     - "roles/cri-install/vars/crio.yaml"
     - "roles/cri-install/vars/docker.yaml"
     - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/downloads-ssh-key/defaults/main.yml"
   roles:
     - { role: crane, tags: [crane] }
     
-- hosts: kube-master
+- name: Initialize SSH Secret Key
+  hosts: kube-master
   gather_facts: false
   become: yes
   become_method: sudo
@@ -50,9 +41,10 @@
   vars_files:
     - "roles/crane/defaults/main.yml"
     - "roles/system-initialize/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
-  roles:
-    - { role: k8s-del-nodes, tags: [k8s-del-nodes]}
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/main.yml"
+  tasks:
+    - { include: 'roles/kubernetes-cluster-management/includes/k8s-del-nodes.yaml' }
 
 - name: Clean Kubernetes Nodes DataDir
   hosts: k8s-cluster-del-node
@@ -65,10 +57,10 @@
     - "roles/system-initialize/defaults/main.yml"
     - "roles/kubernetes-networks/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/downloads-ssh-key/defaults/main.yml"
   roles:
-    - { role: clean-install, tags: [clean]}
+    - { role: remove-cluster, tags: [clean]}
 
 - name: Sync Crane Delploy Files to Instance
   hosts: kube-master[0]
@@ -81,6 +73,6 @@
     - "roles/crane/defaults/main.yml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   tasks:
-    - { include_tasks: 'roles/crane/includes/sync-crane.yaml' }
+    - { include: 'roles/crane/includes/sync-crane.yaml' }

@@ -1,0 +1,23 @@
+---
+- name: Deploy Nexus Service *
+  file:
+    path: "{{ item }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+  with_items:
+  - "{{ temporary_dirs }}nexus"
+  ignore_errors: true
+
+- name: Deploy Nexus Service **
+  template: 
+    src: "roles/kubernetes-addons/templates/nexus/{{ item }}"
+    dest: "{{ temporary_dirs }}nexus/{{ item }}"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+  with_items:
+    - "1_nexus_dep.yaml"
+    - "2_nexus_ingress.yaml"
+
+- name: Deploy Nexus Service ***
+  shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}nexus/ ; do >&2 echo "Starting..." && sleep 1 ; done'

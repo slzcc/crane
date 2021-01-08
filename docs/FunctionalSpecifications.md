@@ -143,7 +143,7 @@ $ make run_add_etcd
 
 ## Add Ons
 
-默认创建集群时, 是可以直接部署 Add-Ons 的, 如果后续进行部署, 则直接通过 tags 方式进行部署即可:
+默认创建集群时, 是可以直接部署 kubernetes-addons 的, 如果后续进行部署, 则直接通过 tags 方式进行部署即可:
 
 ```
 $ make run_addons

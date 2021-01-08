@@ -1,9 +1,6 @@
 ---
-
-- include_vars: "roles/clean-install/defaults/main.yml"
-
 - name: Clean Docker..
-  include: "roles/clean-install/includes/docker/main.yaml"
+  include: "roles/remove-cluster/includes/docker/main.yaml"
   when: clean_up_old_before_installing
 
 - name: Close Kubelet..
@@ -16,17 +13,17 @@
   ignore_errors: true
 
 - name: Initialize Docker-ce
-  include_tasks: "roles/cri-install/includes/docker/initialize.yaml"
+  include: "roles/cri-install/includes/docker/initialize.yaml"
 
 - name: Check Docker Bin, Ensure that the command line is available.
-  include_tasks: 'roles/kubernetes-upgrade/includes/cri/docker.yaml'
+  include: 'roles/kubernetes-upgrade/includes/cri/docker.yaml'
   when: 
     - cri_k8s_default == 'docker'
     - result.stderr == ''
 
 - name: Install Docker-ce
-  include_tasks: "roles/cri-install/includes/docker/os.yaml"
-  when: is_mandatory_docker_install or result.stderr
+  include: "roles/cri-install/includes/docker/os.yaml"
+  when: is_mandatory_docker_install or (result is failed)
 
 - name: Check DockerD Daemon.js isFile
   shell: "ls /etc/docker/daemon.json"
@@ -45,7 +42,7 @@
 - name: Check DockerD Daemon.js MD5 **
   template: 
     src: "roles/cri-install/templates/docker/daemon.j2"
-    dest: "{{ temporary_dirs }}/.daemon.json"
+    dest: "{{ temporary_dirs }}main/.daemon.json"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
   when: 
@@ -53,7 +50,7 @@
     - check_daemon_file.stderr != ''
 
 - name: Check DockerD Daemon.js MD5 **
-  shell: "md5sum /tmp/.daemon.json | awk '{print $1}'"
+  shell: "md5sum {{ temporary_dirs }}main/.daemon.json | awk '{print $1}'"
   register: check_new_md5
   ignore_errors: true
   when: 

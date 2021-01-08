@@ -4,10 +4,10 @@
 - include_vars: "{{ item }}"
   with_items:
     - "roles/crane/defaults/main.yml"
-    - "roles/etcd-install/vars/main.yml"
-    - "roles/clean-install/defaults/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
+    - "roles/remove-cluster/defaults/main.yml"
     - "roles/kubernetes-networks/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/downloads-ssh-key/defaults/main.yml"
 
 - name: Check Swap
@@ -37,6 +37,13 @@
 - name: Create Kubernetes PKI WorkDir
   file:
     path: "{{ kubernetes_etc_dirs }}pki"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
+- name: Create Kubernetes Manifests WorkDir
+  file:
+    path: "{{ kubernetes_etc_dirs }}manifests"
     mode: 0755
     owner: "{{ ssh_connect_user }}"
     state: directory
@@ -158,14 +165,22 @@
   when: hashsize.stderr or (hashsize.stdout|int < kernel_nf_conntrack_buckets )
   ignore_errors: true
 
-- name: Set nf_conntrack_buckets Powered up
-  shell: "echo 'echo {{ kernel_nf_conntrack_buckets }} > /sys/module/nf_conntrack/parameters/hashsize' >> /etc/rc.local"
-  when: hashsize.stderr or (hashsize.stdout|int < kernel_nf_conntrack_buckets )
+# - name: Set nf_conntrack_buckets Powered up
+#   shell: "echo 'echo {{ kernel_nf_conntrack_buckets }} > /sys/module/nf_conntrack/parameters/hashsize' >> /etc/rc.local"
+#   when: hashsize.stderr or (hashsize.stdout|int < kernel_nf_conntrack_buckets )
+#   ignore_errors: true
+
+- name: Copy nf_conntrack_buckets Powered up
+  template:
+    src: "roles/system-initialize/templates/nf_conntrack.conf"
+    dest: "/etc/modprobe.d/nf_conntrack.conf"
+    owner: "{{ ssh_connect_user }}"
+    mode: 0644
   ignore_errors: true
 
-- name: Empowerment for rc.local
-  shell: "chmod +x /etc/rc.local"
-  ignore_errors: true
+# - name: Empowerment for rc.local
+#   shell: "chmod +x /etc/rc.local"
+#   ignore_errors: true
 
 - name: Centos Stop Firewalld
   service: 
@@ -184,4 +199,4 @@
   ignore_errors: true
 
 - name: Check Systemd-resolved Systemd Status
-  include: "roles/kubernetes-default/includes/resolv.yaml"
+  include: "roles/kubernetes-cluster-management/includes/initialize-resolv.yaml"
