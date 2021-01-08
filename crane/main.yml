@@ -142,8 +142,8 @@
     - "roles/cri-install/vars/containerd.yaml"
   tasks:
     - { include: 'roles/kubernetes-cluster-management/includes/configuretion-kubelet.yaml' }
-    - { include: 'roles/kubernetes-cluster-management/includes/create-kubelet-conf.yaml' }
     - { include: 'roles/kubernetes-cluster-management/includes/create-kubelet-pki.yaml' }
+    - { include: 'roles/kubernetes-cluster-management/includes/create-kubelet-conf.yaml' }
 
 - name: Create Cluster Master Kubernetes Manifests Files
   hosts: kube-master
