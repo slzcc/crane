@@ -69,7 +69,6 @@
     - "roles/system-initialize/defaults/main.yml"
     - "roles/crane/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/main.yml"
-    - "roles/kubernetes-bootstraps/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/vars/kubelet.yaml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
@@ -79,7 +78,7 @@
     - "roles/cri-install/vars/crio.yaml"
     - "roles/cri-install/vars/containerd.yaml"
   tasks:
-    - { include: 'roles/kubernetes-bootstraps/includes/create-bootstrap.yml' }
+    - { include: 'roles/kubernetes-cluster-management/includes/create-bootstrap.yaml' }
     - { include: 'roles/kubernetes-cluster-management/includes/k8s-add-nodes.yaml' }
 
 - name: Create Kubernetes Cluster Nodes Config
