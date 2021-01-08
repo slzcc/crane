@@ -1,7 +1,4 @@
 ---
-
-- include_vars: "roles/remove-cluster/defaults/main.yml"
-
 - name: Clean Docker..
   include: "roles/remove-cluster/includes/docker/main.yaml"
   when: clean_up_old_before_installing
@@ -26,7 +23,7 @@
 
 - name: Install Docker-ce
   include: "roles/cri-install/includes/docker/os.yaml"
-  when: is_mandatory_docker_install or result.stderr
+  when: is_mandatory_docker_install or (result is failed)
 
 - name: Check DockerD Daemon.js isFile
   shell: "ls /etc/docker/daemon.json"
