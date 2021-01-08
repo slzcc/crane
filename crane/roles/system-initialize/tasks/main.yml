@@ -5,7 +5,7 @@
   with_items:
     - "roles/crane/defaults/main.yml"
     - "roles/etcd-install/vars/main.yml"
-    - "roles/clean-install/defaults/main.yml"
+    - "roles/remove-cluster/defaults/main.yml"
     - "roles/kubernetes-networks/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/downloads-ssh-key/defaults/main.yml"

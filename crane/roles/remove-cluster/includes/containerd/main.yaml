@@ -2,7 +2,7 @@
 - include_vars: "roles/cri-install/vars/containerd.yaml"
 
 - name: Clean Containerd Services
-  include: "roles/clean-install/includes/containerd/services.yaml"
+  include: "roles/remove-cluster/includes/containerd/services.yaml"
 
 - name: Containerd Turn off Start Up
   service: 
@@ -28,22 +28,22 @@
   ignore_errors: true
 
 - name: Clean Containerd Shim Services
-  include: "roles/clean-install/includes/containerd/shim.yaml"
+  include: "roles/remove-cluster/includes/containerd/shim.yaml"
 
 # Clean Containerd Image
 # - name: Clean Containerd Image
-#   include: "roles/clean-install/includes/containerd/image.yaml"
+#   include: "roles/remove-cluster/includes/containerd/image.yaml"
 #   when: is_remove_all or is_remove_k8s_images
 
 - name: Clean Containerd Config
-  include: "roles/clean-install/includes/containerd/config.yaml"
+  include: "roles/remove-cluster/includes/containerd/config.yaml"
   when: is_remove_all or is_remove_containerd
 
 - name: Clean Containerd Binary
-  include: "roles/clean-install/includes/containerd/binary.yaml"
+  include: "roles/remove-cluster/includes/containerd/binary.yaml"
   when: is_remove_all or is_remove_containerd
 
 - name: Clean Containerd Data
-  include: "roles/clean-install/includes/containerd/data.yaml"
+  include: "roles/remove-cluster/includes/containerd/data.yaml"
   when: is_remove_all or is_remove_containerd_dir
 

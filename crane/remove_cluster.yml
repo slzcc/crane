@@ -36,9 +36,10 @@
     - "roles/etcd-install/defaults/main.yml"
     - "roles/etcd-install/defaults/tls.yaml"
     - "roles/etcd-install/vars/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   tasks:
-    - { include_tasks: 'roles/etcd-install/includes/backups.yaml' }
+    - { include_tasks: 'roles/etcd-cluster-management/includes/backups-etcd-data.yaml' }
 
 - name: Clean Kubernetes Cluster
   hosts: all
