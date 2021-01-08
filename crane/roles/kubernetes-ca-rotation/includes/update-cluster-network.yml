@@ -10,19 +10,6 @@
   shell: '{{ kubernetes_ctl_path }}kubectl delete -f {{ temporary_dirs }}kubernetes-ca-rotation/calico.yml'
   ignore_errors: true
 
-# - name: Clean CNI Cluster Config
-#   file:
-#     path: "{{ cni_config_dir }}"
-#     state: absent
-#   ignore_errors: true
-
-# - name: Create CNI Cluster Config
-#   file:
-#     path: "{{ cni_config_dir }}"
-#     mode: 0755
-#     owner: "{{ ssh_connect_user }}"
-#     state: directory
-    
 - name: Deploy Calico
   shell: '{{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}kubernetes-ca-rotation/calico.yml'
   ignore_errors: true

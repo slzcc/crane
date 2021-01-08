@@ -31,7 +31,8 @@
   roles:
     - { role: crane, tags: [crane] }
     
-- hosts: k8s-cluster:etcd
+- name: Initialize SSH Secret Key
+  hosts: k8s-cluster:etcd
   gather_facts: false
   become: yes
   become_method: sudo
@@ -39,6 +40,19 @@
     - "roles/crane/defaults/main.yml"
   roles:
     - { role: downloads-ssh-key, tags: [copy_ssh_private_key]}
+
+- name: Stop Cluster Scheduling
+  hosts: kube-master[0]
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/crane/defaults/main.yml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+  tasks:
+    - { include: 'roles/kubernetes-upgrade/includes/nodes/node-no-schedule.yaml' }
 
 - name: Create New CA
   hosts: etcd[0]
@@ -102,6 +116,19 @@
     - "roles/kubernetes-networks/defaults/main.yml"
   tasks:
     - { include: 'roles/etcd-ca-rotation/includes/update-cluster-network.yml' }
+
+- name: Turn on Cluster Scheduling
+  hosts: kube-master[0]
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/crane/defaults/main.yml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+  tasks:
+    - { include: 'roles/kubernetes-upgrade/includes/nodes/node-schedule.yaml' }
 
 - name: Sync Crane Delploy Files to Instance
   hosts: kube-master[0]
