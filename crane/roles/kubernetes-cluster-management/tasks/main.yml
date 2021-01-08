@@ -1,8 +1,4 @@
 ---
-# CA
-## ********************************************************************************************************************************
-
-## Copy CFSSL Kubernetes Json Files
 - name: Copy CFSSL Kubernetes Json Files
   template:
     src: "{{ item }}"

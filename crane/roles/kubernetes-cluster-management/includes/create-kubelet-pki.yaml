@@ -1,4 +1,14 @@
 ---
+- name: Copy CFSSL Kubernetes Json Files
+  template:
+    src: "{{ item }}"
+    dest: "{{ kubernetes_pki_dirs }}{{ item }}"
+    owner: "{{ ssh_connect_user }}" 
+    mode: 0644
+  with_items:
+    - "ca-config.json"
+    - "ca-csr.json"
+    
 - name: Create Kubernetes Kubelet CA Files
   shell: >
     cd {{ kubernetes_pki_dirs }} && cp kubelet-csr.json kubelet-{{ hostvars[inventory_hostname].ansible_nodename }}-csr.json;
