@@ -213,7 +213,7 @@ is_crane_kubernetes_deploy: "{{ cri_drive_install_type }}"
 添加 `crane/roles/crane/templates/` 部分 tools 脚本, 用于手动部署。
 
 ```
-@crane/roles/kubernetes-default/vars/kubelet.yaml 新添加 --resolv-conf 参数项
+@crane/roles/kubernetes-cluster-management/vars/kubelet.yaml 新添加 --resolv-conf 参数项
 
 # resolv 配置项
 kubelet_resolv_config: "--resolv-conf=/run/systemd/resolve/resolv.conf"
@@ -298,7 +298,7 @@ kubelet_containerd_cri_options: >-
     - "roles/crane/defaults/main.yml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/etcd-install/vars/main.yml"
     - "roles/kubernetes-networks/defaults/calico.yaml"
     - "roles/kubernetes-networks/defaults/main.yml"
@@ -379,7 +379,7 @@ Containerd 1.3.9 => 1.4.3。`@crane/roles/cri-install/vars/containerd.yaml`
     - "roles/crane/defaults/main.yml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/etcd-install/vars/main.yml"
     - "roles/kubernetes-networks/defaults/calico.yaml"
     - "roles/kubernetes-networks/defaults/main.yml"
@@ -401,7 +401,7 @@ Containerd 1.3.9 => 1.4.3。`@crane/roles/cri-install/vars/containerd.yaml`
     - "roles/crane/defaults/main.yml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/etcd-install/vars/main.yml"
     - "roles/kubernetes-networks/defaults/calico.yaml"
     - "roles/kubernetes-networks/defaults/main.yml"
@@ -529,7 +529,7 @@ etcd-add-node 和 etcd-del-node 重命名 xx.nodes
     - "roles/system-initialize/defaults/main.yml"
     - "roles/kubernetes-networks/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
 +/+
     - "roles/downloads-ssh-key/defaults/main.yml"
 +/+
@@ -602,7 +602,7 @@ kernel_nf_conntrack_max: 4194304
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/crane/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/etcd-install/vars/main.yml"
   tasks:
     - { include_tasks: 'roles/etcd-del-nodes/includes/update-k8s-manifests.yml' } => - { include_tasks: 'roles/etcd-add-nodes/includes/update-k8s-manifests.yml' }
@@ -624,8 +624,8 @@ kernel_nf_conntrack_max: 4194304
 
 对 Harbor 支持 CA Rotation 只需要对 `@crane/roles/add-ons/defaults/main.yml => is_harbor_ca_rotation` 值为 `true` 即可, 它会抑制 harbor 安装只会更新当前 harbor ca 证书。
 
-<!-- ### 调整
+### 调整
 
-在此版本后对 Master 与 Node 进行无差别部署, 不在使用 Master 通过 kubelet.conf 启动。
+在此版本后对 Master 与 Node 进行无差别部署, 添加节点使用 bootstraps 方式注册, 其余使用 kubelet.conf 。
 
-> 因通过 kubelet.conf 是比较老的方式比较繁琐目前一律通过 bootstraps 方式进行注册。 -->
+对当前版本目录结构进行调整, 把重叠配置进行复用移除。

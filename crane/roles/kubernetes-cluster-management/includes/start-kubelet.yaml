@@ -1,0 +1,17 @@
+---
+
+- shell: "systemctl daemon-reload"
+  
+- name: Kubelet Powered UP And Startd
+  service: 
+    name: kubelet
+    enabled: yes
+
+- name: Copy admin.yml To Home
+  include_tasks: 'roles/kubernetes-master/includes/copy-kubelet-admin.yaml'
+  when: is_kube_master
+  
+- name: Run Kubelet
+  service:
+    name: kubelet
+    state: started

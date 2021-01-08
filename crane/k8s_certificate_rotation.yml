@@ -17,7 +17,7 @@
     - "roles/cri-install/vars/crio.yaml"
     - "roles/cri-install/vars/docker.yaml"
     - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/downloads-ssh-key/defaults/main.yml"
   roles:
     - { role: crane, tags: [crane] }
@@ -29,7 +29,7 @@
     ansible_ssh_pipelining: true
   vars_files:
     - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/downloads-ssh-key/defaults/main.yml"
   tasks:
     - { include_tasks: 'roles/kubernetes-ca-rotation/includes/initialize.yaml' }
@@ -51,12 +51,12 @@
   vars:
     ansible_ssh_pipelining: true
   vars_files:
-    - "roles/kubernetes-default/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/main.yml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/system-initialize/defaults/main.yml"
     - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/tls.yaml"
+    - "roles/kubernetes-cluster-management/defaults/tls.yaml"
     - "roles/kubernetes-manifests/defaults/main.yml"
   roles:
     - { role: kubernetes-ca-rotation, tags: [k8s-ca-rotation]}
@@ -68,15 +68,15 @@
   vars:
     ansible_ssh_pipelining: true
   vars_files:
-    - "roles/kubernetes-default/defaults/configure.yaml"
-    - "roles/kubernetes-default/defaults/tls.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/tls.yaml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/system-initialize/defaults/main.yml"
     - "roles/crane/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
   tasks:
-    - { include_tasks: 'roles/kubernetes-master/includes/admin.yml' }
-    # - { include_tasks: 'roles/kubernetes-master/includes/kubelet_pem.yml' }
+    - { include_tasks: 'roles/kubernetes-master/includes/copy-kubelet-admin.yaml' }
+    # - { include_tasks: 'roles/kubernetes-master/includes/create-kubelet-config.yaml' }
     - { include_tasks: 'roles/kubernetes-ca-rotation/includes/update-cluster-master.yml' }
 
 - name: Create New Bootstrap Config Files to Nodes.
@@ -89,12 +89,12 @@
     - "roles/kubernetes-bootstraps/defaults/main.yml"
     - "roles/kubernetes-ca-rotation/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/system-initialize/defaults/main.yml"
     - "roles/crane/defaults/main.yml"
     - "roles/cri-install/vars/kubelet.yaml"
-    - "roles/kubernetes-default/vars/kubelet.yaml"
+    - "roles/kubernetes-cluster-management/vars/kubelet.yaml"
   tasks:
     - { include_tasks: 'roles/kubernetes-bootstraps/includes/create-bootstrap.yml' }
     - { include_tasks: 'roles/kubernetes-ca-rotation/includes/update-cluster-node-ca.yml' }
@@ -108,7 +108,7 @@
   vars_files:
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/kubernetes-networks/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
   tasks:
@@ -127,9 +127,9 @@
     - "roles/kubernetes-networks/defaults/calico.yaml"
     - "roles/kubernetes-networks/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   tasks:
-    - { include_tasks: 'roles/kubernetes-ca-rotation/includes/update-network.yml' }
+    - { include_tasks: 'roles/kubernetes-ca-rotation/includes/update-cluster-network.yml' }
 
 - name: Sync Crane Delploy Files to Instance
   hosts: kube-master[0]
@@ -142,6 +142,6 @@
     - "roles/crane/defaults/main.yml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   tasks:
     - { include_tasks: 'roles/crane/includes/sync-crane.yaml' }

@@ -1,0 +1,89 @@
+k8s_master_ip_str: >-
+  {% for host in groups['kube-master'] -%}
+    {{ host }}
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}
+
+k8s_master_name_str: >-
+  {% for host in groups['kube-master'] -%}
+    {{ hostvars[host].ansible_nodename }}
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}
+
+add_node_ip_list: >-
+  [{% for host in groups['k8s-cluster-add-node'] -%}
+    '{{ host }}'
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}]
+
+add_node_name_list: >-
+  [{% for host in groups['k8s-cluster-add-node'] -%}
+    '{{ hostvars[host].ansible_nodename }}'
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}]
+
+add_master_ip_list: >-
+  [{% for host in groups['k8s-cluster-add-master'] -%}
+    '{{ host }}'
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}]
+
+add_master_name_list: >-
+  [{% for host in groups['k8s-cluster-add-master'] -%}
+    '{{ hostvars[host].ansible_nodename }}'
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}]
+
+k8s_del_node_ip_list: >-
+  [{% for host in groups['k8s-cluster-del-node'] -%}
+    '{{ hostvars[host].ansible_default_ipv4.address }}'
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}]
+
+# k8s_node_ip_list: >-
+#   [{% for host in groups['kube-node'] -%}
+#     '{{ host }}'
+#     {%- if not loop.last -%},{%- endif -%}
+#   {%- endfor -%}]
+
+k8s_master_ip_list: >-
+  [{% for host in groups['kube-master'] -%}
+    '{{ host }}'
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}]
+
+k8s_master_name_list: >-
+  [{% for host in groups['kube-master'] -%}
+    '{{ hostvars[host].ansible_nodename }}'
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}]
+
+k8s_master_ip_str: >-
+  {% for host in groups['kube-master'] -%}
+    {{ host }}
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}
+
+all_hostname_str: >-
+  {% for host in groups['kube-master'] -%}
+    {{ hostvars[host]['ansible_nodename'] }}
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}
+
+k8s_master_default_ip_str: >-
+  {% for host in groups['kube-master'] -%}
+    {{ hostvars[host].ansible_default_ipv4.address }}
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}
+
+k8s_node_ip_list: >-
+  [{% for host in groups['kube-node'] -%}
+    '{{ hostvars[host].ansible_default_ipv4.address }}'
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}]
+
+k8s_node_name_list: >-
+  [{% for host in groups['kube-node'] -%}
+    '{{ hostvars[host].ansible_nodename }}'
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}]

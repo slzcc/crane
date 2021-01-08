@@ -1,7 +1,0 @@
-bootstrappers_yaml_path: '{{ temporary_dirs }}main/bootstrappers-default-node-token.yml'
-
-k8s_node_ip_list: >-
-  [{% for host in groups['kube-node'] -%}
-    '{{ host }}'
-    {%- if not loop.last -%},{%- endif -%}
-  {%- endfor -%}]

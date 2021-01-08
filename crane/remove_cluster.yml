@@ -17,7 +17,7 @@
     - "roles/cri-install/vars/crio.yaml"
     - "roles/cri-install/vars/docker.yaml"
     - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/downloads-ssh-key/defaults/main.yml"
   roles:
     - { role: crane, tags: [crane] }
@@ -36,7 +36,7 @@
     - "roles/etcd-install/defaults/main.yml"
     - "roles/etcd-install/defaults/tls.yaml"
     - "roles/etcd-install/vars/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   tasks:
     - { include_tasks: 'roles/etcd-install/includes/backups.yaml' }
 
@@ -52,9 +52,9 @@
     - "roles/system-initialize/defaults/main.yml"
     - "roles/kubernetes-networks/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   roles:
-    - { role: clean-install, tags: [clean]}
+    - { role: remove-cluster, tags: [remove-cluster]}
 
 - name: Sync Crane Delploy Files to Instance
   hosts: kube-master[0]
@@ -67,6 +67,6 @@
     - "roles/crane/defaults/main.yml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   tasks:
     - { include_tasks: 'roles/crane/includes/sync-crane.yaml' }

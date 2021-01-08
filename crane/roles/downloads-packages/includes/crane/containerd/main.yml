@@ -3,7 +3,7 @@
   with_items:
     - "roles/crane/defaults/main.yml"
     - "roles/cri-install/vars/containerd.yaml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/downloads-ssh-key/defaults/main.yml"
 
 - name: Configure Containerd to execute files in localhost
