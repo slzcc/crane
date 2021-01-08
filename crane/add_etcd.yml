@@ -3,16 +3,7 @@
   gather_facts: false
   roles:
     - { role: local-task }
-    
-- hosts: all
-  become: yes
-  become_method: sudo
-  vars:
-    ansible_ssh_pipelining: true
-  tasks:
-    - name: Check all Nodes
-      ping: 
-    
+
 - name: Initialize Crane Env
   hosts: all
   become: yes
@@ -20,18 +11,19 @@
   vars:
     ansible_ssh_pipelining: true
     crane_deploy_type: 'add_etcd'
-    crane_tasks: 'add-etcd-node'
+    crane_tasks: 'etcd-add-nodes'
   vars_files:
     - "roles/cri-install/vars/containerd.yaml"
     - "roles/cri-install/vars/crio.yaml"
     - "roles/cri-install/vars/docker.yaml"
     - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/downloads-ssh-key/defaults/main.yml"
   roles:
     - { role: crane, tags: [crane] }
     
-- hosts: etcd-cluster
+- name: Initialize SSH Secret Key
+  hosts: etcd-cluster
   gather_facts: false
   become: yes
   become_method: sudo
@@ -39,21 +31,38 @@
     - "roles/crane/defaults/main.yml"
   roles:
     - { role: downloads-ssh-key, tags: [copy_ssh_private_key]}
-  tasks:
-    - { include_tasks: 'roles/etcd-add-nodes/includes/initialize.yaml' }
 
 - hosts: etcd-cluster-add-node
   gather_facts: false
   become: yes
   become_method: sudo
   vars_files:
-    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/crane/defaults/main.yml"
-    - "roles/etcd-install/vars/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
   tasks:
-    - { include_tasks: 'roles/etcd-add-nodes/includes/clean.yml' }
+    - { include: 'roles/etcd-cluster-management/includes/initialize-etcd-home.yaml' }
+
+- name: Backups Current Cluster Status
+  hosts: etcd
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/etcd-cluster-management/defaults/etcd-add-nodes.yaml"
+    - "roles/etcd-cluster-management/defaults/main.yml"
+    - "roles/etcd-cluster-management/defaults/tls.yaml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+  tasks:
+    - { include: 'roles/etcd-cluster-management/includes/backups-etcd-configure.yaml' }
+    - { include: 'roles/etcd-cluster-management/includes/backups-etcd-data.yaml' }
 
 - name: Copy Etcd Old TLS for New Etcd Node
   hosts: etcd[0]
@@ -62,15 +71,32 @@
   vars:
     ansible_ssh_pipelining: true
   vars_files:
-    - "roles/etcd-add-nodes/defaults/main.yml"
+    - "roles/etcd-cluster-management/defaults/main.yml"
     - "roles/crane/defaults/main.yml"
-    - "roles/etcd-install/vars/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   tasks:
-    - { include_tasks: 'roles/etcd-add-nodes/includes/backups.yml' }
-    - { include_tasks: 'roles/etcd-add-nodes/includes/main.yml' }
+    - { include: 'roles/etcd-cluster-management/includes/copy-ca-to-new-etcd-node.yaml' }
+
+- name: Create New Etcd Node CA
+  hosts: etcd[0]
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/etcd-cluster-management/defaults/main.yml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/etcd-cluster-management/defaults/tls.yaml"
+    - "roles/etcd-cluster-management/defaults/main.yml"
+  tasks:
+    - { include: 'roles/etcd-cluster-management/includes/create-new-etcd-node-tls.yaml' }
 
 - name: Create New Etcd Node
   hosts: etcd-cluster-add-node
@@ -79,15 +105,16 @@
   vars:
     ansible_ssh_pipelining: true
   vars_files:
-    - "roles/etcd-install/defaults/main.yml"
+    - "roles/etcd-cluster-management/defaults/main.yml"
     - "roles/crane/defaults/main.yml"
-    - "roles/etcd-install/vars/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
-    - "roles/etcd-install/defaults/tls.yaml"
-  roles:
-    - { role: etcd-add-nodes, tags: [etcd-add-nodes]}
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/etcd-cluster-management/defaults/tls.yaml"
+    - "roles/etcd-cluster-management/defaults/etcd-add-nodes.yaml"
+  tasks:
+    - { include: 'roles/etcd-cluster-management/includes/etcd-add-nodes.yaml' }
 
 - name: Update K8s Cluster Manifests
   hosts: kube-master
@@ -99,12 +126,13 @@
     - "roles/crane/defaults/main.yml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
-    - "roles/etcd-install/vars/main.yml"
-    - "roles/kubernetes-networks/defaults/calico.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/kubernetes-networks/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/etcd-cluster-management/defaults/etcd-add-nodes.yaml"
   tasks:
-    - { include_tasks: 'roles/etcd-add-nodes/includes/update-k8s-manifests.yml' }
+    - { include: 'roles/etcd-cluster-management/includes/update-k8s-manifests.yaml' }
 
 - name: Update K8s Cluster Calico Network Config
   hosts: kube-master[0]
@@ -116,12 +144,13 @@
     - "roles/crane/defaults/main.yml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
-    - "roles/etcd-install/vars/main.yml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/kubernetes-networks/defaults/calico.yaml"
     - "roles/kubernetes-networks/defaults/main.yml"
+    - "roles/etcd-cluster-management/defaults/etcd-add-nodes.yaml"
   tasks:
-    - { include_tasks: 'roles/etcd-add-nodes/includes/update-k8s-calico.yml' }
+    - { include: 'roles/etcd-cluster-management/includes/update-k8s-calico.yaml' }
 
 - name: Update Etcd Cluster Manifests
   hosts: etcd
@@ -132,8 +161,15 @@
   vars_files:
     - "roles/crane/defaults/main.yml"
     - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/etcd-cluster-management/vars/main.yml"
+    - "roles/etcd-cluster-management/defaults/main.yml"
+    - "roles/kubernetes-networks/defaults/calico.yaml"
+    - "roles/kubernetes-networks/defaults/main.yml"
+    - "roles/etcd-cluster-management/defaults/etcd-add-nodes.yaml"
   tasks:
-    - { include_tasks: 'roles/etcd-add-nodes/includes/update-etcd-manifests.yml' }
+    - { include: 'roles/etcd-cluster-management/includes/update-etcd-manifests.yaml' }
 
 - name: Check Etcd Cluster Info
   hosts: kube-master[0]
@@ -142,14 +178,14 @@
   vars:
     ansible_ssh_pipelining: true
   vars_files:
-    - "roles/etcd-add-nodes/defaults/main.yml"
+    - "roles/etcd-cluster-management/defaults/main.yml"
     - "roles/crane/defaults/main.yml"
-    - "roles/etcd-install/vars/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/kubernetes-manifests/defaults/main.yml"
   tasks:
-    - { include_tasks: 'roles/etcd-add-nodes/includes/check-cluster.yml' }
+    - { include: 'roles/etcd-cluster-management/includes/check-cluster-list.yaml' }
 
 # Etcd 添加完集群后, 其配置 --initial-cluster-state=existing 应该为 --initial-cluster-state=new
 
@@ -164,6 +200,6 @@
     - "roles/crane/defaults/main.yml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   tasks:
-    - { include_tasks: 'roles/crane/includes/sync-crane.yaml' }
+    - { include: 'roles/crane/includes/sync-crane.yaml' }

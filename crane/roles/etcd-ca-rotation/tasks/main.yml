@@ -1,6 +1,4 @@
 ---
-- include_vars: "roles/etcd-install/vars/main.yml"
-
 ## Copy CFSSL Etcd Json Files
 ## ********************************************************************************************************************************
 
@@ -19,7 +17,7 @@
 
 - name: Copy CFSSL Etcd Json Files
   template:
-    src: roles/etcd-install/templates/{{ item }}
+    src: roles/etcd-cluster-management/templates/{{ item }}
     dest: "{{ deploy_new_ca_rotation_dirs }}/cert/{{ item }}"
     owner: "{{ ssh_connect_user }}" 
     mode: 0644
@@ -56,7 +54,7 @@
           done"
 
 - name: Copy the Generated CA certificates to other Etcd Master
-  shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
+  shell: "sudo scp -r -p -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
             -i {{ ssh_public_key }} \
             -P {{ ssh_connect_port }} \
             {{ deploy_new_ca_rotation_dirs }}/cert/{{ item[1] }} \
@@ -66,7 +64,7 @@
     - ['etcd-ca-key.pem', 'etcd-ca.pem', 'etcd-key.pem', 'etcd.pem']
 
 - name: Copy CA to Kubernetes Master
-  shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
+  shell: "sudo scp -r -p -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
             -i {{ ssh_public_key }} \
             -P {{ ssh_connect_port }} \
             {{ deploy_new_ca_rotation_dirs }}/cert/{{ item[1] }} \

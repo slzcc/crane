@@ -1,0 +1,31 @@
+---
+- name: Copy CFSSL Kubernetes Json Files
+  template:
+    src: "roles/kubernetes-cluster-management/templates/{{ item }}"
+    dest: "{{ kubernetes_pki_dirs }}{{ item }}"
+    owner: "{{ ssh_connect_user }}" 
+    mode: 0644
+  with_items:
+    - "ca-config.json"
+    - "ca-csr.json"
+
+- name: Create Kubernetes Kubelet CA Files
+  shell: >
+    cd {{ kubernetes_pki_dirs }} && cp kubelet-csr.json kubelet-{{ hostvars[inventory_hostname].ansible_nodename }}-csr.json;
+          sed -i "s/\$NODE/{{ hostvars[inventory_hostname].ansible_nodename }}/g" {{ kubernetes_pki_dirs }}kubelet-{{ hostvars[inventory_hostname].ansible_nodename }}-csr.json
+
+- name: Create CA *
+  shell: >
+    cd {{ kubernetes_pki_dirs }} && {{ kubernetes_ctl_path }}cfssl gencert \
+            -ca=ca.pem \
+            -ca-key=ca-key.pem \
+            -config=ca-config.json \
+            -hostname={{ k8s_master_ip_str }} \
+            -profile=kubernetes \
+            kubelet-{{ hostvars[inventory_hostname].ansible_nodename }}-csr.json | {{ kubernetes_ctl_path }}cfssljson -bare kubelet-{{ hostvars[inventory_hostname].ansible_nodename }}
+
+- name: Modify File Owner **
+  shell: >
+    for ITEM in $(ls {{ kubernetes_pki_dirs }}); do 
+      chown {{ ssh_connect_user }} {{ kubernetes_pki_dirs }}${ITEM}; 
+    done

@@ -495,3 +495,15 @@ $ docker run ..
 $ sync
 $ echo 1 > /proc/sys/vm/drop_caches
 ```
+
+## 在 Istio 中使用 Nginx
+
+如果在 Istio 中使用 Nginx 并通过 Proxy 方式代理后端服务则会发生无法通过 vs 进行管理而直接走默认 svc 方式进行访问, 原因是 Nginx 把 Proxy 解析成 IP 进行访问了与 istio 模式想被, 所以需要在 location 中添加如下配置:
+
+```
+proxy_set_header Host <svc>;
+```
+
+强制不要修改 Host 值即可。
+
+> https://github.com/istio/istio/issues/14450

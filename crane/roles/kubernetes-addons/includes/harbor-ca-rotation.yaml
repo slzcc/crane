@@ -1,0 +1,122 @@
+---
+- name: Initialize Temporary Directory
+  file:
+    path: "{{ item }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+  with_items:
+  - "{{ temporary_dirs }}harbor/harbor-ca-rotation"
+  ignore_errors: true
+
+- name: Backup Old CA
+  shell: "cp -a {{ kubernetes_etc_dirs }}harbor {{ temporary_dirs }}harbor/harbor-ca-rotation/harbor-`date +%Y%m%d%H%M%S`"
+  ignore_errors: true
+
+- name: Remove Old CA
+  shell: "rm -rf {{ kubernetes_etc_dirs }}harbor/{config,cert}"
+  ignore_errors: true
+
+- name: Initialize Harbor Directory
+  file:
+    path: "{{ item }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+  with_items:
+  - "{{ kubernetes_etc_dirs }}harbor/config"
+  - "{{ kubernetes_etc_dirs }}harbor/cert"
+  ignore_errors: true
+
+- name: Prepare Harbor CA
+  include: roles/kubernetes-addons/includes/harbor-create-tls.yaml
+
+- name: Remove Harbor Secret in Kubernetes Cluster
+  shell: >
+    {{ kubernetes_ctl_path }}kubectl delete secret -n {{ harbor_namespace }} \
+                          {{ harbor_project_name_prefix }}harbor-ingress \
+                          {{ harbor_project_name_prefix }}harbor-core \
+                          {{ harbor_project_name_prefix }}harbor-clair \
+                          {{ harbor_project_name_prefix }}harbor-notary-server
+  ignore_errors: true
+
+- name: Create Harbor Ingress Secret
+  shell: "{{ kubernetes_ctl_path }}kubectl create secret generic {{ harbor_project_name_prefix }}harbor-ingress \
+          --from-file={{ kubernetes_etc_dirs }}harbor/cert/tls.crt \
+          --from-file={{ kubernetes_etc_dirs }}harbor/cert/tls.key \
+          --from-file={{ kubernetes_etc_dirs }}harbor/cert/ca.crt \
+          -n {{ harbor_namespace }} && \
+          {{ kubernetes_ctl_path }}kubectl label secret {{ harbor_project_name_prefix }}harbor-ingress heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}"
+  ignore_errors: true
+
+- name: Create Harbor Core Secret
+  shell: "{{ kubernetes_ctl_path }}kubectl create secret generic {{ harbor_project_name_prefix }}harbor-core \
+          --from-literal=secretKey={{ harbor_core_secret_secret_key }} \
+          --from-literal=secret={{ harbor_core_secret_secret }} \
+          --from-literal=HARBOR_ADMIN_PASSWORD={{ harbor_admin_password }} \
+          --from-literal=POSTGRESQL_PASSWORD={{ harbor_pg_secret_admin_password }} \
+          --from-literal=REGISTRY_CREDENTIAL_PASSWORD={{ harbor_jobservice_secret_registry_credential_password }} \
+          --from-literal=CSRF_KEY={{ harbor_core_secret_csrf_key }} \
+          --from-file={{ kubernetes_etc_dirs }}harbor/cert/tls.crt \
+          --from-file={{ kubernetes_etc_dirs }}harbor/cert/tls.key \
+          -n {{ harbor_namespace }} && \
+          {{ kubernetes_ctl_path }}kubectl label secret {{ harbor_project_name_prefix }}harbor-core heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}"
+  ignore_errors: true
+
+- name: Copy Harbor Clair Config
+  template: 
+    src: "roles/kubernetes-addons/templates/harbor/{{ item }}"
+    dest: "{{ kubernetes_etc_dirs }}harbor/config/{{ item }}"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+  with_items:
+    - "config.yaml"
+  ignore_errors: true
+
+- name: Create Harbor Clair Secret
+  shell: "{{ kubernetes_ctl_path }}kubectl create secret generic {{ harbor_project_name_prefix }}harbor-clair \
+          --from-file={{ kubernetes_etc_dirs }}harbor/config/config.yaml \
+          --from-literal=redis={{ harbor_trivy_secret_redisURL }} \
+          --from-literal=database={{ harbor_clair_secret_postgres }} \
+          -n {{ harbor_namespace }} && \
+          {{ kubernetes_ctl_path }}kubectl label secret {{ harbor_project_name_prefix }}harbor-clair heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}"
+  ignore_errors: true
+
+- name: Copy Harbor Notary Signer and Notary Config
+  template: 
+    src: "roles/kubernetes-addons/templates/harbor/{{ item }}"
+    dest: "{{ kubernetes_etc_dirs }}harbor/config/{{ item }}"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+  with_items:
+    - "signer.json"
+    - "server.json"
+  ignore_errors: true
+
+- name: Create Harbor Notary Secret
+  shell: "{{ kubernetes_ctl_path }}kubectl create secret generic {{ harbor_project_name_prefix }}harbor-notary-server \
+          --from-file={{ kubernetes_etc_dirs }}harbor/cert/tls.crt \
+          --from-file={{ kubernetes_etc_dirs }}harbor/cert/tls.key \
+          --from-file={{ kubernetes_etc_dirs }}harbor/cert/ca.crt \
+          --from-file={{ kubernetes_etc_dirs }}harbor/config/server.json \
+          --from-file={{ kubernetes_etc_dirs }}harbor/config/signer.json \
+          -n {{ harbor_namespace }} && \
+          {{ kubernetes_ctl_path }}kubectl label secret {{ harbor_project_name_prefix }}harbor-notary-server heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}"
+  ignore_errors: true
+
+- name: Set Harbor Dir Permissions
+  shell: "chown {{ ssh_connect_user }} -R {{ kubernetes_etc_dirs }}harbor"
+  ignore_errors: true
+
+- name: Reload Notary server/signer..
+  shell: >
+    {{ kubernetes_ctl_path }}kubectl rollout restart -n {{ harbor_namespace }} deployment/{{ item }}
+  with_items:
+  - "{{ harbor_project_name_prefix }}harbor-notary-server"
+  - "{{ harbor_project_name_prefix }}harbor-notary-signer"
+  - "{{ harbor_project_name_prefix }}harbor-core"
+  - "{{ harbor_project_name_prefix }}harbor-portal"
+  ignore_errors: true
+
+- name: Copy Client CA Files in All K8s Nodes
+  include: roles/kubernetes-addons/includes/harbor-deploy-client-cert.yaml

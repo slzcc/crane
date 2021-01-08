@@ -20,5 +20,5 @@
   when: check_k8s_image is failed
 
 - name: Image Deploy
-  include_tasks: "roles/downloads-packages/includes/crane/docker/image_deploy.yaml"
+  include: "roles/downloads-packages/includes/crane/docker/image_deploy.yaml"
   when: check_k8s_image is failed

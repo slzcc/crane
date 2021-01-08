@@ -8,7 +8,7 @@ ssh_connect_user: "{{ hostvars[inventory_hostname]['ansible_ssh_user'] }}"
 ssh_connect_port: "{{ hostvars[inventory_hostname]['ansible_ssh_port'] }}"
 
 # 使用 Ansible 部署时, 如需要节点之间进行协作传入的证书地址
-target_ssh_private_key_file: "{{ temporary_dirs }}.general-id_rsa"
+target_ssh_private_key_file: "{{ temporary_dirs }}.ssh/.general-id_rsa"
 
 # 执行 SSH 或者 SCP 的公钥地址
 ssh_public_key: "{{ target_ssh_private_key_file }}"

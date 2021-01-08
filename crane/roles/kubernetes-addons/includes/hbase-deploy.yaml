@@ -1,0 +1,23 @@
+---
+- name: Deploy Hbase Service *
+  file:
+    path: "{{ item }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+  with_items:
+  - "{{ temporary_dirs }}hbase"
+  ignore_errors: true
+
+- name: Deploy Hbase Service **
+  template: 
+    src: "roles/kubernetes-addons/templates/hbase/{{ item }}"
+    dest: "{{ temporary_dirs }}hbase/{{ item }}"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+  with_items:
+    - "0_hbase_configmap.yaml"
+    - "1_hbase.yaml"
+
+- name: Deploy Hbase Service ***
+  shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}hbase/ ; do >&2 echo "Starting..." && sleep 1 ; done'

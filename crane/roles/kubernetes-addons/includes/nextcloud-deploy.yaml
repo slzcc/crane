@@ -1,0 +1,23 @@
+---
+- name: Deploy NextCloud Service *
+  file:
+    path: "{{ item }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+  with_items:
+  - "{{ temporary_dirs }}nextcloud"
+  ignore_errors: true
+
+- name: Deploy NextCloud Service **
+  template: 
+    src: "roles/kubernetes-addons/templates/nextcloud/{{ item }}"
+    dest: "{{ temporary_dirs }}nextcloud/{{ item }}"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+  with_items:
+    - "1_mysql.yaml"
+    - "2_nextcloud.yaml"
+
+- name: Deploy NextCloud Service ***
+  shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}nextcloud/ ; do >&2 echo "Starting..." && sleep 1 ; done'
