@@ -130,6 +130,7 @@
     ansible_ssh_pipelining: true
   vars_files:
     - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-networks/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/kubernetes-cluster-management/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/tls.yaml"
