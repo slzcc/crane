@@ -1,0 +1,19 @@
+---
+- name: Deploy Webmin Service *
+  file:
+    path: "{{ temporary_dirs }}webmin"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
+- name: Deploy Webmin Service **
+  template: 
+    src: "roles/kubernetes-addons/templates/webmin/{{ item }}"
+    dest: "{{ temporary_dirs }}webmin/{{ item }}"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+  with_items:
+    - "webmin.yaml"
+
+- name: Deploy Webmin Service ***
+  shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}webmin/ ; do >&2 echo "Starting..." && sleep 1 ; done'

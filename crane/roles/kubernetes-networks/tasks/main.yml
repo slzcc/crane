@@ -2,29 +2,29 @@
 - name: Copy Kubernetes DNS Config Files
   template: 
     src: "roles/kubernetes-networks/templates/CoreDNS.j2"
-    dest: "{{ temporary_dirs }}CoreDNS.yml"
+    dest: "{{ temporary_dirs }}main/CoreDNS.yml"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
 
 - name: Deploy CoreDNS
-  shell: '{{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}CoreDNS.yml'
+  shell: '{{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}main/CoreDNS.yml'
   ignore_errors: true
 
 - name: Copy Kubernetes Proxy Config Files
   template: 
     src: "roles/kubernetes-networks/templates/kube-proxy.j2"
-    dest: "{{ temporary_dirs }}kube-proxy.yml"
+    dest: "{{ temporary_dirs }}main/kube-proxy.yml"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
 
 - name: Deploy Kube-Proxy
-  shell: '{{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}kube-proxy.yml'
+  shell: '{{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}main/kube-proxy.yml'
   ignore_errors: true
 
 - name: Copy Calico Config Files
   template: 
     src: "roles/kubernetes-networks/templates/calico.j2"
-    dest: "{{ temporary_dirs }}calico.yml"
+    dest: "{{ temporary_dirs }}main/calico.yml"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
 
@@ -40,5 +40,5 @@
   ignore_errors: true
 
 - name: Deploy Calico Containers
-  shell: '{{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}calico.yml'
+  shell: '{{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}main/calico.yml'
   ignore_errors: true

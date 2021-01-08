@@ -1,0 +1,114 @@
+---
+## Install Helm
+## ********************************************************************************************************************************
+- name: Initialize Helm
+  import_tasks: roles/kubernetes-addons/includes/helm-deploy.yaml
+  when: is_deploy_helm
+
+## Install Nginx Ingess
+## ********************************************************************************************************************************
+- name: Initialize Nginx Ingess
+  import_tasks: roles/kubernetes-addons/includes/nginx-ingress-deploy.yaml
+  when: is_deploy_ingress_nginx
+
+## Install Ingress Nginx Example
+## ********************************************************************************************************************************
+- name: Initialize Ingress Nginx Example
+  import_tasks: roles/kubernetes-addons/includes/ingress-nginx-example-deploy.yaml
+  when: is_deploy_ingress_nginx_example
+
+## Install Prometheus Operator
+## ********************************************************************************************************************************
+# - name: Initialize Prometheus Operator
+#   import_tasks: roles/kubernetes-addons/includes/prometheus-operator-deploy.yaml
+#   when: is_deploy_prometheus_operator
+
+## Install DNS Example
+## ********************************************************************************************************************************
+- name: Initialize DNS Example
+  import_tasks: roles/kubernetes-addons/includes/dns-example-deploy.yaml
+  when: is_deploy_busybox_example
+
+## Install istio
+## ********************************************************************************************************************************
+- name: Initialize Istio
+  import_tasks: roles/kubernetes-addons/includes/istio-deploy.yaml
+  when: is_deploy_istio
+
+## Install Upload Service
+## ********************************************************************************************************************************
+- name: Initialize Upload Service
+  import_tasks: roles/kubernetes-addons/includes/upload-service-deploy.yaml
+  when: is_deploy_upload_service
+
+## Install Harbor
+## ********************************************************************************************************************************
+- name: Initialize Harbor
+  import_tasks: roles/kubernetes-addons/includes/harbor-deploy.yaml
+  when: 
+  - is_deploy_harbor
+  - not is_harbor_ca_rotation
+
+- name: Harbor CA Rotation
+  import_tasks: roles/kubernetes-addons/includes/harbor-ca-rotation.yaml
+  when: is_harbor_ca_rotation
+
+## Install OpenLDAP
+## ********************************************************************************************************************************
+- name: Initialize OpenLDAP
+  import_tasks: roles/kubernetes-addons/includes/openldap-deploy.yaml
+  when: is_deploy_openldap
+
+## Install Webmin
+## ********************************************************************************************************************************
+- name: Initialize Webmin
+  import_tasks: roles/kubernetes-addons/includes/webmin-deploy.yaml
+  when: is_deploy_webmin
+
+## Install Gitlab
+## ********************************************************************************************************************************
+- name: Initialize Gitlab
+  import_tasks: roles/kubernetes-addons/includes/gitlab-deploy.yaml
+  when: is_deploy_gitlab
+
+## Install Jenkins
+## ********************************************************************************************************************************
+- name: Initialize Jenkins
+  import_tasks: roles/kubernetes-addons/includes/jenkins-deploy.yaml
+  when: is_deploy_jenkins
+
+## Install Nexus
+## ********************************************************************************************************************************
+- name: Initialize Nexus
+  import_tasks: roles/kubernetes-addons/includes/nexus-deploy.yaml
+  when: is_deploy_nexus
+
+## Install NextCloud
+## ********************************************************************************************************************************
+# - name: Initialize NextCloud
+#   import_tasks: roles/kubernetes-addons/includes/nextcloud-deploy.yaml
+#   when: is_deploy_nextcloud
+
+## Install Zookeeper
+## ********************************************************************************************************************************
+# - name: Initialize Zookeeper
+#   import_tasks: roles/kubernetes-addons/includes/zookeeper-deploy.yaml
+#   when: is_deploy_zookeeper
+
+## Install Kafka
+## ********************************************************************************************************************************
+# - name: Initialize Kafka
+#   import_tasks: roles/kubernetes-addons/includes/kafka-deploy.yaml
+#   when: is_deploy_kafka
+
+## Install Hadoop
+## ********************************************************************************************************************************
+# - name: Initialize Hadoop
+#   import_tasks: roles/kubernetes-addons/includes/hadoop-deploy.yaml
+#   when: is_deploy_hadoop
+
+## Install Hbase
+## ********************************************************************************************************************************
+# - name: Initialize Hbase
+#   import_tasks: roles/kubernetes-addons/includes/hbase-deploy.yaml
+#   when: is_deploy_hbase

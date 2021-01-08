@@ -2,15 +2,15 @@
 
 - name: Create Crane Tools Temporary Directory
   file:
-    path: "{{ temporary_dirs }}tools"
+    path: "{{ temporary_dirs }}scripts"
     mode: 0755
     owner: "{{ ssh_connect_user }}"
     state: directory
 
-- name: Copy Crane tools Script
+- name: Copy Crane tools Script Path
   template:
     src: "roles/crane/templates/{{ item }}"
-    dest: "{{ temporary_dirs }}tools/{{ item }}"
+    dest: "{{ temporary_dirs }}scripts/{{ item }}"
     owner: "{{ ssh_connect_user }}"
     mode: 0755
   with_items:

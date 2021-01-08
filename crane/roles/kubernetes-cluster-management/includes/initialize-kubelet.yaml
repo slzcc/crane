@@ -1,0 +1,75 @@
+---
+# Kubernetes
+## ********************************************************************************************************************************
+
+- name: Create Kubernetes ETC DIR
+  file:
+    path: "{{ kubernetes_etc_dirs }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
+- name: Create Kubernetes PKI DIR
+  file:
+    path: "{{ kubernetes_pki_dirs }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
+- name: Create Kubernetes Manifests DIR
+  file:
+    path: "{{ kubernetes_manifests_dirs }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
+- name: Create Kubelet WorkDirs
+  file:
+    path: "{{ kubernetes_etc_dirs }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
+- name: Create Kubelet WorkDirs
+  file:
+    path: "{{ kubelet_work_dirs }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
+# Etcd
+## ********************************************************************************************************************************
+
+- name: Create Etcd SSL WorkDirs
+  file:
+    path: "{{ etcd_ssl_dirs }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
+- name: Create Etcd Data WorkDirs
+  file:
+    path: "{{ etcd_data_dirs }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
+# System
+## ********************************************************************************************************************************
+
+- name: Create Kubelet Systemd ConfigDirs
+  file:
+    path: "{{ systemd_etc_dirs }}kubelet.service.d/"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
+# System
+## ********************************************************************************************************************************
+
+- name: Copy CFSSL Kubernetes Json Files
+  template:
+    src: "roles/kubernetes-cluster-management/templates/kubelet-csr.json"
+    dest: "{{ kubernetes_pki_dirs }}kubelet-csr.json"
+    owner: "{{ ssh_connect_user }}" 
+    mode: 0644

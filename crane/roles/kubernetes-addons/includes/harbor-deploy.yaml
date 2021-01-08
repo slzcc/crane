@@ -1,0 +1,205 @@
+---
+- name: Clean Harbor Cert Directory
+  file:
+    path: "{{ kubernetes_etc_dirs }}harbor"
+    state: absent
+  ignore_errors: true
+
+- name: Deploy Harbor *
+  file:
+    path: "{{ item }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+  with_items:
+  - "{{ kubernetes_etc_dirs }}harbor/config"
+  - "{{ kubernetes_etc_dirs }}harbor/cert"
+  ignore_errors: true
+
+- name: Prepare Harbor CA
+  include: roles/kubernetes-addons/includes/harbor-create-tls.yaml
+
+- name: Deploy Harbor **
+  template: 
+    src: "roles/kubernetes-addons/templates/harbor/{{ item }}"
+    dest: "{{ kubernetes_etc_dirs }}harbor/{{ item }}"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+  with_items:
+    - "00_namespace.yaml"
+    - "0_postgresql.yaml"
+    - "1_redis.yaml"
+    - "2_registry.yaml"
+    - "3_ingress.yaml"
+    - "4_portal.yaml"
+    - "5_jobservice.yaml"
+    - "6_core.yaml"
+    - "7_clair.yaml"
+    - "8_notary.yaml"
+    - "9_chartmuseum.yaml"
+    - "10_trivy.yaml"
+
+- name: Create Harbor Namespace
+  shell: "{{ kubernetes_ctl_path }}kubectl create namespace {{ harbor_namespace }}"
+  ignore_errors: true
+
+- name: Create Harbor Ingress Secret
+  shell: "{{ kubernetes_ctl_path }}kubectl create secret generic {{ harbor_project_name_prefix }}harbor-ingress \
+          --from-file={{ kubernetes_etc_dirs }}harbor/cert/tls.crt \
+          --from-file={{ kubernetes_etc_dirs }}harbor/cert/tls.key \
+          --from-file={{ kubernetes_etc_dirs }}harbor/cert/ca.crt \
+          -n {{ harbor_namespace }} && \
+          {{ kubernetes_ctl_path }}kubectl label secret {{ harbor_project_name_prefix }}harbor-ingress heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}"
+  ignore_errors: true
+
+- name: Create Harbor Core Secret
+  shell: "{{ kubernetes_ctl_path }}kubectl create secret generic {{ harbor_project_name_prefix }}harbor-core \
+          --from-literal=secretKey={{ harbor_core_secret_secret_key }} \
+          --from-literal=secret={{ harbor_core_secret_secret }} \
+          --from-literal=HARBOR_ADMIN_PASSWORD={{ harbor_admin_password }} \
+          --from-literal=POSTGRESQL_PASSWORD={{ harbor_pg_secret_admin_password }} \
+          --from-literal=REGISTRY_CREDENTIAL_PASSWORD={{ harbor_jobservice_secret_registry_credential_password }} \
+          --from-literal=CSRF_KEY={{ harbor_core_secret_csrf_key }} \
+          --from-file={{ kubernetes_etc_dirs }}harbor/cert/tls.crt \
+          --from-file={{ kubernetes_etc_dirs }}harbor/cert/tls.key \
+          -n {{ harbor_namespace }} && \
+          {{ kubernetes_ctl_path }}kubectl label secret {{ harbor_project_name_prefix }}harbor-core heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}"
+  ignore_errors: true
+
+- name: Copy Harbor Clair Config
+  template: 
+    src: "roles/kubernetes-addons/templates/harbor/{{ item }}"
+    dest: "{{ kubernetes_etc_dirs }}harbor/config/{{ item }}"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+  with_items:
+    - "config.yaml"
+  ignore_errors: true
+
+- name: Create Harbor Clair Secret
+  shell: "{{ kubernetes_ctl_path }}kubectl create secret generic {{ harbor_project_name_prefix }}harbor-clair \
+          --from-file={{ kubernetes_etc_dirs }}harbor/config/config.yaml \
+          --from-literal=redis={{ harbor_trivy_secret_redisURL }} \
+          --from-literal=database={{ harbor_clair_secret_postgres }} \
+          -n {{ harbor_namespace }} && \
+          {{ kubernetes_ctl_path }}kubectl label secret {{ harbor_project_name_prefix }}harbor-clair heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}"
+  ignore_errors: true
+
+- name: Copy Harbor Notary Signer and Notary Config
+  template: 
+    src: "roles/kubernetes-addons/templates/harbor/{{ item }}"
+    dest: "{{ kubernetes_etc_dirs }}harbor/config/{{ item }}"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+  with_items:
+    - "signer.json"
+    - "server.json"
+  ignore_errors: true
+
+- name: Create Harbor Notary Secret
+  shell: "{{ kubernetes_ctl_path }}kubectl create secret generic {{ harbor_project_name_prefix }}harbor-notary-server \
+          --from-file={{ kubernetes_etc_dirs }}harbor/cert/tls.crt \
+          --from-file={{ kubernetes_etc_dirs }}harbor/cert/tls.key \
+          --from-file={{ kubernetes_etc_dirs }}harbor/cert/ca.crt \
+          --from-file={{ kubernetes_etc_dirs }}harbor/config/server.json \
+          --from-file={{ kubernetes_etc_dirs }}harbor/config/signer.json \
+          -n {{ harbor_namespace }} && \
+          {{ kubernetes_ctl_path }}kubectl label secret {{ harbor_project_name_prefix }}harbor-notary-server heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}"
+  ignore_errors: true
+
+- name: Set Create Harbor Ingress Secret Command in Script
+  shell: "echo '{{ kubernetes_ctl_path }}kubectl create secret generic {{ harbor_project_name_prefix }}harbor-ingress \
+          --from-file={{ kubernetes_etc_dirs }}harbor/cert/tls.crt \
+          --from-file={{ kubernetes_etc_dirs }}harbor/cert/tls.key \
+          --from-file={{ kubernetes_etc_dirs }}harbor/cert/ca.crt \
+          -n {{ harbor_namespace }} && \
+          {{ kubernetes_ctl_path }}kubectl label secret {{ harbor_project_name_prefix }}harbor-ingress heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}' >> {{ kubernetes_etc_dirs }}/harbor/secret.sh"
+  ignore_errors: true
+
+- name: Set Create Harbor Core Secret Command in Script
+  shell: "echo '{{ kubernetes_ctl_path }}kubectl create secret generic {{ harbor_project_name_prefix }}harbor-core \
+          --from-literal=secretKey={{ harbor_core_secret_secret_key }} \
+          --from-literal=secret={{ harbor_core_secret_secret }} \
+          --from-literal=HARBOR_ADMIN_PASSWORD={{ harbor_admin_password }} \
+          --from-literal=POSTGRESQL_PASSWORD={{ harbor_pg_secret_admin_password }} \
+          --from-literal=REGISTRY_CREDENTIAL_PASSWORD={{ harbor_jobservice_secret_registry_credential_password }} \
+          --from-literal=CSRF_KEY={{ harbor_core_secret_csrf_key }} \
+          --from-file={{ kubernetes_etc_dirs }}harbor/cert/tls.crt \
+          --from-file={{ kubernetes_etc_dirs }}harbor/cert/tls.key \
+          -n {{ harbor_namespace }} && \
+          {{ kubernetes_ctl_path }}kubectl label secret {{ harbor_project_name_prefix }}harbor-core heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}' >> {{ kubernetes_etc_dirs }}/harbor/secret.sh"
+  ignore_errors: true
+
+- name: Set Create Harbor Notary Secret Command in Script
+  shell: "echo '{{ kubernetes_ctl_path }}kubectl create secret generic {{ harbor_project_name_prefix }}harbor-notary-server \
+          --from-file={{ kubernetes_etc_dirs }}harbor/cert/tls.crt \
+          --from-file={{ kubernetes_etc_dirs }}harbor/cert/tls.key \
+          --from-file={{ kubernetes_etc_dirs }}harbor/cert/ca.crt \
+          --from-file={{ kubernetes_etc_dirs }}harbor/config/server.json \
+          --from-file={{ kubernetes_etc_dirs }}harbor/config/signer.json \
+          -n {{ harbor_namespace }} && \
+          {{ kubernetes_ctl_path }}kubectl label secret {{ harbor_project_name_prefix }}harbor-notary-server heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}' >> {{ kubernetes_etc_dirs }}/harbor/secret.sh"
+  ignore_errors: true
+
+- name: Set Create Harbor Clair Secret Command in Script
+  shell: "echo '{{ kubernetes_ctl_path }}kubectl create secret generic {{ harbor_project_name_prefix }}harbor-clair \
+          --from-file={{ kubernetes_etc_dirs }}harbor/config/config.yaml \
+          --from-literal=redis={{ harbor_trivy_secret_redisURL }} \
+          --from-literal=database={{ harbor_clair_secret_postgres }} \
+          -n {{ harbor_namespace }} && \
+          {{ kubernetes_ctl_path }}kubectl label secret {{ harbor_project_name_prefix }}harbor-clair heritage=Tiller release=release-name chart=harbor app=harbor -n {{ harbor_namespace }}' >> {{ kubernetes_etc_dirs }}/harbor/secret.sh"
+  ignore_errors: true
+
+- name: Set Harbor Dir Permissions
+  shell: "chown {{ ssh_connect_user }} -R {{ kubernetes_etc_dirs }}harbor"
+  ignore_errors: true
+  
+- name: Deploy Harbor
+  shell: "{{ kubernetes_ctl_path }}kubectl apply -f {{ kubernetes_etc_dirs }}harbor/ -n {{ harbor_namespace }}"
+  ignore_errors: true
+
+- name: Check is Upload Service (Wait for 180s ...)
+  shell: "until {{ kubernetes_ctl_path }}kubectl get pods -l app=upload-service -o jsonpath='{.items[*].status.podIP}' ; do >&2 echo 'Starting...' && sleep 1 ; done"
+  register: check_upload_service_ip
+  ignore_errors: true
+  async: 180
+  poll: 2
+
+- name: Yum Install JQ
+  yum: 
+    name: jq
+    state: present
+  environment:
+    http_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ https_proxy }}"
+  when: ansible_distribution == 'CentOS'
+  ignore_errors: true
+
+- name: Apt Install JQ
+  apt: 
+    name: jq
+    state: present
+  environment:
+    http_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ https_proxy }}"
+  when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
+  ignore_errors: true
+  
+- name: Push Client TLS to Upload Service
+  shell: "curl -sSfL --form 'file=@{{ kubernetes_etc_dirs }}harbor/cert/{{ harbor_ingress_default_domain }}.tar.gz' http://{{ check_upload_service_ip.stdout }}/upload -H 'Host:{{ upload_service_ingress_domain }}' | jq --raw-output '.account_url'"
+  register: client_tls_upload_address
+  when: check_upload_service_ip is defined and check_upload_service_ip.stdout != ""
+  ignore_errors: true
+
+- debug:
+    msg: 
+    - "Please download it through '{{ client_tls_upload_address.stdout }}' Client TLS. Example:"
+    - "$ mkdir -p /etc/docker/certs.d/"
+    - "$ wget -qO- http://{{ client_tls_upload_address.stdout }} | tar zx -C /etc/docker/certs.d/"
+    - "$ systemctl restart docker"
+    - "$ docker pull/push {{ harbor_ingress_default_domain }}/..."
+  when: check_upload_service_ip is defined and check_upload_service_ip.stdout != ""
+
+- name: Copy Client CA Files in All K8s Nodes
+  include: roles/kubernetes-addons/includes/harbor-deploy-client-cert.yaml
+  

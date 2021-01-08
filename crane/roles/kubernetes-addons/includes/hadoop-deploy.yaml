@@ -1,0 +1,23 @@
+---
+- name: Deploy Hadoop Service *
+  file:
+    path: "{{ item }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+  with_items:
+  - "{{ temporary_dirs }}hadoop"
+  ignore_errors: true
+
+- name: Deploy Hadoop Service **
+  template: 
+    src: "roles/kubernetes-addons/templates/hadoop/{{ item }}"
+    dest: "{{ temporary_dirs }}hadoop/{{ item }}"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+  with_items:
+    - "0_hadoop_configmap.yaml"
+    - "1_hadoop.yaml"
+
+- name: Deploy Hadoop Service ***
+  shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}hadoop/ ; do >&2 echo "Starting..." && sleep 1 ; done'

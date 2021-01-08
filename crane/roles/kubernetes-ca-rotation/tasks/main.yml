@@ -24,7 +24,7 @@
 ## Copy CFSSL Kubernetes Json Files
 - name: CA Rotation Copy CFSSL Kubernetes Json Files
   template:
-    src: "roles/kubernetes-default/templates/{{ item }}"
+    src: "roles/kubernetes-cluster-management/templates/{{ item }}"
     dest: "{{ deploy_new_ca_rotation_dirs }}/cert/{{ item }}"
     owner: "{{ ssh_connect_user }}" 
     mode: 0644
@@ -117,7 +117,7 @@
           done"
 
 - name: Create Kubelet Root CA ***
-  shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
+  shell: "sudo scp -r -p -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
             -i {{ ssh_public_key }} \
             -P {{ ssh_connect_port }} \
             {{ deploy_new_ca_rotation_dirs }}/cert/kubelet-{{ item[1] }}-key.pem \
@@ -127,7 +127,7 @@
     - "{{ k8s_master_name_list }}"
 
 - name: Copy Kubelet CA To Node ****
-  shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
+  shell: "sudo scp -r -p -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
             -i {{ ssh_public_key }} \
             -P {{ ssh_connect_port }} \
             {{ deploy_new_ca_rotation_dirs }}/cert/kubelet-{{ item[1] }}.pem \
@@ -137,7 +137,7 @@
     - "{{ k8s_master_name_list }}"
 
 - name: Copy Root CA To Node *****
-  shell: "sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
+  shell: "sudo scp -r -p -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
             -i {{ ssh_public_key }} \
             -P {{ ssh_connect_port }} \
             {{ deploy_new_ca_rotation_dirs }}/cert/ca.pem \
@@ -236,11 +236,11 @@
 ## Copy CA Files in Nodes
 - name: Copy CA Files in Nodes
   shell: "for FILE in $(ls {{ deploy_new_ca_rotation_dirs }}/cert); do
-            sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no -i {{ ssh_public_key }} \
+            sudo scp -r -p -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no -i {{ ssh_public_key }} \
             -P {{ ssh_connect_port }} {{ deploy_new_ca_rotation_dirs }}/cert/${FILE} {{ ssh_connect_user }}@{{ item[0] }}:{{ kubernetes_pki_dirs }}${FILE};
           done;
           for FILE in admin.conf controller-manager.conf scheduler.conf; do
-            sudo scp -r -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no -i {{ ssh_public_key }} \
+            sudo scp -r -p -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no -i {{ ssh_public_key }} \
             -P {{ ssh_connect_port }} {{ deploy_new_ca_rotation_dirs }}/kubeconfig/${FILE} {{ ssh_connect_user }}@{{ item[0] }}:{{ kubernetes_etc_dirs }}${FILE};
           done"
   with_nested:

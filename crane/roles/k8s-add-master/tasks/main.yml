@@ -1,5 +1,0 @@
----
-
-- include_tasks: 'roles/kubernetes-default/includes/initialize_ca.yml'
-- include_tasks: 'roles/kubernetes-master/includes/admin.yml'
-- include_tasks: 'roles/kubernetes-master/includes/kubelet_pem.yml'
