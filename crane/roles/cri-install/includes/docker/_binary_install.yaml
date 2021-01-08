@@ -13,7 +13,7 @@
   with_items:
     - "containerd"
   ignore_errors: true
-  when: result.stderr or result.stdout != 'active'
+  when: result.stdout != 'active' or (result is failed)
 
 - name: Copy Containerd Systemd Config
   template: 
@@ -23,7 +23,7 @@
     dest: "{{ systemd_default_dirs }}{{ item }}"
   with_items:
     - "containerd.service"
-  when: result.stderr or result.stdout != 'active'
+  when: result.stdout != 'active' or (result is failed)
 
 - name: Copy Docker Systemd Config
   template: 
@@ -43,7 +43,7 @@
     dest: "/etc/containerd/config.toml"
   with_items:
     - "containerd_config.toml"
-  when: result.stderr or result.stdout != 'active'
+  when: result.stdout != 'active' or (result is failed)
 
 - name: Create Containerd Config Path
   file:
@@ -62,20 +62,20 @@
   register: cct
   ignore_errors: true
   when: 
-    - cplugin.stderr
+    - cplugin is failed
 
 - name: Install Containerd to Local
   include: roles/downloads-packages/includes/containerd/local_download.yaml
   when: 
     - containerd_install_type == 'local_binary'
-    - cct.stderr
+    - cct is failed
   ignore_errors: true
 
 - name: Install Containerd to Http
   include: roles/downloads-packages/includes/containerd/http_download.yaml
   when: 
     - containerd_install_type == 'http_binary'
-    - cct.stderr
+    - cct is failed
   ignore_errors: true
 
 - name: Move Containerd Component binray to bin Path
