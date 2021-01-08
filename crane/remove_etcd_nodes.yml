@@ -133,7 +133,7 @@
     - "roles/kubernetes-networks/defaults/main.yml"
     - "roles/etcd-cluster-management/defaults/etcd-del-nodes.yaml"
   tasks:
-    - { include: 'roles/etcd-cluster-management/includes/update-k8s-calico.yml' }
+    - { include: 'roles/etcd-cluster-management/includes/update-k8s-calico.yaml' }
 
 - name: Sync Crane Delploy Files to Instance
   hosts: kube-master[0]

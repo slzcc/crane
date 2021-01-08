@@ -131,7 +131,7 @@
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/etcd-cluster-management/defaults/etcd-add-nodes.yaml"
   tasks:
-    - { include: 'roles/etcd-cluster-management/includes/update-k8s-manifests.yml' }
+    - { include: 'roles/etcd-cluster-management/includes/update-k8s-manifests.yaml' }
 
 - name: Update K8s Cluster Calico Network Config
   hosts: kube-master[0]
@@ -149,7 +149,7 @@
     - "roles/kubernetes-networks/defaults/main.yml"
     - "roles/etcd-cluster-management/defaults/etcd-add-nodes.yaml"
   tasks:
-    - { include: 'roles/etcd-cluster-management/includes/update-k8s-calico.yml' }
+    - { include: 'roles/etcd-cluster-management/includes/update-k8s-calico.yaml' }
 
 - name: Update Etcd Cluster Manifests
   hosts: etcd
@@ -168,7 +168,7 @@
     - "roles/kubernetes-networks/defaults/main.yml"
     - "roles/etcd-cluster-management/defaults/etcd-add-nodes.yaml"
   tasks:
-    - { include: 'roles/etcd-cluster-management/includes/update-etcd-manifests.yml' }
+    - { include: 'roles/etcd-cluster-management/includes/update-etcd-manifests.yaml' }
 
 - name: Check Etcd Cluster Info
   hosts: kube-master[0]
