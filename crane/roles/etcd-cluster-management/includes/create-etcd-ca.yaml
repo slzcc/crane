@@ -4,7 +4,7 @@
 
 - name: Copy CFSSL Etcd Json Files
   template:
-    src: roles/etcd-install/templates/{{ item }}
+    src: roles/etcd-cluster-management/templates/{{ item }}
     dest: "{{ etcd_ssl_dirs }}{{ item }}"
     owner: "{{ ssh_connect_user }}" 
     mode: 0644

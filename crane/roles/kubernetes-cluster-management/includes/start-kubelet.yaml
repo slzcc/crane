@@ -8,7 +8,7 @@
     enabled: yes
 
 - name: Copy admin.yml To Home
-  include_tasks: 'roles/kubernetes-master/includes/copy-kubelet-admin.yaml'
+  include_tasks: 'roles/kubernetes-cluster-management/includes/copy-kubelet-admin.yaml'
   when: is_kube_master
   
 - name: Run Kubelet
