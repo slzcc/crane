@@ -51,7 +51,7 @@
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-networks/defaults/main.yml"
   roles:
-    - { role: clean-install, tags: [clean], when: is_initialize_clean}
+    - { role: remove-cluster, tags: [clean], when: is_initialize_clean}
     - { role: cri-install, tags: [cri]}
     - { role: system-initialize, tags: [system]}
     - { role: downloads-packages, tags: [packages]}

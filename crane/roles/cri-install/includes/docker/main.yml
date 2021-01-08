@@ -1,9 +1,9 @@
 ---
 
-- include_vars: "roles/clean-install/defaults/main.yml"
+- include_vars: "roles/remove-cluster/defaults/main.yml"
 
 - name: Clean Docker..
-  include: "roles/clean-install/includes/docker/main.yaml"
+  include: "roles/remove-cluster/includes/docker/main.yaml"
   when: clean_up_old_before_installing
 
 - name: Close Kubelet..

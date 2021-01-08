@@ -231,18 +231,18 @@ kubectl_gc_options => kubelet_gc_options
 清理集群时, 补充遗漏的 docker 二进制文件的清理:
 
 ```
-@crane/roles/clean-install/includes/docker/main.yaml
+@crane/roles/remove-cluster/includes/docker/main.yaml
 
 # Clean Docker Binary
 - name: Clean Docker Binary
-  include: "roles/clean-install/includes/docker/binary.yaml"
+  include: "roles/remove-cluster/includes/docker/binary.yaml"
   when: is_remove_all or is_remove_docker_ce
 ```
 
 清理集群时, 默认 is_remove_all 选项为 true:
 
 ```
-@crane/roles/clean-install/defaults/main.yml
+@crane/roles/remove-cluster/defaults/main.yml
 
 # 此选项会忽略下面所有配置项
 # 主要目的是恢复安装 Crane 涉及到所有组件之前的状况
@@ -435,7 +435,7 @@ is_mandatory_docker_install: true => false
 
 Containerd 可以通过 `is_mandatory_containerd_install` 参数强制安装 containerd. 强制安装可以解决 docker 默认安装 containerd 无法直接使用的问题, 但会暂存 docker 启动的服务不可用.
 
-老版本的 docker 安装默认安装在 `/usr/bin` 与 Crane 的默认安装目录 `/usr/local/bin` 有不一样的地方, 目前已经添加 `@crane/roles/clean-install/defaults/main.yml => is_remove_not_crane_docker_ce` 参数, 在清除集群时, 可以清除非 Crane 安装的 docker.
+老版本的 docker 安装默认安装在 `/usr/bin` 与 Crane 的默认安装目录 `/usr/local/bin` 有不一样的地方, 目前已经添加 `@crane/roles/remove-cluster/defaults/main.yml => is_remove_not_crane_docker_ce` 参数, 在清除集群时, 可以清除非 Crane 安装的 docker.
 
 
 ### 增加
@@ -534,7 +534,7 @@ etcd-add-node 和 etcd-del-node 重命名 xx.nodes
     - "roles/downloads-ssh-key/defaults/main.yml"
 +/+
   roles:
-    - { role: clean-install, tags: [clean]}
+    - { role: remove-cluster, tags: [clean]}
 ```
 
 修复删除 node 时, 安装 jq 时没有正常安装, 造成后续删除节点失败。

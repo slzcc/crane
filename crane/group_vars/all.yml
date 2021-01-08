@@ -118,7 +118,7 @@ cri_k8s_default: containerd
 ## ********************************************************************************************************************************
 # 初始化时, 是否进行 Clean, 如果是全新的环境可以不开启, 如果之前部署过或者使用 kubeadm 进行部署则需要开启此配置,
 # 应避免部署时影响效率
-# 更多清除选项请查阅 crane/roles/clean-install/defaults/main.yml
+# 更多清除选项请查阅 crane/roles/remove-cluster/defaults/main.yml
 is_initialize_clean: false
 
 ## Simple
