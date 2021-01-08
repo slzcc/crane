@@ -24,7 +24,7 @@
 ## Copy CFSSL Kubernetes Json Files
 - name: CA Rotation Copy CFSSL Kubernetes Json Files
   template:
-    src: "roles/kubernetes-default/templates/{{ item }}"
+    src: "roles/kubernetes-cluster-management/templates/{{ item }}"
     dest: "{{ deploy_new_ca_rotation_dirs }}/cert/{{ item }}"
     owner: "{{ ssh_connect_user }}" 
     mode: 0644

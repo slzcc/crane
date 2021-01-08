@@ -6,7 +6,7 @@
 - [x] 支持 `Istio`。在 `roles/add-ons/defaults/main.yml` 中开启配置项。
 - [x] 支持操作系统预判部署 `Ubuntu/Centos` 更合理的安装即优化, `v1.14.2.6` 中优化.
 - [x] 支持 `Harbor HTTPS` 部署, `v1.16.1.7` 中添加。(暂支持空数据卷,请自行修改挂载点)
-- [x] 支持 `TLS` 证书自定义。`v1.15.0.2` 中更新。在 `roles/kubernetes-default/defaults/main.yml` 中自定义配置。
+- [x] 支持 `TLS` 证书自定义。`v1.15.0.2` 中更新。在 `roles/kubernetes-cluster-management/defaults/main.yml` 中自定义配置。
 - [ ] 支持 `OpenResty` 入口流量的灰度发布。
 - [x] 支持 `Kubernetes` 热更新 `TLS`, `v1.15.0.3` 版本更新。对集群中 `Master/Node/Kubelet` 等组件的所有 `TLS` 服务进行证书更新, 主要解决 `CFSSL` 默认申请 `CA` 证书 5 年时效问题, 以及后续可能存在的证书泄露问题。（Beta Version）
 - [x] 支持 `Etcd` 热更新 `TLS`, `v1.15.0.6` 中更新。

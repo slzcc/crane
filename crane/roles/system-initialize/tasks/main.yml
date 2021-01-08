@@ -7,7 +7,7 @@
     - "roles/etcd-install/vars/main.yml"
     - "roles/clean-install/defaults/main.yml"
     - "roles/kubernetes-networks/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/downloads-ssh-key/defaults/main.yml"
 
 - name: Check Swap
@@ -192,4 +192,4 @@
   ignore_errors: true
 
 - name: Check Systemd-resolved Systemd Status
-  include: "roles/kubernetes-default/includes/resolv.yaml"
+  include: "roles/kubernetes-cluster-management/includes/initialize-resolv.yaml"

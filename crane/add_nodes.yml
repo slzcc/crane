@@ -3,15 +3,6 @@
   gather_facts: false
   roles:
     - { role: local-task }
-    
-- hosts: all
-  become: yes
-  become_method: sudo
-  vars:
-    ansible_ssh_pipelining: true
-  tasks:
-    - name: Check all Nodes
-      ping: 
 
 - name: Initialize Crane Env
   hosts: all
@@ -26,12 +17,13 @@
     - "roles/cri-install/vars/crio.yaml"
     - "roles/cri-install/vars/docker.yaml"
     - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/downloads-ssh-key/defaults/main.yml"
   roles:
     - { role: crane, tags: [crane] }
     
-- hosts: kube-master
+- name: Initialize SSH Secret Key
+  hosts: kube-master[0]
   gather_facts: false
   become: yes
   become_method: sudo
@@ -47,15 +39,15 @@
   vars:
     ansible_ssh_pipelining: true
   vars_files:
-    - "roles/kubernetes-default/defaults/main.yml"
+    - "roles/kubernetes-cluster-management/defaults/main.yml"
     - "roles/crane/defaults/main.yml"
     - "roles/system-initialize/defaults/main.yml"
     - "roles/cri-install/vars/docker.yaml"
     - "roles/cri-install/vars/containerd.yaml"
     - "roles/cri-install/vars/crio.yaml"
     - "roles/etcd-install/vars/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
-    - "roles/kubernetes-default/defaults/tls.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/tls.yaml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-networks/defaults/main.yml"
   roles:
@@ -64,63 +56,52 @@
     - { role: system-initialize, tags: [system]}
     - { role: downloads-packages, tags: [packages]}
   tasks:
-    - { include_tasks: 'roles/kubernetes-default/includes/main.yml' }
+    - { include_tasks: 'roles/kubernetes-cluster-management/includes/initialize-kubelet.yaml' }
 
-- name: Create Bootstrap Config Files to Nodes.
+- name: Create Bootstrap Config Files to Nodes, Copy Cluster CA Files to Nodes.
   hosts: kube-master[0]
   become: yes
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
   vars_files:
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/system-initialize/defaults/main.yml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/kubernetes-cluster-management/defaults/main.yml"
     - "roles/kubernetes-bootstraps/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/system-initialize/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/tls.yaml"
-    - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-default/vars/kubelet.yaml"
-  tasks:
-    - { include_tasks: roles/kubernetes-bootstraps/includes/create-bootstrap.yml }
-
-- name: Copy Cluster CA Files to Nodes.
-  hosts: kube-master[0]
-  become: yes
-  become_method: sudo
-  vars:
-    ansible_ssh_pipelining: true
-  vars_files:
-    - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/system-initialize/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/tls.yaml"
-    - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-default/vars/kubelet.yaml"
+    - "roles/kubernetes-cluster-management/vars/kubelet.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/tls.yaml"
     - "roles/etcd-install/vars/main.yml"
     - "roles/cri-install/vars/kubelet.yaml"
     - "roles/cri-install/vars/crio.yaml"
     - "roles/cri-install/vars/containerd.yaml"
-  roles:
-    - { role: k8s-add-nodes, tags: [k8s-add-node]}
+  tasks:
+    - { include_tasks: 'roles/kubernetes-bootstraps/includes/create-bootstrap.yml' }
+    - { include_tasks: 'roles/kubernetes-cluster-management/includes/k8s-add-nodes.yaml' }
 
-- name: Add Nodes
+- name: Create Kubernetes Cluster Nodes Config
   hosts: k8s-cluster-add-node
+  gather_facts: true
   become: yes
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
   vars_files:
     - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/system-initialize/defaults/main.yml"
     - "roles/crane/defaults/main.yml"
+    - "roles/kubernetes-cluster-management/vars/kubelet.yaml"
     - "roles/cri-install/vars/kubelet.yaml"
-    - "roles/kubernetes-default/vars/kubelet.yaml"
-  roles:
-    - { role: kubernetes-nodes, tags: [k8s-nodes]}
+    - "roles/cri-install/vars/crio.yaml"
+    - "roles/cri-install/vars/containerd.yaml"
+  tasks:
+    - { include_tasks: 'roles/kubernetes-cluster-management/includes/configuretion-kubelet.yaml' }
+    - { include_tasks: 'roles/kubernetes-cluster-management/includes/start-kubelet.yaml' }
     
 - name: Deployment Kubernetes Cluster Afterward CMD
   hosts: kube-master[0]
@@ -133,7 +114,7 @@
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/crane/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   roles:
     - { role: kubernetes-afterward, tags: [k8s-afterward]}
 
@@ -148,6 +129,6 @@
     - "roles/crane/defaults/main.yml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   tasks:
     - { include_tasks: 'roles/crane/includes/sync-crane.yaml' }

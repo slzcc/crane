@@ -13,6 +13,6 @@ export no_proxy=`awk '/^no_proxy/' ./crane/group_vars/all.yml | awk -F': ' '{pri
 
 export temporary_dirs=`awk '/^temporary_dirs/' ./crane/roles/crane/defaults/main.yml | awk -F': ' '{print $$2}' | sed "s/'//g"`
 
-export kubernetes_ctl_pat=`awk '/^kubernetes_ctl_path/' ./crane/roles/kubernetes-default/defaults/configure.yaml | awk -F': ' '{print $$2}' | sed "s/'//g"`
+export kubernetes_ctl_pat=`awk '/^kubernetes_ctl_path/' ./crane/roles/kubernetes-cluster-management/defaults/configure.yaml | awk -F': ' '{print $$2}' | sed "s/'//g"`
 
 export OPTION=-vv

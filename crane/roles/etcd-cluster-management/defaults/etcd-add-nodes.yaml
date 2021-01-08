@@ -1,0 +1,4 @@
+# Etcd Cluster Type
+etcd_cluster_type: 'existing'
+
+crane_tasks: 'etcd-add-nodes'
