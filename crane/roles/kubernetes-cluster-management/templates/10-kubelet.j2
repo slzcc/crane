@@ -1,0 +1,18 @@
+[Service]
+Environment="KUBELET_KUBECONFIG_ARGS=--bootstrap-kubeconfig={{ kubernetes_etc_dirs }}bootstrap-kubelet.conf --kubeconfig={{ kubernetes_etc_dirs }}kubelet.conf"
+Environment="KUBELET_CONFIG_ARGS=--config={{ kubelet_work_dirs }}config.yaml"
+Environment="KUBELET_SYSTEM_PODS_ARGS=--pod-manifest-path={{ kubernetes_etc_dirs }}manifests"
+Environment="KUBELET_DNS_ARGS=--cluster-dns={{ dns_cluster_ip }} --cluster-domain={{ dns_domain }}"
+Environment="KUBELET_AUTHZ_ARGS=--authorization-mode=Webhook --client-ca-file={{ kubernetes_etc_dirs }}pki/ca.pem"
+Environment="KUBELET_CERTIFICATE_ARGS=--rotate-certificates=true --cert-dir={{ kubelet_work_dirs }}pki"
+EnvironmentFile=-{{ kubelet_work_dirs }}kubernetes-flags.env
+# This is a file that the user can use for overrides of the kubelet args as a last resort. Preferably, the user should use
+# the .NodeRegistration.KubeletExtraArgs object in the configuration files instead. KUBELET_EXTRA_ARGS should be sourced from this file.
+{% if is_kube_master %}
+Environment="KUBELET_EXTRA_ARGS=--node-labels=node.kubernetes.io/master='',node.kubernetes.io/control-plane='' --logtostderr=true --v=0"
+{% else %}
+Environment="KUBELET_EXTRA_ARGS=--node-labels=node.kubernetes.io/node='' --logtostderr=true --v=0"
+{% endif %}
+EnvironmentFile=-/etc/default/kubelet
+ExecStart=
+ExecStart={{ kubernetes_ctl_path }}kubelet $KUBELET_KUBECONFIG_ARGS $KUBELET_CONFIG_ARGS $KUBELET_KUBEADM_ARGS $KUBELET_EXTRA_ARGS $KUBELET_SYSTEM_PODS_ARGS $KUBELET_DNS_ARGS $KUBELET_AUTHZ_ARGS $KUBELET_CERTIFICATE_ARGS

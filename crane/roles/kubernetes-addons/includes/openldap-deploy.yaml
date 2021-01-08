@@ -1,0 +1,20 @@
+---
+- name: Deploy OpenLDAP Service *
+  file:
+    path: "{{ temporary_dirs }}openldap"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
+- name: Deploy OpenLDAP Service **
+  template: 
+    src: "roles/kubernetes-addons/templates/openldap/{{ item }}"
+    dest: "{{ temporary_dirs }}openldap/{{ item }}"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+  with_items:
+    - "openldap-server.yaml"
+    - "openldap-ui.yaml"
+
+- name: Deploy OpenLDAP Service ***
+  shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}openldap/ ; do >&2 echo "Starting..." && sleep 1 ; done'

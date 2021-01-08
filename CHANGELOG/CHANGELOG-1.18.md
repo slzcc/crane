@@ -177,7 +177,7 @@ Crane 以更新至 1.18.0.0 版本。
 
 ### v1.18.5.1 更新内容
 
-添加 [Add-One](/crane/crane/roles/add-ons) 说明.
+添加 [Add-One](/crane/crane/roles/kubernetes-addons) 说明.
 
 添加 Harbor Client Cert 部署所有集群 Nodes 配置项。
 
@@ -185,7 +185,7 @@ Crane 以更新至 1.18.0.0 版本。
 
 ### v1.18.5.2 更新内容
 
-添加 add-ons:
+添加 kubernetes-addons:
   * gitlab
   * jenkins
   * nexus
@@ -303,7 +303,7 @@ is_swap: true
 
 修复 ingress-nginx 可能存在获取 ssl 没有权限的问题:
 
-``` crane/roles/add-ons/templates/ingress-nginx/ingress-nginx.j2
+``` crane/roles/kubernetes-addons/templates/ingress-nginx/ingress-nginx.j2
 runAsUser: 33 => runAsUser: 101
 ```
 
@@ -355,7 +355,7 @@ runAsUser: 33 => runAsUser: 101
 
 修复部署 Crane 时, 走 k8s-addone 时耗时较长, 并把 `include` 改为 `import_tasks`。
 
-修改 Crane 在 Ansible 中使用的 `include` 改为 `include_tasks`。因 `include` 后续会被弃用。
+修改 Crane 在 Ansible 中使用的 `include` 改为 `include`。因 `include` 后续会被弃用。
 
 ### v1.18.8.0 更新内容
 

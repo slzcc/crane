@@ -1,24 +1,24 @@
 ---
 - name: Containerd Configure Kubernetes to execute files in download
-  include_tasks: "includes/crane/containerd/main.yml"
+  include: "includes/crane/containerd/main.yml"
   when: 
     - cri_k8s_default == 'containerd'
     - is_crane_kubernetes_deploy != 'none'
 
 - name: Docker Configure Kubernetes to execute files in download
-  include_tasks: "includes/crane/docker/main.yml"
+  include: "includes/crane/docker/main.yml"
   when: 
     - cri_k8s_default == 'docker'
     - is_crane_kubernetes_deploy != 'none'
 
 - name: Deploy Kubernetes to execute files in download
-  include_tasks: "includes/kubernetes/main.yml"
+  include: "includes/kubernetes/main.yml"
   when: 
     - not is_using_local_files_deploy
     - is_crane_kubernetes_deploy != 'none'
 
 - name: Not Crane Deploys..
-  include_tasks: "roles/downloads-packages/includes/crane/crane_none.yaml"
+  include: "roles/downloads-packages/includes/crane/crane_none.yaml"
   when: 
     - is_crane_kubernetes_deploy == 'none' or 
       (( "crio" in cri_driver ) and cri_k8s_default == "crio" )

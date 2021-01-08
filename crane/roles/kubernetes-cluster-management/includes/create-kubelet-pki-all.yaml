@@ -1,0 +1,58 @@
+---
+# Copy CA
+## ********************************************************************************************************************************
+
+## Create Kubernetes Kubelet CA and Copy in Nodes
+- name: Create Kubernetes Kubelet CA Files
+  shell: 'cd {{ kubernetes_pki_dirs }} && cp kubelet-csr.json kubelet-{{ item[0] }}-csr.json;
+          sed -i "s/\$NODE/{{ item[0] }}/g" {{ kubernetes_pki_dirs }}kubelet-{{ item[0] }}-csr.json;'
+  with_nested:
+  - "{{ k8s_master_name_list }}"
+  - "-"
+
+- name: Create CA *
+  shell: 'cd {{ kubernetes_pki_dirs }} && {{ kubernetes_ctl_path }}cfssl gencert \
+            -ca=ca.pem \
+            -ca-key=ca-key.pem \
+            -config=ca-config.json \
+            -hostname={{ k8s_master_ip_str }} \
+            -profile=kubernetes \
+            kubelet-{{ item[0] }}-csr.json | {{ kubernetes_ctl_path }}cfssljson -bare kubelet-{{ item[0] }}'
+  with_nested:
+    - "{{ k8s_master_name_list }}"
+    - "-"
+
+- name: Modify File Owner **
+  shell: "for ITEM in $(ls {{ kubernetes_pki_dirs }}); do 
+            chown {{ ssh_connect_user }} {{ kubernetes_pki_dirs }}${ITEM}; 
+          done"
+
+- name: Create Kubelet Root CA ***
+  shell: "sudo scp -r -p -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
+            -i {{ ssh_public_key }} \
+            -P {{ ssh_connect_port }} \
+            {{ kubernetes_pki_dirs }}kubelet-{{ item[1] }}-key.pem \
+            {{ ssh_connect_user }}@{{ item[0] }}:{{ kubernetes_pki_dirs }}kubelet-{{ item[1] }}-key.pem"
+  with_nested:
+    - "{{ k8s_master_ip_list }}"
+    - "{{ k8s_master_name_list }}"
+
+- name: Copy Kubelet CA To Node ****
+  shell: "sudo scp -r -p -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
+            -i {{ ssh_public_key }} \
+            -P {{ ssh_connect_port }} \
+            {{ kubernetes_pki_dirs }}kubelet-{{ item[1] }}.pem \
+            {{ ssh_connect_user }}@{{ item[0] }}:{{ kubernetes_pki_dirs }}kubelet-{{ item[1] }}.pem"
+  with_nested:
+    - "{{ k8s_master_ip_list }}"
+    - "{{ k8s_master_name_list }}"
+
+- name: Copy Root CA To Node *****
+  shell: "sudo scp -r -p -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no \
+            -i {{ ssh_public_key }} \
+            -P {{ ssh_connect_port }} \
+            {{ kubernetes_pki_dirs }}ca.pem \
+            {{ ssh_connect_user }}@{{ item[0] }}:{{ kubernetes_pki_dirs }}ca.pem"
+  with_nested:
+    - "{{ k8s_master_ip_list }}"
+    - "-"

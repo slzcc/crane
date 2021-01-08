@@ -10,6 +10,7 @@
     - [v1.20.1.5 更新内容](#v12015)
     - [v1.20.1.6 更新内容](#v12016)
     - [v1.20.1.7 更新内容](#v12017)
+    - [v1.20.1.8 更新内容](#v12018)
 
 # v1.20.0.0
 
@@ -212,7 +213,7 @@ is_crane_kubernetes_deploy: "{{ cri_drive_install_type }}"
 添加 `crane/roles/crane/templates/` 部分 tools 脚本, 用于手动部署。
 
 ```
-@crane/roles/kubernetes-default/vars/kubelet.yaml 新添加 --resolv-conf 参数项
+@crane/roles/kubernetes-cluster-management/vars/kubelet.yaml 新添加 --resolv-conf 参数项
 
 # resolv 配置项
 kubelet_resolv_config: "--resolv-conf=/run/systemd/resolve/resolv.conf"
@@ -230,18 +231,18 @@ kubectl_gc_options => kubelet_gc_options
 清理集群时, 补充遗漏的 docker 二进制文件的清理:
 
 ```
-@crane/roles/clean-install/includes/docker/main.yaml
+@crane/roles/remove-cluster/includes/docker/main.yaml
 
 # Clean Docker Binary
 - name: Clean Docker Binary
-  include: "roles/clean-install/includes/docker/binary.yaml"
+  include: "roles/remove-cluster/includes/docker/binary.yaml"
   when: is_remove_all or is_remove_docker_ce
 ```
 
 清理集群时, 默认 is_remove_all 选项为 true:
 
 ```
-@crane/roles/clean-install/defaults/main.yml
+@crane/roles/remove-cluster/defaults/main.yml
 
 # 此选项会忽略下面所有配置项
 # 主要目的是恢复安装 Crane 涉及到所有组件之前的状况
@@ -297,12 +298,12 @@ kubelet_containerd_cri_options: >-
     - "roles/crane/defaults/main.yml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
-    - "roles/etcd-install/vars/main.yml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/kubernetes-networks/defaults/calico.yaml"
     - "roles/kubernetes-networks/defaults/main.yml"
   tasks:
-    - { include_tasks: 'roles/etcd-add-node/includes/update-k8s-calico.yml' }
+    - { include: 'roles/etcd-add-node/includes/update-k8s-calico.yml' }
 ```
 
 因可能会存在多次执行的问题, 但不影响使用。
@@ -378,15 +379,15 @@ Containerd 1.3.9 => 1.4.3。`@crane/roles/cri-install/vars/containerd.yaml`
     - "roles/crane/defaults/main.yml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
-    - "roles/etcd-install/vars/main.yml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/kubernetes-networks/defaults/calico.yaml"
     - "roles/kubernetes-networks/defaults/main.yml"
 +/+    
     - "roles/kubernetes-upgrade/defaults/main.yml"
 +/+
   tasks:
-    - { include_tasks: 'roles/kubernetes-upgrade/includes/update-k8s-networks.yaml' }
+    - { include: 'roles/kubernetes-upgrade/includes/update-k8s-networks.yaml' }
 
 删除: 重叠的配置项, 会造成 bug 阻塞
 -/-
@@ -400,13 +401,13 @@ Containerd 1.3.9 => 1.4.3。`@crane/roles/cri-install/vars/containerd.yaml`
     - "roles/crane/defaults/main.yml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
-    - "roles/etcd-install/vars/main.yml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/kubernetes-networks/defaults/calico.yaml"
     - "roles/kubernetes-networks/defaults/main.yml"
     - "roles/kubernetes-upgrade/defaults/main.yml"
   tasks:
-    - { include_tasks: 'roles/kubernetes-upgrade/includes/update-k8s-networks.yaml' }
+    - { include: 'roles/kubernetes-upgrade/includes/update-k8s-networks.yaml' }
 -/-
 ```
 
@@ -422,7 +423,7 @@ is_mandatory_docker_install: true => false
 修复 v1.20.1.2/3 测试时修改的 etcd.j2 文件造成 etcd 无法正常启动的 BUG:
 
 ```
-@crane/roles/etcd-install/templates/etcd.j2
+@crane/roles/etcd-cluster-management/templates/etcd.j2
     - --initial-cluster-state=existing
 =>
     - --initial-cluster-state=new
@@ -434,7 +435,7 @@ is_mandatory_docker_install: true => false
 
 Containerd 可以通过 `is_mandatory_containerd_install` 参数强制安装 containerd. 强制安装可以解决 docker 默认安装 containerd 无法直接使用的问题, 但会暂存 docker 启动的服务不可用.
 
-老版本的 docker 安装默认安装在 `/usr/bin` 与 Crane 的默认安装目录 `/usr/local/bin` 有不一样的地方, 目前已经添加 `@crane/roles/clean-install/defaults/main.yml => is_remove_not_crane_docker_ce` 参数, 在清除集群时, 可以清除非 Crane 安装的 docker.
+老版本的 docker 安装默认安装在 `/usr/bin` 与 Crane 的默认安装目录 `/usr/local/bin` 有不一样的地方, 目前已经添加 `@crane/roles/remove-cluster/defaults/main.yml => is_remove_not_crane_docker_ce` 参数, 在清除集群时, 可以清除非 Crane 安装的 docker.
 
 
 ### 增加
@@ -528,12 +529,12 @@ etcd-add-node 和 etcd-del-node 重命名 xx.nodes
     - "roles/system-initialize/defaults/main.yml"
     - "roles/kubernetes-networks/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
 +/+
     - "roles/downloads-ssh-key/defaults/main.yml"
 +/+
   roles:
-    - { role: clean-install, tags: [clean]}
+    - { role: remove-cluster, tags: [clean]}
 ```
 
 修复删除 node 时, 安装 jq 时没有正常安装, 造成后续删除节点失败。
@@ -560,3 +561,71 @@ etcd-add-node 和 etcd-del-node 重命名 xx.nodes
     - "-"
   ignore_errors: true
 ```
+
+# v1.20.1.8
+
+
+### 优化 
+
+因资源的增加对默认的 nf_conntrack 配置修改为如下:
+
+
+```
+kernel_nf_conntrack_buckets: 262144
+kernel_nf_conntrack_max: 1048576
+
+=>
+
+kernel_nf_conntrack_buckets: 1048576
+kernel_nf_conntrack_max: 4194304
+```
+
+> nf_conntrack https://opengers.github.io/openstack/openstack-base-netfilter-framework-overview/
+
+对 nf_conntrack_buckets 开机启动不在写入 rc.local 配置为 modprobe.d 模式启动。
+
+
+### 修复
+
+修复 删除 etcd 节点时，只更新一个 k8s master 节点的 etcd 配置，并修复使用了 etcd-add-nodes 的配置项。
+
+```
+@crane/remove_etcd_nodes.yml
+
+- name: Set Kubernetes Cluster Etcd Config
+  hosts: kube-master[0] => hosts: kube-master
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/etcd-cluster-management/vars/main.yml"
+  tasks:
+    - { include: 'roles/etcd-del-nodes/includes/update-k8s-manifests.yml' } => - { include: 'roles/etcd-add-nodes/includes/update-k8s-manifests.yml' }
+...
+```
+
+> 主要问题出在 etcd.j2 文件使用 etcd-cluster, 在 etcd-del-nodes 时不适用。
+
+修复 add etcd node 时可能存在的重复执行步骤。
+
+修复放入 Crane 临时目录时部分文件过乱的问题。
+
+
+### 移除
+
+将部分 addons 进行了移除, 一部分以因为无法跟进时代潮流, 另一部分是没有过多精力维护, 项目配置项在 1.2x 中不会移除, 但对 `@crane/roles/kubernetes-addons/defaults/main.yml` 入口文件进行了移除。
+
+### 增加
+
+对 Harbor 支持 CA Rotation 只需要对 `@crane/roles/kubernetes-addons/defaults/main.yml => is_harbor_ca_rotation` 值为 `true` 即可, 它会抑制 harbor 安装只会更新当前 harbor ca 证书。
+
+### 调整
+
+在此版本后对 Master 与 Node 进行无差别部署, 添加节点使用 bootstraps 方式注册, 其余使用 kubelet.conf 。
+
+对当前版本目录结构进行调整, 把重叠配置进行复用移除。（修改的内容较多）

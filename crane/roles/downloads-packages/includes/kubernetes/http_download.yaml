@@ -2,7 +2,7 @@
 - include_vars: "{{ item }}"
   with_items:
     - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-default/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
 
 # Kubernetes
 ## ********************************************************************************************************************************

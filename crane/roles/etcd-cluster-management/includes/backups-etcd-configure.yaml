@@ -1,0 +1,12 @@
+---
+- name: Backup Old Certificate Files
+  shell: "cp -a {{ etcd_ssl_dirs }} {{ temporary_dirs }}{{ crane_tasks }}/certs-old-`date +%Y%m%d%H%M%S`"
+  ignore_errors: true
+  
+- name: Move Etcd DataDir
+  shell: "cp -a {{ etcd_data_dirs }} {{ temporary_dirs }}{{ crane_tasks }}/etcd-`date +%Y%m%d%H%M%S`"
+  ignore_errors: true
+
+- name: Move Etcd Kubernetes Manifests Config
+  shell: "cp -a {{ kubernetes_manifests_dirs }}etcd.yml {{ temporary_dirs }}{{ crane_tasks }}/etcd.yml.`date +%Y%m%d%H%M%S`"
+  ignore_errors: true

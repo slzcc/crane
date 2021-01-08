@@ -1,0 +1,24 @@
+---
+- name: Deploy Kafka Service *
+  file:
+    path: "{{ item }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+  with_items:
+  - "{{ temporary_dirs }}kafka"
+  ignore_errors: true
+
+- name: Deploy Kafka Service **
+  template: 
+    src: "roles/kubernetes-addons/templates/kafka/{{ item }}"
+    dest: "{{ temporary_dirs }}kafka/{{ item }}"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+  with_items:
+    - "1_kafka.yaml"
+    - "2_kafka_svc.yaml"
+    - "3_kafka_manager.yaml"
+
+- name: Deploy Kafka Service ***
+  shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}kafka/ ; do >&2 echo "Starting..." && sleep 1 ; done'

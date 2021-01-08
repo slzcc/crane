@@ -8,7 +8,7 @@ Kubernetes 集群证书轮转.
 
 配置围绕着 `nodes` 其他配置都不用操作。
 
-> 如果修改修改 Etcd CA 证书时间请修改 `@crane/roles/kubernetes-default/defaults/tls.yaml` 默认 20 年.
+> 如果修改修改 Etcd CA 证书时间请修改 `@crane/roles/kubernetes-cluster-management/defaults/tls.yaml` 默认 20 年.
 
 在 `nodes` 文件中, 只需要保证 kube-master/node 参数项内列表是对应的 etcd 节点即可:(外网地址可被解析成内网地址)
 

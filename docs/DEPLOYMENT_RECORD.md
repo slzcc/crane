@@ -15,7 +15,7 @@ $ make run_main_cri
 修改参数:
 
 ```
-@crane/roles/clean-install/defaults/main.yml
+@crane/roles/remove-cluster/defaults/main.yml
 
 -is_remove_all: true
 +is_remove_all: false
