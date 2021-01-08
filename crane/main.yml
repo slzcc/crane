@@ -99,7 +99,7 @@
     - "roles/crane/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
   tasks:
-    - { include_tasks: 'roles/kubernetes-cluster-management/includes/create-etcd-ca.yaml' }
+    - { include_tasks: 'roles/etcd-cluster-management/includes/create-etcd-ca.yaml' }
 
 - name: Deploy Etcd Manifests
   hosts: etcd
