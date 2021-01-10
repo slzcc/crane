@@ -1,5 +1,4 @@
 ---
-
 - name: Create Cri Tools Temporary Path
   file:
     path: "{{ temporary_dirs }}cri-tools"
@@ -8,4 +7,4 @@
     state: directory
 
 - name: Get Crictl Binary File
-  shell: "export http_proxy={{ http_proxy }} ; export https_proxy={{ https_proxy }} ; wget -qO- 'https://github.com/kubernetes-sigs/cri-tools/releases/download/{{ cri-tools_version }}/crictl-{{ cri-tools_version }}-linux-amd64.tar.gz' | tar zx -C {{ temporary_dirs }}cri-tools"
+  shell: "export http_proxy={{ http_proxy }} ; export https_proxy={{ https_proxy }} ; wget -qO- 'https://github.com/kubernetes-sigs/cri-tools/releases/download/{{ cri_tools_version }}/crictl-{{ cri_tools_version }}-linux-amd64.tar.gz' | tar zx -C {{ temporary_dirs }}cri-tools"
