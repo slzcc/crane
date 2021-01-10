@@ -724,3 +724,5 @@ kernel_nf_conntrack_max: 4194304
   tasks:
     - { include: 'roles/kubernetes-upgrade/includes/update-k8s-calico.yaml', when: is_k8s_upgrade_calico }
 ```
+
+Kubernetes upgrade 时取消更新 Bootstrap 创建。
