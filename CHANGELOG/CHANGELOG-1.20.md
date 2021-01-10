@@ -726,3 +726,7 @@ kernel_nf_conntrack_max: 4194304
 ```
 
 Kubernetes upgrade 时取消更新 Bootstrap 创建。
+
+```
+   - { include: 'roles/kubernetes-cluster-management/includes/create-bootstrap.yaml' }
+```
