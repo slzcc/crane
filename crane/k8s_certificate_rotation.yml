@@ -109,7 +109,7 @@
     - "roles/cri-install/vars/kubelet.yaml"
     - "roles/kubernetes-cluster-management/vars/kubelet.yaml"
   tasks:
-    - { include: 'roles/kubernetes-cluster-management/includes/create-bootstrap.yaml' }
+    # - { include: 'roles/kubernetes-cluster-management/includes/create-bootstrap.yaml' }
     - { include: 'roles/kubernetes-ca-rotation/includes/update-cluster-node-ca.yml' }
 
 - name: Copy Kubelet CA for Nodes
