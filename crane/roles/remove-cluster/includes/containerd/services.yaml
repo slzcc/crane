@@ -1,14 +1,31 @@
 ---
 
-- name: Clean Kubernetes Containerd Service and rm >
-  shell: "for i in $({{ kubernetes_ctl_path }}ctr -n k8s.io tasks ls -q); do {{ kubernetes_ctl_path }}ctr -n k8s.io tasks kill --signal 9 $i; done"
-  ignore_errors: true
+# - name: Clean Kubernetes Containerd Service and rm >
+#   shell: "for i in $({{ kubernetes_ctl_path }}ctr -n k8s.io tasks ls -q); do {{ kubernetes_ctl_path }}ctr -n k8s.io tasks kill --signal 9 $i; done"
+#   ignore_errors: true
 
-- name: Clean Kubernetes Containerd Service and rm >>>
-  shell: "{{ kubernetes_ctl_path }}ctr -n k8s.io c rm $({{ kubernetes_ctl_path }}ctr -n k8s.io c ls -q)"
-  ignore_errors: true
+# - name: Clean Kubernetes Containerd Service and rm >>>
+#   shell: "{{ kubernetes_ctl_path }}ctr -n k8s.io c rm $({{ kubernetes_ctl_path }}ctr -n k8s.io c ls -q)"
+#   ignore_errors: true
 
-- name: Clean Containerd Socket to Servers
-  shell: >
-    ps aux | grep '{{ containerd_socket_path }}' | grep -v grep | grep 'k8s.io' | awk '{print $2}' | xargs -i kill -9 {}
+# - name: Clean Containerd Socket to Servers
+#   shell: >
+#     ps aux | grep '{{ containerd_socket_path }}' | grep -v grep | grep 'k8s.io' | awk '{print $2}' | xargs -i kill -9 {}
+#   ignore_errors: true
+
+- name: Remove Containers Service
+  shell: "{{ kubernetes_ctl_path }}crictl rm -f $({{ kubernetes_ctl_path }}crictl ps -a | grep {{ item }} | awk '{print $1}')"
+  with_items:
+    - "etcd"
+    - "haproxy"
+    - "kube-controller-manager"
+    - "kube-apiserver"
+    - "kube-scheduler"
+    - "calico-kube-controllers"
+    - "calico-node"
+    - "flexvol-driver"
+    - "install-cni"
+    - "upgrade-ipam"
+    - "coredns"
+    - "kube-proxy"
   ignore_errors: true
