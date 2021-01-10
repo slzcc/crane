@@ -33,7 +33,6 @@
     - "roles/crane/defaults/main.yml"
     - "roles/system-initialize/defaults/main.yml"
     - "roles/etcd-cluster-management/defaults/main.yml"
-    - "roles/etcd-cluster-management/defaults/main.yml"
     - "roles/etcd-cluster-management/defaults/tls.yaml"
     - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
@@ -51,10 +50,10 @@
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/crane/defaults/main.yml"
     - "roles/system-initialize/defaults/main.yml"
-    - "roles/etcd-cluster-management/var/main.yml"
     - "roles/kubernetes-networks/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/etcd-cluster-management/vars/main.yml"
   roles:
     - { role: remove-cluster, tags: [remove-cluster]}
 
