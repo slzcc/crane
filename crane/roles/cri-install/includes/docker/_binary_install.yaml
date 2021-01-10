@@ -13,7 +13,7 @@
   with_items:
     - "containerd"
   ignore_errors: true
-  when: result.stdout != 'active' or (result is failed)
+  when: result.stdout != 'active' or result.stderr
 
 - name: Copy Containerd Systemd Config
   template: 
@@ -23,7 +23,7 @@
     dest: "{{ systemd_default_dirs }}{{ item }}"
   with_items:
     - "containerd.service"
-  when: result.stdout != 'active' or (result is failed)
+  when: result.stdout != 'active' or result.stderr
 
 - name: Copy Docker Systemd Config
   template: 
@@ -43,7 +43,7 @@
     dest: "/etc/containerd/config.toml"
   with_items:
     - "containerd_config.toml"
-  when: result.stdout != 'active' or (result is failed)
+  when: result.stdout != 'active' or result.stderr
 
 - name: Create Containerd Config Path
   file:
