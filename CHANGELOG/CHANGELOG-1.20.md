@@ -639,3 +639,49 @@ kernel_nf_conntrack_max: 4194304
 ### 修复
 
 修复使用 containerd 时, 如果不能清除本地残留 container 服务则会造成下一次部署时, 无法正常启动成功的问题。
+
+
+### 移除
+
+移除 add/del Etcd 时更新 Calico 网络:
+
+```
+- name: Update K8s Cluster Calico Network Config
+  hosts: kube-master[0]
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/crane/defaults/main.yml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/etcd-cluster-management/vars/main.yml"
+    - "roles/kubernetes-networks/defaults/calico.yaml"
+    - "roles/kubernetes-networks/defaults/main.yml"
+    - "roles/etcd-cluster-management/defaults/etcd-add-nodes.yaml"
+  tasks:
+    - { include: 'roles/etcd-cluster-management/includes/update-k8s-calico.yaml' }
+```
+
+移除 etcd ca rotation 时更新 Calico 网络:
+
+```
+- name: Update Kubernetes Cluster Network Server Config
+  hosts: k8s-master[0]
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/crane/defaults/main.yml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/etcd-cluster-management/vars/main.yml"
+    - "roles/kubernetes-networks/defaults/calico.yaml"
+    - "roles/kubernetes-networks/defaults/main.yml"
+  tasks:
+    - { include: 'roles/etcd-ca-rotation/includes/update-cluster-network.yml' }
+```
