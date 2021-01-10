@@ -636,6 +636,10 @@ kernel_nf_conntrack_max: 4194304
 
 优化清除 cri 时, 清除残留启动的服务.
 
+不在默认安装 cri-o.
+
+添加 cri-tools 独立安装, 不在依赖 cri-o。
+
 ### 修复
 
 修复使用 containerd 时, 如果不能清除本地残留 container 服务则会造成下一次部署时, 无法正常启动成功的问题。

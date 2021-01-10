@@ -1,0 +1,13 @@
+---
+
+- name: Remove Cri-Tools Binary Files
+  file:
+    path: "{{ kubernetes_ctl_path }}{{ item }}"
+    state: absent
+  with_items:
+    - "crictl"
+  ignore_errors: true
+
+- name: Remove Cri-Tools Ctrctl Configs
+  shell: "mv /etc/crictl.yaml {{ temporary_dirs }}clean-cluster"
+  ignore_errors: true
