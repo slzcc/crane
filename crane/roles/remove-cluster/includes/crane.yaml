@@ -6,7 +6,7 @@
 
 - name: Create Clean Cluster Directory
   file:
-    path: "{{ temporary_dirs }}clean-cluster"
+    path: "{{ temporary_dirs }}remove-cluster"
     mode: 0755
     owner: "{{ ssh_connect_user }}"
     state: directory
