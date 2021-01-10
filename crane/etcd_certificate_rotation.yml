@@ -112,6 +112,7 @@
     - "roles/downloads-ssh-key/defaults/main.yml"
   tasks:
     - { include: 'roles/kubernetes-upgrade/includes/nodes/node-schedule.yaml' }
+    - { include: 'roles/kubernetes-upgrade/includes/check-cluster-pod.yaml' }
 
 - name: Sync Crane Delploy Files to Instance
   hosts: kube-master[0]
