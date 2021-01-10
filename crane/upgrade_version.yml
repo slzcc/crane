@@ -106,7 +106,6 @@
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/downloads-ssh-key/defaults/main.yml"
   tasks:
-    - { include: 'roles/kubernetes-upgrade/includes/update-k8s-calico.yaml', when: is_k8s_upgrade_calico }
     - { include: 'roles/kubernetes-upgrade/includes/check-cluster.yaml' }
 
 - name: Turn on Cluster Scheduling
