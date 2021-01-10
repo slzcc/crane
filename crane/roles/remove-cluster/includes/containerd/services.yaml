@@ -14,7 +14,7 @@
 #   ignore_errors: true
 
 - name: Remove Containers Service
-  shell: "{{ kubernetes_ctl_path }}crictl rm -f $({{ kubernetes_ctl_path }}crictl ps -a | grep {{ item }} | awk '{print $1}')"
+  shell: "for container in $({{ kubernetes_ctl_path }}crictl ps -a | grep {{ item }} | awk '{print $1}'); do {{ kubernetes_ctl_path }}crictl rm -f $container ; done"
   with_items:
     - "etcd"
     - "haproxy"
