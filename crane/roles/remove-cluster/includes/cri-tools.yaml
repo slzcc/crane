@@ -9,5 +9,5 @@
   ignore_errors: true
 
 - name: Remove Cri-Tools Ctrctl Configs
-  shell: "mv /etc/crictl.yaml {{ temporary_dirs }}clean-cluster"
+  shell: "mv /etc/crictl.yaml {{ temporary_dirs }}remove-cluster"
   ignore_errors: true
