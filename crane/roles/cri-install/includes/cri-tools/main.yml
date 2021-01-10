@@ -1,0 +1,32 @@
+---
+
+- name: Check Docker-ce Version
+  shell: "crictl version"
+  register: check_crictl
+  ignore_errors: true
+
+- name: Install Cri Tools to local.
+  include: roles/downloads-packages/includes/cri-tools/local_download.yaml
+  when: 
+    - crio_install_type == 'local_binary'
+    - check_crictl.stderr
+
+- name: Install Cri Tools to http.
+  include: roles/downloads-packages/includes/cri-tools/http_download.yaml
+  when: 
+    - crio_install_type == 'http_binary'
+    - check_crictl.stderr
+
+- name: Binary Install
+  include: "roles/cri-install/includes/cri-tools/_binary_install.yaml"
+  when: 
+    - check_crictl.stderr
+    
+- name: Copy Crictl Config
+  template: 
+    src: "roles/cri-install/templates/{{ item }}"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+    dest: "/etc/crictl.yaml"
+  with_items:
+    - "crictl.yaml"

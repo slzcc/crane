@@ -21,13 +21,5 @@
     - ("crio" in cri_driver)
     - cri_drive_install_type != "none"
 
-- name: Copy Crictl Config
-  template: 
-    src: "roles/cri-install/templates/{{ item }}"
-    mode: 0644
-    owner: "{{ ssh_connect_user }}"
-    dest: "/etc/crictl.yaml"
-  with_items:
-    - "crictl.yaml"
-  when:
-    - cri_drive_install_type != "none"
+- name: Deploy Cri-Tools to runC
+  include: "roles/cri-install/includes/cri-tools/main.yml"

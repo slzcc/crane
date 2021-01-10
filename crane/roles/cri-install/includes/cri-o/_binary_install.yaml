@@ -3,7 +3,6 @@
   shell: "cp -a {{ temporary_dirs }}crio-{{ crio_version }}/bin/{{ item }} {{ kubernetes_ctl_path }}"
   with_items:
     - "conmon"
-    - "crictl"
     - "crio"
     - "crio-status"
     - "crun"
