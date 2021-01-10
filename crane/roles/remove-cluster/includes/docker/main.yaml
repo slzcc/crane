@@ -1,6 +1,4 @@
 ---
-- include_vars: "roles/cri-install/vars/docker.yaml"
-
 # Clean Docker
 - name: Clean Docker Containers.
   shell: "{{ kubernetes_ctl_path }}docker rm -f $(docker ps -f 'name=k8s*' -aq)"
@@ -18,6 +16,7 @@
     - "docker"
     - "docker.socket"
   ignore_errors: true
+  when: is_remove_all or is_remove_docker_ce
 
 # Clean Docker Image
 - name: Clean Docker Image
@@ -32,9 +31,11 @@
   with_items:
     - "docker"
     - "docker.socket"
+  when: is_remove_all or is_remove_docker_ce
 
 - name: Umount Docker Drive
   shell: "for i in `cat /proc/mounts | grep '{{ docker_data_root }}' | awk '{print $2}'`;do umount -l $i; done"
+  when: is_remove_all or is_remove_docker_ce
   ignore_errors: true
 
 # Clean Docker Configs
@@ -60,6 +61,7 @@
 # Clean Docker Socket
 - name: Clean Docker Socket
   shell: "rm -rf {{ docker_socket_path }}"
+  when: is_remove_all or is_remove_docker_ce
   ignore_errors: true
 
 - name: Clean Docker Users
