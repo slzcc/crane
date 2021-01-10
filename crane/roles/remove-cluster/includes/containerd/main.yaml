@@ -1,6 +1,4 @@
 ---
-- include_vars: "roles/cri-install/vars/containerd.yaml"
-
 - name: Clean Containerd Services
   include: "roles/remove-cluster/includes/containerd/services.yaml"
 
@@ -11,25 +9,30 @@
   with_items:
     - "containerd"
   ignore_errors: true
-  
+  when: is_remove_all or is_remove_containerd
+
 - name: Stop Containerd.
   service:
     name: "containerd"
     state: stopped
   ignore_errors: true
-  
+  when: is_remove_all or is_remove_containerd
+
 # Clean Containerd Socket
 - name: Clean Containerd Socket
   shell: "rm -rf {{ containerd_socket_path }}"
   ignore_errors: true
+  when: is_remove_all or is_remove_containerd
 
 - name: Umount Containerd Drive
   shell: "for i in `cat /proc/mounts | grep '{{ containerd_run_path }}' | awk '{print $2}'`;do umount -l $i; done"
   ignore_errors: true
+  when: is_remove_all or is_remove_containerd
 
 - name: Clean Containerd Shim Services
   include: "roles/remove-cluster/includes/containerd/shim.yaml"
-
+  when: is_remove_all or is_remove_containerd
+  
 # Clean Containerd Image
 # - name: Clean Containerd Image
 #   include: "roles/remove-cluster/includes/containerd/image.yaml"
