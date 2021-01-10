@@ -50,7 +50,7 @@
   when: is_remove_all or is_remove_crio
 
 - name: Remove System CRIO Configs
-  shell: "mv {{ systemd_default_dirs }}crio.service {{ temporary_dirs }}clean-cluster"
+  shell: "mv {{ systemd_default_dirs }}crio.service {{ temporary_dirs }}remove-cluster"
   when: is_remove_all or is_remove_crio
   ignore_errors: true
 
@@ -59,12 +59,12 @@
   ignore_errors: true
 
 - name: Remove CRIO Configs
-  shell: "mv /etc/crio {{ temporary_dirs }}clean-cluster"
+  shell: "mv /etc/crio {{ temporary_dirs }}remove-cluster"
   when: is_remove_all or is_remove_crio
   ignore_errors: true
 
 - name: Remove CRIO Env Configs
-  shell: "mv /etc/default/crio {{ temporary_dirs }}clean-cluster"
+  shell: "mv /etc/default/crio {{ temporary_dirs }}remove-cluster"
   when: is_remove_all or is_remove_crio
   ignore_errors: true
 

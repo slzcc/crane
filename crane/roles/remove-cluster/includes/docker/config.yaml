@@ -1,11 +1,11 @@
 ---
 
 - name: Remove System Docker Configs
-  shell: "mv {{ systemd_default_dirs }}docker.service {{ temporary_dirs }}clean-cluster"
+  shell: "mv {{ systemd_default_dirs }}docker.service {{ temporary_dirs }}remove-cluster"
   ignore_errors: true
 
 - name: Remove System Docker Socket Configs
-  shell: "mv {{ systemd_default_dirs }}docker.socket {{ temporary_dirs }}clean-cluster"
+  shell: "mv {{ systemd_default_dirs }}docker.socket {{ temporary_dirs }}remove-cluster"
   ignore_errors: true
 
 - name: Systemd Reload Remove Docker
@@ -13,6 +13,6 @@
   ignore_errors: true
 
 - name: Remove DockerD Configs
-  shell: "mv /etc/docker {{ temporary_dirs }}clean-cluster"
+  shell: "mv /etc/docker {{ temporary_dirs }}remove-cluster"
   when: is_remove_all or is_remove_docker_daemon_cfg
   ignore_errors: true
