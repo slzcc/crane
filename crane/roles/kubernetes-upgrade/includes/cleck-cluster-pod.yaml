@@ -1,0 +1,4 @@
+---
+- name: Check Cluster Status
+  shell: 'until {{ kubernetes_ctl_path }}kubectl get pod ; do >&2 echo "Kubenetes Cluster Starting..." && sleep 1 ; done'
+  register: result
