@@ -644,7 +644,6 @@ kernel_nf_conntrack_max: 4194304
 
 修复使用 containerd 时, 如果不能清除本地残留 container 服务则会造成下一次部署时, 无法正常启动成功的问题。
 
-
 ### 移除
 
 移除 add/del Etcd 时更新 Calico 网络:
