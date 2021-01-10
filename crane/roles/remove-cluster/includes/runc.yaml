@@ -5,3 +5,4 @@
     path: "{{ kubernetes_ctl_path }}runc"
     state: absent
   ignore_errors: true
+  when: is_remove_all or is_remove_runc
