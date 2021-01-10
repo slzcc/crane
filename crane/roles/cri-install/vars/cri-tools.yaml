@@ -3,4 +3,4 @@
 
 # https://github.com/kubernetes-sigs/cri-tools/blob/master/docs/crictl.md
 # https://github.com/kubernetes-sigs/cri-tools/releases
-cri_tools_version: 1.20.0
+cri_tools_version: v1.20.0
