@@ -9,10 +9,10 @@
 
 - name: Copy Docker Binary Compressed File
   copy: 
-    src: "roles/downloads-packages/files/crictl-{{ cri-tools_version }}.tar.gz"
-    dest: "{{ temporary_dirs }}crictl-{{ cri-tools_version }}.tar.gz"
+    src: "roles/downloads-packages/files/crictl-{{ cri_tools_version }}.tar.gz"
+    dest: "{{ temporary_dirs }}crictl-{{ cri_tools_version }}.tar.gz"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
 
 - name: Unpack the cri-tools. Tar. Gz
-  shell: "tar zxf {{ temporary_dirs }}crictl-{{ cri-tools_version }}.tar.gz -C {{ temporary_dirs }}cri-tools"
+  shell: "tar zxf {{ temporary_dirs }}crictl-{{ cri_tools_version }}.tar.gz -C {{ temporary_dirs }}cri-tools"
