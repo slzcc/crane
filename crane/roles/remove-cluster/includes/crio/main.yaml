@@ -42,7 +42,6 @@
     state: absent
   with_items:
     - "conmon"
-    - "crictl"
     - "crio"
     - "crio-status"
     - "crun"
@@ -67,11 +66,6 @@
 - name: Remove CRIO Env Configs
   shell: "mv /etc/default/crio {{ temporary_dirs }}clean-cluster"
   when: is_remove_all or is_remove_crio
-  ignore_errors: true
-
-- name: Remove CRIO Ctrctl Configs
-  shell: "mv /etc/crictl.yaml {{ temporary_dirs }}clean-cluster"
-  when: is_remove_all or is_remove_containerd
   ignore_errors: true
 
 - name: Remove CRIO Data Path

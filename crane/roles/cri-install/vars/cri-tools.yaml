@@ -1,0 +1,6 @@
+## CRI-TOOLS
+## ********************************************************************************************************************************
+
+# https://github.com/kubernetes-sigs/cri-tools/blob/master/docs/crictl.md
+# https://github.com/kubernetes-sigs/cri-tools/releases
+cri-tools_version: 1.20.0

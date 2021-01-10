@@ -6,6 +6,7 @@ VERSION := `awk '/^k8s_version/' ./crane/group_vars/all.yml | awk -F': ' '{print
 DOCKER_VERSION := `awk '/^docker_version/' ./crane/roles/cri-install/vars/docker.yaml | awk -F': ' '{print $$2}' | sed "s/'//g"`
 CRIO_VERSION := `awk '/^crio_version/' ./crane/roles/cri-install/vars/crio.yaml | awk -F': ' '{print $$2}' | sed "s/'//g"`
 CONTAINERD_VERSION := `awk '/^containerd_version/' ./crane/roles/cri-install/vars/containerd.yaml | awk -F': ' '{print $$2}' | sed "s/'//g"`
+CRITOOLS_VERSION := `awk '/^cri-tools_version/' ./crane/roles/cri-install/vars/cri-tools.yaml | awk -F': ' '{print $$2}' | sed "s/'//g"`
 
 # Tasks: add_etcd.yml
 #        add_nodes.yml
@@ -118,9 +119,12 @@ local_load_crio: local_load_runc
 local_load_containerd: local_load_runc
 	@wget -qO- https://github.com/containerd/containerd/releases/download/v${CONTAINERD_VERSION}/containerd-${CONTAINERD_VERSION}-linux-amd64.tar.gz > ${PWD}/crane/roles/downloads-packages/files/containerd-${CONTAINERD_VERSION}-linux-amd64.tar.gz
 
-local_load_runc:
+local_load_runc: local_load_critools
 	@wget -qO- https://github.com/opencontainers/runc/releases/download/v1.0.0-rc92/runc.amd64 > ${PWD}/crane/roles/downloads-packages/files/runc
-		
+
+local_load_critools: 
+	@wget -qO- https://github.com/kubernetes-sigs/cri-tools/releases/download/${CRITOOLS_VERSION}/crictl-${CRITOOLS_VERSION}-linux-amd64.tar.gz > ${PWD}/crane/roles/downloads-packages/files/crictl-${CRITOOLS_VERSION}.tar.gz
+
 local_load_cri: local_load_dockerd local_load_crio
 
 test_main:
