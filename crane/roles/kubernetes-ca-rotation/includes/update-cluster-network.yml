@@ -1,15 +1,25 @@
 ---
-- name: Copy Calico Config Files
-  template: 
-    src: "roles/kubernetes-networks/templates/calico.j2"
-    dest: "{{ temporary_dirs }}kubernetes-ca-rotation/calico.yml"
-    mode: 0644
-    owner: "{{ ssh_connect_user }}"
+# - name: Copy Calico Config Files
+#   template: 
+#     src: "roles/kubernetes-networks/templates/calico.j2"
+#     dest: "{{ temporary_dirs }}kubernetes-ca-rotation/calico.yml"
+#     mode: 0644
+#     owner: "{{ ssh_connect_user }}"
 
-- name: Clean Calico
-  shell: '{{ kubernetes_ctl_path }}kubectl delete -f {{ temporary_dirs }}kubernetes-ca-rotation/calico.yml'
+# - name: Clean Calico
+#   shell: '{{ kubernetes_ctl_path }}kubectl delete -f {{ temporary_dirs }}kubernetes-ca-rotation/calico.yml'
+#   ignore_errors: true
+
+# - name: Deploy Calico
+#   shell: '{{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}kubernetes-ca-rotation/calico.yml'
+#   ignore_errors: true
+
+- name: Reload Calico Kube Controllers
+  shell: >
+    {{ kubernetes_ctl_path }}kubectl rollout restart deployment/calico-kube-controllers -n kube-system
   ignore_errors: true
 
-- name: Deploy Calico
-  shell: '{{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}kubernetes-ca-rotation/calico.yml'
+- name: Reload Calico Kube Node
+  shell: >
+    {{ kubernetes_ctl_path }}kubectl rollout restart daemonset/calico-node -n kube-system
   ignore_errors: true
