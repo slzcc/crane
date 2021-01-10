@@ -35,9 +35,13 @@
 - name: Clean CRIO
   include: "roles/remove-cluster/includes/crio/main.yaml"
 
-# Clean CRIO
+# Clean runC
 - name: Clean runC
   include: "roles/remove-cluster/includes/runc.yaml"
+
+# Clean Cri-Tools
+- name: Clean runC
+  include: "roles/remove-cluster/includes/cri-tools.yaml"
 
 # Clean Calico
 - name: Clean Other
