@@ -23,7 +23,7 @@
 
 - name: Install Docker-ce
   include: "roles/cri-install/includes/docker/os.yaml"
-  when: is_mandatory_docker_install or (result is failed)
+  when: is_mandatory_docker_install or result.stderr
 
 - name: Check DockerD Daemon.js isFile
   shell: "ls /etc/docker/daemon.json"
