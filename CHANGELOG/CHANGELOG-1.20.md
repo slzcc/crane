@@ -226,7 +226,7 @@ kubectl_gc_options => kubelet_gc_options
 添加 Clean Cluster 时, 部分配置移动到临时数据目录中:
 
 ```
-* => {{ temporary_dirs }}clean-cluster
+* => {{ temporary_dirs }}remove-cluster
 ```
 
 清理集群时, 补充遗漏的 docker 二进制文件的清理:
