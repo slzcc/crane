@@ -127,22 +127,22 @@
   tasks:
     - { include: 'roles/kubernetes-ca-rotation/includes/update-cluster-node.yml' }
 
-- name: Update Cluster Network
-  hosts: kube-master[0]
-  become: yes
-  become_method: sudo
-  vars:
-    ansible_ssh_pipelining: true
-  vars_files:
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/crane/defaults/main.yml"
-    - "roles/etcd-cluster-management/vars/main.yml"
-    - "roles/kubernetes-networks/defaults/calico.yaml"
-    - "roles/kubernetes-networks/defaults/main.yml"
-    - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-  tasks:
-    - { include: 'roles/kubernetes-ca-rotation/includes/update-cluster-network.yml' }
+# - name: Update Cluster Network
+#   hosts: kube-master[0]
+#   become: yes
+#   become_method: sudo
+#   vars:
+#     ansible_ssh_pipelining: true
+#   vars_files:
+#     - "roles/downloads-ssh-key/defaults/main.yml"
+#     - "roles/crane/defaults/main.yml"
+#     - "roles/etcd-cluster-management/vars/main.yml"
+#     - "roles/kubernetes-networks/defaults/calico.yaml"
+#     - "roles/kubernetes-networks/defaults/main.yml"
+#     - "roles/kubernetes-manifests/defaults/main.yml"
+#     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+#   tasks:
+#     - { include: 'roles/kubernetes-ca-rotation/includes/update-cluster-network.yml' }
 
 - name: Turn on Cluster Scheduling
   hosts: kube-master[0]
