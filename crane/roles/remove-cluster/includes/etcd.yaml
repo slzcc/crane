@@ -1,6 +1,4 @@
 ---
-- include_vars: "roles/etcd-cluster-management/vars/main.yml"
-
 # Clean Etcd
 - name: Clean Etcd ssl directory.
   file:
