@@ -685,3 +685,42 @@ kernel_nf_conntrack_max: 4194304
   tasks:
     - { include: 'roles/etcd-ca-rotation/includes/update-cluster-network.yml' }
 ```
+
+移除 Kubernetes ca rotation 时更新 Calico 网络:
+
+```
+# - name: Update Cluster Network
+#   hosts: kube-master[0]
+#   become: yes
+#   become_method: sudo
+#   vars:
+#     ansible_ssh_pipelining: true
+#   vars_files:
+#     - "roles/downloads-ssh-key/defaults/main.yml"
+#     - "roles/crane/defaults/main.yml"
+#     - "roles/etcd-cluster-management/vars/main.yml"
+#     - "roles/kubernetes-networks/defaults/calico.yaml"
+#     - "roles/kubernetes-networks/defaults/main.yml"
+#     - "roles/kubernetes-manifests/defaults/main.yml"
+#     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+#   tasks:
+#     - { include: 'roles/kubernetes-ca-rotation/includes/update-cluster-network.yml' }
+```
+
+移除 Kubernetes upgrade 时更新 Calico 网络:
+
+```
+- name: Update Kubernetes Cluster Tools
+  hosts: kube-master[0]
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/kubernetes-upgrade/defaults/main.yml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+  tasks:
+    - { include: 'roles/kubernetes-upgrade/includes/update-k8s-calico.yaml', when: is_k8s_upgrade_calico }
+```
