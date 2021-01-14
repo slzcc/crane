@@ -110,8 +110,8 @@ if [ $? -ne 0 ]; then
 fi
 
 # Push Other Registry
-export PUSH_OTHER_REGISTRY_CHECK_PERFORM=true
-./PushOtherWarehouse.sh
+# export PUSH_OTHER_REGISTRY_CHECK_PERFORM=true
+# ./PushOtherWarehouse.sh
 
 ./PublishIstioRegistryImages.sh
 
