@@ -13,11 +13,11 @@
 # CleanPullImage=false isImageExport=false isImagePush=false ./PublishK8sRegistryImages.sh
 #########
 
-IstioVersion=${k8sVersion:-'1.8.1'}
-GrafanaVersion=${k8sVersion:-'7.0.5'}
-JaegertracingVersion=${k8sVersion:-'1.18'}
-kialiVersion=${k8sVersion:-'v1.22'}
-PrometheusVersion=${k8sVersion:-'v2.19.2'}
+IstioVersion=${IstioVersion:-'1.8.1'}
+GrafanaVersion=${GrafanaVersion:-'7.0.5'}
+JaegertracingVersion=${JaegertracingVersion:-'1.18'}
+kialiVersion=${kialiVersion:-'v1.22'}
+PrometheusVersion=${PrometheusVersion:-'v2.19.2'}
 
 # Kubernetes Source Registry
 sourceRegistry=${sourceRegistry:-'istio'}
