@@ -82,7 +82,7 @@ docker save -o ${temporaryDirs}/image_kiali.tar.gz \
 
 # Prometheus
 docker pull prom/prometheus:${PrometheusVersion}
-[ ${CleanPullImage} == 'true' ] && docker rmi -f prom/prometheus:${PrometheusVersion}
+# [ ${CleanPullImage} == 'true' ] && docker rmi -f prom/prometheus:${PrometheusVersion}
 
 [ ${isImageExport} == 'true' ] && \
 docker save -o ${temporaryDirs}/image_prometheus.tar.gz \
