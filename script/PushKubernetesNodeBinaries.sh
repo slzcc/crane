@@ -113,5 +113,5 @@ fi
 # export PUSH_OTHER_REGISTRY_CHECK_PERFORM=true
 # ./PushOtherWarehouse.sh
 
-./PublishIstioRegistryImages.sh
+./PushIstioNodeBinaries.sh
 
