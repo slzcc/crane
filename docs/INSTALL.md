@@ -23,6 +23,7 @@ Crane 是由我个人独立创作并维护的, 在使用范围上可能得不到
 * pause: v3.2
 
 > Crane 默认使用 Calico 网络, Calico 依赖 Etcd 数据源, 涉及到所有的更新配置操作都是围绕 Calico 设计的, 如果不想使用 Calico 则自行解决 add_etcd/upgrade_version 时可能存在的问题。
+> 1.20.1.9 版本中已经剔除了 Calico 依赖。
 
 ### 开始使用 Crane
 
