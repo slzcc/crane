@@ -742,3 +742,14 @@ Kubernetes upgrade 时取消更新 Bootstrap 创建。
 Crane 以更新至 1.20.2.0 版本。
 
 修改了部分文档说明。
+
+# v1.20.2.1 
+
+## 增加
+
+对 kubelet 增加 container 日志的配置项:
+
+```
+# Containers Log
+Kubelet_containers_log_config: "--container-log-max-files=3 --container-log-max-size='512Mi'"
+```
