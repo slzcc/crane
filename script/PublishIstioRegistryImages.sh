@@ -26,7 +26,7 @@ sourceRegistry=${sourceRegistry:-'istio'}
 targetRegistry=${targetRegistry:-'slzcc'}
 
 CleanPullImage=${CleanPullImage:-'true'}
-isImageExport=${isImageExport:-'false'}
+isImageExport=${isImageExport:-'true'}
 isImagePush=${isImagePush:-'true'}
 
 # Temporary Directory
