@@ -12,6 +12,7 @@
     - [v1.20.1.7 更新内容](#v12017)
     - [v1.20.1.8 更新内容](#v12018)
     - [v1.20.1.9 更新内容](#v12019)
+    - [v1.20.2.0 更新内容](#v12020)
 
 # v1.20.0.0
 
@@ -565,6 +566,8 @@ etcd-add-node 和 etcd-del-node 重命名 xx.nodes
 
 # v1.20.1.8
 
+> 当前版本没有正式发版
+
 ### 优化 
 
 因资源的增加对默认的 nf_conntrack 配置修改为如下:
@@ -733,3 +736,9 @@ Kubernetes upgrade 时取消更新 Bootstrap 创建。
 ```
    - { include: 'roles/kubernetes-cluster-management/includes/create-bootstrap.yaml' }
 ```
+
+# v1.20.2.0
+
+Crane 以更新至 1.20.2.0 版本。
+
+修改了部分文档说明。
