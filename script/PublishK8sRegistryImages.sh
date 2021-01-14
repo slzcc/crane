@@ -31,7 +31,7 @@ sourceRegistry=${sourceRegistry:-'k8s.gcr.io'}
 targetRegistry=${targetRegistry:-'slzcc'}
 
 CleanPullImage=${CleanPullImage:-'true'}
-isImageExport=${isImageExport:-'false'}
+isImageExport=${isImageExport:-'true'}
 isImagePush=${isImagePush:-'true'}
 
 # Temporary Directory
