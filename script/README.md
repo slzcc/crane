@@ -24,6 +24,27 @@ Loaded image: k8s.gcr.io/pause:3.1
 $ docker rm -f import-kubernetes-temporary
 ```
 
+如果是 containerd 则执行:
+```
+$ ctr -n k8s.io tasks kill -a --signal 9 import-kubernetes-temporary
+$ ctr -n k8s.io tasks rm import-kubernetes-temporary
+$ ctr -n k8s.io c rm import-kubernetes-temporary
+$ rm -rf /run/containerd/runc/k8s.io/import-kubernetes-temporary
+$ ctr -n k8s.io run --null-io --net-host -d \
+       --label name=import-kubernetes-temporary \
+       --mount type=bind,src=/var/run,dst=/var/run,options=rbind:ro \
+       --mount type=bind,src=/run,dst=/run,options=rbind:ro \
+       slzcc/kubernetes:v1.20.0 import-kubernetes-temporary sleep 1234567
+
+$ ctr -n k8s.io tasks exec --exec-id $(ctr -n k8s.io tasks list | grep 'import-kubernetes-temporary'| awk '{print $2}') import-kubernetes-temporary bash /containerd-image-import.sh
+
+$ ctr -n k8s.io tasks kill -a --signal 9 import-kubernetes-temporary
+$ ctr -n k8s.io tasks rm import-kubernetes-temporary
+$ ctr -n k8s.io c rm import-kubernetes-temporary
+$ rm -rf /run/containerd/runc/k8s.io/import-kubernetes-temporary
+```
+
+
 镜像包含如下：
 ```
 $ docker images
