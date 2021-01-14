@@ -34,9 +34,9 @@ $ make local_load_cri
 > 此配置会把 docker/containerd/crio 都在下载到本地, 如修改了 `cri_driver` 请根据 `Makefile` 中执行所需命令:
 
 > ```
-> $ local_load_runc && local_load_dockerd
-> $ local_load_runc && local_load_containerd
-> $ local_load_runc && local_load_crio
+> $ local_load_crio
+> $ local_load_containerd
+> $ local_load_dockerd
 > ```
 
 > 注意: 如果独立安装 CRI 首先需要执行 local_load_runc 在执行相应的本地下载, 因所有组件都依赖 runc。
@@ -82,3 +82,10 @@ docker 默认集成 containerd, 如果不是通过 Crane 安装的 Docker, 则�
 
 > 如果默认使用 docker 则升级版本中使用了 containerd 进行部署, 则会引发 ctr 等命令无法正常使用造成过程失败报错退出的问题, 严重可能影响集群使用, 所以执行时一定要进行检测。
 > ctr 不可用是因为 docker 附带的 containerd 的配置文件中关闭了绝大部分功能造成的, 如果需要使用 ctr 删除 `/etc/containerd/config.toml => disabled_plugins = ["cri"]` 重启 containerd 生效.
+
+# Cri-Tools
+
+安装 CRI 时会默认安装 Cri-Tools 工具, 如:
+  * crictl
+
+它会根据 `cri_k8s_default` 判断使用 cri 驱动类型定义配置文件.
