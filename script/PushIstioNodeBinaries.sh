@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -x
 # 如果需要部署到自己的私有仓库，请修改此项名称
 export targetRegistry=${targetRegistry:-'slzcc'}
 
@@ -37,7 +37,7 @@ for i in \$(ls /image_*.tar.gz); do
 done
 EOF
 
-chmod +x ${temporaryDirs}/docker-image-import.sh
+chmod +x ${temporaryDirs}/docker-image-import.sh ${temporaryDirs}/containerd-image-import.sh
 
 cat > ${temporaryDirs}/Dockerfile << EOF
 FROM docker:${dockercliVersion} as DockerCli

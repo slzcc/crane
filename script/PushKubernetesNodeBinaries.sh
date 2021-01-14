@@ -59,7 +59,7 @@ for i in \$(ls /image_*.tar.gz); do
 done
 EOF
 
-chmod +x ${temporaryDirs}/docker-image-import.sh
+chmod +x ${temporaryDirs}/docker-image-import.sh ${temporaryDirs}/containerd-image-import.sh
 
 cat > ${temporaryDirs}/Dockerfile << EOF
 FROM docker:${dockercliVersion} as DockerCli
