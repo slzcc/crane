@@ -4,7 +4,7 @@ set -x
 export targetRegistry=${targetRegistry:-'slzcc'}
 
 _cni_os_drive='linux-amd64'
-_IstioVersion=`awk '/^istio_nginx_version/{print}' ../crane/roles/kubernetes-addons/defaults/main.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_IstioVersion=`awk '/^istio_version/{print}' ../crane/roles/kubernetes-addons/defaults/main.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 _dockerVersion=`awk '/^docker_version/{print}' ../crane/roles/cri-install/vars/docker.yaml | awk -F': ' '{print $2}' | sed "s/'//g"`
 
 # Docker Version
