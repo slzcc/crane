@@ -2,16 +2,17 @@
 
 - name: Configure cfssl to execute files in localhost
   include: "roles/downloads-packages/includes/cfssl/http_download.yaml"
-  when: is_using_local_files_deploy
+  when: 
+    - not is_using_local_files_deploy
 
 - name: Configure cfssl to execute files in image deploy
   include: "roles/downloads-packages/includes/cfssl/docker/image_deploy.yaml"
   when: 
-    - not is_using_local_files_deploy
+    - is_using_local_files_deploy
     - cri_k8s_default == 'docker'
 
 - name: Configure cfssl to execute files in image deploy
   include: "roles/downloads-packages/includes/cfssl/containerd/image_deploy.yaml"
   when:
-    - not is_using_local_files_deploy
+    - is_using_local_files_deploy
     - cri_k8s_default == 'containerd'
