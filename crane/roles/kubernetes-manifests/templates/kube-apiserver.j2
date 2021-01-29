@@ -55,7 +55,7 @@ spec:
     - --tls-private-key-file={{ kubernetes_pki_dirs }}apiserver-key.pem
     - --service-node-port-range={{ k8s_apiserver_node_port_range }}
     - --client-ca-file={{ kubernetes_pki_dirs }}ca.pem
-    image: {{ k8s_cluster_component_registry }}/kube-apiserver-amd64:{{ k8s_version }}
+    image: {{ k8s_cluster_component_registry }}/kube-apiserver:{{ k8s_version }}
     imagePullPolicy: IfNotPresent
     env:
     - name: TZ

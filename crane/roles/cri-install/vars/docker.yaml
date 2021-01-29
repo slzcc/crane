@@ -11,7 +11,12 @@ docker_version: '20.10.0'
 docker_install_type: "{{ cri_drive_install_type }}"
 
 # http_binary Source Addr
-docker_install_http_binary_source: 'https://download.docker.com/linux/static/stable/x86_64'
+docker_os_arch: >-
+  {%- if os_arch == "arm64" -%}
+  aarch64
+  {%- else -%}
+  x86_64
+  {%- endif -%}
 
 # install docker bin path
 # 目前已经废弃

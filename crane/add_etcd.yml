@@ -91,6 +91,7 @@
     - "roles/crane/defaults/main.yml"
     - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/downloads-packages/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/etcd-cluster-management/defaults/tls.yaml"
