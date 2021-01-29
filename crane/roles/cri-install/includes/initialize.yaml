@@ -1,0 +1,8 @@
+---
+
+- name: Create CRI Tasks Temporary Directory
+  file:
+    path: "{{ temporary_dirs }}cri"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
