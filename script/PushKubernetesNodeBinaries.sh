@@ -6,15 +6,15 @@ export targetRegistry=${targetRegistry:-'slzcc'}
 _cri_driver=`awk '/^cri_driver/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 
 _cni_os_drive='linux-amd64'
-_dockerVersion=`awk '/^docker_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_dockerVersion=`awk '/^docker_version/{print}' ../crane/roles/cri-install/vars/docker.yaml | awk -F': ' '{print $2}' | sed "s/'//g"`
 _k8sVersion=`awk '/^k8s_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 _cni_version=`awk '/^cni_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 _etcdVersion=`awk '/^etcd_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
-_pauseVersion=`awk '/^pause_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_pauseVersion=`awk '/^pause_version/{print}' ../crane/roles/kubernetes-cluster-management/defaults/main.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 _calicoVersion=`awk '/^calico_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 _haproxyVersion=`awk '/^haproxy_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
-_corednsVersion=`awk '/^dns_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
-_nginxIngressVersion=`awk '/^ingress_nginx_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_corednsVersion=`awk '/^dns_version/{print}' ../crane/roles/kubernetes-cluster-management/defaults/main.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_nginxIngressVersion=`awk '/^ingress_nginx_version/{print}' ../crane/roles/kubernetes-addons/defaults/main.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 
 # Docker Version
 export dockercliVersion=${_dockerVersion:-'19.03'}
@@ -59,7 +59,7 @@ for i in \$(ls /image_*.tar.gz); do
 done
 EOF
 
-chmod +x ${temporaryDirs}/docker-image-import.sh
+chmod +x ${temporaryDirs}/docker-image-import.sh ${temporaryDirs}/containerd-image-import.sh
 
 cat > ${temporaryDirs}/Dockerfile << EOF
 FROM docker:${dockercliVersion} as DockerCli
@@ -110,5 +110,8 @@ if [ $? -ne 0 ]; then
 fi
 
 # Push Other Registry
-export PUSH_OTHER_REGISTRY_CHECK_PERFORM=true
-./PushOtherWarehouse.sh
+# export PUSH_OTHER_REGISTRY_CHECK_PERFORM=true
+# ./PushOtherWarehouse.sh
+
+./PushIstioNodeBinaries.sh
+

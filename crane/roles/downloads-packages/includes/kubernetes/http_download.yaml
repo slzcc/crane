@@ -6,18 +6,22 @@
 
 # Kubernetes
 ## ********************************************************************************************************************************
-- name: Check Kubernetes Package
-  shell: "ls {{ temporary_dirs }}kubernetes/node/bin"
-  register: CHECK_KUBE_BIN_PACKAGE
+- name: Check Kubelet Version
+  shell: "{{ kubernetes_ctl_path }}kubelet --version |awk '{print $2}'"
+  register: check_kubelet_version
   ignore_errors: true
 
 - name: Download Kubernetes Ctl And Kubelet Binary Files
-  shell: "export http_proxy={{ http_proxy }} ; export https_proxy={{ https_proxy }} ; wget -qO- 'https://dl.k8s.io/{{ k8s_version }}/kubernetes-node-linux-amd64.tar.gz' | tar zx -C {{ temporary_dirs }}"
+  shell: "export http_proxy={{ http_proxy }} ; export https_proxy={{ https_proxy }} ; wget -qO- 'https://dl.k8s.io/{{ k8s_version }}/kubernetes-node-{{ os_drive }}-{{ os_arch }}.tar.gz' | tar zx -C {{ temporary_dirs }}"
   changed_when: true
-  when: CHECK_KUBE_BIN_PACKAGE is failed
+  when: check_kubelet_version.stdout != k8s_version
 
 - name: Copy Kubectl
   shell: "cp -rf {{ temporary_dirs }}kubernetes/node/bin/kubectl {{ kubernetes_ctl_path }}"
+  changed_when: true
+  when: check_kubelet_version.stdout != k8s_version
 
 - name: Copy Kubelet
   shell: "cp -rf {{ temporary_dirs }}kubernetes/node/bin/kubelet {{ kubernetes_ctl_path }}"
+  changed_when: true
+  when: check_kubelet_version.stdout != k8s_version

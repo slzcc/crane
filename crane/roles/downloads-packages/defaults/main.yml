@@ -15,3 +15,8 @@ etcd_master_ip_str: >-
     {{ host }}
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}
+
+cfssl_arch: >-
+  {%- if os_arch == "arm64" -%}
+  arm
+  {%- endif -%}
