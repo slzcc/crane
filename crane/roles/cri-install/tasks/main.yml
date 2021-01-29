@@ -1,5 +1,8 @@
 ---
 
+- name: CRI Initialize
+  include: "roles/cri-install/includes/initialize.yaml"
+
 - name: Deploy runC
   include: "roles/cri-install/includes/runc/main.yml"
 

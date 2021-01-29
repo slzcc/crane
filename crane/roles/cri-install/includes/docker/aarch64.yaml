@@ -1,0 +1,11 @@
+---
+
+- name: Copy aarch64 files
+  shell: "cp -a {{ temporary_dirs }}docker/{{ item }} {{ kubernetes_ctl_path }}"
+  with_items:
+    - "runc"
+    - "containerd"
+    - "containerd-shim-runc-v2"
+    - "containerd-shim"
+    - "ctr"
+  ignore_errors: true

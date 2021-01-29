@@ -13,6 +13,7 @@
     - [v1.20.1.8 更新内容](#v12018)
     - [v1.20.1.9 更新内容](#v12019)
     - [v1.20.2.0 更新内容](#v12020)
+    - [v1.20.2.1 更新内容](#v12021)
 
 # v1.20.0.0
 
@@ -742,3 +743,39 @@ Kubernetes upgrade 时取消更新 Bootstrap 创建。
 Crane 以更新至 1.20.2.0 版本。
 
 修改了部分文档说明。
+
+# v1.20.2.1 
+
+## 增加
+
+对 kubelet 增加 container 日志的配置项:
+
+```
+# Containers Log
+Kubelet_containers_log_config: "--container-log-max-files=3 --container-log-max-size='512Mi'"
+```
+
+对 istio 提交包镜像 `slzcc/istio` 。
+
+支持 arm64 架构部署, 目前已经测试 ubuntu 20.04 版本, 支持 arm cri 安装, 但只支持 docker 独立部署, containerd 和 crio 暂不支持。(arm64 架构不支持离线安装)
+
+> 首选需要配置 `os_arch` 为 `arm64`。
+
+```
+$ kubectl get node -o wide
+NAME                               STATUS   ROLES                  AGE   VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION     CONTAINER-RUNTIME
+develop.m1.macbook.shileizcc.com   Ready    control-plane,master   55s   v1.20.2   10.211.55.3   <none>        Ubuntu 20.04.1 LTS   5.4.0-65-generic   docker://20.10.0
+ 
+$ uname -a
+Linux develop.m1.macbook.shileizcc.com 5.4.0-65-generic #73-Ubuntu SMP Mon Jan 18 17:27:25 UTC 2021 aarch64 aarch64 aarch64 GNU/Linux
+```
+
+## 修复
+
+修复安装 cri 时, 可能会引发安装保存没有初始化目录的问题。
+
+## 调整
+
+默认 cri 改为 docker, 因 containerd 用起来是在太费劲。
+
+默认 删除集群 不清除所有, 因网络问题下载资源太慢。
