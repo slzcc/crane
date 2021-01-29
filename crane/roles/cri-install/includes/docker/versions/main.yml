@@ -15,3 +15,7 @@
 - name: Install Docker Binray in v20
   include: "roles/cri-install/includes/docker/versions/20.yaml"
   when: ( docker_version.split('.')[0] == '20' )
+
+- name: OS is aarch64
+  include: "roles/cri-install/includes/docker/aarch64.yaml"
+  when: os_arch == 'arm64'

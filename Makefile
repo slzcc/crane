@@ -7,6 +7,14 @@ DOCKER_VERSION := `awk '/^docker_version/' ./crane/roles/cri-install/vars/docker
 CRIO_VERSION := `awk '/^crio_version/' ./crane/roles/cri-install/vars/crio.yaml | awk -F': ' '{print $$2}' | sed "s/'//g"`
 CONTAINERD_VERSION := `awk '/^containerd_version/' ./crane/roles/cri-install/vars/containerd.yaml | awk -F': ' '{print $$2}' | sed "s/'//g"`
 CRITOOLS_VERSION := `awk '/^cri_tools_version/' ./crane/roles/cri-install/vars/cri-tools.yaml | awk -F': ' '{print $$2}' | sed "s/'//g"`
+OS_DRIVE := `awk '/^os_drive/' ./crane/group_vars/all.yml | awk -F': ' '{print $$2}' | sed "s/'//g"`
+OS_ARCH := `awk '/^os_arch/' ./crane/group_vars/all.yml | awk -F': ' '{print $$2}' | sed "s/'//g"`
+
+ifeq ($(OS_ARCH), amd64)
+OS_ARCH_NAME := 'x86_64'
+else
+OS_ARCH_NAME := 'aarch64'
+endif
 
 # Tasks: add_etcd.yml
 #        add_nodes.yml
@@ -98,7 +106,7 @@ rotation_etcd_ca:
 	@docker run --name crane --rm -it -e ANSIBLE_HOST_KEY_CHECKING=false -e TERM=xterm-256color -e COLUMNS=238 -e LINES=61 -v ~/.ssh:/root/.ssh -v ${PWD}:/crane -w /crane/crane -v ${PWD}/crane/ansible.cfg:/etc/ansible/ansible.cfg ${DockerHubRepoName}/${ProjectName}:${VERSION} -i nodes etcd_certificate_rotation.yml ${OPTION}
 
 local_load_dockerd: local_load_containerd
-	@wget -qO- https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz > ${PWD}/crane/roles/downloads-packages/files/docker-${DOCKER_VERSION}.tar.gz
+	@wget -qO- https://download.docker.com/linux/static/stable/${OS_ARCH_NAME}/docker-${DOCKER_VERSION}.tgz > ${PWD}/crane/roles/downloads-packages/files/docker-${DOCKER_VERSION}.tar.gz
 
 # Ready to scrap
 local_load_dockerd_old:
@@ -117,13 +125,13 @@ local_load_crio: local_load_runc
 	@wget -qO- https://storage.googleapis.com/k8s-conform-cri-o/artifacts/crio-${CRIO_VERSION}.tar.gz > ${PWD}/crane/roles/downloads-packages/files/crio-${CRIO_VERSION}.tar.gz
 
 local_load_containerd: local_load_runc
-	@wget -qO- https://github.com/containerd/containerd/releases/download/v${CONTAINERD_VERSION}/containerd-${CONTAINERD_VERSION}-linux-amd64.tar.gz > ${PWD}/crane/roles/downloads-packages/files/containerd-${CONTAINERD_VERSION}-linux-amd64.tar.gz
+	@wget -qO- https://github.com/containerd/containerd/releases/download/v${CONTAINERD_VERSION}/containerd-${CONTAINERD_VERSION}-${OS_DRIVE}-${OS_ARCH}.tar.gz > ${PWD}/crane/roles/downloads-packages/files/containerd-${CONTAINERD_VERSION}-${OS_DRIVE}-${OS_ARCH}.tar.gz
 
 local_load_runc: local_load_critools
 	@wget -qO- https://github.com/opencontainers/runc/releases/download/v1.0.0-rc92/runc.amd64 > ${PWD}/crane/roles/downloads-packages/files/runc
 
 local_load_critools: 
-	@wget -qO- https://github.com/kubernetes-sigs/cri-tools/releases/download/${CRITOOLS_VERSION}/crictl-${CRITOOLS_VERSION}-linux-amd64.tar.gz > ${PWD}/crane/roles/downloads-packages/files/crictl-${CRITOOLS_VERSION}.tar.gz
+	@wget -qO- https://github.com/kubernetes-sigs/cri-tools/releases/download/${CRITOOLS_VERSION}/crictl-${CRITOOLS_VERSION}-${OS_DRIVE}-${OS_ARCH}.tar.gz > ${PWD}/crane/roles/downloads-packages/files/crictl-${CRITOOLS_VERSION}.tar.gz
 
 local_load_cri: local_load_dockerd local_load_crio
 

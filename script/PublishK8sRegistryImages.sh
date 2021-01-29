@@ -31,16 +31,20 @@ sourceRegistry=${sourceRegistry:-'k8s.gcr.io'}
 targetRegistry=${targetRegistry:-'slzcc'}
 
 CleanPullImage=${CleanPullImage:-'true'}
-isImageExport=${isImageExport:-'false'}
+isImageExport=${isImageExport:-'true'}
 isImagePush=${isImagePush:-'true'}
 
 # Temporary Directory
 temporaryDirs=${temporaryDirs:-'/tmp'}
 
+# OS
+osDrive=${osDrive:-'linux'}
+osArch=${osArch:-'amd64'}
+
 # Kubernetes ApiServer、Controller、Scheduler
-for i in kube-apiserver-amd64 kube-controller-manager kube-scheduler kube-proxy; do
+for i in kube-apiserver kube-controller-manager kube-scheduler kube-proxy; do
     docker pull ${sourceRegistry}/$i:${k8sVersion}
-    
+
     [ ${isImagePush} == 'true' ] && docker tag ${sourceRegistry}/$i:${k8sVersion} ${targetRegistry}/$i:${k8sVersion} && \
                                     docker push ${targetRegistry}/$i:${k8sVersion}
 
@@ -49,7 +53,7 @@ done
 
 [ ${isImageExport} == 'true' ] && \
 docker save -o ${temporaryDirs}/image_kubernetes.tar.gz \
-               ${sourceRegistry}/kube-apiserver-amd64:${k8sVersion} \
+               ${sourceRegistry}/kube-apiserver:${k8sVersion} \
                ${sourceRegistry}/kube-controller-manager:${k8sVersion} \
                ${sourceRegistry}/kube-scheduler:${k8sVersion} \
                ${sourceRegistry}/kube-proxy:${k8sVersion} 
@@ -66,7 +70,7 @@ docker rmi -f ${sourceRegistry}/etcd:${etcdVersion} ${targetRegistry}/etcd:${etc
 [ ${isImageExport} == 'true' ] && \
 docker save -o ${temporaryDirs}/image_etcd.tar.gz \
                ${sourceRegistry}/etcd:${etcdVersion}
-               
+
 # Pause
 docker pull ${sourceRegistry}/pause:${pauseVersion}
 
@@ -93,7 +97,7 @@ docker save -o ${temporaryDirs}/image_calico.tar.gz \
                ${calicoRegistry}/kube-controllers:${calicoVersion} \
                ${calicoRegistry}/cni:${calicoVersion} \
                ${calicoRegistry}/node:${calicoVersion}
-               
+
 # HaProxy
 docker pull haproxy:${haproxyVersion}
 [ ${CleanPullImage} == 'true' ] && docker rmi -f haproxy:${haproxyVersion}

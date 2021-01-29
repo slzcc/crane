@@ -1,15 +1,25 @@
 ---
 
+- name: Check runC Version
+  shell: "{{ kubernetes_ctl_path }}runc --version"
+  register: check_runc
+  ignore_errors: true
+
 - name: Install runC local..
   include: roles/downloads-packages/includes/runc/local_download.yaml
-  when: containerd_install_type == 'local_binary'
+  when: 
+    - containerd_install_type == 'local_binary'
+    - check_runc.stderr
 
 - name: Install runC HTTP..
   include: roles/downloads-packages/includes/runc/http_download.yaml
-  when: containerd_install_type == 'http_binary'
+  when: 
+  - containerd_install_type == 'http_binary'
+  - check_runc.stderr
 
 - name: Move runC binray to bin Path
   shell: "cp -a {{ temporary_dirs }}runC/{{ item }} {{ kubernetes_ctl_path }}"
   with_items:
     - "runc"
   ignore_errors: true
+  when: check_runc.stderr
