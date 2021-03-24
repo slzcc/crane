@@ -19,4 +19,6 @@ etcd_master_ip_str: >-
 cfssl_arch: >-
   {%- if os_arch == "arm64" -%}
   arm
+  {%- else -%}
+  amd64
   {%- endif -%}
