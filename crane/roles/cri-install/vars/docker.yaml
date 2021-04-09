@@ -3,7 +3,7 @@
 
 # install To Docker Version
 # https://download.docker.com/linux/static/stable/x86_64/
-docker_version: '20.10.0'
+docker_version: '20.10.5'
 
 # Docker 安装类型, 默认 http_binary, 其他方式: http_binary, local_binary, http_script
 # 值为 http_binary 则通过远程下载二进制文件到执行目录.
