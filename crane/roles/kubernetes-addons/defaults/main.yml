@@ -39,7 +39,7 @@ istio_home: "/usr/local/istio-{{ istio_version }}"
 
 # Istio Version
 # https://github.com/istio/istio/releases
-istio_version: 1.8.2
+istio_version: 1.9.2
 
 # 部署 Istio 所使用的 Ingress Domain
 istio_ingress_prometheus_domain: "prometheus.example.com"
