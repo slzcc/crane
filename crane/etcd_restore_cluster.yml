@@ -113,24 +113,6 @@
   tasks:
     - { include: 'roles/etcd-cluster-management/includes/create-new-etcd-cluster-tls.yaml' }
 
-- name: Deploy Etcd Manifests
-  hosts: etcd-new-cluster
-  become: yes
-  become_method: sudo
-  vars:
-    ansible_ssh_pipelining: true
-  vars_files:
-    - "roles/etcd-cluster-management/defaults/tls.yaml"
-    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/system-initialize/defaults/main.yml"
-    - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/etcd-cluster-management/defaults/main.yml"
-    - "roles/etcd-cluster-management/vars/main.yml"
-  tasks:
-    - { include: 'roles/etcd-cluster-management/includes/deploy-new-etcd-cluster-mainifests.yaml' }
-
 - name: Restroe Etcd Cluster
   hosts: etcd-new-cluster
   become: yes
@@ -149,6 +131,24 @@
     - "roles/etcd-cluster-management/vars/main.yml"
   tasks:
     - { include: 'roles/etcd-cluster-management/includes/restore-new-cluster.yaml' }
+
+- name: Deploy Etcd Manifests
+  hosts: etcd-new-cluster
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/etcd-cluster-management/defaults/tls.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/system-initialize/defaults/main.yml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/etcd-cluster-management/defaults/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
+  tasks:
+    - { include: 'roles/etcd-cluster-management/includes/deploy-new-etcd-cluster-mainifests.yaml' }
 
 - name: Sync Crane Delploy Files to Instance
   hosts: kube-master[0]
