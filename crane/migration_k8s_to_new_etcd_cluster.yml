@@ -23,7 +23,7 @@
     - { role: crane, tags: [crane] }
 
 - name: Deploy apiServer Manifests
-  hosts: kube-master
+  hosts: kube-master[0]
   become: yes
   become_method: sudo
   vars:
