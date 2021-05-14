@@ -40,6 +40,7 @@
     ansible_ssh_pipelining: true
   vars_files:
     - "roles/etcd-cluster-management/vars/main.yml"
+    - "roles/etcd-cluster-management/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/system-initialize/defaults/main.yml"
