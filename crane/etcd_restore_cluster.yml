@@ -144,6 +144,7 @@
     - "roles/system-initialize/defaults/main.yml"
     - "roles/crane/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/etcd-cluster-management/defaults/etcd-new-cluster.yaml"
     - "roles/etcd-cluster-management/defaults/main.yml"
     - "roles/etcd-cluster-management/vars/main.yml"
   tasks:
