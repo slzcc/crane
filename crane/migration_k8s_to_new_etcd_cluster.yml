@@ -10,8 +10,8 @@
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
-    crane_deploy_type: 'main'
-    crane_tasks: 'main'
+    crane_deploy_type: 'migration_k8s_to_new_etcd_cluster'
+    crane_tasks: 'migration_k8s_to_new_etcd_cluster'
   vars_files:
     - "roles/cri-install/vars/containerd.yaml"
     - "roles/cri-install/vars/crio.yaml"

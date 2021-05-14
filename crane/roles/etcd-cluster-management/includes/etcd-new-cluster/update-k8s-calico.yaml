@@ -1,5 +1,15 @@
 ---
 
+- name: Copy Calico Config Files
+  template: 
+    src: "roles/kubernetes-networks/templates/calico.j2"
+    dest: "{{ temporary_dirs }}migration_k8s_to_new_etcd_cluster/calico.yml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+    
+- name: Sleep 10
+  shell: "sleep 10"
+
 - name: Delete Calico Old Etcd Secrets
   shell: '{{ kubernetes_ctl_path }}kubectl delete secret calico-etcd-secrets -n kube-system'
   ignore_errors: true
@@ -9,9 +19,12 @@
                                                          --from-literal=etcd-ca={{ etcd_ssl_dirs }}etcd-ca.pem \
                                                          --from-literal=etcd-cert={{ etcd_ssl_dirs }}etcd.pem
                                                          --from-literal=etcd-key={{ etcd_ssl_dirs }}etcd-key.pem'
+  ignore_errors: true
 
-- name: Restart Calico Controllers
-  shell: '{{ kubernetes_ctl_path }}kubectl rollout restart deployment/calico-kube-controllers -n kube-system'
+- name: Clean Calico
+  shell: '{{ kubernetes_ctl_path }}kubectl delete -f {{ temporary_dirs }}migration_k8s_to_new_etcd_cluster/calico.yml'
+  ignore_errors: true
 
-- name: Restart Calico Node
-  shell: '{{ kubernetes_ctl_path }}kubectl rollout restart daemonset/calico-node -n kube-system'
+- name: Deploy Calico
+  shell: '{{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}migration_k8s_to_new_etcd_cluster/calico.yml'
+  ignore_errors: true
