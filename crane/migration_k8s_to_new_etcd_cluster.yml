@@ -48,7 +48,7 @@
     - "roles/crane/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
   tasks:
-    - { include: 'roles/etcd-cluster-management/includes/copy-new-etcd-cluster-tls-to-master.yaml' }
+    - { include: 'roles/etcd-cluster-management/includes/etcd-new-cluster/copy-new-etcd-cluster-tls-to-master.yaml' }
 
 - name: Deploy apiServer Manifests
   hosts: kube-master
