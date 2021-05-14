@@ -1,7 +1,7 @@
 ---
 
 - name: Check Restore DB Type to local
-  template:
+  copy:
     src: "roles/etcd-cluster-management/files/snapshot.db"
     dest: "{{ temporary_dirs }}{{ crane_tasks }}/snapshot.db"
     owner: "{{ ssh_connect_user }}" 
