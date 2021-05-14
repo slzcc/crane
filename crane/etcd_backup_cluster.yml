@@ -22,6 +22,22 @@
   roles:
     - { role: crane, tags: [crane] }
 
+- name: Get CRI Config.
+  hosts: etcd[0]
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/kubernetes-cluster-management/defaults/main.yml"
+    - "roles/system-initialize/defaults/main.yml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/tls.yaml"
+  tasks:
+    - { include: 'roles/kubernetes-upgrade/includes/cri/main.yml' }
+
 - name: Backup Etcd Cluster
   hosts: etcd[0]
   become: yes
