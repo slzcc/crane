@@ -9,7 +9,7 @@
   when: restore_db_type == 'http_binary'
 
 - name: Restore Etcd New Cluster
-  shell: "docker run --rm -i -e ETCDCTL_API=3 --net host -v {{ temporary_dirs }}:{{ temporary_dirs }} -v {{ etcd_data_dirs|dirname }}:{{ etcd_data_dirs|dirname }} -v {{ etcd_ssl_dirs }}:{{ etcd_ssl_dirs }} {{ k8s_cluster_component_registry }}/etcd:{{ etcd_version }} \
+  shell: "docker run --rm -i -e ETCDCTL_API=3 --net host -v {{ temporary_dirs }}:{{ temporary_dirs }} -v {{ etcd_data_dirs|dirname|dirname }}:{{ etcd_data_dirs|dirname|dirname }} -v {{ etcd_ssl_dirs }}:{{ etcd_ssl_dirs }} {{ k8s_cluster_component_registry }}/etcd:{{ etcd_version }} \
     etcdctl snapshot restore {{ temporary_dirs }}{{ crane_tasks }}/snapshot.db \
     --name {{ hostvars[inventory_hostname].ansible_nodename }} \
     --initial-cluster {{ etcd_new_cluster_scheme_addr }} \
