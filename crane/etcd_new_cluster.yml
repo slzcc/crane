@@ -129,7 +129,7 @@
     - "roles/etcd-cluster-management/defaults/main.yml"
     - "roles/etcd-cluster-management/vars/main.yml"
   tasks:
-    - { include: 'roles/etcd-cluster-management/includes/deploy-etcd-manifests.yaml' }
+    - { include: 'roles/etcd-cluster-management/includes/deploy-new-etcd-cluster-mainifests.yaml' }
 
 - name: Sync Crane Delploy Files to Instance
   hosts: kube-master[0]
