@@ -230,3 +230,6 @@ $ kubectl edit configmap -n kube-system kube-proxy
 ```
 
 修改完成后解决此问题.
+
+
+> 目前不支持 arm 架构.
