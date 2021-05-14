@@ -41,7 +41,7 @@
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/etcd-cluster-management/vars/main.yml"
-  roles:
+  tasks:
     - { include: 'roles/remove-cluster/includes/etcd.yaml' }
 
 - name: Sync Crane Delploy Files to Instance
