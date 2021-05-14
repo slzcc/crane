@@ -39,5 +39,5 @@
     - "roles/etcd-cluster-management/defaults/main.yml"
     - "roles/etcd-cluster-management/vars/main.yml"
   tasks:
-    - { include: 'roles/etcd-cluster-management/includes/backup-etcd-configure.yaml' }
-    - { include: 'roles/etcd-cluster-management/includes/backup-etcd-data.yaml' }
+    - { include: 'roles/etcd-cluster-management/includes/backups-etcd-configure.yaml' }
+    - { include: 'roles/etcd-cluster-management/includes/backups-etcd-data.yaml' }
