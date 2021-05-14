@@ -12,3 +12,8 @@
     state: absent
   ignore_errors: true
 
+- name: Clean Etcd manifests config.
+  file:
+    path: "{{ kubernetes_manifests_dirs }}/etcd.yml"
+    state: absent
+  ignore_errors: true
