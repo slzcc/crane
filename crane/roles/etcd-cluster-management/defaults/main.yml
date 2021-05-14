@@ -90,6 +90,6 @@ etcd_new_cluster_scheme_addr: >-
     {%- else -%}
       {{ hostvars[host].ansible_default_ipv4.address }}
     {%- endif -%}
-  :{{ etcd_client_port }}
+  :{{ etcd_peer_port }}
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}
