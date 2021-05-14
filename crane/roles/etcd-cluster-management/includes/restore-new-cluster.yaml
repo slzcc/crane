@@ -8,8 +8,8 @@
   include: "roles/etcd-cluster-management/includes/etcd-new-cluster/http_binary.yaml"
   when: restore_db_type == 'http_binary'
 
-- name: Remove Etcd DataPath
-  shell: "rm -rf {{ etcd_data_dirs }}"
+# - name: Remove Etcd DataPath
+#   shell: "rm -rf {{ etcd_data_dirs }}"
 
 - name: Restore Etcd New Cluster
   shell: "docker run --rm -i -e ETCDCTL_API=3 --net host -v {{ temporary_dirs }}:{{ temporary_dirs }} -v {{ etcd_data_dirs|dirname|dirname }}:{{ etcd_data_dirs|dirname|dirname }} -v {{ etcd_ssl_dirs }}:{{ etcd_ssl_dirs }} {{ k8s_cluster_component_registry }}/etcd:{{ etcd_version }} \
