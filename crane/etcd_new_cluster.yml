@@ -55,6 +55,7 @@
   vars:
     ansible_ssh_pipelining: true
   vars_files:
+    - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/main.yml"
     - "roles/system-initialize/defaults/main.yml"
     - "roles/crane/defaults/main.yml"
