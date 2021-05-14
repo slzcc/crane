@@ -1,0 +1,17 @@
+---
+
+- name: Delete Calico Old Etcd Secrets
+  shell: '{{ kubernetes_ctl_path }}kubectl delete secret calico-etcd-secrets -n kube-system'
+  ignore_errors: true
+
+- name: Deploy Calico Etcd Secrets
+  shell: '{{ kubernetes_ctl_path }}kubectl create secret generic calico-etcd-secrets -n kube-system \
+                                                         --from-literal=etcd-ca={{ etcd_ssl_dirs }}etcd-ca.pem \
+                                                         --from-literal=etcd-cert={{ etcd_ssl_dirs }}etcd.pem
+                                                         --from-literal=etcd-key={{ etcd_ssl_dirs }}etcd-key.pem'
+
+- name: Restart Calico Controllers
+  shell: '{{ kubernetes_ctl_path }}kubectl rollout restart deployment/calico-kube-controllers -n kube-system'
+
+- name: Restart Calico Node
+  shell: '{{ kubernetes_ctl_path }}kubectl rollout restart daemonset/calico-node -n kube-system'
