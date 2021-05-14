@@ -1,0 +1,38 @@
+apiVersion: kubelet.config.k8s.io/v1beta1
+authentication:
+  anonymous:
+    enabled: false
+  webhook:
+    cacheTTL: 0s
+    enabled: true
+  x509:
+    clientCAFile: {{ kubernetes_pki_dirs }}ca.pem
+authorization:
+  mode: Webhook
+  webhook:
+    cacheAuthorizedTTL: 0s
+    cacheUnauthorizedTTL: 0s
+cgroupDriver: cgroupfs
+clusterDNS:
+- {{ dns_cluster_ip }}
+clusterDomain: {{ dns_domain }}
+cpuManagerReconcilePeriod: 0s
+evictionPressureTransitionPeriod: 0s
+fileCheckFrequency: 0s
+healthzBindAddress: 127.0.0.1
+healthzPort: 10248
+httpCheckFrequency: 0s
+imageMinimumGCAge: 0s
+kind: KubeletConfiguration
+logging: {}
+nodeStatusReportFrequency: 0s
+nodeStatusUpdateFrequency: 0s
+resolvConf: /run/systemd/resolve/resolv.conf
+rotateCertificates: true
+runtimeRequestTimeout: 0s
+shutdownGracePeriod: 0s
+shutdownGracePeriodCriticalPods: 0s
+staticPodPath: {{ kubernetes_manifests_dirs }}
+streamingConnectionIdleTimeout: 0s
+syncFrequency: 0s
+volumeStatsAggPeriod: 0s
