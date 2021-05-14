@@ -23,7 +23,7 @@ docker_os_arch: >-
 #docker_ctl_path: '/usr/bin/'
 
 # 镜像加速, 如果为空则不设置.
-docker_registry_mirrors: '["https://4dyopx9i.mirror.aliyuncs.com"]'
+docker_registry_mirrors: ''
 
 # Docker 存储路径
 docker_data_root: '/var/lib/docker'
