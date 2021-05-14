@@ -83,7 +83,6 @@ etcd_new_cluster_ip_list: >-
   {%- endfor -%}]
 
 etcd_new_cluster_scheme_addr: >-
-  {% macro initial_cluster() -%}
   {% for host in groups['etcd-new-cluster'] -%}
     {{ hostvars[host]['ansible_nodename'] }}={{ etcd_peer_url_scheme }}://
     {%- if etcd_interface != "" -%}
@@ -94,4 +93,3 @@ etcd_new_cluster_scheme_addr: >-
   :{{ etcd_peer_port }}
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}
-  {% endmacro -%}
