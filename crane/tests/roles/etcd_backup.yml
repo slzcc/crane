@@ -1,0 +1,43 @@
+---
+- hosts: localhost
+  gather_facts: false
+  roles:
+    - { role: local-task }
+
+- name: Initialize Crane Env
+  hosts: etcd[0]
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+    crane_deploy_type: 'etcd-backup-cluster'
+    crane_tasks: 'etcd-backup-cluster'
+  vars_files:
+    - "roles/cri-install/vars/containerd.yaml"
+    - "roles/cri-install/vars/crio.yaml"
+    - "roles/cri-install/vars/docker.yaml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+  roles:
+    - { role: crane, tags: [crane] }
+
+- name: Backup Etcd Cluster
+  hosts: etcd[0]
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+    crane_tasks: 'etcd-backup-cluster'
+  vars_files:
+    - "roles/etcd-cluster-management/defaults/tls.yaml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/system-initialize/defaults/main.yml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/etcd-cluster-management/defaults/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
+  tasks:
+    - { include: 'roles/etcd-cluster-management/includes/backup-etcd-configmap.yaml' }
+    - { include: 'roles/etcd-cluster-management/includes/backup-etcd-data.yaml' }
