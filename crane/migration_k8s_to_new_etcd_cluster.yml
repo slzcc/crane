@@ -22,8 +22,36 @@
   roles:
     - { role: crane, tags: [crane] }
 
+- name: Initialize SSH Secret Key
+  hosts: etcd-new-cluster[0]
+  gather_facts: false
+  become: yes
+  become_method: sudo
+  vars_files:
+    - "roles/crane/defaults/main.yml"
+  roles:
+    - { role: downloads-ssh-key, tags: [copy_ssh_private_key]}
+
+- name: Deploy New Etcd Cluster TLS to Kubernetes Master
+  hosts: etcd-new-cluster[0]
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/etcd-cluster-management/vars/main.yml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/system-initialize/defaults/main.yml"
+    - "roles/kubernetes-cluster-management/vars/haproxy.yaml"
+    - "roles/kubernetes-networks/defaults/keepalived.yaml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+  tasks:
+    - { include: 'roles/etcd-cluster-management/includes/copy-new-etcd-cluster-tls-to-master.yaml' }
+
 - name: Deploy apiServer Manifests
-  hosts: kube-master[0]
+  hosts: kube-master
   become: yes
   become_method: sudo
   vars:
