@@ -133,7 +133,7 @@ local_load_runc: local_load_critools
 local_load_critools: 
 	@wget -qO- https://github.com/kubernetes-sigs/cri-tools/releases/download/${CRITOOLS_VERSION}/crictl-${CRITOOLS_VERSION}-${OS_DRIVE}-${OS_ARCH}.tar.gz > ${PWD}/crane/roles/downloads-packages/files/crictl-${CRITOOLS_VERSION}.tar.gz
 
-local_load_cri: local_load_dockerd local_load_crio
+local_load_cri: local_load_dockerd local_load_crio local_load_critools
 
 test_main:
 	@docker rm -f crane > /dev/null 2>&1 || true
