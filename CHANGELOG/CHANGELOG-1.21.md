@@ -48,6 +48,8 @@ Crane 以更新至 1.21.0.0 版本。
 
 修复添加或删除节点时, labels 不会变更的问题。
 
+修复添加 node 节点时, 无法找到 cri-tools 版本的问题。
+
 ## 新增
 
 `k8s_setup_close_schedule.yml` 关机集群 `node` 节点调度。
