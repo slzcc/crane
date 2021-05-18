@@ -91,8 +91,28 @@
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/etcd-cluster-management/defaults/etcd-new-cluster.yaml"
   tasks:
-    - { include: 'roles/etcd-cluster-management/includes/copy-ca-to-new-etcd-cluster.yaml' }
+    - { include: 'roles/etcd-cluster-management/includes/copy-ca-to-new-etcd-cluster.yaml', when: not ca_new }
+
+- name: Initialize Etcd Cluster CA Config
+  hosts: etcd-new-cluster[0]
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/etcd-cluster-management/defaults/main.yml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/etcd-cluster-management/defaults/tls.yaml"
+    - "roles/etcd-cluster-management/defaults/etcd-new-cluster.yaml"
+    - "roles/system-initialize/defaults/main.yml"
+  tasks:
+    - { include: 'roles/etcd-cluster-management/includes/etcd-new-cluster/create-etcd-ca.yaml', when: ca_new }
 
 - name: Create New Etcd Cluster CA
   hosts: etcd-new-cluster[0]

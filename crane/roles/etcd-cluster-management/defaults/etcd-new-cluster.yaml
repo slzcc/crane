@@ -1,5 +1,7 @@
-crane_tasks: 'etcd-new-cluster'
+# 是否使用新的 ca
+ca_new: false
 
+crane_tasks: 'etcd-new-cluster'
 # 集群恢复时需要的 db 文件, 支持本地上传(local_binary) 和远程下载(http_binary)
 # 本地文件需要放置到 crane/roles/etcd-cluster-management/files/snapshot.db
 # 远程下载通过 http 方式下载, 需要提供 url 地址, 请修改 restore_db_download_url, 默认通过 local_binary 方式

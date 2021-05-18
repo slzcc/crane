@@ -24,7 +24,7 @@
             -ca=etcd-ca.pem \
             -ca-key=etcd-ca-key.pem \
             -config=ca-config.json \
-            -hostname=127.0.0.1,{{ etcd_master_ip_str }},{{ etcd_master_default_ip_str }} \
+            -hostname=127.0.0.1,{{ etcd_new_cluster_ip_str }},{{ etcd_master_default_ip_str }} \
             -profile=kubernetes \
             etcd-csr.json | {{ kubernetes_ctl_path }}cfssljson -bare etcd"
 
@@ -42,7 +42,7 @@
             {{ etcd_ssl_dirs }}{{ item[1] }} \
             {{ ssh_connect_user }}@{{ item[0] }}:{{ etcd_ssl_dirs }}{{ item[1] }}"
   with_nested:
-    - "{{ etcd_master_ip_list }}"
+    - "{{ etcd_new_cluster_ip_list }}"
     - ['etcd-ca-key.pem', 'etcd-ca.pem', 'etcd-key.pem', 'etcd.pem']
 
 - name: Copy CA to Kubernetes Master
@@ -52,7 +52,7 @@
             {{ etcd_ssl_dirs }}{{ item[1] }} \
             {{ ssh_connect_user }}@{{ item[0] }}:{{ etcd_ssl_dirs }}{{ item[1] }}"
   with_nested:
-    - "{{ k8s_master_ip_list }}"
+    - "{{ etcd_new_cluster_ip_list }}"
     - ['etcd-ca-key.pem', 'etcd-ca.pem', 'etcd-key.pem', 'etcd.pem']
 
 - shell: 'rm -rf {{ etcd_ssl_dirs }}*.json {{ etcd_ssl_dirs }}*.csr'

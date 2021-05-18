@@ -1,6 +1,6 @@
-# ETCD RESTORE CLUSTER
+# ETCD NEW CLUSTER
 
-主要作用部署一个全新的 Etcd Cluster, 并通过 snapshot 文件恢复成一个新的有数据的 Etcd Cluster。
+主要作用部署一个全新的 Etcd Cluster。
 
 ## Configure
 
@@ -22,7 +22,7 @@
 上述配置准备好后准备执行命令:
 
 ```
-$ make run_etcd_restore
+$ make run_etcd_new
 ```
 
 ## 检测
