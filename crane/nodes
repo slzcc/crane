@@ -9,6 +9,9 @@
 [k8s-cluster-add-master]
 
 
+[k8s-cluster-del-master]
+
+
 [k8s-cluster-add-node]
 
 

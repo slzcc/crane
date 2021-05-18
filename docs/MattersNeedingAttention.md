@@ -507,3 +507,17 @@ proxy_set_header Host <svc>;
 强制不要修改 Host 值即可。
 
 > https://github.com/istio/istio/issues/14450
+
+
+## 升级时 kub-proxy 可能无法正常启动
+
+需要对 kubelet 配置添加如下:
+
+```
+featureGates:
+  CSIMigration: false
+```
+
+> 此问题一般会发生在 1.16 升级 1.17 时出现。
+
+> https://github.com/kubernetes/kubernetes/issues/86094

@@ -1,0 +1,68 @@
+---
+- hosts: localhost
+  gather_facts: false
+  roles:
+    - { role: local-task }
+
+- name: Initialize Crane Env
+  hosts: kube-master:k8s-cluster-del-master
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+    crane_deploy_type: 'remove_k8s_master'
+    crane_tasks: 'remove-k8s-master'
+  vars_files:
+    - "roles/cri-install/vars/containerd.yaml"
+    - "roles/cri-install/vars/crio.yaml"
+    - "roles/cri-install/vars/docker.yaml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+  roles:
+    - { role: crane, tags: [crane] }
+
+- name: Move Kubernetes Master Manifests Config
+  hosts: k8s-cluster-del-master
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/crane/defaults/main.yml"
+    - "roles/system-initialize/defaults/main.yml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/main.yml"
+  tasks:
+    - { include: 'roles/kubernetes-cluster-management/includes/k8s-del-masters.yaml' }
+
+- name: Update Master Cluster HaProxy Config
+  hosts: kube-master
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/system-initialize/defaults/main.yml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/kubernetes-cluster-management/vars/haproxy.yaml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+  tasks:
+    - { include: roles/kubernetes-cluster-management/includes/update-k8s-haproxy.yaml }
+
+- name: Sync Crane Delploy Files to Instance
+  hosts: kube-master[0]
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+    crane_deploy_type: 'remove_k8s_master'
+  vars_files:
+    - "roles/crane/defaults/main.yml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+  tasks:
+    - { include: 'roles/crane/includes/sync-crane.yaml' }
