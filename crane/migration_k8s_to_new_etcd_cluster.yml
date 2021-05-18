@@ -32,7 +32,7 @@
   roles:
     - { role: downloads-ssh-key, tags: [copy_ssh_private_key]}
 
-- hosts: etcd-new-cluster
+- hosts: kube-master
   gather_facts: false
   become: yes
   become_method: sudo
