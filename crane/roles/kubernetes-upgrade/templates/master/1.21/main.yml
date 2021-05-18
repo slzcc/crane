@@ -1,0 +1,71 @@
+---
+- name: Stop Kubelet
+  service: 
+    name: kubelet
+    state: stopped
+
+- name: Copy kubelet.service Files
+  template: 
+    src: "roles/kubernetes-upgrade/templates/master/{{ k8s_upgrade_version }}/systemd/kubelet.service.j2"
+    dest: "{{ systemd_default_dirs }}kubelet.service"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+
+- name: Copy Kubelet Env Config
+  template: 
+    src: "roles/kubernetes-upgrade/templates/master/{{ k8s_upgrade_version }}/systemd/kubernetes-flags.j2"
+    dest: "{{ kubelet_work_dirs }}kubernetes-flags.env"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+  when: is_k8s_upgrade_calico_master_kubelet_env_config
+
+- name: Copy 10-kubelet.conf Files
+  template: 
+    src: "roles/kubernetes-upgrade/templates/master/{{ k8s_upgrade_version }}/systemd/10-kubelet.j2"
+    dest: "{{ systemd_etc_dirs }}kubelet.service.d/10-kubelet.conf"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+
+- name: Copy Kubelet Config
+  template: 
+    src: "roles/kubernetes-upgrade/templates/master/{{ k8s_upgrade_version }}/kubelet/config.j2"
+    dest: "{{ kubelet_work_dirs }}config.yaml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+    
+- name: Copy Kubernetes ApiServer Config Files
+  template: 
+    src: roles/kubernetes-upgrade/templates/master/{{ k8s_upgrade_version }}/manifests/kube-apiserver.j2
+    dest: "{{ kubernetes_manifests_dirs }}kube-apiserver.yml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+  when: is_kube_master or is_add_master
+
+- name: Copy Kubernetes Controller Manager Config Files
+  template: 
+    src: roles/kubernetes-upgrade/templates/master/{{ k8s_upgrade_version }}/manifests/kube-controller-manager.j2
+    dest: "{{ kubernetes_manifests_dirs }}kube-controller-manager.yml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+  when: is_kube_master or is_add_master
+
+- name: Copy Kubernetes Scheduler Config Files
+  template: 
+    src: roles/kubernetes-upgrade/templates/master/{{ k8s_upgrade_version }}/manifests/kube-scheduler.j2
+    dest: "{{ kubernetes_manifests_dirs }}kube-scheduler.yml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+  when: is_kube_master or is_add_master
+
+- name: System Reload
+  shell: "systemctl daemon-reload"
+
+- name: Restart Kubelet
+  service:
+    name: kubelet
+    state: started
+
+- name: Initialize Master Manifests
+  include: "roles/kubernetes-upgrade/includes/update-k8s-manifests.yaml"
+  when: is_kube_master
+

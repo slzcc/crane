@@ -1,0 +1,11 @@
+---
+
+# https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#noderestriction 
+
+- name: Set Nodes Role Label *
+  shell: >
+    {{ kubernetes_ctl_path }}kubectl label node {{ item[0] }} node-role.kubernetes.io/node=''
+  with_nested:
+    - "{{ add_node_name_list }}"
+    - "-"
+  ignore_errors: true
