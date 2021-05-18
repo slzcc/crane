@@ -32,6 +32,19 @@
   roles:
     - { role: downloads-ssh-key, tags: [copy_ssh_private_key]}
 
+- hosts: etcd-new-cluster
+  gather_facts: false
+  become: yes
+  become_method: sudo
+  vars_files:
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+  tasks:
+    - { include: 'roles/etcd-cluster-management/includes/initialize-etcd-home.yaml' }
+
 - name: Deploy New Etcd Cluster TLS to Kubernetes Master
   hosts: etcd-new-cluster[0]
   become: yes
