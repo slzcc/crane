@@ -27,6 +27,9 @@
 [etcd-new-cluster]
 
 
+[etcd-del-cluster]
+
+
 [k8s-cluster:children]
 kube-node
 kube-master

@@ -5,13 +5,13 @@
     - { role: local-task }
 
 - name: Initialize Crane Env
-  hosts: all
+  hosts: etcd-del-cluster
   become: yes
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
-    crane_deploy_type: 'remove_cluster'
-    crane_tasks: 'remove-cluster'
+    crane_deploy_type: 'remove_del_cluster'
+    crane_tasks: 'remove-del-cluster'
   vars_files:
     - "roles/cri-install/vars/containerd.yaml"
     - "roles/cri-install/vars/crio.yaml"
@@ -23,7 +23,7 @@
     - { role: crane, tags: [crane] }
 
 - name: Clean Etcd Cluster
-  hosts: etcd-new-cluster
+  hosts: etcd-del-cluster
   become: yes
   become_method: sudo
   vars:
@@ -50,7 +50,7 @@
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
-    crane_deploy_type: 'remove_cluster'
+    crane_deploy_type: 'remove_del_cluster'
   vars_files:
     - "roles/crane/defaults/main.yml"
     - "roles/downloads-ssh-key/defaults/main.yml"
