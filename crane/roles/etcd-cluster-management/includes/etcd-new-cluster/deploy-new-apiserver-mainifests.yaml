@@ -1,0 +1,8 @@
+---
+
+- name: Copy Kubernetes ApiServer Config Files
+  template:
+    src: "roles/etcd-cluster-management/templates/etcd-new-cluster/kube-apiserver.j2"
+    dest: "{{ kubernetes_manifests_dirs }}kube-apiserver.yml"
+    owner: "{{ ssh_connect_user }}" 
+    mode: 0644
