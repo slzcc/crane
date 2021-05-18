@@ -28,6 +28,7 @@
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
+    crane_tasks: 'remove-k8s-master'
   vars_files:
     - "roles/crane/defaults/main.yml"
     - "roles/system-initialize/defaults/main.yml"
