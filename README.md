@@ -79,6 +79,7 @@ Crane 的架构简述:
 - [x] 支持 `Dockerd`、`Containerd` 离线安装。
 - [x] 支持 `Kubernetes` 离线安装。
 - [x] 支持 `Dockerd`、`Containerd`、`CRIO` 的容器运行环境部署。
+- [x] 支持新建 `Etcd` 集群并支持恢复。
 
 ## 安装过程示例
 
