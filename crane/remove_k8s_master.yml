@@ -54,6 +54,21 @@
   tasks:
     - { include: roles/kubernetes-cluster-management/includes/update-k8s-haproxy.yaml }
 
+- name: Kubernetes Cluster Setup
+  hosts: kube-master[0]
+  gather_facts: true
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+  tasks:
+    - { include: 'roles/kubernetes-cluster-management/includes/k8s-del-masters/k8s-set-labels.yaml' }
+
 - name: Sync Crane Delploy Files to Instance
   hosts: kube-master[0]
   become: yes
