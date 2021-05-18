@@ -41,18 +41,18 @@
   roles:
     - { role: downloads-ssh-key, tags: [copy_ssh_private_key]}
 
-- name: Stop Cluster Scheduling
-  hosts: kube-master[0]
-  become: yes
-  become_method: sudo
-  vars:
-    ansible_ssh_pipelining: true
-  vars_files:
-    - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
-  tasks:
-    - { include: 'roles/kubernetes-upgrade/includes/nodes/node-no-schedule.yaml' }
+# - name: Stop Cluster Scheduling
+#   hosts: kube-master[0]
+#   become: yes
+#   become_method: sudo
+#   vars:
+#     ansible_ssh_pipelining: true
+#   vars_files:
+#     - "roles/crane/defaults/main.yml"
+#     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+#     - "roles/downloads-ssh-key/defaults/main.yml"
+#   tasks:
+#     - { include: 'roles/kubernetes-upgrade/includes/nodes/node-no-schedule.yaml' }
 
 - name: Create New CA
   hosts: etcd[0]
@@ -111,7 +111,7 @@
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/downloads-ssh-key/defaults/main.yml"
   tasks:
-    - { include: 'roles/kubernetes-upgrade/includes/nodes/node-schedule.yaml' }
+    # - { include: 'roles/kubernetes-upgrade/includes/nodes/node-schedule.yaml' }
     - { include: 'roles/kubernetes-upgrade/includes/check-cluster-pod.yaml' }
 
 - name: Sync Crane Delploy Files to Instance
