@@ -34,6 +34,7 @@
     - "roles/system-initialize/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/kubernetes-cluster-management/defaults/main.yml"
+    - "roles/kubernetes-cluster-management/vars/haproxy.yaml"
   tasks:
     - { include: 'roles/kubernetes-cluster-management/includes/k8s-del-masters.yaml' }
 
