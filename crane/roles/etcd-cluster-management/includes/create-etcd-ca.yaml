@@ -55,5 +55,4 @@
     - "{{ k8s_master_ip_list }}"
     - ['etcd-ca-key.pem', 'etcd-ca.pem', 'etcd-key.pem', 'etcd.pem']
 
-
 - shell: 'rm -rf {{ etcd_ssl_dirs }}*.json {{ etcd_ssl_dirs }}*.csr'

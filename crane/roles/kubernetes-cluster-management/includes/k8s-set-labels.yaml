@@ -1,0 +1,28 @@
+---
+
+# https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#noderestriction 
+- name: Clean Cluster Node-Role Labels
+  shell: >
+    for i in $({{ kubernetes_ctl_path }}kubectl get node -l node.kubernetes.io/master= | sed '1d' | awk  '{print $1}'); do 
+      {{ kubernetes_ctl_path }}kubectl label node $i node-role.kubernetes.io/master-
+      {{ kubernetes_ctl_path }}kubectl label node $i node-role.kubernetes.io/control-plane-
+      {{ kubernetes_ctl_path }}kubectl label node $i node-role.kubernetes.io/node-
+    done
+  ignore_errors: true
+
+- name: Set Master Role Label *
+  shell: >
+    {{ kubernetes_ctl_path }}kubectl label node {{ item[0] }} node-role.kubernetes.io/master=''
+    {{ kubernetes_ctl_path }}kubectl label node {{ item[0] }} node-role.kubernetes.io/control-plane=''
+  with_nested:
+    - "{{ k8s_master_name_list }}"
+    - "-"
+  ignore_errors: true
+
+- name: Set Nodes Role Label *
+  shell: >
+    {{ kubernetes_ctl_path }}kubectl label node {{ item[0] }} node-role.kubernetes.io/node=''
+  with_nested:
+    - "{{ k8s_node_name_list }}"
+    - "-"
+  ignore_errors: true

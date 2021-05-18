@@ -69,3 +69,27 @@ etcd_del_node_ip_list: >-
     '{{ hostvars[host].ansible_default_ipv4.address }}'
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}]
+
+etcd_new_cluster_ip_str: >-
+  {% for host in groups['etcd-new-cluster'] -%}
+    {{ hostvars[host].ansible_default_ipv4.address }}
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}
+  
+etcd_new_cluster_ip_list: >-
+  [{% for host in groups['etcd-new-cluster'] -%}
+    '{{ hostvars[host].ansible_default_ipv4.address }}'
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}]
+
+etcd_new_cluster_scheme_addr: >-
+  {% for host in groups['etcd-new-cluster'] -%}
+    {{ hostvars[host]['ansible_nodename'] }}={{ etcd_peer_url_scheme }}://
+    {%- if etcd_interface != "" -%}
+      {{ hostvars[host]['ansible_' + etcd_interface].ipv4.address }}
+    {%- else -%}
+      {{ hostvars[host].ansible_default_ipv4.address }}
+    {%- endif -%}
+  :{{ etcd_peer_port }}
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}

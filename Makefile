@@ -73,6 +73,22 @@ run_k8s_upgrade:
 	@docker rm -f crane > /dev/null 2>&1 || true
 	@docker run --name crane --rm -it -e ANSIBLE_HOST_KEY_CHECKING=false -e TERM=xterm-256color -e COLUMNS=238 -e LINES=61 -v ~/.ssh:/root/.ssh -v ${PWD}:/crane -w /crane/crane -v ${PWD}/crane/ansible.cfg:/etc/ansible/ansible.cfg ${DockerHubRepoName}/${ProjectName}:${VERSION} -i nodes upgrade_version.yml ${OPTION}
 
+run_etcd_new:
+	@docker rm -f crane > /dev/null 2>&1 || true
+	@docker run --name crane --rm -it -e ANSIBLE_HOST_KEY_CHECKING=false -e TERM=xterm-256color -e COLUMNS=238 -e LINES=61 -v ~/.ssh:/root/.ssh -v ${PWD}:/crane -w /crane/crane -v ${PWD}/crane/ansible.cfg:/etc/ansible/ansible.cfg ${DockerHubRepoName}/${ProjectName}:${VERSION} -i nodes etcd_new_cluster.yml ${OPTION}
+
+run_etcd_backup:
+	@docker rm -f crane > /dev/null 2>&1 || true
+	@docker run --name crane --rm -it -e ANSIBLE_HOST_KEY_CHECKING=false -e TERM=xterm-256color -e COLUMNS=238 -e LINES=61 -v ~/.ssh:/root/.ssh -v ${PWD}:/crane -w /crane/crane -v ${PWD}/crane/ansible.cfg:/etc/ansible/ansible.cfg ${DockerHubRepoName}/${ProjectName}:${VERSION} -i nodes etcd_backup_cluster.yml ${OPTION}
+
+run_etcd_restore:
+	@docker rm -f crane > /dev/null 2>&1 || true
+	@docker run --name crane --rm -it -e ANSIBLE_HOST_KEY_CHECKING=false -e TERM=xterm-256color -e COLUMNS=238 -e LINES=61 -v ~/.ssh:/root/.ssh -v ${PWD}:/crane -w /crane/crane -v ${PWD}/crane/ansible.cfg:/etc/ansible/ansible.cfg ${DockerHubRepoName}/${ProjectName}:${VERSION} -i nodes etcd_restore_cluster.yml ${OPTION}
+
+run_migration_k8s_etcd:
+	@docker rm -f crane > /dev/null 2>&1 || true
+	@docker run --name crane --rm -it -e ANSIBLE_HOST_KEY_CHECKING=false -e TERM=xterm-256color -e COLUMNS=238 -e LINES=61 -v ~/.ssh:/root/.ssh -v ${PWD}:/crane -w /crane/crane -v ${PWD}/crane/ansible.cfg:/etc/ansible/ansible.cfg ${DockerHubRepoName}/${ProjectName}:${VERSION} -i nodes migration_k8s_to_new_etcd_cluster.yml ${OPTION}
+
 run_test:
 	@docker rm -f crane > /dev/null 2>&1 || true
 	@docker run --name crane --net host --rm -it -e ANSIBLE_HOST_KEY_CHECKING=false -e TERM=xterm-256color -e COLUMNS=238 -e LINES=61 -v ~/.ssh:/root/.ssh -v ${PWD}:/crane -w /crane/crane -v ${PWD}/crane/ansible.cfg:/etc/ansible/ansible.cfg ${DockerHubRepoName}/${ProjectName}:${VERSION} -i nodes test.yml -vv
@@ -133,7 +149,7 @@ local_load_runc: local_load_critools
 local_load_critools: 
 	@wget -qO- https://github.com/kubernetes-sigs/cri-tools/releases/download/${CRITOOLS_VERSION}/crictl-${CRITOOLS_VERSION}-${OS_DRIVE}-${OS_ARCH}.tar.gz > ${PWD}/crane/roles/downloads-packages/files/crictl-${CRITOOLS_VERSION}.tar.gz
 
-local_load_cri: local_load_dockerd local_load_crio
+local_load_cri: local_load_dockerd local_load_crio local_load_critools
 
 test_main:
 	@docker rm -f crane > /dev/null 2>&1 || true
