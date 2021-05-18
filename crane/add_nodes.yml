@@ -45,6 +45,7 @@
     - "roles/cri-install/vars/docker.yaml"
     - "roles/cri-install/vars/containerd.yaml"
     - "roles/cri-install/vars/crio.yaml"
+    - "roles/cri-install/vars/cri-tools.yaml"
     - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/kubernetes-cluster-management/defaults/tls.yaml"
@@ -114,8 +115,9 @@
     - "roles/crane/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/main.yml"
   tasks:
-    - { include: 'roles/kubernetes-cluster-management/includes/kubernetes-cluster-setup.yaml' }
+    - { include: 'roles/kubernetes-cluster-management/includes/k8s-add-nodes/k8s-set-labels.yaml' }
 
 - name: Sync Crane Delploy Files to Instance
   hosts: kube-master[0]

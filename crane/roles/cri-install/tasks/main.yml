@@ -2,9 +2,11 @@
 
 - name: CRI Initialize
   include: "roles/cri-install/includes/initialize.yaml"
+  when: cri_drive_install_type != "none"
 
 - name: Deploy runC
   include: "roles/cri-install/includes/runc/main.yml"
+  when: cri_drive_install_type != "none"
 
 - name: Deploy CRI to Containerd
   include: "roles/cri-install/includes/containerd/main.yml"
@@ -26,3 +28,4 @@
 
 - name: Deploy Cri-Tools
   include: "roles/cri-install/includes/cri-tools/main.yml"
+  when: cri_drive_install_type != "none"

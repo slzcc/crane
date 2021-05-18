@@ -1,0 +1,14 @@
+---
+
+- name: Move Kubernetes Master Manifests Config
+  shell: "mv {{ kubernetes_manifests_dirs }}{{ item }} {{ temporary_dirs }}{{ crane_tasks }}/{{ item }}"
+  with_items:
+    - "haproxy.yml"
+    - "kube-apiserver.yml"
+    - "kube-scheduler.yml"
+    - "kube-controller-manager.yml"
+  ignore_errors: true
+
+- name: Move Haproxy Config
+  shell: "mv {{ haproxy_etc_dirs }} {{ temporary_dirs }}{{ crane_tasks }}"
+  ignore_errors: true

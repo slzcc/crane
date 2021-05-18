@@ -1,10 +1,10 @@
 ---
 # Clean Etcd
-- name: Clean Etcd ssl directory.
-  file:
-    path: "{{ etcd_ssl_dirs }}"
-    state: absent
-  ignore_errors: true
+# - name: Clean Etcd ssl directory.
+#   file:
+#     path: "{{ etcd_ssl_dirs }}"
+#     state: absent
+#   ignore_errors: true
 
 - name: Clean Etcd Working directory.
   file:
@@ -12,3 +12,8 @@
     state: absent
   ignore_errors: true
 
+- name: Clean Etcd manifests config.
+  file:
+    path: "{{ kubernetes_manifests_dirs }}/etcd.yml"
+    state: absent
+  ignore_errors: true
