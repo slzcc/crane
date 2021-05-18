@@ -8,3 +8,7 @@
     - "kube-scheduler.yml"
     - "kube-controller-manager.yml"
   ignore_errors: true
+
+- name: Move Haproxy Config
+  shell: "mv {{ haproxy_etc_dirs }} {{ temporary_dirs }}{{ crane_tasks }}"
+  ignore_errors: true
