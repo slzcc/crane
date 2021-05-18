@@ -133,6 +133,7 @@
     - "roles/crane/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/main.yml"
   tasks:
     - { include: 'roles/kubernetes-cluster-management/includes/k8s-add-masters/k8s-set-labels.yaml' }
 

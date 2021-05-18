@@ -113,6 +113,7 @@
     - "roles/etcd-cluster-management/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/main.yml"
   tasks:
     - { include: 'roles/etcd-cluster-management/includes/etcd-new-cluster/k8s-set-labels.yaml' }
 
