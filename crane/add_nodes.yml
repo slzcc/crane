@@ -115,7 +115,7 @@
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   tasks:
-    - { include: 'roles/kubernetes-cluster-management/includes/kubernetes-cluster-setup.yaml' }
+    - { include: 'roles/kubernetes-cluster-management/includes/k8s-add-nodes/k8s-set-labels.yaml' }
 
 - name: Sync Crane Delploy Files to Instance
   hosts: kube-master[0]

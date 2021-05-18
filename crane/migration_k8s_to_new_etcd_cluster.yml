@@ -69,7 +69,6 @@
   tasks:
     - { include: 'roles/etcd-cluster-management/includes/etcd-new-cluster/deploy-new-apiserver-mainifests.yaml' }
 
-
 - name: Update Kubernetes Cluster Networks
   hosts: kube-master[0]
   become: yes
@@ -87,6 +86,22 @@
     - "roles/kubernetes-upgrade/defaults/main.yml"
   tasks:
     - { include: 'roles/etcd-cluster-management/includes/etcd-new-cluster/update-k8s-calico.yaml' }
+
+- name: Kubernetes Cluster Setup
+  hosts: kube-master[0]
+  gather_facts: true
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/etcd-cluster-management/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+  tasks:
+    - { include: 'roles/etcd-cluster-management/includes/etcd-new-cluster/k8s-set-labels.yaml' }
 
 - name: Sync Crane Delploy Files to Instance
   hosts: kube-master[0]
