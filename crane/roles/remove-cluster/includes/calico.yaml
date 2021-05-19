@@ -2,7 +2,7 @@
 
 - name: Clean Calico directory.
   file:
-    path: "/var/lib/calico"
+    path: "{{ item }}"
     state: absent
   with_items:
     - "/var/lib/calico"
