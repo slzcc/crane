@@ -4,6 +4,9 @@
   file:
     path: "/var/lib/calico"
     state: absent
+  with_items:
+    - "/var/lib/calico"
+    - "/var/lib/cni"
   ignore_errors: true
 
 - name: Clean Calico CNI.
