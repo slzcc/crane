@@ -1,0 +1,17 @@
+---
+
+- name: Copy Old kubelet.service.d To Temporary Data
+  shell: "cp -a {{ systemd_etc_dirs }}kubelet.service.d  {{ temporary_dirs }}{{ crane_tasks }}/kubelet.service.d-`date +%Y%m%d%H%M%S`"
+  ignore_errors: true
+  
+- name: Copy Old kubelet.service To Temporary Data
+  shell: "cp -a {{ systemd_default_dirs }}kubelet.service {{ temporary_dirs }}{{ crane_tasks }}/kubelet.service-`date +%Y%m%d%H%M%S`"
+  ignore_errors: true
+
+- name: Copy Old kubernetes-flags.env To Temporary Data
+  shell: "cp -a {{ kubelet_work_dirs }}kubernetes-flags.env {{ temporary_dirs }}{{ crane_tasks }}/kubernetes-flags.env-`date +%Y%m%d%H%M%S`"
+  ignore_errors: true
+
+- name: Copy Old config.yaml To Temporary Data
+  shell: "cp -a {{ kubelet_work_dirs }}config.yaml {{ temporary_dirs }}{{ crane_tasks }}/config.yaml-`date +%Y%m%d%H%M%S`"
+  ignore_errors: true
