@@ -38,8 +38,8 @@
     - "roles/crane/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
   tasks:
-    - { include: 'roles/kubernetes-cluster-management/includes/kubernetes-manifests-rotation/backup-master-mainifests.yaml' }
-    - { include: 'roles/kubernetes-cluster-management/includes/kubernetes-manifests-rotation/deploy-master-mainifests.yaml' }
+    - { include: 'roles/kubernetes-cluster-management/includes/kubernetes-mainifests-rotation/backup-master-mainifests.yaml' }
+    - { include: 'roles/kubernetes-cluster-management/includes/kubernetes-mainifests-rotation/deploy-master-mainifests.yaml' }
 
 - name: Sync Crane Delploy Files to Instance
   hosts: kube-master[0]
