@@ -6,7 +6,9 @@
     state: absent
   with_items:
     - "/var/lib/calico"
-    - "/var/lib/cni"
+    - "/var/lib/cni/networks"
+    - "/var/run/calico"
+    - "/var/log/calico/cni"
   ignore_errors: true
 
 - name: Clean Calico CNI.
