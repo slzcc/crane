@@ -85,6 +85,8 @@ Crane 以更新至 1.21.0.0 版本。
 
 修复 `remove cluster` 中 `calico` 配置残留的问题。
 
+修复 `calico` 默认为 `IPIP` 模式, 因绝大多数纯 `BGP` 模式无法正常启动。
+
 ## 新增
 
 升级 `kube-proxy` 之前会先备份集群中的 `kube-proxy`。
