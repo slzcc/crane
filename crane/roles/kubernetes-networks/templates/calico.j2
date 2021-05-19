@@ -3544,7 +3544,7 @@ spec:
         # It can be deleted if this is a fresh installation, or if you have already
         # upgraded to use calico-ipam.
         - name: upgrade-ipam
-          image: docker.io/calico/cni:v3.18.1
+          image: docker.io/calico/cni:{{ calico_version }}
           command: ["/opt/cni/bin/calico-ipam", "-upgrade"]
           envFrom:
           - configMapRef:
@@ -3553,7 +3553,7 @@ spec:
               optional: true
           env:
             - name: TZ
-              value: "Asia/Shanghai"
+              value: "{{ time_location }}"
             - name: KUBERNETES_NODE_NAME
               valueFrom:
                 fieldRef:
@@ -3566,7 +3566,7 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/cni/networks
               name: host-local-net-dir
-            - mountPath: /host/opt/cni/bin
+            - mountPath: /host{{ kubernetes_cni_dirs }}
               name: cni-bin-dir
             - mountPath: /usr/share/zoneinfo
               name: usr-local-timezone
@@ -3576,7 +3576,7 @@ spec:
         # This container installs the CNI binaries
         # and CNI network config file on each node.
         - name: install-cni
-          image: docker.io/calico/cni:v3.18.1
+          image: docker.io/calico/cni:{{ calico_version }}
           command: ["/opt/cni/bin/install"]
           envFrom:
           - configMapRef:
@@ -3585,7 +3585,7 @@ spec:
               optional: true
           env:
             - name: TZ
-              value: "Asia/Shanghai"
+              value: "{{ time_location }}"
             # Name of the CNI config file to create.
             - name: CNI_CONF_NAME
               value: "10-calico.conflist"
@@ -3610,9 +3610,9 @@ spec:
             - name: SLEEP
               value: "false"
           volumeMounts:
-            - mountPath: /host/opt/cni/bin
+            - mountPath: /host{{ kubernetes_cni_dirs }}
               name: cni-bin-dir
-            - mountPath: /host/etc/cni/net.d
+            - mountPath: /host{{ cni_config_dir }}
               name: cni-net-dir
             - mountPath: /usr/share/zoneinfo
               name: usr-local-timezone
@@ -3622,7 +3622,7 @@ spec:
         # Adds a Flex Volume Driver that creates a per-pod Unix Domain Socket to allow Dikastes
         # to communicate with Felix over the Policy Sync API.
         - name: flexvol-driver
-          image: docker.io/calico/pod2daemon-flexvol:v3.18.1
+          image: docker.io/calico/pod2daemon-flexvol:{{ calico_version }}
           volumeMounts:
           - name: flexvol-driver-host
             mountPath: /host/driver
@@ -3636,7 +3636,7 @@ spec:
         # container programs network policy and routes on each
         # host.
         - name: calico-node
-          image: docker.io/calico/node:v3.18.1
+          image: docker.io/calico/node:{{ calico_version }}
           envFrom:
           - configMapRef:
               # Allow KUBERNETES_SERVICE_HOST and KUBERNETES_SERVICE_PORT to be overridden for eBPF mode.
@@ -3644,7 +3644,7 @@ spec:
               optional: true
           env:
             - name: TZ
-              value: "Asia/Shanghai"
+              value: "{{ time_location }}"
             # Use Kubernetes API as the backing datastore.
             - name: DATASTORE_TYPE
               value: "kubernetes"
@@ -3670,7 +3670,7 @@ spec:
               value: "autodetect"
             # Enable IPIP
             - name: CALICO_IPV4POOL_IPIP
-              value: "Always"
+              value: "{{ calico_type }}"
             # Enable or Disable VXLAN on the default IP pool.
             - name: CALICO_IPV4POOL_VXLAN
               value: "Never"
@@ -3696,7 +3696,7 @@ spec:
             # chosen from this range. Changing this value after installation will have
             # no effect. This should fall within `--cluster-cidr`.
             - name: CALICO_IPV4POOL_CIDR
-              value: "172.208.0.0/12"
+              value: "{{ k8s_cluster_ipv4_pool_cidr }}"
             # Disable file logging so `kubectl logs` works.
             - name: CALICO_DISABLE_FILE_LOGGING
               value: "true"
@@ -3712,9 +3712,9 @@ spec:
             - name: FELIX_HEALTHENABLED
               value: "true"
             - name: IP_AUTODETECTION_METHOD
-              value: "interface=ens5"
+              value: "interface={{ os_network_device_name }}"
             - name: IP6_AUTODETECTION_METHOD
-              value: "interface=ens5"
+              value: "interface={{ os_network_device_name }}"
           securityContext:
             privileged: true
           resources:
@@ -3790,10 +3790,10 @@ spec:
         # Used to install CNI.
         - name: cni-bin-dir
           hostPath:
-            path: /opt/cni/bin
+            path: {{ kubernetes_cni_dirs }}
         - name: cni-net-dir
           hostPath:
-            path: /etc/cni/net.d
+            path: {{ cni_config_dir }}
         # Used to access CNI logs.
         - name: cni-log-dir
           hostPath:
@@ -3859,10 +3859,10 @@ spec:
       priorityClassName: system-cluster-critical
       containers:
         - name: calico-kube-controllers
-          image: docker.io/calico/kube-controllers:v3.18.1
+          image: docker.io/calico/kube-controllers:{{ calico_version }}
           env:
             - name: TZ
-              value: "Asia/Shanghai"
+              value: "{{ time_location }}"
             # Choose which controllers to run.
             - name: ENABLED_CONTROLLERS
               value: node
