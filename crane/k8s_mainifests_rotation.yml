@@ -11,7 +11,7 @@
   vars:
     ansible_ssh_pipelining: true
     crane_deploy_type: 'k8s_mainifests_rotation'
-    crane_tasks: 'kubernetes_mainifests_rotation'
+    crane_tasks: 'kubernetes-mainifests-rotation'
   vars_files:
     - "roles/cri-install/vars/containerd.yaml"
     - "roles/cri-install/vars/crio.yaml"
@@ -28,6 +28,7 @@
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
+    crane_tasks: 'kubernetes-mainifests-rotation'
   vars_files:
     - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
