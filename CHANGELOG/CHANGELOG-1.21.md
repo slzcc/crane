@@ -81,6 +81,8 @@ Crane 以更新至 1.21.0.0 版本。
 
 修复 `upgrade version` 过程中先 `kube-proxy` 先删除在启动的逻辑, 改成升级策略。
 
+修复 calico 3.18.x 版本初始安装时, crd 不全的问题。
+
 ## 新增
 
 升级 `kube-proxy` 之前会先备份集群中的 `kube-proxy`。
