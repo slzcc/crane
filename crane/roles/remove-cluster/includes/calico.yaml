@@ -6,6 +6,10 @@
     state: absent
   ignore_errors: true
 
+- name: Clean Calico CNI.
+  shell: "rm -rf {{ cni_config_dir }}/{10-calico.conflist,calico-kubeconfig}"
+  ignore_errors: true
+
 - name: Clean Calico IP Route
   shell: >
     ip route | grep 'cali' | awk '{print $1}' | xargs -i ip route delete {}
