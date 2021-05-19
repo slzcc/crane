@@ -1,0 +1,57 @@
+---
+- hosts: localhost
+  gather_facts: false
+  roles:
+    - { role: local-task }
+
+- name: Initialize Crane Env
+  hosts: all
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+    crane_deploy_type: 'k8s_mainifests_rotation'
+    crane_tasks: 'kubernetes_mainifests_rotation'
+  vars_files:
+    - "roles/cri-install/vars/containerd.yaml"
+    - "roles/cri-install/vars/crio.yaml"
+    - "roles/cri-install/vars/docker.yaml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+  roles:
+    - { role: crane, tags: [crane] }
+
+- name: Deploy apiServer Manifests
+  hosts: kube-master
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/etcd-cluster-management/vars/main.yml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/system-initialize/defaults/main.yml"
+    - "roles/kubernetes-cluster-management/vars/haproxy.yaml"
+    - "roles/kubernetes-networks/defaults/keepalived.yaml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+  tasks:
+    - { include: 'roles/kubernetes-cluster-management/includes/kubernetes-manifests-rotation/backup-master-mainifests.yaml' }
+    - { include: 'roles/kubernetes-cluster-management/includes/kubernetes-manifests-rotation/deploy-master-mainifests.yaml' }
+
+- name: Sync Crane Delploy Files to Instance
+  hosts: kube-master[0]
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+    crane_deploy_type: 'k8s_mainifests_rotation'
+  vars_files:
+    - "roles/crane/defaults/main.yml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+  tasks:
+    - { include: 'roles/crane/includes/sync-crane.yaml' }
