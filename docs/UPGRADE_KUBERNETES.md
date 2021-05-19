@@ -44,3 +44,17 @@ cri_k8s_default: docker
 ```
 $ make run_k8s_upgrade
 ```
+
+## 注意事项
+
+升级前请执行停止调度配置:
+
+```
+$ make run_close_schedule
+```
+
+升级过程中不会升级 CoreDNS。但会把 CordDNS 配置脚本默认放在 `kube-master[0]` 的 `/tmp/crane/kubernetes-upgrade/` 中。
+
+升级时会更新 kube-proxy, 旧的 kube-proxy 会放在 `kube-master[0]` 的 `/tmp/crane/kubernetes-upgrade/` 中, 以时间戳结尾。
+
+升级时会备份 `/etc/kubernetes` 和 `/var/lib/kubelet` 配置文件到 `/tmp/crane/kubernetes-upgrade/` 中。
