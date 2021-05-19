@@ -12,7 +12,7 @@
 
 - name: Set Master Role Label *
   shell: >
-    {{ kubernetes_ctl_path }}kubectl label node {{ item[0] }} node-role.kubernetes.io/master=''
+    {{ kubernetes_ctl_path }}kubectl label node {{ item[0] }} node-role.kubernetes.io/master='' ; \
     {{ kubernetes_ctl_path }}kubectl label node {{ item[0] }} node-role.kubernetes.io/control-plane=''
   with_nested:
     - "{{ k8s_master_name_list }}"
