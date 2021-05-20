@@ -5,6 +5,7 @@
     - [v1.21.1.0 更新内容](#v12110)
     - [v1.21.1.1 更新内容](#v12111)
     - [v1.21.1.2 更新内容](#v12112)
+    - [v1.21.1.3 更新内容](#v12113)
 
 # v1.21.0.0
 
@@ -94,3 +95,11 @@ Crane 以更新至 1.21.0.0 版本。
 新增 `k8s_mainifests_rotation.yml` 对 `/etc/kubernetes/manifests/kube-apiserver.yml`、`kube-controller-manager.yml`、`kube-scheduler.yml`、`haproxy.yml` 配置进行更新, 并默认备份到 `/tmp/crane/kubernetes-mainifests-rotation`。
 
 新增 `k8s_kubelet_rotation.yml` 对 `/etc/systemd/system/kubelet.service.d`、 `/var/lib/kubelet/config.yaml`、 `/var/lib/kubelet/kubernetes-flags.env`、`/lib/systemd/system/kubelet.service` 进行更新并默认被放到 `/tmp/crane/kubernetes-kubelet-rotation`。
+
+# v1.21.1.3
+
+## 更新
+
+更新 `istio` 到 [v1.10.0](https://github.com/istio/istio/releases/tag/1.10.0)
+
+更新 `harbor` 到 [2.1.5](https://github.com/goharbor/harbor/releases/tag/v2.1.5)
