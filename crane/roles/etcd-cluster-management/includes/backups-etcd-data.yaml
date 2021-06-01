@@ -1,4 +1,5 @@
 ---
+- setup:
 
 - name: Backup Etcd(SnapShot) Data
   shell: >
