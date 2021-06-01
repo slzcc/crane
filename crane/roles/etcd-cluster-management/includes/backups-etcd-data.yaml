@@ -1,6 +1,4 @@
 ---
-- setup:
-
 - name: Backup Etcd(SnapShot) Data
   shell: >
     {{ kubernetes_ctl_path }}docker run --name crane-etcd-backup-to-clean --rm -i -v {{ etcd_ssl_dirs }}:{{ etcd_ssl_dirs }} -v {{ temporary_dirs }}:{{ temporary_dirs }} -w {{ temporary_dirs }}etcdb {{ k8s_cluster_component_registry }}/etcd:{{ etcd_version }} \
