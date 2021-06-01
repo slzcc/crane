@@ -5,7 +5,7 @@
     - { role: local-task }
 
 - name: Initialize Crane Env
-  hosts: etcd[0]
+  hosts: all
   become: yes
   become_method: sudo
   vars:
