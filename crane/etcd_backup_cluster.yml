@@ -8,6 +8,7 @@
   hosts: etcd[0]
   become: yes
   become_method: sudo
+  gather_facts: true
   vars:
     ansible_ssh_pipelining: true
     crane_deploy_type: 'etcd-backup-cluster'
