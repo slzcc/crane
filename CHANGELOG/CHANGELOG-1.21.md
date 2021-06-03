@@ -109,3 +109,7 @@ Crane 以更新至 1.21.0.0 版本。
 第一次执行 `etcd_backup_cluster.yml` 存在无法找到环境变量的问题, 初步修复完毕, 后续进行优化处理。
 
 修复 `etcd_restore_cluster.yml` 中证书使用的 bug, 如果新集群中使用原有的证书会出现 x509 问题。
+
+修复 `upgrade_version.yml` 中, 不必要的 `kubelet` 停止服务操作。
+
+修复 `upgrade_version.yml` 中, 不在更新 `networks`.
