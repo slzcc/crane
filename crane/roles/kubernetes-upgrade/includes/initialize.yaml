@@ -24,3 +24,14 @@
     - "config.yaml"
     - "kubernetes-flags.env"
     - "pki"
+
+- name: Create resolve Kubelet config
+  shell: "mkdir -p /run/systemd/resolve/ && ln -sf /etc/resolv.conf /run/systemd/resolve/resolv.conf"
+  ignore_errors: true
+
+- name: Backup Old Kubernetes Binary
+  shell: "cp -a {{ kubernetes_ctl_path }}{{ item }} {{ temporary_dirs }}kubernetes-upgrade/"
+  with_items:
+    - "kubectl"
+    - "kubelet"
+  ignore_errors: true
