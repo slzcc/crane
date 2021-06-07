@@ -5,6 +5,7 @@
     - [v1.21.1.0 更新内容](#v12110)
     - [v1.21.1.1 更新内容](#v12111)
     - [v1.21.1.2 更新内容](#v12112)
+    - [v1.21.1.3 更新内容](#v12113)
 
 # v1.21.0.0
 
@@ -94,3 +95,20 @@ Crane 以更新至 1.21.0.0 版本。
 新增 `k8s_mainifests_rotation.yml` 对 `/etc/kubernetes/manifests/kube-apiserver.yml`、`kube-controller-manager.yml`、`kube-scheduler.yml`、`haproxy.yml` 配置进行更新, 并默认备份到 `/tmp/crane/kubernetes-mainifests-rotation`。
 
 新增 `k8s_kubelet_rotation.yml` 对 `/etc/systemd/system/kubelet.service.d`、 `/var/lib/kubelet/config.yaml`、 `/var/lib/kubelet/kubernetes-flags.env`、`/lib/systemd/system/kubelet.service` 进行更新并默认被放到 `/tmp/crane/kubernetes-kubelet-rotation`。
+
+# v1.21.1.3
+
+## 更新
+
+更新 `istio` 到 [v1.10.0](https://github.com/istio/istio/releases/tag/1.10.0)
+
+更新 `harbor` 到 [2.1.5](https://github.com/goharbor/harbor/releases/tag/v2.1.5)
+
+## 修复
+
+第一次执行 `etcd_backup_cluster.yml` 存在无法找到环境变量的问题, 初步修复完毕, 后续进行优化处理。
+
+修复 `etcd_restore_cluster.yml` 中证书使用的 bug, 如果新集群中使用原有的证书会出现 x509 问题。
+
+修复 `upgrade_version.yml` 中, 不必要的 `kubelet` 停止服务操作。
+

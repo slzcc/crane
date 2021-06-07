@@ -137,6 +137,8 @@
     - "roles/kubernetes-cluster-management/defaults/tls.yaml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/system-initialize/defaults/main.yml"
+    - "roles/etcd-cluster-management/defaults/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/crane/defaults/main.yml"
     - "roles/kubernetes-cluster-management/vars/kubelet.yaml"
     - "roles/cri-install/vars/kubelet.yaml"
