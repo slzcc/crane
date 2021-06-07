@@ -112,4 +112,3 @@ Crane 以更新至 1.21.0.0 版本。
 
 修复 `upgrade_version.yml` 中, 不必要的 `kubelet` 停止服务操作。
 
-修复 `upgrade_version.yml` 中, 不在更新 `networks`.
