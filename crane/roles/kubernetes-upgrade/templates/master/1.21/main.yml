@@ -1,8 +1,8 @@
 ---
-- name: Stop Kubelet
-  service: 
-    name: kubelet
-    state: stopped
+# - name: Stop Kubelet
+#   service: 
+#     name: kubelet
+#     state: stopped
 
 - name: Copy kubelet.service Files
   template: 
@@ -63,7 +63,7 @@
 - name: Restart Kubelet
   service:
     name: kubelet
-    state: started
+    state: restarted
 
 - name: Initialize Master Manifests
   include: "roles/kubernetes-upgrade/includes/update-k8s-manifests.yaml"
