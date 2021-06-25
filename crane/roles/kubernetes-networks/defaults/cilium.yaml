@@ -1,0 +1,24 @@
+# 集群属性, 主要用于多集群情况
+cilium_cluster_name: cluster-a
+cilium_cluster_id: "1"
+
+# 工作目录
+cilium_workdir_run: /var/run/cilium
+
+# tunnel 模式
+# disabled or vxlan or geneve
+cilium_tunnel_type: vxlan
+
+# ipam 模式
+cilium_ipam_type: "cluster-pool"
+
+# cidr range
+cilium_pool_ipv4_cidr: "{{ k8s_cluster_ipv4_pool_cidr }}"
+cilium_pool_ipv4_mask_size: "24"
+
+# kubeProxy Replacement
+# disabled or probe or partial or strict
+cilium_KPRHBA_type: "strict"
+
+# 是否部署 hubble
+is_deploy_hubble: false

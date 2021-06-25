@@ -15,6 +15,7 @@ _calicoVersion=`awk '/^calico_version/{print}' ../crane/group_vars/all.yml | awk
 _haproxyVersion=`awk '/^haproxy_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 _corednsVersion=`awk '/^dns_version/{print}' ../crane/roles/kubernetes-cluster-management/defaults/main.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 _nginxIngressVersion=`awk '/^ingress_nginx_version/{print}' ../crane/roles/kubernetes-addons/defaults/main.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_ciliumVersion=`awk '/^cilium_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 
 # Docker Version
 export dockercliVersion=${_dockerVersion:-'19.03'}
@@ -31,10 +32,11 @@ export calicoVersion=${_calicoVersion:-'v3.7.2'}
 # HaProxy Version
 export haproxyVersion=${_haproxyVersion:-'2.0.0'}
 # CoreDNS Version
-export corednsVersion=${_corednsVersion:-'1.5.0'}
+export corednsVersion=${_corednsVersion:-'1.8.3'}
 # Nginx Ingress
 export nginxIngressVersion=${_nginxIngressVersion:-'0.26.1'}
-
+# Cilium Version
+export ciliumVersion=${_ciliumVersion:-'v1.10.1'}
 # 数据打包临时路径
 export temporaryDirs=${temporaryDirs:-'/tmp'}
 

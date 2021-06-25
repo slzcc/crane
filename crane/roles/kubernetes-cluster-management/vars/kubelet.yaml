@@ -15,7 +15,8 @@ kubelet_swap_config: "--fail-swap-on=false"
 
 # Systemd-resolved 配置项
 # https://wiki.archlinux.org/index.php/Systemd-resolved
-kubelet_resolv_config: "--resolv-conf=/run/systemd/resolve/resolv.conf"
+## default --resolv-conf=/run/systemd/resolve/resolv.conf
+kubelet_resolv_config: "--resolv-conf=/etc/resolv.conf"
 
 # Containers Log
 Kubelet_containers_log_config: "--container-log-max-files=3 --container-log-max-size='512Mi'"
