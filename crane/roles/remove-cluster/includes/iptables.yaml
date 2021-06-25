@@ -9,11 +9,20 @@
   when: is_install_ipvsadm and kube_proxy_mode == 'ipvs' and is_remove_iptables_rule
   ignore_errors: true
 
-- name: DELETE ALL IPTABLE CLAIN
+- name: DELETE IPTABLE CLAIN RECORD
   shell: "iptables -F -t {{ item }}"
   with_items:
     - "nat"
     - "filter"
+  ignore_errors: true
+  when: is_remove_all or is_remove_iptables_rule
+
+- name: DELETE ALL IPTABLE CLAIN
+  shell: |
+    iptables --line -nvL | grep {{ item }} | awk '{print $2}' | xargs -i iptables -X {}
+  with_items:
+    - "cali-"
+    - "KUBE-"
   ignore_errors: true
   when: is_remove_all or is_remove_iptables_rule
 
@@ -22,5 +31,17 @@
   with_items:
     - "kube-ipvs0"
     - "tunl0"
+    - "cilium_host"
+    - "cilium_net"
+    - "cilium_vxlan"
   when: kube_proxy_mode == "ipvs"
+  ignore_errors: true
+
+- name: Clean IPSET
+  shell: |
+    ipset list | grep -E "(KUBE|cali)" | awk '{print $2}' | xargs -i ipset {{ item }} {}
+  with_items:
+    - "flush"
+    - "destroy"
+  when: is_remove_all or is_remove_iptables_rule
   ignore_errors: true

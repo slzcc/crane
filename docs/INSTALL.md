@@ -15,22 +15,23 @@ Crane 是由我个人独立创作并维护的, 在使用范围上可能得不到
 * Centos7/8
 
 以 v1.20.1 为例, 支持版本：
-* Kubernetes A/C/S v1.20.1
-* CoreDNS: v1.8.0
-* Calico: v3.17.0
-* HaProxy: v2.3.2
+* Kubernetes A/C/S v1.21.1
+* CoreDNS: v1.8.3
+* Calico: v3.19.1 or cilium v1.10.1
+* HaProxy: v2.3.3
 * Etcd: v3.4.9
 * pause: v3.2
 
 > Crane 默认使用 Calico 网络, Calico 依赖 Etcd 数据源, 涉及到所有的更新配置操作都是围绕 Calico 设计的, 如果不想使用 Calico 则自行解决 add_etcd/upgrade_version 时可能存在的问题。
 > 1.20.1.9 版本中已经剔除了 Calico 依赖。
+> 1.21.2.1 中可使用 cilium 网络.
 
 ### 开始使用 Crane
 
 使用 Crane 很简单, 有可能在一定程度上比 Kubeadm 都简单(国内源问题), 可以通过如下方式获取源码进行安装:
 
 ```
-$ git clone -b v1.20.1.1 https://github.com/slzcc/crane.git
+$ git clone -b v1.21.2.1 https://github.com/slzcc/crane.git
 ```
 
 然后进入 crane 目录后, 首先修改 nodes 文件列表:

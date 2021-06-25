@@ -13,6 +13,20 @@ metadata:
   name: "cilium-operator"
   namespace: kube-system
 ---
+# Source: cilium/templates/hubble-relay-serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: "hubble-relay"
+  namespace: kube-system
+---
+# Source: cilium/templates/hubble-ui-serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: "hubble-ui"
+  namespace: kube-system
+---
 # Source: cilium/templates/cilium-configmap.yaml
 apiVersion: v1
 kind: ConfigMap
@@ -40,6 +54,16 @@ data:
   # default, always and never.
   # https://docs.cilium.io/en/latest/policy/intro/#policy-enforcement-modes
   enable-policy: "default"
+  # If you want metrics enabled in all of your Cilium agents, set the port for
+  # which the Cilium agents will have their metrics exposed.
+  # This option deprecates the "prometheus-serve-addr" in the
+  # "cilium-metrics-config" ConfigMap
+  # NOTE that this will open the port on ALL nodes where Cilium pods are
+  # scheduled.
+  prometheus-serve-addr: ":9990"
+  # Port to expose Envoy metrics (e.g. "9095"). Envoy metrics listener will be disabled if this
+  # field is not set.
+  proxy-prometheus-port: "9095"
 
   # Enable IPv4 addressing. If enabled, all endpoints are allocated an IPv4
   # address.
@@ -101,17 +125,17 @@ data:
   sidecar-istio-proxy-image: "cilium/istio_proxy"
 
   # Name of the cluster. Only relevant when building a mesh of clusters.
-  cluster-name: default
+  cluster-name: {{ cilium_cluster_name }}
   # Unique ID of the cluster. Must be unique across all conneted clusters and
   # in the range of 1 and 255. Only relevant when building a mesh of clusters.
-  cluster-id: ""
+  cluster-id: "{{ cilium_cluster_id }}"
 
   # Encapsulation mode for communication between nodes
   # Possible values:
   #   - disabled
   #   - vxlan (default)
   #   - geneve
-  tunnel: vxlan
+  tunnel: {{ cilium_tunnel_type }}
   # Enables L7 proxy for L7 policy enforcement and visibility
   enable-l7-proxy: "true"
 
@@ -126,11 +150,12 @@ data:
   install-iptables-rules: "true"
   install-no-conntrack-iptables-rules: "false"
 
-  auto-direct-node-routes: "false"
+  auto-direct-node-routes: "{{ cilium_auto_direct_node_routes }}"
   enable-bandwidth-manager: "false"
   enable-local-redirect-policy: "false"
 
-  kube-proxy-replacement:  "disabled"
+  kube-proxy-replacement: "{{ cilium_kubeProxy_replacement_type }}"
+  kube-proxy-replacement-healthz-bind-address: ""
   enable-health-check-nodeport: "true"
   node-port-bind-protection: "true"
   enable-auto-protect-node-port-range: "true"
@@ -143,17 +168,125 @@ data:
   # Enable Hubble gRPC service.
   enable-hubble: "true"
   # UNIX domain socket for Hubble server to listen to.
-  hubble-socket-path:  "/var/run/cilium/hubble.sock"
+  hubble-socket-path:  "{{ cilium_workdir_run }}/hubble.sock"
+  # Address to expose Hubble metrics (e.g. ":7070"). Metrics server will be disabled if this
+  # field is not set.
+  hubble-metrics-server: ":9091"
+  # A space separated list of metrics to enable. See [0] for available metrics.
+  #
+  # https://github.com/cilium/hubble/blob/master/Documentation/metrics.md
+  hubble-metrics:
+    dns
+    drop
+    tcp
+    flow
+    port-distribution
+    icmp
+    http
   # An additional address for Hubble server to listen to (e.g. ":4244").
   hubble-listen-address: ":4244"
-  hubble-disable-tls: "false"
-  hubble-tls-cert-file: /var/lib/cilium/tls/hubble/server.crt
-  hubble-tls-key-file: /var/lib/cilium/tls/hubble/server.key
-  hubble-tls-client-ca-files: /var/lib/cilium/tls/hubble/client-ca.crt
-  ipam: "cluster-pool"
-  cluster-pool-ipv4-cidr: "10.0.0.0/8"
-  cluster-pool-ipv4-mask-size: "24"
+  hubble-disable-tls: "true"
+  ipam: {{ cilium_ipam_type }}
+  cluster-pool-ipv4-cidr: "{{ cilium_pool_ipv4_cidr }}"
+  cluster-pool-ipv4-mask-size: "{{ cilium_pool_ipv4_mask_size }}"
   disable-cnp-status-updates: "true"
+---
+# Source: cilium/templates/hubble-relay-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hubble-relay-config
+  namespace: kube-system
+data:
+  config.yaml: |
+    peer-service: unix://{{ cilium_workdir_run }}/hubble.sock
+    listen-address: :4245
+    dial-timeout: 
+    retry-timeout: 
+    sort-buffer-len-max: 
+    sort-buffer-drain-timeout: 
+    disable-client-tls: true
+    disable-server-tls: true
+---
+# Source: cilium/templates/hubble-ui-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hubble-ui-envoy
+  namespace: kube-system
+data:
+  envoy.yaml: |
+    static_resources:
+      listeners:
+        - name: listener_hubble_ui
+          address:
+            socket_address:
+              address: 0.0.0.0
+              port_value: 8081
+          filter_chains:
+            - filters:
+                - name: envoy.filters.network.http_connection_manager
+                  typed_config:
+                    "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+                    codec_type: auto
+                    stat_prefix: ingress_http
+                    route_config:
+                      name: local_route
+                      virtual_hosts:
+                        - name: local_service
+                          domains: ["*"]
+                          routes:
+                            - match:
+                                prefix: "/api/"
+                              route:
+                                cluster: backend
+                                prefix_rewrite: "/"
+                                timeout: 0s
+                                max_stream_duration:
+                                  grpc_timeout_header_max: 0s
+                            - match:
+                                prefix: "/"
+                              route:
+                                cluster: frontend
+                          cors:
+                            allow_origin_string_match:
+                              - prefix: "*"
+                            allow_methods: GET, PUT, DELETE, POST, OPTIONS
+                            allow_headers: keep-alive,user-agent,cache-control,content-type,content-transfer-encoding,x-accept-content-transfer-encoding,x-accept-response-streaming,x-user-agent,x-grpc-web,grpc-timeout
+                            max_age: "1728000"
+                            expose_headers: grpc-status,grpc-message
+                    http_filters:
+                      - name: envoy.filters.http.grpc_web
+                      - name: envoy.filters.http.cors
+                      - name: envoy.filters.http.router
+      clusters:
+        - name: frontend
+          connect_timeout: 0.25s
+          type: strict_dns
+          lb_policy: round_robin
+          load_assignment:
+            cluster_name: frontend
+            endpoints:
+              - lb_endpoints:
+                  - endpoint:
+                      address:
+                        socket_address:
+                          address: 127.0.0.1
+                          port_value: 8080
+        - name: backend
+          connect_timeout: 0.25s
+          type: logical_dns
+          lb_policy: round_robin
+          http2_protocol_options: {}
+          load_assignment:
+            cluster_name: backend
+            endpoints:
+              - lb_endpoints:
+                  - endpoint:
+                      address:
+                        socket_address:
+                          address: 127.0.0.1
+                          port_value: 8090
 ---
 # Source: cilium/templates/cilium-agent-clusterrole.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -354,6 +487,70 @@ rules:
   - get
   - update
 ---
+# Source: cilium/templates/hubble-relay-clusterrole.yaml
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: hubble-relay
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - componentstatuses
+      - endpoints
+      - namespaces
+      - nodes
+      - pods
+      - services
+    verbs:
+      - get
+      - list
+      - watch
+---
+# Source: cilium/templates/hubble-ui-clusterrole.yaml
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: hubble-ui
+rules:
+  - apiGroups:
+      - networking.k8s.io
+    resources:
+      - networkpolicies
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - componentstatuses
+      - endpoints
+      - namespaces
+      - nodes
+      - pods
+      - services
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - apiextensions.k8s.io
+    resources:
+      - customresourcedefinitions
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - cilium.io
+    resources:
+      - "*"
+    verbs:
+      - get
+      - list
+      - watch
+---
 # Source: cilium/templates/cilium-agent-clusterrolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -382,6 +579,112 @@ subjects:
   name: "cilium-operator"
   namespace: kube-system
 ---
+# Source: cilium/templates/hubble-relay-clusterrolebinding.yaml
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: hubble-relay
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: hubble-relay
+subjects:
+- kind: ServiceAccount
+  namespace: kube-system
+  name: "hubble-relay"
+---
+# Source: cilium/templates/hubble-ui-clusterrolebinding.yaml
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: hubble-ui
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: hubble-ui
+subjects:
+- kind: ServiceAccount
+  namespace: kube-system
+  name: "hubble-ui"
+---
+# Source: cilium/templates/cilium-agent-service.yaml
+kind: Service
+apiVersion: v1
+metadata:
+  name: cilium-agent
+  namespace: kube-system
+  annotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: "9095"
+  labels:
+    k8s-app: cilium
+spec:
+  clusterIP: None
+  type: ClusterIP
+  ports:
+  - name: envoy-metrics
+    port: 9095
+    protocol: TCP
+    targetPort: envoy-metrics
+  selector:
+    k8s-app: cilium
+---
+# Source: cilium/templates/cilium-agent-service.yaml
+kind: Service
+apiVersion: v1
+metadata:
+  name: hubble-metrics
+  namespace: kube-system
+  annotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: "9091"
+  labels:
+    k8s-app: hubble
+spec:
+  clusterIP: None
+  type: ClusterIP
+  ports:
+  - name: hubble-metrics
+    port: 9091
+    protocol: TCP
+    targetPort: hubble-metrics
+  selector:
+    k8s-app: cilium
+---
+# Source: cilium/templates/hubble-relay-service.yaml
+kind: Service
+apiVersion: v1
+metadata:
+  name: hubble-relay
+  namespace: kube-system
+  labels:
+    k8s-app: hubble-relay
+spec:
+  type: ClusterIP
+  selector:
+    k8s-app: hubble-relay
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 4245
+---
+# Source: cilium/templates/hubble-ui-service.yaml
+kind: Service
+apiVersion: v1
+metadata:
+  name: hubble-ui
+  labels:
+    k8s-app: hubble-ui
+  namespace: kube-system
+spec:
+  selector:
+    k8s-app: hubble-ui
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8081
+  type: ClusterIP
+---
 # Source: cilium/templates/cilium-agent-daemonset.yaml
 apiVersion: apps/v1
 kind: DaemonSet
@@ -401,6 +704,8 @@ spec:
   template:
     metadata:
       annotations:
+        prometheus.io/port: "9990"
+        prometheus.io/scrape: "true"
         # This annotation plus the CriticalAddonsOnly toleration makes
         # cilium to be a critical pod in the cluster, which ensures cilium
         # gets priority scheduling.
@@ -476,6 +781,8 @@ spec:
           successThreshold: 1
           timeoutSeconds: 5
         env:
+        - name: TZ
+          value: "{{ time_location }}"
         - name: K8S_NODE_NAME
           valueFrom:
             fieldRef:
@@ -500,7 +807,11 @@ spec:
               key: custom-cni-conf
               name: cilium-config
               optional: true
-        image: "quay.io/cilium/cilium:v1.10.1@sha256:f5fcdfd4929af5a8903b02da61332eea41dcdb512420b8c807e2e2904270561c"
+        - name: KUBERNETES_SERVICE_HOST
+          value: "{{ k8s_load_balance_ip }}"
+        - name: KUBERNETES_SERVICE_PORT
+          value: "{{ k8s_master_haproxy_bind_port }}"
+        image: "quay.io/cilium/cilium:{{ cilium_version }}"
         imagePullPolicy: IfNotPresent
         lifecycle:
           postStart:
@@ -514,6 +825,19 @@ spec:
               command:
               - /cni-uninstall.sh
         name: cilium-agent
+        ports:
+        - containerPort: 9990
+          hostPort: 9990
+          name: prometheus
+          protocol: TCP          
+        - containerPort: 9095
+          hostPort: 9095
+          name: envoy-metrics
+          protocol: TCP
+        - containerPort: 9091
+          hostPort: 9091
+          name: hubble-metrics
+          protocol: TCP
         securityContext:
           capabilities:
             add:
@@ -523,7 +847,7 @@ spec:
         volumeMounts:
         - mountPath: /sys/fs/bpf
           name: bpf-maps
-        - mountPath: /var/run/cilium
+        - mountPath: {{ cilium_workdir_run }}
           name: cilium-run
         - mountPath: /host/opt/cni/bin
           name: cni-path
@@ -541,14 +865,23 @@ spec:
           readOnly: true
         - mountPath: /run/xtables.lock
           name: xtables-lock
-        - mountPath: /var/lib/cilium/tls/hubble
-          name: hubble-tls
+        - mountPath: /usr/share/zoneinfo
+          name: usr-local-timezone
           readOnly: true
       hostNetwork: true
       initContainers:
+      - name: wait-for-node-init
+        command: ['sh', '-c', 'until stat /tmp/cilium-bootstrap-time > /dev/null 2>&1; do echo "Waiting on node-init to run..."; sleep 1; done']
+        image: "quay.io/cilium/cilium:{{ cilium_version }}"
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+        - mountPath: /tmp/cilium-bootstrap-time
+          name: cilium-bootstrap-file
       - command:
         - /init-container.sh
         env:
+        - name: TZ
+          value: "{{ time_location }}"
         - name: CILIUM_ALL_STATE
           valueFrom:
             configMapKeyRef:
@@ -567,7 +900,11 @@ spec:
               key: wait-bpf-mount
               name: cilium-config
               optional: true
-        image: "quay.io/cilium/cilium:v1.10.1@sha256:f5fcdfd4929af5a8903b02da61332eea41dcdb512420b8c807e2e2904270561c"
+        - name: KUBERNETES_SERVICE_HOST
+          value: "{{ k8s_load_balance_ip }}"
+        - name: KUBERNETES_SERVICE_PORT
+          value: "{{ k8s_master_haproxy_bind_port }}"
+        image: "quay.io/cilium/cilium:{{ cilium_version }}"
         imagePullPolicy: IfNotPresent
         name: clean-cilium-state
         securityContext:
@@ -579,8 +916,11 @@ spec:
         - mountPath: /sys/fs/bpf
           name: bpf-maps
           mountPropagation: HostToContainer
-        - mountPath: /var/run/cilium
+        - mountPath: {{ cilium_workdir_run }}
           name: cilium-run
+        - mountPath: /usr/share/zoneinfo
+          name: usr-local-timezone
+          readOnly: true
         resources:
           requests:
             cpu: 100m
@@ -593,9 +933,13 @@ spec:
       tolerations:
       - operator: Exists
       volumes:
+      - hostPath:
+          path: /usr/share/zoneinfo
+          type: DirectoryOrCreate
+        name: usr-local-timezone
         # To keep state between restarts / upgrades
       - hostPath:
-          path: /var/run/cilium
+          path: {{ cilium_workdir_run }}
           type: DirectoryOrCreate
         name: cilium-run
         # To keep state between restarts / upgrades for bpf maps
@@ -622,6 +966,10 @@ spec:
           path: /run/xtables.lock
           type: FileOrCreate
         name: xtables-lock
+      - hostPath:
+          path: /tmp/cilium-bootstrap-time
+          type: FileOrCreate
+        name: cilium-bootstrap-file
         # To read the clustermesh configuration
       - name: clustermesh-secrets
         secret:
@@ -632,19 +980,112 @@ spec:
       - configMap:
           name: cilium-config
         name: cilium-config-path
-      - name: hubble-tls
-        projected:
-          sources:
-          - secret:
-              name: hubble-server-certs
-              items:
-                - key: ca.crt
-                  path: client-ca.crt
-                - key: tls.crt
-                  path: server.crt
-                - key: tls.key
-                  path: server.key
-              optional: true
+---
+# Source: cilium/templates/cilium-nodeinit-daemonset.yaml
+kind: DaemonSet
+apiVersion: apps/v1
+metadata:
+  name: cilium-node-init
+  namespace: kube-system
+  labels:
+    app: cilium-node-init
+spec:
+  selector:
+    matchLabels:
+      app: cilium-node-init
+  template:
+    metadata:
+      annotations:
+      labels:
+        app: cilium-node-init
+    spec:
+      tolerations:
+      - operator: Exists
+      hostPID: true
+      hostNetwork: true
+      priorityClassName: system-node-critical
+      containers:
+        - name: node-init
+          image: quay.io/cilium/startup-script:62bfbe88c17778aad7bef9fa57ff9e2d4a9ba0d8
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: true
+          env:
+          - name: TZ
+            value: "{{ time_location }}"
+          - name: CHECKPOINT_PATH
+            value: /tmp/node-init.cilium.io
+          # STARTUP_SCRIPT is the script run on node bootstrap. Node
+          # bootstrapping can be customized in this script. This script is invoked
+          # using nsenter, so it runs in the host's network and mount namespace using
+          # the host's userland tools!
+          - name: STARTUP_SCRIPT
+            value: |
+              #!/bin/bash
+
+              set -o errexit
+              set -o pipefail
+              set -o nounset
+
+              mount | grep "/sys/fs/bpf type bpf" || {
+                # Mount the filesystem until next reboot
+                echo "Mounting BPF filesystem..."
+                mount bpffs /sys/fs/bpf -t bpf
+
+                # Configure systemd to mount after next boot
+                echo "Installing BPF filesystem mount"
+                cat >/tmp/sys-fs-bpf.mount <<EOF
+              [Unit]
+              Description=Mount BPF filesystem (Cilium)
+              Documentation=http://docs.cilium.io/
+              DefaultDependencies=no
+              Before=local-fs.target umount.target
+              After=swap.target
+
+              [Mount]
+              What=bpffs
+              Where=/sys/fs/bpf
+              Type=bpf
+              Options=rw,nosuid,nodev,noexec,relatime,mode=700
+
+              [Install]
+              WantedBy=multi-user.target
+              EOF
+
+                if [ -d "/etc/systemd/system/" ]; then
+                  mv /tmp/sys-fs-bpf.mount /etc/systemd/system/
+                  echo "Installed sys-fs-bpf.mount to /etc/systemd/system/"
+                elif [ -d "/lib/systemd/system/" ]; then
+                  mv /tmp/sys-fs-bpf.mount /lib/systemd/system/
+                  echo "Installed sys-fs-bpf.mount to /lib/systemd/system/"
+                fi
+
+                # Ensure that filesystem gets mounted on next reboot
+                systemctl enable sys-fs-bpf.mount
+                systemctl start sys-fs-bpf.mount
+              }
+
+              echo "Link information:"
+              ip link
+
+              echo "Routing table:"
+              ip route
+
+              echo "Addressing:"
+              ip -4 a
+              ip -6 a
+              date > /tmp/cilium-bootstrap-time
+
+              # AKS: If azure-vnet is installed on the node, and (still) configured in bridge mode,
+              # configure it as 'transparent' to be consistent with Cilium's CNI chaining config.
+              # If the azure-vnet CNI config is not removed, kubelet will execute CNI CHECK commands
+              # against it every 5 seconds and write 'bridge' to its state file, causing inconsistent
+              # behaviour when Pods are removed.
+              if [ -f /etc/cni/net.d/10-azure.conflist ]; then
+                echo "Ensuring azure-vnet is configured in 'transparent' mode..."
+                sed -i 's/"mode":\s*"bridge"/"mode":"transparent"/g' /etc/cni/net.d/10-azure.conflist
+              fi
+              echo "Node initialization complete"
 ---
 # Source: cilium/templates/cilium-operator-deployment.yaml
 apiVersion: apps/v1
@@ -694,6 +1135,8 @@ spec:
         command:
         - cilium-operator-generic
         env:
+        - name: TZ
+          value: "{{ time_location }}"
         - name: K8S_NODE_NAME
           valueFrom:
             fieldRef:
@@ -710,7 +1153,11 @@ spec:
               key: debug
               name: cilium-config
               optional: true
-        image: "quay.io/cilium/operator-generic:v1.10.1@sha256:a1588ee00a15f2f2b419e4acd36bd57d64a5f10eb52d0fd4de689e558a913cd8"
+        - name: KUBERNETES_SERVICE_HOST
+          value: "{{ k8s_load_balance_ip }}"
+        - name: KUBERNETES_SERVICE_PORT
+          value: "{{ k8s_master_haproxy_bind_port }}"
+        image: "quay.io/cilium/operator-generic:{{ cilium_version }}"
         imagePullPolicy: IfNotPresent
         name: cilium-operator
         livenessProbe:
@@ -726,6 +1173,9 @@ spec:
         - mountPath: /tmp/cilium/config-map
           name: cilium-config-path
           readOnly: true
+        - mountPath: /usr/share/zoneinfo
+          name: usr-local-timezone
+          readOnly: true
       hostNetwork: true
       restartPolicy: Always
       priorityClassName: system-cluster-critical
@@ -738,3 +1188,178 @@ spec:
       - configMap:
           name: cilium-config
         name: cilium-config-path
+      - hostPath:
+          path: /usr/share/zoneinfo
+          type: DirectoryOrCreate
+        name: usr-local-timezone
+{% if is_deploy_hubble %}
+---
+# Source: cilium/templates/hubble-relay-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hubble-relay
+  labels:
+    k8s-app: hubble-relay
+  namespace: kube-system
+spec:
+
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: hubble-relay
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+      labels:
+        k8s-app: hubble-relay
+    spec:
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: "k8s-app"
+                  operator: In
+                  values:
+                    - cilium
+            topologyKey: "kubernetes.io/hostname"
+      containers:
+        - name: hubble-relay
+          env:
+          - name: TZ
+            value: "{{ time_location }}"
+          image: "quay.io/cilium/hubble-relay:{{ cilium_version }}"
+          imagePullPolicy: IfNotPresent
+          command:
+            - hubble-relay
+          args:
+            - serve
+          ports:
+            - name: grpc
+              containerPort: 4245
+          readinessProbe:
+            tcpSocket:
+              port: grpc
+          livenessProbe:
+            tcpSocket:
+              port: grpc
+          volumeMounts:
+          - mountPath: {{ cilium_workdir_run }}
+            name: hubble-sock-dir
+            readOnly: true
+          - mountPath: /etc/hubble-relay
+            name: config
+            readOnly: true
+          - mountPath: /usr/share/zoneinfo
+            name: usr-local-timezone
+            readOnly: true
+      restartPolicy: Always
+      serviceAccount: "hubble-relay"
+      serviceAccountName: "hubble-relay"
+      terminationGracePeriodSeconds: 0
+      volumes:
+      - configMap:
+          name: hubble-relay-config
+          items:
+          - key: config.yaml
+            path: config.yaml
+        name: config
+      - hostPath:
+          path: {{ cilium_workdir_run }}
+          type: Directory
+        name: hubble-sock-dir
+      - hostPath:
+          path: /usr/share/zoneinfo
+          type: DirectoryOrCreate
+        name: usr-local-timezone
+---
+# Source: cilium/templates/hubble-ui-deployment.yaml
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  namespace: kube-system
+  labels:
+    k8s-app: hubble-ui
+  name: hubble-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: hubble-ui
+  template:
+    metadata:
+      annotations:
+      labels:
+        k8s-app: hubble-ui
+    spec:
+      securityContext:
+        runAsUser: 1001
+      serviceAccount: "hubble-ui"
+      serviceAccountName: "hubble-ui"
+      containers:
+        - name: frontend
+          image: "quay.io/cilium/hubble-ui:v0.7.9"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              name: http
+          resources:
+            {}
+          volumeMounts:
+            - mountPath: /usr/share/zoneinfo
+              name: usr-local-timezone
+              readOnly: true
+        - name: backend
+          image: "quay.io/cilium/hubble-ui-backend:v0.7.9"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: EVENTS_SERVER_PORT
+              value: "8090"
+            - name: FLOWS_API_ADDR
+              value: "hubble-relay:80"
+          ports:
+            - containerPort: 8090
+              name: grpc
+          resources:
+            {}
+          volumeMounts:
+            - mountPath: /usr/share/zoneinfo
+              name: usr-local-timezone
+              readOnly: true
+        - name: proxy
+          image: "docker.io/envoyproxy/envoy:v1.18.2"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8081
+              name: http
+          resources:
+            {}
+          command: ["envoy"]
+          args:
+            [
+              "-c",
+              "/etc/envoy.yaml",
+              "-l",
+              "info"
+            ]
+          volumeMounts:
+            - name: hubble-ui-envoy-yaml
+              mountPath: /etc/envoy.yaml
+              subPath: envoy.yaml
+            - mountPath: /usr/share/zoneinfo
+              name: usr-local-timezone
+              readOnly: true
+      volumes:
+        - name: hubble-ui-envoy-yaml
+          configMap:
+            name: hubble-ui-envoy
+        - hostPath:
+            path: /usr/share/zoneinfo
+            type: DirectoryOrCreate
+          name: usr-local-timezone
+{% endif %}
