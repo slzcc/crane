@@ -33,6 +33,7 @@
     - "tunl0"
     - "cilium_host"
     - "cilium_net"
+    - "cilium_vxlan"
   when: kube_proxy_mode == "ipvs"
   ignore_errors: true
 
