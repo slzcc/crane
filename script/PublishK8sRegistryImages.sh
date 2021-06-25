@@ -19,6 +19,7 @@ pauseVersion=${pauseVersion:-'3.2'}
 calicoVersion=${calicoVersion:-'v3.7.2'}
 haproxyVersion=${haproxyVersion:-'2.0.0'}
 corednsVersion=${corednsVersion:-'1.5.0'}
+ciliumVersion=${_ciliumVersion:-'v1.10.1'}
 nginxIngressVersion=${nginxIngressVersion:-''}
 
 # Calico Source Registry
@@ -97,6 +98,22 @@ docker save -o ${temporaryDirs}/image_calico.tar.gz \
                ${calicoRegistry}/kube-controllers:${calicoVersion} \
                ${calicoRegistry}/cni:${calicoVersion} \
                ${calicoRegistry}/node:${calicoVersion}
+
+# Cilium
+docker pull quay.io/cilium/startup-script:62bfbe88c17778aad7bef9fa57ff9e2d4a9ba0d8
+for i in cilium operator-generic; do
+    docker pull quay.io/cilium/$i:${calicoVersion}
+    
+    [ ${isImagePush} == 'true' ] && docker tag quay.io/cilium/$i:${calicoVersion} ${targetRegistry}/$i:${calicoVersion} && \
+                                    docker push ${targetRegistry}/$i:${calicoVersion}
+    [ ${CleanPullImage} == 'true' ] && docker rmi -f quay.io/cilium/$i:${calicoVersion} ${targetRegistry}/$i:${calicoVersion} quay.io/cilium/startup-script:62bfbe88c17778aad7bef9fa57ff9e2d4a9ba0d8
+done
+
+[ ${isImageExport} == 'true' ] && \
+docker save -o ${temporaryDirs}/image_cilium.tar.gz \
+               ${calicoRegistry}/operator-generic:${calicoVersion} \
+               ${calicoRegistry}/cilium:${calicoVersion} \
+               quay.io/cilium/startup-script:62bfbe88c17778aad7bef9fa57ff9e2d4a9ba0d8
 
 # HaProxy
 docker pull haproxy:${haproxyVersion}

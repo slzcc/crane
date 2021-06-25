@@ -24,6 +24,7 @@ spec:
       - --controllers=*,bootstrapsigner,tokencleaner
       - --kubeconfig={{ kubernetes_etc_dirs }}controller-manager.conf
       - --leader-elect=true
+      - --allocate-node-cidrs=true
       - --requestheader-client-ca-file={{ kubernetes_pki_dirs }}front-proxy-ca.pem
       - --root-ca-file={{ kubernetes_pki_dirs }}ca.pem
       - --service-account-private-key-file={{ kubernetes_pki_dirs }}sa.key

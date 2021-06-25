@@ -1,3 +1,4 @@
+# https://kubernetes.io/docs/reference/command-line-tools-reference/kube-proxy/
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -54,14 +55,15 @@ data:
     iptables:
       masqueradeAll: false
       masqueradeBit: 14
-      minSyncPeriod: 0s
+      minSyncPeriod: 10s
       syncPeriod: 30s
     ipvs:
       excludeCIDRs: null
-      minSyncPeriod: 0s
+      minSyncPeriod: 10s
       scheduler: "{{ kube_proxy_ipvs_scheduler }}"
       strictARP: false
       syncPeriod: 30s
+      tcpTimeout: 0s
     kind: KubeProxyConfiguration
     metricsBindAddress: 127.0.0.1:10249
     mode: "{{ kube_proxy_mode }}"
@@ -120,7 +122,7 @@ spec:
     spec:
       containers:
       - command:
-        - {{ kubernetes_ctl_path }}kube-proxy
+        - kube-proxy
         - --config=/var/lib/kube-proxy/config.conf
         - --hostname-override=$(NODE_NAME)
         env:
