@@ -1,13 +1,13 @@
 # 集群属性, 主要用于多集群情况
-cilium_cluster_name: cluster-a
+cilium_cluster_name: "cluster-a"
 cilium_cluster_id: "1"
 
 # 工作目录
-cilium_workdir_run: /var/run/cilium
+cilium_workdir_run: "/var/run/cilium"
 
 # tunnel 模式
 # disabled or vxlan or geneve
-cilium_tunnel_type: vxlan
+cilium_tunnel_type: "vxlan"
 
 # ipam 模式
 cilium_ipam_type: "cluster-pool"
