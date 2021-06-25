@@ -102,17 +102,17 @@ docker save -o ${temporaryDirs}/image_calico.tar.gz \
 # Cilium
 docker pull quay.io/cilium/startup-script:62bfbe88c17778aad7bef9fa57ff9e2d4a9ba0d8
 for i in cilium operator-generic; do
-    docker pull quay.io/cilium/$i:${calicoVersion}
+    docker pull quay.io/cilium/$i:${ciliumVersion}
     
-    [ ${isImagePush} == 'true' ] && docker tag quay.io/cilium/$i:${calicoVersion} ${targetRegistry}/$i:${calicoVersion} && \
-                                    docker push ${targetRegistry}/$i:${calicoVersion}
-    [ ${CleanPullImage} == 'true' ] && docker rmi -f quay.io/cilium/$i:${calicoVersion} ${targetRegistry}/$i:${calicoVersion} quay.io/cilium/startup-script:62bfbe88c17778aad7bef9fa57ff9e2d4a9ba0d8
+    [ ${isImagePush} == 'true' ] && docker tag quay.io/cilium/$i:${ciliumVersion} ${targetRegistry}/$i:${ciliumVersion} && \
+                                    docker push ${targetRegistry}/$i:${ciliumVersion}
+    [ ${CleanPullImage} == 'true' ] && docker rmi -f quay.io/cilium/$i:${ciliumVersion} ${targetRegistry}/$i:${ciliumVersion} quay.io/cilium/startup-script:62bfbe88c17778aad7bef9fa57ff9e2d4a9ba0d8
 done
 
 [ ${isImageExport} == 'true' ] && \
 docker save -o ${temporaryDirs}/image_cilium.tar.gz \
-               ${calicoRegistry}/operator-generic:${calicoVersion} \
-               ${calicoRegistry}/cilium:${calicoVersion} \
+               ${calicoRegistry}/operator-generic:${ciliumVersion} \
+               ${calicoRegistry}/cilium:${ciliumVersion} \
                quay.io/cilium/startup-script:62bfbe88c17778aad7bef9fa57ff9e2d4a9ba0d8
 
 # HaProxy
