@@ -18,7 +18,7 @@ cilium_pool_ipv4_mask_size: "24"
 
 # kubeProxy Replacement
 # disabled or probe or partial or strict
-cilium_KPRHBA_type: "strict"
+cilium_KPRHBA_type: "probe"
 
 # 是否部署 hubble
 is_deploy_hubble: false

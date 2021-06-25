@@ -6,6 +6,8 @@
 
 
 ```
+$ helm repo add cilium https://helm.cilium.io/
+
 $ helm template cilium cilium/cilium --version 1.10.1 \
 --namespace kube-system \
 --set cluster.name="cilium-a" \
@@ -89,4 +91,13 @@ $ kubectl create secret generic -n kube-system cilium-etcd-secrets \
     --from-file=etcd-client-ca.crt=ca.crt \
     --from-file=etcd-client.key=client.key \
     --from-file=etcd-client.crt=client.crt
+```
+
+```
+helm template hubble \
+    --namespace kube-system \
+    --set metrics.enabled="{dns:query;ignoreAAAA;destinationContext=pod-short,drop:sourceContext=pod;destinationContext=pod,tcp,flow,port-distribution,icmp,http}" \
+    --set ui.enabled=true \
+    > hubble.yaml
+
 ```
