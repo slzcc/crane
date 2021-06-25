@@ -150,11 +150,11 @@ data:
   install-iptables-rules: "true"
   install-no-conntrack-iptables-rules: "false"
 
-  auto-direct-node-routes: "false"
+  auto-direct-node-routes: "{{ cilium_auto_direct_node_routes }}"
   enable-bandwidth-manager: "false"
   enable-local-redirect-policy: "false"
 
-  kube-proxy-replacement:  {{ cilium_KPRHBA_type }}
+  kube-proxy-replacement:  {{ cilium_kubeProxy_replacement_type }}
   kube-proxy-replacement-healthz-bind-address: ""
   enable-health-check-nodeport: "true"
   node-port-bind-protection: "true"

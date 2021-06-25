@@ -35,3 +35,12 @@
     - "cilium_net"
   when: kube_proxy_mode == "ipvs"
   ignore_errors: true
+
+- name: Clean IPSET
+  shell: |
+    ipset list | grep -E "(KUBE|cali)" | awk '{print $2}' | xargs -i ipset {{ item }} {}
+  with_items:
+    - "flush"
+    - "destroy"
+  when: is_remove_all or is_remove_iptables_rule
+  ignore_errors: true
