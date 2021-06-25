@@ -1,0 +1,23 @@
+---
+- name: Copy Cilium Config Files
+  template: 
+    src: "roles/kubernetes-networks/templates/cilium/cilium.j2"
+    dest: "{{ temporary_dirs }}main/calico.yml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+
+- name: Deploy Cilium Containers
+  shell: '{{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}main/cilium.yml'
+  ignore_errors: true
+
+# Etcd TLS
+# - name: Delete Cilium Old Etcd Secrets
+#   shell: '{{ kubernetes_ctl_path }}kubectl delete secret cilium-etcd-secrets -n kube-system'
+#   ignore_errors: true
+
+# - name: Deploy Cilium Etcd Secrets
+#   shell: '{{ kubernetes_ctl_path }}kubectl create secret generic cilium-etcd-secrets -n kube-system \
+#                 --from-file=etcd-client-ca.crt={{ etcd_ssl_dirs }}etcd-ca.pem \
+#                 --from-file=etcd-client.key={{ etcd_ssl_dirs }}etcd-key.pem \
+#                 --from-file=etcd-client.crt={{ etcd_ssl_dirs }}etcd.pem'
+#   ignore_errors: true
