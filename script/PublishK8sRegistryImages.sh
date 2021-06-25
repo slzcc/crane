@@ -111,8 +111,8 @@ done
 
 [ ${isImageExport} == 'true' ] && \
 docker save -o ${temporaryDirs}/image_cilium.tar.gz \
-               ${calicoRegistry}/operator-generic:${ciliumVersion} \
-               ${calicoRegistry}/cilium:${ciliumVersion} \
+               quay.io/cilium/operator-generic:${ciliumVersion} \
+               quay.io/cilium/cilium:${ciliumVersion} \
                quay.io/cilium/startup-script:62bfbe88c17778aad7bef9fa57ff9e2d4a9ba0d8
 
 # HaProxy
