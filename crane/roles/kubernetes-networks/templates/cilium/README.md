@@ -101,3 +101,27 @@ helm template hubble \
     > hubble.yaml
 
 ```
+
+替换 kube-proxy 只需修改 `cilium_kubeProxy_replacement_type` 为 `strict` 只需 kube-proxy 移除命令:
+
+```
+$ kubectl delete -f /tmp/crane/main/kube-proxy.yml
+
+```
+
+清除 iptables: 
+
+```
+for i in nat filter; do
+  iptables -t $i --line -nvL | grep cali- | awk '{print $2}' | xargs -i iptables -t $i -X {}
+  iptables -t $i --line -nvL | grep KUBE- | awk '{print $2}' | xargs -i iptables -t $i -X {}
+done
+```
+
+清除 ipset:
+
+```
+for i in flush destroy; do
+  ipset list | grep -E "(KUBE|cali)" | awk '{print $2}' | xargs -i ipset $i {}
+done
+```
