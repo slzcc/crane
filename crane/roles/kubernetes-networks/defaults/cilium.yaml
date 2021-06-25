@@ -18,7 +18,13 @@ cilium_pool_ipv4_mask_size: "24"
 
 # kubeProxy Replacement
 # disabled or probe or partial or strict
-cilium_KPRHBA_type: "probe"
+cilium_kubeProxy_replacement_type: "probe"
+
+# https://docs.cilium.io/en/v1.10/concepts/networking/routing/
+cilium_auto_direct_node_routes: "false"
 
 # 是否部署 hubble
 is_deploy_hubble: false
+
+
+# 可参考文献: https://zhuanlan.zhihu.com/p/143335054
