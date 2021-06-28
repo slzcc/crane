@@ -36,7 +36,7 @@
     ln -sf {{ kubernetes_pki_dirs }}cilium/cilium-ca-key.pem {{ kubernetes_pki_dirs }}cilium/ca.key;
 
 - name: Deploy Cilium CA
-  shell: "{{ kubernetes_ctl_path }}kubectl create secret generic cilium-ca --from-file={{ kubernetes_pki_dirs }}/cilium/ca.crt --from-file={{ kubernetes_pki_dirs }}/cilium//ca.key"
+  shell: "{{ kubernetes_ctl_path }}kubectl create secret generic cilium-ca --from-file={{ kubernetes_pki_dirs }}cilium/ca.crt --from-file={{ kubernetes_pki_dirs }}cilium//ca.key -n {{ cilium_namespace }}"
 
 # Etcd TLS
 # - name: Delete Cilium Old Etcd Secrets
