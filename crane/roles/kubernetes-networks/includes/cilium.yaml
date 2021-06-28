@@ -32,8 +32,8 @@
 
 - name: Initialize the Cilium CA
   shell: |
-    ln -sf {{ kubernetes_pki_dirs }}/cilium/cilium-ca.pem {{ kubernetes_pki_dirs }}/cilium/ca.crt;
-    ln -sf {{ kubernetes_pki_dirs }}/cilium/cilium-ca.key {{ kubernetes_pki_dirs }}/cilium/ca.key;
+    ln -sf {{ kubernetes_pki_dirs }}cilium/cilium-ca.pem {{ kubernetes_pki_dirs }}cilium/ca.crt;
+    ln -sf {{ kubernetes_pki_dirs }}cilium/cilium-ca-key.pem {{ kubernetes_pki_dirs }}cilium/ca.key;
 
 - name: Deploy Cilium CA
   shell: "{{ kubernetes_ctl_path }}kubectl create secret generic cilium-ca --from-file={{ kubernetes_pki_dirs }}/cilium/ca.crt --from-file={{ kubernetes_pki_dirs }}/cilium//ca.key"
