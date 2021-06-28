@@ -18,7 +18,7 @@
 
 ## Create Kubernetes CA
 - name: Create Kubernetes Certificate Files
-  shell: cd {{ kubernetes_pki_dirs }} && {{ kubernetes_ctl_path }}cfssl gencert -initca ca-csr.json | {{ kubernetes_ctl_path }}cfssljson -bare ca
+  shell: "cd {{ kubernetes_pki_dirs }} && {{ kubernetes_ctl_path }}cfssl gencert -initca ca-csr.json | {{ kubernetes_ctl_path }}cfssljson -bare ca"
 
 - name: Create Kubernetes API Server Certificate Files
   shell: "cd {{ kubernetes_pki_dirs }} && {{ kubernetes_ctl_path }}cfssl gencert \
