@@ -20,7 +20,7 @@
 - name: Copy CFSSL Cilum Json Files
   template:
     src: "roles/kubernetes-networks/templates/cilium/{{ item }}"
-    dest: "{{ kubernetes_pki_dirs }}/cilium/{{ item }}"
+    dest: "{{ kubernetes_pki_dirs }}cilium/{{ item }}"
     owner: "{{ ssh_connect_user }}" 
     mode: 0644
   with_items:
