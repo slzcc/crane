@@ -28,7 +28,7 @@
     - "ca-csr.json"
 
 - name: Create Cilum Certificate Files
-  shell: "cd {{ kubernetes_pki_dirs }}pki/cilium && {{ kubernetes_ctl_path }}cfssl gencert -initca ca-csr.json | {{ kubernetes_ctl_path }}cfssljson -bare cilium-ca"
+  shell: "cd {{ kubernetes_pki_dirs }}cilium && {{ kubernetes_ctl_path }}cfssl gencert -initca ca-csr.json | {{ kubernetes_ctl_path }}cfssljson -bare cilium-ca"
 
 - name: Initialize the Cilium CA
   shell: |
