@@ -10,6 +10,34 @@
   shell: '{{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}main/cilium.yml'
   ignore_errors: true
 
+- name: Create Cilium PKI WorkDir
+  file:
+    path: "{{ kubernetes_pki_dirs }}cilium"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
+- name: Copy CFSSL Cilum Json Files
+  template:
+    src: "roles/kubernetes-networks/templates/cilium/{{ item }}"
+    dest: "{{ kubernetes_pki_dirs }}/cilium/{{ item }}"
+    owner: "{{ ssh_connect_user }}" 
+    mode: 0644
+  with_items:
+    - "ca-config.json"
+    - "ca-csr.json"
+
+- name: Create Cilum Certificate Files
+  shell: "cd {{ kubernetes_pki_dirs }}pki/cilium && {{ kubernetes_ctl_path }}cfssl gencert -initca ca-csr.json | {{ kubernetes_ctl_path }}cfssljson -bare cilium-ca"
+
+- name: Initialize the Cilium CA
+  shell: |
+    ln -sf {{ kubernetes_pki_dirs }}/cilium/cilium-ca.pem {{ kubernetes_pki_dirs }}/cilium/ca.crt;
+    ln -sf {{ kubernetes_pki_dirs }}/cilium/cilium-ca.key {{ kubernetes_pki_dirs }}/cilium/ca.key;
+
+- name: Deploy Cilium CA
+  shell: "{{ kubernetes_ctl_path }}kubectl create secret generic cilium-ca --from-file={{ kubernetes_pki_dirs }}/cilium/ca.crt --from-file={{ kubernetes_pki_dirs }}/cilium//ca.key"
+
 # Etcd TLS
 # - name: Delete Cilium Old Etcd Secrets
 #   shell: '{{ kubernetes_ctl_path }}kubectl delete secret cilium-etcd-secrets -n kube-system'
