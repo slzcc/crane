@@ -2,6 +2,8 @@
 cilium_cluster_name: "cluster-a"
 cilium_cluster_id: "1"
 
+cilium_namespace: "kube-system"
+
 # 工作目录
 cilium_workdir_run: "/var/run/cilium"
 
