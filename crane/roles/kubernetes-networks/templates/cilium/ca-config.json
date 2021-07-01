@@ -1,0 +1,18 @@
+{
+  "signing": {
+    "default": {
+      "expiry": "{{ tls_cilium_validity_period_hours }}h"
+    },
+    "profiles": {
+      "kubernetes": {
+        "usages": [
+          "signing",
+          "key encipherment",
+          "server auth",
+          "client auth"
+        ],
+        "expiry": "{{ tls_cilium_validity_period_hours }}h"
+      }
+    }
+  }
+}

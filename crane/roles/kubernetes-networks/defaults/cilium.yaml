@@ -2,6 +2,8 @@
 cilium_cluster_name: "cluster-a"
 cilium_cluster_id: "1"
 
+cilium_namespace: "kube-system"
+
 # 工作目录
 cilium_workdir_run: "/var/run/cilium"
 
@@ -20,11 +22,49 @@ cilium_pool_ipv4_mask_size: "24"
 # disabled or probe or partial or strict
 cilium_kubeProxy_replacement_type: "probe"
 
+cilium_hostPort: "true"
+
 # https://docs.cilium.io/en/v1.10/concepts/networking/routing/
 cilium_auto_direct_node_routes: "false"
 
 # 是否部署 hubble
 is_deploy_hubble: false
+cilium_hubble_metrics_port: ":9091"
 
+# Prometheus Configmap
+cilium_prometheus_port: ":9990"
+cilium_proxy_prometheus_port: "9095"
 
 # 可参考文献: https://zhuanlan.zhihu.com/p/143335054
+
+# CFSSL 生成证书的加密方式
+tls_cilium_encryption_algorithm: 'rsa'
+
+# CFSSL 生成证书的通过加密算法生成的长度
+tls_cilium_encryption_algorithm_size: 2048
+
+# 证书有效期, 默认为 5 年, CA 根证书与 server 证书使用一个时间
+tls_cilium_validity_period: 20
+
+# 证书信息头, 国家信息 
+# Country Name
+tls_cilium_head_info_C: 'CN'
+
+# 证书信息头, 地区或城市 
+# Locality Name
+tls_cilium_head_info_L: 'BeiJing'
+
+# 证书信息头, 组织 
+# Organization Name 
+tls_cilium_head_info_O: 'Cilium'
+
+# 证书信息头, 组织单位 
+# Organizational Units Name
+tls_cilium_head_info_OU: 'Cilium'
+
+# 证书信息头, 州或省 
+# State or Province Name
+tls_cilium_head_info_ST: 'BeiJing'
+
+# Cfssl config
+tls_cilium_validity_period_hours: '{{ tls_cilium_validity_period * 365 * 24 }}'
