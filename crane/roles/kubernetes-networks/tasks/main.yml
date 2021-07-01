@@ -8,6 +8,7 @@
 
 - name: Deploy CoreDNS
   shell: '{{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}main/CoreDNS.yml'
+  when: is_kube_dns
   ignore_errors: true
 
 - name: Copy Kubernetes Proxy Config Files
@@ -24,3 +25,4 @@
 
 - name: Deploy General Networks
   include: 'roles/kubernetes-networks/includes/{{ general_network_drive }}.yaml'
+  when: general_network_drive != 'none'

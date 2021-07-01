@@ -22,11 +22,18 @@ cilium_pool_ipv4_mask_size: "24"
 # disabled or probe or partial or strict
 cilium_kubeProxy_replacement_type: "probe"
 
+cilium_hostPort: "true"
+
 # https://docs.cilium.io/en/v1.10/concepts/networking/routing/
 cilium_auto_direct_node_routes: "false"
 
 # 是否部署 hubble
 is_deploy_hubble: false
+cilium_hubble_metrics_port: ":9091"
+
+# Prometheus Configmap
+cilium_prometheus_port: ":9990"
+cilium_proxy_prometheus_port: "9095"
 
 # 可参考文献: https://zhuanlan.zhihu.com/p/143335054
 

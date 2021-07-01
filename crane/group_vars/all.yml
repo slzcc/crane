@@ -88,8 +88,8 @@ kube_proxy_node_port_addresses: ["10.100.21.0/24", "172.17.48.0/24"]
 ## ********************************************************************************************************************************
 # Kubernetes Network 的优化 https://www.kubernetes.org.cn/5036.html
 
-# 支持 calico 与 ciluim 网络模式, 默认 calico
-# calico or ciluim
+# 支持 calico 与 cilium 网络模式, 默认 calico
+# calico or cilium or none
 general_network_drive: 'calico'
 
 # Calico Verion
@@ -108,6 +108,9 @@ cilium_version: 'v1.10.1'
 
 # 是否安装 Kube-Proxy
 is_kube_proxy: true
+
+# 是否安装 CoreDNS
+is_kube_dns: true
 
 ## CRI
 ## ********************************************************************************************************************************

@@ -46,6 +46,7 @@
 # Clean General Network
 - name: Clean General Network
   include: "roles/remove-cluster/includes/{{ general_network_drive }}.yaml"
+  when: general_network_drive != 'none'
   
 # Clean Other
 - name: Clean Other

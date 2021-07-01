@@ -4,6 +4,7 @@
 
 > 参照文档: https://docs.cilium.io/en/v1.10/helm-reference/
 
+> https://docs.cilium.io/en/stable/gettingstarted/kubeproxy-free/#kubeproxy-free
 
 ```
 $ helm repo add cilium https://helm.cilium.io/
@@ -21,6 +22,7 @@ $ helm template cilium cilium/cilium --version 1.10.1 \
 --set externalIPs.enabled=true \
 --set nodePort.enabled=true \
 --set hostPort.enabled=true \
+--set hostServices.enabled=true \
 --set pullPolicy=IfNotPresent \
 --set config.ipam=cluster-pool \
 --set prometheus.enabled=true \
@@ -34,6 +36,9 @@ $ helm template cilium cilium/cilium --version 1.10.1 \
 --set hubble.tls.enabled=false \
 --set kubeProxyReplacement=strict \
 --set k8sServiceHost=192.168.122.86 \
+--set nodePort.range="10\,65534" \
+#--set devices="eth0" \
+--set nodePort.directRoutingDevice="eth0" \
 --set ipam.operator.clusterPoolIPv4PodCIDR=10.0.0.0/8 \
 --set ipam.operator.clusterPoolIPv4MaskSize=24 \
 --set k8sServicePort=6443
@@ -124,4 +129,15 @@ done
 for i in flush destroy; do
   ipset list | grep -E "(KUBE|cali)" | awk '{print $2}' | xargs -i ipset $i {}
 done
+```
+
+集群配置: (其中 --context 参数需要自定义配置上下文, 并且区分 name 和 id)
+
+```
+# https://docs.cilium.io/en/v1.10/gettingstarted/clustermesh/clustermesh/
+cilium clustermesh enable --context kubernetes-admin@kubernetes --service-type NodePort
+cilium clustermesh enable --context kubernetes-admin2@kubernetes2 --service-type NodePort --create-ca kubernetes-admin@kubernetes
+cilium clustermesh connect --context kubernetes-admin@kubernetes --destination-context kubernetes-admin2@kubernetes2
+cilium clustermesh status --wait
+
 ```
