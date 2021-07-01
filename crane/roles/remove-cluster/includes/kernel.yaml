@@ -7,7 +7,9 @@
   ignore_errors: true
 
 - name: Clean Modprobe nf_conntrack
-  shell: "rm -rf /etc/modprobe.d/nf_conntrack.conf}"
+  file:
+    path: "/etc/modprobe.d/nf_conntrack.conf"
+    state: absent
   ignore_errors: true
 
 - name: Clean rc.local nf_conntrack
