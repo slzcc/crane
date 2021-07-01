@@ -11,5 +11,6 @@
   ignore_errors: true
 
 - name: Clean rc.local nf_conntrack
-  shell: "sed -i 's#echo {{ kernel_nf_conntrack_buckets }} > /sys/module/nf_conntrack/parameters/hashsize##' /etc/rc.local"
+  shell: |
+    sed -i '\/sys\/module\/nf_conntrack\/parameters\/hashsize/d' /etc/rc.local
   ignore_errors: true
