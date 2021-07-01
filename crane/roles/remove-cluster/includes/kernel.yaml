@@ -1,0 +1,7 @@
+---
+- name: Clean Kernel Sysctl Config
+  shell: "rm -rf /etc/sysctl.d/{{ item }}"
+  with_items:
+    - "k8s.conf"
+    - "99-k8s.conf"
+  ignore_errors: true

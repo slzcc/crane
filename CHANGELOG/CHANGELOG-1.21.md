@@ -150,6 +150,11 @@ Crane 以更新至 1.21.2.0 版本。
 
 添加是否安装 kube-dns, 由 `is_kube_dns` 参数控制。主要目的是对只更新 `--tags k8s-networks` 时, 避免冲掉 CoreDNS 配置.
 
+添加清理集群时, 清除 `sysctl` 配置项。添加文件: `roles/remove-cluster/includes/kernel.yaml`.
+
 ## 优化
 
 cilium 配置进行优化。
+
+清除集群时, 清除已知所有 `network` 插件。
+配置内核参数时, 添加 `ip_local_reserved_ports` 配置项, 主要目的是端口保护。
