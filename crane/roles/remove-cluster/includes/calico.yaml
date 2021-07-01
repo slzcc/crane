@@ -14,7 +14,7 @@
 - name: Clean Calico CNI.
   shell: "rm -rf {{ cni_config_dir }}/{{ item }}"
   with_items:
-    - "10-calico.conflist"
+    - "10-calico.conflist*"
     - "calico-kubeconfig"
   ignore_errors: true
 

@@ -146,13 +146,13 @@
 
 - name: Copy Sysctl Files
   template:
-    src: "roles/system-initialize/templates/k8s.conf"
-    dest: "/etc/sysctl.d/k8s.conf"
+    src: "roles/system-initialize/templates/99-k8s.conf"
+    dest: "/etc/sysctl.d/99-k8s.conf"
     owner: "{{ ssh_connect_user }}"
     mode: 0644
 
 - name: Execute Configuration Command
-  shell: "sysctl -p /etc/sysctl.d/k8s.conf"
+  shell: "sysctl -p /etc/sysctl.d/99-k8s.conf"
   ignore_errors: true
 
 - name: Check Hashsize
@@ -165,11 +165,6 @@
   when: hashsize.stderr or (hashsize.stdout|int < kernel_nf_conntrack_buckets )
   ignore_errors: true
 
-# - name: Set nf_conntrack_buckets Powered up
-#   shell: "echo 'echo {{ kernel_nf_conntrack_buckets }} > /sys/module/nf_conntrack/parameters/hashsize' >> /etc/rc.local"
-#   when: hashsize.stderr or (hashsize.stdout|int < kernel_nf_conntrack_buckets )
-#   ignore_errors: true
-
 - name: Copy nf_conntrack_buckets Powered up
   template:
     src: "roles/system-initialize/templates/nf_conntrack.conf"
@@ -177,10 +172,6 @@
     owner: "{{ ssh_connect_user }}"
     mode: 0644
   ignore_errors: true
-
-# - name: Empowerment for rc.local
-#   shell: "chmod +x /etc/rc.local"
-#   ignore_errors: true
 
 - name: Centos Stop Firewalld
   service: 

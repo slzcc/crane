@@ -4,35 +4,35 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: "cilium"
-  namespace: kube-system
+  namespace: {{ cilium_namespace }}
 ---
 # Source: cilium/templates/cilium-operator-serviceaccount.yaml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: "cilium-operator"
-  namespace: kube-system
+  namespace: {{ cilium_namespace }}
 ---
 # Source: cilium/templates/hubble-relay-serviceaccount.yaml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: "hubble-relay"
-  namespace: kube-system
+  namespace: {{ cilium_namespace }}
 ---
 # Source: cilium/templates/hubble-ui-serviceaccount.yaml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: "hubble-ui"
-  namespace: kube-system
+  namespace: {{ cilium_namespace }}
 ---
 # Source: cilium/templates/cilium-configmap.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: cilium-config
-  namespace: kube-system
+  namespace: {{ cilium_namespace }}
 data:
 
   # Identity allocation mode selects how identities are shared between cilium
@@ -60,10 +60,10 @@ data:
   # "cilium-metrics-config" ConfigMap
   # NOTE that this will open the port on ALL nodes where Cilium pods are
   # scheduled.
-  prometheus-serve-addr: ":9990"
+  prometheus-serve-addr: "{{ cilium_prometheus_port }}"
   # Port to expose Envoy metrics (e.g. "9095"). Envoy metrics listener will be disabled if this
   # field is not set.
-  proxy-prometheus-port: "9095"
+  proxy-prometheus-port: "{{ cilium_proxy_prometheus_port }}"
 
   # Enable IPv4 addressing. If enabled, all endpoints are allocated an IPv4
   # address.
@@ -153,11 +153,17 @@ data:
   auto-direct-node-routes: "{{ cilium_auto_direct_node_routes }}"
   enable-bandwidth-manager: "false"
   enable-local-redirect-policy: "false"
+  # List of devices used to attach bpf_host.o (implements BPF NodePort,
+  # host-firewall and BPF masquerading)
+  # devices: "{{ os_network_device_name }}"
 
   kube-proxy-replacement: "{{ cilium_kubeProxy_replacement_type }}"
   kube-proxy-replacement-healthz-bind-address: ""
+  enable-host-reachable-services: "{{ cilium_hostPort }}"
+  # direct-routing-device: "{{ os_network_device_name }}"
   enable-health-check-nodeport: "true"
   node-port-bind-protection: "true"
+  # node-port-range: "{{ ",".join(k8s_apiserver_node_port_range.split("-")) }}"
   enable-auto-protect-node-port-range: "true"
   enable-session-affinity: "true"
   enable-endpoint-health-checking: "true"
@@ -166,12 +172,12 @@ data:
   enable-remote-node-identity: "true"
   operator-api-serve-addr: "127.0.0.1:9234"
   # Enable Hubble gRPC service.
-  enable-hubble: "true"
+  enable-hubble: "{{ is_deploy_hubble }}"
   # UNIX domain socket for Hubble server to listen to.
   hubble-socket-path:  "{{ cilium_workdir_run }}/hubble.sock"
   # Address to expose Hubble metrics (e.g. ":7070"). Metrics server will be disabled if this
   # field is not set.
-  hubble-metrics-server: ":9091"
+  hubble-metrics-server: "{{ cilium_hubble_metrics_port }}"
   # A space separated list of metrics to enable. See [0] for available metrics.
   #
   # https://github.com/cilium/hubble/blob/master/Documentation/metrics.md
@@ -196,7 +202,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: hubble-relay-config
-  namespace: kube-system
+  namespace: {{ cilium_namespace }}
 data:
   config.yaml: |
     peer-service: unix://{{ cilium_workdir_run }}/hubble.sock
@@ -213,7 +219,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: hubble-ui-envoy
-  namespace: kube-system
+  namespace: {{ cilium_namespace }}
 data:
   envoy.yaml: |
     static_resources:
@@ -563,7 +569,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: "cilium"
-  namespace: kube-system
+  namespace: {{ cilium_namespace }}
 ---
 # Source: cilium/templates/cilium-operator-clusterrolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -577,7 +583,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: "cilium-operator"
-  namespace: kube-system
+  namespace: {{ cilium_namespace }}
 ---
 # Source: cilium/templates/hubble-relay-clusterrolebinding.yaml
 kind: ClusterRoleBinding
@@ -590,7 +596,7 @@ roleRef:
   name: hubble-relay
 subjects:
 - kind: ServiceAccount
-  namespace: kube-system
+  namespace: {{ cilium_namespace }}
   name: "hubble-relay"
 ---
 # Source: cilium/templates/hubble-ui-clusterrolebinding.yaml
@@ -604,7 +610,7 @@ roleRef:
   name: hubble-ui
 subjects:
 - kind: ServiceAccount
-  namespace: kube-system
+  namespace: {{ cilium_namespace }}
   name: "hubble-ui"
 ---
 # Source: cilium/templates/cilium-agent-service.yaml
@@ -612,7 +618,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: cilium-agent
-  namespace: kube-system
+  namespace: {{ cilium_namespace }}
   annotations:
     prometheus.io/scrape: 'true'
     prometheus.io/port: "9095"
@@ -634,7 +640,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: hubble-metrics
-  namespace: kube-system
+  namespace: {{ cilium_namespace }}
   annotations:
     prometheus.io/scrape: 'true'
     prometheus.io/port: "9091"
@@ -656,7 +662,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: hubble-relay
-  namespace: kube-system
+  namespace: {{ cilium_namespace }}
   labels:
     k8s-app: hubble-relay
 spec:
@@ -675,7 +681,7 @@ metadata:
   name: hubble-ui
   labels:
     k8s-app: hubble-ui
-  namespace: kube-system
+  namespace: {{ cilium_namespace }}
 spec:
   selector:
     k8s-app: hubble-ui
@@ -692,7 +698,7 @@ metadata:
   labels:
     k8s-app: cilium
   name: cilium
-  namespace: kube-system
+  namespace: {{ cilium_namespace }}
 spec:
   selector:
     matchLabels:
@@ -986,7 +992,7 @@ kind: DaemonSet
 apiVersion: apps/v1
 metadata:
   name: cilium-node-init
-  namespace: kube-system
+  namespace: {{ cilium_namespace }}
   labels:
     app: cilium-node-init
 spec:
@@ -1095,7 +1101,7 @@ metadata:
     io.cilium/app: operator
     name: cilium-operator
   name: cilium-operator
-  namespace: kube-system
+  namespace: {{ cilium_namespace }}
 spec:
   # See docs on ServerCapabilities.LeasesResourceLock in file pkg/k8s/version/version.go
   # for more details.
@@ -1201,7 +1207,7 @@ metadata:
   name: hubble-relay
   labels:
     k8s-app: hubble-relay
-  namespace: kube-system
+  namespace: {{ cilium_namespace }}
 spec:
 
   replicas: 1
@@ -1282,7 +1288,7 @@ spec:
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  namespace: kube-system
+  namespace: {{ cilium_namespace }}
   labels:
     k8s-app: hubble-ui
   name: hubble-ui

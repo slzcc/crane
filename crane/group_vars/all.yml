@@ -7,7 +7,7 @@
 k8s_version: 'v1.21.2'
 
 # 避免大版本中组件的版本差异, 使用 build 版本作为差异配置项, 在项目中可以看做如下使用 '{{ k8s_version }}.{{ build_k8s_version }}'
-build_k8s_version: '1'
+build_k8s_version: '3'
 
 # OS Drive/Arch Type
 os_drive: 'linux'
@@ -88,8 +88,8 @@ kube_proxy_node_port_addresses: ["10.100.21.0/24", "172.17.48.0/24"]
 ## ********************************************************************************************************************************
 # Kubernetes Network 的优化 https://www.kubernetes.org.cn/5036.html
 
-# 支持 calico 与 ciluim 网络模式, 默认 calico
-# calico or ciluim
+# 支持 calico 与 cilium 网络模式, 默认 calico
+# calico or cilium or none
 general_network_drive: 'calico'
 
 # Calico Verion
@@ -105,6 +105,12 @@ cilium_version: 'v1.10.1'
 
 ## Kubelet Config
 # 参照 crane/roles/kubernetes-cluster-management/vars/kubelet.yaml
+
+# 是否安装 Kube-Proxy
+is_kube_proxy: true
+
+# 是否安装 CoreDNS
+is_kube_dns: true
 
 ## CRI
 ## ********************************************************************************************************************************
