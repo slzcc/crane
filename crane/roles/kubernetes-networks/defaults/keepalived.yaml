@@ -2,5 +2,5 @@
 keepalived_ip: "{{ k8s_load_balance_ip }}"
 
 # Keepalived 绑定的物理网卡名称, 这里不支持多网卡, 如果 `os_network_device_name` 的值为多网卡
-# 请在这里填写 VIP 需要绑定的网卡设备。只支持单个值!
-vip_bind_net_device: "{{ os_network_device_name }}"
+# 此值只绑定第一个设备网卡
+vip_bind_net_device: "{{ os_network_device_name.split(',')[0] }}"
