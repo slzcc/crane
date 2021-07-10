@@ -1,0 +1,50 @@
+---
+
+- name: Create Kubernetes PKI WorkDir
+  file:
+    path: "{{ kubernetes_manifests_dirs }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
+- name: Copy Kubernetes ApiServer Config Files
+  template: 
+    src: "roles/kubernetes-manifests/templates/kube-apiserver.j2"
+    dest: "{{ kubernetes_manifests_dirs }}kube-apiserver.yml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+
+- name: Copy Kubernetes Controller Manager Config Files
+  template: 
+    src: "roles/kubernetes-manifests/templates/kube-controller-manager.j2"
+    dest: "{{ kubernetes_manifests_dirs }}kube-controller-manager.yml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+
+- name: Copy Kubernetes Scheduler Config Files
+  template: 
+    src: "roles/kubernetes-manifests/templates/kube-scheduler.j2"
+    dest: "{{ kubernetes_manifests_dirs }}kube-scheduler.yml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+
+- name: Create Haproxy WorkDir
+  file:
+    path: "{{ haproxy_etc_dirs }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
+- name: Copy Haproxy cfg Files
+  template: 
+    src: "roles/kubernetes-manifests/templates/haproxy.cfg.j2"
+    dest: "{{ haproxy_etc_dirs }}haproxy.cfg"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+  
+- name: Copy Haproxy conf Files
+  template: 
+    src: "roles/kubernetes-manifests/templates/haproxy.yml.j2"
+    dest: "{{ kubernetes_manifests_dirs }}haproxy.yml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"

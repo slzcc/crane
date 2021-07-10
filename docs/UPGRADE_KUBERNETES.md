@@ -6,6 +6,10 @@
 
 [CRI Install](./CRI_INSTALL.md) 部署方式依赖 CRI 类型的安装, 以便后续维护 离线 或 半离线安装.
 
+# 重要提示
+
+> 升级时, calico 会进行重新部署, 如果不需要请注释执行文件中更新 `network` 片段。
+
 ## Configure
 
 升级版本是以当前 Crane 部署的版本升级至 `{{ k8s_version }}.{{ build_k8s_version }}` 版本, 请根据需求自定义此版本号, 比如当前版本为:

@@ -1,0 +1,17 @@
+---
+
+- name: Copy Old Kubernetes Manifests apiServer Config
+  shell: "cp -a {{ kubernetes_manifests_dirs }}kube-apiserver.yml  {{ temporary_dirs }}{{ crane_tasks }}/kube-apiserver.yml-`date +%Y%m%d%H%M%S`"
+  ignore_errors: true
+  
+- name: Copy Old Kubernetes Manifests Controller Manager Config
+  shell: "cp -a {{ kubernetes_manifests_dirs }}kube-controller-manager.yml {{ temporary_dirs }}{{ crane_tasks }}/kube-controller-manager.yml-`date +%Y%m%d%H%M%S`"
+  ignore_errors: true
+
+- name: Copy Old Kubernetes Manifests Scheduler Config
+  shell: "cp -a {{ kubernetes_manifests_dirs }}kube-scheduler.yml {{ temporary_dirs }}{{ crane_tasks }}/kube-scheduler.yml-`date +%Y%m%d%H%M%S`"
+  ignore_errors: true
+
+- name: Copy Old Kubernetes Manifests Haproxy Config
+  shell: "cp -a {{ kubernetes_manifests_dirs }}haproxy.yml {{ temporary_dirs }}{{ crane_tasks }}/haproxy.yml-`date +%Y%m%d%H%M%S`"
+  ignore_errors: true

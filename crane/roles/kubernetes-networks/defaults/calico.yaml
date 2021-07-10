@@ -1,6 +1,6 @@
 # Calico Type 
-# Calico 使用的模式默认使用, 默认为 BGP 设置为 Off:, 如果需要使用 IPIP 则设置为 :Always
-calico_type: 'Off'
+# Calico 使用的模式默认使用, 默认 IPIP 设置为 :Always, 如果需要使用 BGP 设置为 Off:, 
+calico_type: 'Always'
 
 # Calico CNI Version
 # Calico 使用 CNI 版本

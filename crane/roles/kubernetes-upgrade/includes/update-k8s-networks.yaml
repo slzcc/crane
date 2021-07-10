@@ -12,10 +12,6 @@
     mode: 0644
     owner: "{{ ssh_connect_user }}" 
 
-# - name: Update Kuberneres Proxy *
-#   shell: '{{ kubernetes_ctl_path }}kubectl delete -f {{ temporary_dirs }}kubernetes-upgrade/kube-proxy.yml'
-#   ignore_errors: true
-
 - name: Backup Old Proxy DaemonsetConfig
   shell: '{{ kubernetes_ctl_path }}kubectl get daemonset/kube-proxy -n kube-system -o yaml > {{ temporary_dirs }}kubernetes-upgrade/kube-proxy.yml.`date +%Y%m%d%H%M%S`'
   ignore_errors: true
@@ -26,5 +22,6 @@
 
 - name: Update Kuberneres Proxy **
   shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}kubernetes-upgrade/kube-proxy.yml ; do >&2 echo "Starting..." && sleep 1 ; done'
+  when: is_kube_proxy
   ignore_errors: true
   

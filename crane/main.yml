@@ -18,6 +18,7 @@
     - "roles/cri-install/vars/docker.yaml"
     - "roles/crane/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/downloads-ssh-key/defaults/main.yml"
   roles:
     - { role: crane, tags: [crane] }
@@ -46,6 +47,7 @@
     - "roles/cri-install/vars/containerd.yaml"
     - "roles/cri-install/vars/crio.yaml"
     - "roles/cri-install/vars/cri-tools.yaml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/kubernetes-networks/defaults/main.yml"
   roles:
@@ -137,6 +139,8 @@
     - "roles/kubernetes-cluster-management/defaults/tls.yaml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/system-initialize/defaults/main.yml"
+    - "roles/etcd-cluster-management/defaults/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/crane/defaults/main.yml"
     - "roles/kubernetes-cluster-management/vars/kubelet.yaml"
     - "roles/cri-install/vars/kubelet.yaml"
@@ -211,6 +215,7 @@
     - "roles/crane/defaults/main.yml"
     - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/kubernetes-networks/defaults/calico.yaml"
+    - "roles/kubernetes-networks/defaults/cilium.yaml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   roles:
@@ -244,6 +249,7 @@
     - "roles/crane/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/main.yml"
   tasks:
     - { include: 'roles/kubernetes-cluster-management/includes/kubernetes-cluster-setup.yaml' }
 

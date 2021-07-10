@@ -19,3 +19,5 @@
   - "load_docker_images.sh"
   - "load_docker_binary.sh"
   - "reload_docker_kubelet.sh"
+  - "clean_network_filter.sh"
+  - "etcd.sh"

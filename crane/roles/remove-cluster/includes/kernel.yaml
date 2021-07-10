@@ -1,0 +1,23 @@
+---
+- name: Clean Kernel Sysctl Config
+  shell: "rm -rf /etc/sysctl.d/{{ item }}"
+  with_items:
+    - "k8s.conf"
+    - "99-k8s.conf"
+  ignore_errors: true
+
+- name: Clean Modprobe nf_conntrack
+  file:
+    path: "/etc/modprobe.d/nf_conntrack.conf"
+    state: absent
+  ignore_errors: true
+
+# - name: Clean rc.local nf_conntrack
+#   shell: |
+#     sed -i '\/sys\/module\/nf_conntrack\/parameters\/hashsize/d' /etc/rc.local
+#   ignore_errors: true
+
+- name: Clean rc.local nf_conntrack
+  shell: |
+    sed 's#echo {{ kernel_nf_conntrack_buckets }} > /sys/module/nf_conntrack/parameters/hashsize##' /etc/rc.local
+  ignore_errors: true

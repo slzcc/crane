@@ -43,10 +43,17 @@
 - name: Clean runC
   include: "roles/remove-cluster/includes/cri-tools.yaml"
 
-# Clean Calico
-- name: Clean Other
-  include: "roles/remove-cluster/includes/calico.yaml"
-  
+# Clean General Network
+- name: Clean General Network
+  include: "roles/remove-cluster/includes/{{ item }}.yaml"
+  with_items:
+    - "cilium"
+    - "calico"
+
+# Clean Kernel
+- name: Clean Kernel
+  include: "roles/remove-cluster/includes/kernel.yaml"
+
 # Clean Other
 - name: Clean Other
   include: "roles/remove-cluster/includes/other.yaml"

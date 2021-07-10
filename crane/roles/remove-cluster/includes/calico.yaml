@@ -2,8 +2,20 @@
 
 - name: Clean Calico directory.
   file:
-    path: "/var/lib/calico"
+    path: "{{ item }}"
     state: absent
+  with_items:
+    - "/var/lib/calico"
+    - "/var/lib/cni/networks"
+    - "/var/run/calico"
+    - "/var/log/calico/cni"
+  ignore_errors: true
+
+- name: Clean Calico CNI.
+  shell: "rm -rf {{ cni_config_dir }}/{{ item }}"
+  with_items:
+    - "10-calico.conflist*"
+    - "calico-kubeconfig"
   ignore_errors: true
 
 - name: Clean Calico IP Route

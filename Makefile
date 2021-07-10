@@ -152,7 +152,7 @@ local_load_containerd: local_load_runc
 	@wget -qO- https://github.com/containerd/containerd/releases/download/v${CONTAINERD_VERSION}/containerd-${CONTAINERD_VERSION}-${OS_DRIVE}-${OS_ARCH}.tar.gz > ${PWD}/crane/roles/downloads-packages/files/containerd-${CONTAINERD_VERSION}-${OS_DRIVE}-${OS_ARCH}.tar.gz
 
 local_load_runc: local_load_critools
-	@wget -qO- https://github.com/opencontainers/runc/releases/download/v1.0.0-rc92/runc.amd64 > ${PWD}/crane/roles/downloads-packages/files/runc
+	@wget -qO- https://github.com/opencontainers/runc/releases/download/v1.0.0/runc.${OS_ARCH} > ${PWD}/crane/roles/downloads-packages/files/runc
 
 local_load_critools: 
 	@wget -qO- https://github.com/kubernetes-sigs/cri-tools/releases/download/${CRITOOLS_VERSION}/crictl-${CRITOOLS_VERSION}-${OS_DRIVE}-${OS_ARCH}.tar.gz > ${PWD}/crane/roles/downloads-packages/files/crictl-${CRITOOLS_VERSION}.tar.gz
