@@ -43,8 +43,8 @@
 
 - name: Deploy Istio ********
   shell: |
-    until {{ kubernetes_ctl_path }}kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-{{ ".".join(istio_version.split('.')[0:2]) }}/samples/addons/grafana.yaml ; do >&2 echo "Starting..." && sleep 1 ; done' ;
-    until {{ kubernetes_ctl_path }}kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-{{ ".".join(istio_version.split('.')[0:2]) }}/samples/addons/jaeger.yaml ; do >&2 echo "Starting..." && sleep 1 ; done' ;
-    until {{ kubernetes_ctl_path }}kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-{{ ".".join(istio_version.split('.')[0:2]) }}/samples/addons/prometheus.yaml ; do >&2 echo "Starting..." && sleep 1 ; done' ;
-    until {{ kubernetes_ctl_path }}kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-{{ ".".join(istio_version.split('.')[0:2]) }}/samples/addons/kiali.yaml ; do >&2 echo "Starting..." && sleep 1 ; done' ;
-    until {{ kubernetes_ctl_path }}kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-{{ ".".join(istio_version.split('.')[0:2]) }}/samples/addons/extras/zipkin.yaml ; do >&2 echo "Starting..." && sleep 1 ; done' ;
+    until {{ kubernetes_ctl_path }}kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-{{ ".".join(istio_version.split('.')[0:2]) }}/samples/addons/grafana.yaml ; do >&2 echo "Starting..." && sleep 1 ; done ;
+    until {{ kubernetes_ctl_path }}kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-{{ ".".join(istio_version.split('.')[0:2]) }}/samples/addons/jaeger.yaml ; do >&2 echo "Starting..." && sleep 1 ; done ;
+    until {{ kubernetes_ctl_path }}kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-{{ ".".join(istio_version.split('.')[0:2]) }}/samples/addons/prometheus.yaml ; do >&2 echo "Starting..." && sleep 1 ; done ;
+    until {{ kubernetes_ctl_path }}kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-{{ ".".join(istio_version.split('.')[0:2]) }}/samples/addons/kiali.yaml ; do >&2 echo "Starting..." && sleep 1 ; done ;
+    until {{ kubernetes_ctl_path }}kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-{{ ".".join(istio_version.split('.')[0:2]) }}/samples/addons/extras/zipkin.yaml ; do >&2 echo "Starting..." && sleep 1 ; done ;
