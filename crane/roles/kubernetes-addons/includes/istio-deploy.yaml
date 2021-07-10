@@ -19,7 +19,7 @@
   shell: 'ln -sf {{ istio_home }}/bin/istioctl /usr/bin/istioctl'
 
 - name: Deploy Istio ***
-  shell: 'cd {{ istio_home }} && ./istioctl manifest install --set profile=demo --set addonComponents.istiocoredns.enabled=true --set addonComponents.grafana.enabled=true --set addonComponents.kiali.enabled=true --set addonComponents.prometheus.enabled=true --set addonComponents.tracing.enabled=true'
+  shell: 'cd {{ istio_home }} && ./istioctl install'
 
 - name: Deploy Istio ****
   template: 
@@ -40,3 +40,11 @@
 
 - name: Deploy Istio *******
   shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ istio_home }}kiali-secret.yml ; do >&2 echo "Starting..." && sleep 1 ; done'
+
+- name: Deploy Istio ********
+  shell: |
+    until {{ kubernetes_ctl_path }}kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-{{ ".".join(istio_version.split('.')[0:1]) }}/samples/addons/grafana.yaml ; do >&2 echo "Starting..." && sleep 1 ; done' ;
+    until {{ kubernetes_ctl_path }}kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-{{ ".".join(istio_version.split('.')[0:1]) }}/samples/addons/jaeger.yaml ; do >&2 echo "Starting..." && sleep 1 ; done' ;
+    until {{ kubernetes_ctl_path }}kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-{{ ".".join(istio_version.split('.')[0:1]) }}/samples/addons/prometheus.yaml ; do >&2 echo "Starting..." && sleep 1 ; done' ;
+    until {{ kubernetes_ctl_path }}kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-{{ ".".join(istio_version.split('.')[0:1]) }}/samples/addons/kiali.yaml ; do >&2 echo "Starting..." && sleep 1 ; done' ;
+    until {{ kubernetes_ctl_path }}kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-{{ ".".join(istio_version.split('.')[0:1]) }}/samples/addons/extras/zipkin.yaml ; do >&2 echo "Starting..." && sleep 1 ; done' ;
