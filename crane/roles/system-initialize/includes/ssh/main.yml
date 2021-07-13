@@ -5,5 +5,6 @@
   ignore_errors: true
 
 - name: Set SSH UseDNS
-  shell: "sed -ri 's/^#(UseDNS )yes/\1no/' /etc/ssh/sshd_config"
+  shell: 
+    sed -ri 's/^#(UseDNS )yes/\1no/' /etc/ssh/sshd_config
   ignore_errors: true
