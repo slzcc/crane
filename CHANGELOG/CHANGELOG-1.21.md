@@ -210,3 +210,5 @@ docker 配置文件加入 overlay2 检查配置:
 - name: Initialize Limit
   include: "roles/system-initialize/includes/system/limit.yaml"
 ```
+
+crictl 工具安装超时直接跳过。
