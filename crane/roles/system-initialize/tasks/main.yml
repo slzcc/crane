@@ -198,6 +198,7 @@
 
 - name: Initialize Chrony
   include: "roles/system-initialize/includes/system/chrony.yaml"
+  when: is_chrony_deploy
 
 - name: Initialize Limit
   include: "roles/system-initialize/includes/system/limit.yaml"

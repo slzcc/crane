@@ -200,11 +200,12 @@ docker 配置文件加入 overlay2 检查配置:
   ignore_errors: true
 ```
 
-初始化时添加 Chrony and Limit 配置:
+初始化时添加 Chrony and Limit 配置: (默认不会安装 chrony)
 
 ```
 - name: Initialize Chrony
   include: "roles/system-initialize/includes/system/chrony.yaml"
+  when: is_chrony_deploy
 
 - name: Initialize Limit
   include: "roles/system-initialize/includes/system/limit.yaml"

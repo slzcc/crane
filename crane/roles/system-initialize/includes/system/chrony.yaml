@@ -44,6 +44,6 @@
     - result.stderr or result.stdout != 'active'
 
 - name: Restart Chrony
-  shell: "systemctl daemon-reload && systemctl restart chrony"
+  shell: "systemctl daemon-reload && systemctl restart chronyd"
   when: 
     - result.stderr or result.stdout != 'active'
