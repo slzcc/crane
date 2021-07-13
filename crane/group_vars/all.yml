@@ -7,7 +7,7 @@
 k8s_version: 'v1.21.2'
 
 # 避免大版本中组件的版本差异, 使用 build 版本作为差异配置项, 在项目中可以看做如下使用 '{{ k8s_version }}.{{ build_k8s_version }}'
-build_k8s_version: '3'
+build_k8s_version: '4'
 
 # OS Drive/Arch Type
 os_drive: 'linux'
@@ -50,7 +50,8 @@ https_proxy: ""
 no_proxy: "localhost,127.0.0.1"
 
 # 部署的 Cluster 中 Containers 的时区, 由于是挂载宿主机 /usr/share/zoneinfo 目录解决, 所以要保证此目录的存在。
-# 如果需要设置 UTC 时区, 请设置值为: Europe/Moscow
+# 如果需要设置 UTC 时区, 请设置值为: Europe/Moscow, 可设置为 UTC.
+# 不能为空
 time_location: "Asia/Shanghai"
 
 ## Kubernetes

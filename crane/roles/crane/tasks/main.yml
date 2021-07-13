@@ -18,3 +18,4 @@
   include: 'roles/crane/includes/tools-script.yaml'
   when: 
     - crane_deploy_type != 'remove_cluster'
+    - sync_crane_script

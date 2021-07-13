@@ -20,3 +20,8 @@
   shell: "rm -rf {{ temporary_dirs }}"
   when: is_remove_temporary
   ignore_errors: true
+
+- name: Clean Limit
+  shell: "rm -rf /etc/security/limits.d/19-k8s-limit.conf"
+  when: is_remove_all
+  ignore_errors: true

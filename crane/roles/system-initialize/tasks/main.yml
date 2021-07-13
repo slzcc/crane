@@ -191,3 +191,14 @@
 
 - name: Check Systemd-resolved Systemd Status
   include: "roles/kubernetes-cluster-management/includes/initialize-resolv.yaml"
+
+- name: Set Time Zone
+  shell: "ln -sf /usr/share/zoneinfo/{{ time_location }} /etc/localtime"
+  ignore_errors: true
+
+- name: Initialize Chrony
+  include: "roles/system-initialize/includes/system/chrony.yaml"
+  when: is_chrony_deploy
+
+- name: Initialize Limit
+  include: "roles/system-initialize/includes/system/limit.yaml"
