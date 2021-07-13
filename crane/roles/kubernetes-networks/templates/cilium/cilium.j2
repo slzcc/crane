@@ -1368,4 +1368,20 @@ spec:
             path: /usr/share/zoneinfo
             type: DirectoryOrCreate
           name: usr-local-timezone
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: hubble
+  namespace: {{ cilium_namespace }}
+spec:
+  rules:
+  - host: {{ cilium_hubble_daemon }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: hubble-ui
+          servicePort: http
 {% endif %}

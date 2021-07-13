@@ -31,6 +31,9 @@ cilium_auto_direct_node_routes: "false"
 is_deploy_hubble: false
 cilium_hubble_metrics_port: ":9091"
 
+# Ingress Daemon
+cilium_hubble_daemon: "hubble.example.com"
+
 # Prometheus Configmap
 cilium_prometheus_port: ":9990"
 cilium_proxy_prometheus_port: "9095"

@@ -11,4 +11,8 @@ temporary_dirs: '/tmp/crane/'
 
 # 当不安装 cri 时, 则默认关闭 crane 半离线安装方式
 # 此值默认同 cri_drive_install_type 一致, 值为 none 则判断不使用 crane 部署方式, 任意值都会忽略
-is_crane_kubernetes_deploy: "{{ cri_drive_install_type }}"
+is_crane_kubernetes_deploy: '{{ cri_drive_install_type }}'
+
+# 是否同步 scrip 脚本, 默认 false
+# 主要作为调试使用
+sync_crane_script: 'false'
