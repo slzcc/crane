@@ -45,6 +45,6 @@
 
 - name: Restart Chrony
   shell: "systemctl daemon-reload && systemctl restart chronyd"
-  gnore_errors: true
+  ignore_errors: true
   when:
     - result.stderr or result.stdout != 'active'
