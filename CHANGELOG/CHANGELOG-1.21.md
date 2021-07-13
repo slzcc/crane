@@ -212,3 +212,5 @@ docker 配置文件加入 overlay2 检查配置:
 ```
 
 crictl 工具安装超时直接跳过。
+
+清理集群时, 不在清理 crictl 。
