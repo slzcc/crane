@@ -18,6 +18,6 @@ kernel_nf_conntrack_max: 4194304
 # chrony 上游时区服务器
 # 如果没有公网地址, 请自行修改
 is_chrony_deploy: false
-chrony_sync_server: ["cn.pool.ntp.org", "s1b.time.edu.cn"]
+chrony_sync_server: ["cn.pool.ntp.org", "time.cloudflare.com"]
 
 # 检查命令 chronyc sources -v
