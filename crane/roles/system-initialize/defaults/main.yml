@@ -14,3 +14,9 @@ systemd_default_dirs: '/lib/systemd/system/'
 # 内核 nf_conntrack 64GB 配置
 kernel_nf_conntrack_buckets: 1048576
 kernel_nf_conntrack_max: 4194304
+
+# chrony 上游时区服务器
+# 如果没有公网地址, 请自行修改
+chrony_sync_server: ["cn.pool.ntp.org", "s1b.time.edu.cn"]
+
+# 检查命令 chronyc sources -v

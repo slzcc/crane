@@ -1,0 +1,49 @@
+---
+
+- name: Check Chrony Systemd Status
+  shell: "systemctl is-active chrony --no-pager"
+  register: result
+  ignore_errors: true
+
+- name: Ubuntu Install Chrony
+  apt: 
+    name: ["chrony"]
+    state: present
+  environment:
+    http_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ https_proxy }}"
+  when: 
+    - ansible_distribution == 'Ubuntu'
+    - result.stderr or result.stdout != 'active'
+  async: 30
+  poll: 2
+  ignore_errors: true
+
+- name: Centos Install Chrony
+  yum: 
+    name: ["chrony"]
+    state: present
+  environment:
+    http_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ https_proxy }}"
+  async: 30
+  poll: 2
+  when: 
+    - ansible_distribution == 'CentOS'
+    - result.stderr or result.stdout != 'active'
+  ignore_errors: true
+
+- name: Copy Chrony Config
+  template:
+    src: "roles/system-initialize/templates/chrony.conf"
+    dest: "/etc/chrony.conf"
+    owner: "{{ ssh_connect_user }}"
+    mode: 0644
+  ignore_errors: true
+  when: 
+    - result.stderr or result.stdout != 'active'
+
+- name: Restart Chrony
+  shell: "systemctl daemon-reload && systemctl restart chrony"
+  when: 
+    - result.stderr or result.stdout != 'active'
