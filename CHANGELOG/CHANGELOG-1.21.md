@@ -167,3 +167,45 @@ cilium 配置进行优化。
 runC 更新至 [1.0.0](https://github.com/opencontainers/runc/releases/tag/v1.0.0)
 
 添加部分 Etcd 脚本到初始化.
+
+更新 github actions 出现的 Error.
+
+cilium hubble 添加 ingress 选项。
+
+## 优化
+
+docker 配置文件加入 overlay2 检查配置:
+
+```
+{% if docker_storage_driver == 'overlay2' %}
+    "storage-opts": [
+        "overlay2.override_kernel_check=true"
+    ],
+{% endif %}
+```
+
+初始化时添加系统时区配置。
+
+```
+- name: Set Time Zone
+  shell: "ln -sf /usr/share/zoneinfo/{{ time_location }} /etc/localtime"
+  ignore_errors: true
+```
+
+初始化时添加 SSH 优化:
+
+```
+- name: Set SSH UseDNS
+  shell: "sed -ri 's/^#(UseDNS )yes/\1no/' /etc/ssh/sshd_config"
+  ignore_errors: true
+```
+
+初始化时添加 Chrony and Limit 配置:
+
+```
+- name: Initialize Chrony
+  include: "roles/system-initialize/includes/system/chrony.yaml"
+
+- name: Initialize Limit
+  include: "roles/system-initialize/includes/system/limit.yaml"
+```
