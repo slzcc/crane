@@ -170,7 +170,11 @@ runC 更新至 [1.0.0](https://github.com/opencontainers/runc/releases/tag/v1.0.
 
 更新 github actions 出现的 Error.
 
-cilium hubble 添加 ingress 选项。
+cilium hubble 添加 ingress 选项.
+
+添加系统时区更新.
+
+添加 Chrony 安装, 默认不安装需要时, 请打开 `crane/roles/system-initialize/defaults/main.yml` 中的 `is_chrony_deploy` 即可。
 
 ## 优化
 
