@@ -28,7 +28,7 @@
     https_proxy: "{{ https_proxy }}"
   async: 30
   poll: 2
-  when: 
+  when:
     - ansible_distribution == 'CentOS'
     - result.stderr or result.stdout != 'active'
   ignore_errors: true
@@ -40,10 +40,11 @@
     owner: "{{ ssh_connect_user }}"
     mode: 0644
   ignore_errors: true
-  when: 
+  when:
     - result.stderr or result.stdout != 'active'
 
 - name: Restart Chrony
   shell: "systemctl daemon-reload && systemctl restart chronyd"
-  when: 
+  gnore_errors: true
+  when:
     - result.stderr or result.stdout != 'active'
