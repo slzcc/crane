@@ -11,6 +11,7 @@
     - [v1.21.2.2 更新内容](#v12122)
     - [v1.21.2.3 更新内容](#v12123)
     - [v1.21.2.4 更新内容](#v12124)
+    - [v1.21.3.0 更新内容](#v12130)
 
 # v1.21.0.0
 
@@ -218,3 +219,64 @@ docker 配置文件加入 overlay2 检查配置:
 crictl 工具安装超时直接跳过。
 
 清理集群时, 不在清理 crictl 。
+
+
+# v1.21.3.0
+
+Crane 以更新至 1.21.3.0 版本。
+
+## 修复
+
+harbor 2.1.5 之前版本中 Clair 存在一个 [Bug](https://github.com/goharbor/harbor/issues/14720):
+
+```
+Appending internal tls trust CA to ca-bundle ...
+find: /etc/harbor/ssl: No such file or directory
+Internal tls trust CA appending is Done.
+{"Event":"running database migrations","Level":"info","Location":"pgsql.go:216","Time":"2021-07-15 03:27:28.283127"}
+{"Event":"database migration ran successfully","Level":"info","Location":"pgsql.go:223","Time":"2021-07-15 03:27:28.285517"}
+{"Event":"starting main API","Level":"info","Location":"api.go:52","Time":"2021-07-15 03:27:28.285597","port":6060}
+{"Event":"notifier service is disabled","Level":"info","Location":"notifier.go:77","Time":"2021-07-15 03:27:28.285584"}
+{"Event":"starting health API","Level":"info","Location":"api.go:85","Time":"2021-07-15 03:27:28.285705","port":6061}
+{"Event":"updater service started","Level":"info","Location":"updater.go:83","Time":"2021-07-15 03:27:28.286095","lock identifier":"19af6b97-b4fb-4de6-94f5-33900625050b"}
+{"Event":"updating vulnerabilities","Level":"info","Location":"updater.go:192","Time":"2021-07-15 03:37:00.125202"}
+{"Event":"fetching vulnerability updates","Level":"info","Location":"updater.go:239","Time":"2021-07-15 03:37:00.125700"}
+{"Event":"Start fetching vulnerabilities","Level":"info","Location":"debian.go:63","Time":"2021-07-15 03:37:00.125770","package":"Debian"}
+{"Event":"Start fetching vulnerabilities","Level":"info","Location":"rhel.go:92","Time":"2021-07-15 03:37:00.125925","package":"RHEL"}
+{"Event":"Start fetching vulnerabilities","Level":"info","Location":"amzn.go:84","Time":"2021-07-15 03:37:00.126289","package":"Amazon Linux 2018.03"}
+{"Event":"Start fetching vulnerabilities","Level":"info","Location":"amzn.go:84","Time":"2021-07-15 03:37:00.126296","package":"Amazon Linux 2"}
+{"Event":"Start fetching vulnerabilities","Level":"info","Location":"alpine.go:52","Time":"2021-07-15 03:37:00.126336","package":"Alpine"}
+{"Event":"Start fetching vulnerabilities","Level":"info","Location":"oracle.go:119","Time":"2021-07-15 03:37:00.126737","package":"Oracle Linux"}
+{"Event":"Start fetching vulnerabilities","Level":"info","Location":"ubuntu.go:85","Time":"2021-07-15 03:37:00.126837","package":"Ubuntu"}
+{"Event":"finished fetching","Level":"info","Location":"updater.go:253","Time":"2021-07-15 03:37:00.844155","updater name":"alpine"}
+{"Event":"finished fetching","Level":"info","Location":"updater.go:253","Time":"2021-07-15 03:37:01.167609","updater name":"amzn2"}
+{"Event":"finished fetching","Level":"info","Location":"updater.go:253","Time":"2021-07-15 03:37:01.368121","updater name":"debian"}
+{"Event":"could not pull ubuntu-cve-tracker repository","Level":"error","Location":"ubuntu.go:174","Time":"2021-07-15 03:37:01.407383","error":"exit status 128","output":"Cloning into '.'...\nfatal: unable to access 'https://git.launchpad.net/ubuntu-cve-tracker/': The requested URL returned error: 503\n"}
+{"Event":"an error occured when fetching update","Level":"error","Location":"updater.go:246","Time":"2021-07-15 03:37:01.407532","error":"could not download requested resource","updater name":"ubuntu"}
+{"Event":"finished fetching","Level":"info","Location":"updater.go:253","Time":"2021-07-15 03:37:02.238489","updater name":"amzn1"}
+{"Event":"finished fetching","Level":"info","Location":"updater.go:253","Time":"2021-07-15 03:37:02.458890","updater name":"oracle"}
+panic: runtime error: slice bounds out of range [25:24]
+goroutine 319 [running]:
+github.com/quay/clair/v2/ext/vulnsrc/rhel.toFeatureVersions(0xc000de99d0, 0x2, 0xc0050369a0, 0x2, 0x2, 0xc005036870, 0x1, 0x1, 0x2, 0xc0003a1060, ...)
+/go/src/github.com/quay/clair/ext/vulnsrc/rhel/rhel.go:276 +0xbf8
+github.com/quay/clair/v2/ext/vulnsrc/rhel.parseRHSA(0x7fe2b5144290, 0xc00831e0e0, 0xc00831e0e0, 0x7fe2b5144290, 0xc00831e0e0, 0x43, 0x0)
+/go/src/github.com/quay/clair/ext/vulnsrc/rhel/rhel.go:166 +0x1c7
+github.com/quay/clair/v2/ext/vulnsrc/rhel.(*updater).Update(0xca4f00, 0x9a1f00, 0xc00019a900, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, ...)
+/go/src/github.com/quay/clair/ext/vulnsrc/rhel/rhel.go:133 +0x554
+github.com/quay/clair/v2.fetch.func1(0x9a1f00, 0xc00019a900, 0xc00002b2c8, 0xc0002b85a0, 0x8e02a2, 0x4, 0x994ac0, 0xca4f00)
+/go/src/github.com/quay/clair/updater.go:243 +0xa5
+created by github.com/quay/clair/v2.fetch
+/go/src/github.com/quay/clair/updater.go:242 +0x1a9 
+```
+
+解决方案, 重新生成一个镜像:
+
+```
+$ git clone -b v2.1.6 https://github.com/goharbor/harbor.git --depth 1
+$ cd make/photon/clair/
+$ ./builder release-2.0
+$ cd ../../../
+$ docker build -t slzcc/clair-golang:release-2.0 -f make/photon/clair/Dockerfile --build-arg harbor_base_namespace=goharbor --build-arg harbor_base_image_version=v2.1.6 .
+```
+
+使用此镜像替换即可。
