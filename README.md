@@ -15,11 +15,7 @@ Crane 使用半离线安装, 解决国内无法使用 `k8s.gcr.io` 源问题。
 
 部署时支持半离线(默认)、离线 和 在线 kubernetes 和 CRI 的安装。
 
-CRI 支持多种服务共存部署模式, 可同时部署 docker/containerd/crio, 方便用户自定义 RuntimeClass 运行时。
-
-> 同时部署是有原因的:
-
-> 其中 containerd 为 kubernetes 的默认 cri, 但由于 `containerd` 和 `crio` 只是容器管理服务不支持 镜像的构建 则还是需要 `docker build` 的继续使用, 所以默认也安装 `dockerd`, 目前不影响正常使用.
+CRI 支持多种服务共存部署模式, 可同时部署 docker/containerd, 方便用户自定义 RuntimeClass 运行时。
 
 部署 Crane 时可查看注意事项, 避免无效操作:
 

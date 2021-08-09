@@ -12,6 +12,7 @@
     - [v1.21.2.3 更新内容](#v12123)
     - [v1.21.2.4 更新内容](#v12124)
     - [v1.21.3.0 更新内容](#v12130)
+    - [v1.21.3.1 更新内容](#v12131)
 
 # v1.21.0.0
 
@@ -280,3 +281,9 @@ $ docker build -t slzcc/clair-golang:release-2.0 -f make/photon/clair/Dockerfile
 ```
 
 使用此镜像替换即可。
+
+# v1.21.3.1
+
+## 新增
+
+增加 kubelet 最大启动 pod 数量。
