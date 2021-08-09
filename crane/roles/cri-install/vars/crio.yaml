@@ -2,7 +2,7 @@
 ## ********************************************************************************************************************************
 
 # https://github.com/cri-o/cri-o/releases
-crio_version: v1.20.2
+crio_version: v1.21.2
 
 # install docs https://github.com/cri-o/cri-o/blob/master/install.md#installation-instructions
 
