@@ -9,5 +9,10 @@
     },
     "data-root": "{{ docker_data_root }}",
     "storage-driver": "{{ docker_storage_driver }}",
+{% if docker_storage_driver == 'overlay2' %}
+    "storage-opts": [
+        "overlay2.override_kernel_check=true"
+    ],
+{% endif %}
     "insecure-registries": {{ docker_insecure_registry }}
 }

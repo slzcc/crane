@@ -1,6 +1,6 @@
 # Kubelet Options
 ## 不区分 Master/Nodes
-kubelet_options: "--cgroup-driver={{ kubelet_cgroup_drive }} --network-plugin=cni --cni-conf-dir={{ cni_config_dir }} --cni-bin-dir={{ kubernetes_cni_dirs }} --pod-infra-container-image={{ k8s_pod_infra_container_image }} --runtime-cgroups=/systemd/system.slice --kubelet-cgroups=/systemd/system.slice {{ kubelet_swap_config }} {{ kubelet_resolv_config }} {{ kubelet_gc_options }} {{ Kubelet_containers_log_config }}"
+kubelet_options: "--cgroup-driver={{ kubelet_cgroup_drive }} --network-plugin=cni --cni-conf-dir={{ cni_config_dir }} --cni-bin-dir={{ kubernetes_cni_dirs }} --pod-infra-container-image={{ k8s_pod_infra_container_image }} --runtime-cgroups=/systemd/system.slice --kubelet-cgroups=/systemd/system.slice {{ kubelet_swap_config }} {{ kubelet_resolv_config }} {{ kubelet_gc_options }} {{ kubelet_containers_log_config }} {{ kubelet_max_pod }}"
 
 ## GC Config, (没有应用, 如需要请加入 kubelet_options 配置内, 请熟悉文档中的每一项参数功能再进行配置)
 ## GC DOCS https://kubernetes.io/docs/tasks/administer-cluster/out-of-resource/
@@ -19,4 +19,7 @@ kubelet_swap_config: "--fail-swap-on=false"
 kubelet_resolv_config: "--resolv-conf=/etc/resolv.conf"
 
 # Containers Log
-Kubelet_containers_log_config: "--container-log-max-files=3 --container-log-max-size='512Mi'"
+kubelet_containers_log_config: "--container-log-max-files=3 --container-log-max-size='512Mi'"
+
+# Kubelet Max Pods
+kubelet_max_pod: "--max-pods=110"

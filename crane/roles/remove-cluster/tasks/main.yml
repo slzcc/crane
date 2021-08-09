@@ -40,7 +40,7 @@
   include: "roles/remove-cluster/includes/runc.yaml"
 
 # Clean Cri-Tools
-- name: Clean runC
+- name: Clean Cri-Tools
   include: "roles/remove-cluster/includes/cri-tools.yaml"
 
 # Clean General Network

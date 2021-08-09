@@ -6,8 +6,10 @@
     state: absent
   with_items:
     - "crictl"
+  when: is_remove_all or is_remove_crictl
   ignore_errors: true
 
 - name: Remove Cri-Tools Ctrctl Configs
   shell: "mv /etc/crictl.yaml {{ temporary_dirs }}remove-cluster"
+  when: is_remove_all or is_remove_crictl
   ignore_errors: true
