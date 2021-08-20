@@ -1,6 +1,7 @@
 - [v1.22](#v122)
   - [Updated Instructions](#updated-instructions)
     - [v1.22.0.0 更新内容](#v12200)
+    - [v1.22.1.0 更新内容](#v12210)
 
 # v1.22.0.0
 
