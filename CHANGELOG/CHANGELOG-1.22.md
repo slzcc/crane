@@ -20,3 +20,7 @@ Crane 以更新至 1.22.0.0 版本。
  * haproxy:    2.4.2
 
 [Kubernetes](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.22.md) 1.22.0 版本官方更新说明.
+
+# v1.22.1.0
+
+Crane 以更新至 1.22.1.0 版本。
