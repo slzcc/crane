@@ -30,3 +30,5 @@ Crane 以更新至 1.22.1.0 版本。
 # v1.22.1.1
 
 拆分 k8s_addons 到 k8s_addons.yml 中, 不在放入默认 main.yml 文件中。
+
+修改 `rbac.authorization.k8s.io/v1beta1` 为 `rbac.authorization.k8s.io/v1` 。
