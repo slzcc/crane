@@ -223,22 +223,6 @@
   roles:
     - { role: kubernetes-networks, tags: [k8s-networks]}
 
-- name: Deploy Kubernetes Cluster Add Ons Plugin.
-  hosts: kube-master[0]
-  gather_facts: true
-  become: yes
-  become_method: sudo
-  vars:
-    ansible_ssh_pipelining: true
-  vars_files:
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/system-initialize/defaults/main.yml"
-    - "roles/kubernetes-manifests/defaults/main.yml"
-  roles:
-    - { role: kubernetes-addons, tags: [k8s-addons]}
-
 - name: Kubernetes Cluster Setup
   hosts: kube-master[0]
   gather_facts: true
