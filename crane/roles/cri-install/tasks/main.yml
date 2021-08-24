@@ -1,5 +1,4 @@
 ---
-
 - name: CRI Initialize
   include: "roles/cri-install/includes/initialize.yaml"
   when: cri_drive_install_type != "none"
@@ -8,22 +7,9 @@
   include: "roles/cri-install/includes/runc/main.yml"
   when: cri_drive_install_type != "none"
 
-- name: Deploy CRI to Containerd
-  include: "roles/cri-install/includes/containerd/main.yml"
+- name: Deploy CRI to cri_driver
+  include: "roles/cri-install/includes/crio/{{ cri_driver }}.yml"
   when: 
-    - ("containerd" in cri_driver)
-    - cri_drive_install_type != "none"
-
-- name: Deploy CRI to Docker
-  include: "roles/cri-install/includes/docker/main.yml"
-  when: 
-    - ("docker" in cri_driver)
-    - cri_drive_install_type != "none"
-  
-- name: Deploy CRI to CRIO
-  include: "roles/cri-install/includes/cri-o/main.yml"
-  when: 
-    - ("crio" in cri_driver)
     - cri_drive_install_type != "none"
 
 - name: Deploy Cri-Tools

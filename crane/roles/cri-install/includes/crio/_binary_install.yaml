@@ -8,34 +8,34 @@
     - "crun"
     - "pinns"
 
-- name: Copy cri-o Systemd Config
+- name: Copy crio Systemd Config
   template: 
-    src: "roles/cri-install/templates/cri-o/{{ item }}"
+    src: "roles/cri-install/templates/crio/{{ item }}"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
     dest: "{{ systemd_default_dirs }}{{ item }}"
   with_items:
     - "crio.service"
 
-- name: Copy cri-o Systemd Env Config
+- name: Copy crio Systemd Env Config
   template: 
-    src: "roles/cri-install/templates/cri-o/{{ item }}"
+    src: "roles/cri-install/templates/crio/{{ item }}"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
     dest: "/etc/default/crio"
   with_items:
     - "crio.service.conf"
 
-- name: Create cri-o Config Path
+- name: Create crio Config Path
   file:
     path: "/etc/crio"
     mode: 0755
     owner: "{{ ssh_connect_user }}"
     state: directory
 
-- name: Copy cri-o Config
+- name: Copy crio Config
   template: 
-    src: "roles/cri-install/templates/cri-o/{{ item }}"
+    src: "roles/cri-install/templates/crio/{{ item }}"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
     dest: "/etc/crio/crio.conf"
