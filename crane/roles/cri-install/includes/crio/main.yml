@@ -9,10 +9,10 @@
   ignore_errors: true
 
 - name: Initialize CRIO
-  include: "roles/cri-install/includes/cri-o/initialize.yaml"
+  include: "roles/cri-install/includes/crio/initialize.yaml"
 
 - name: Install CRIO
-  include: "roles/cri-install/includes/cri-o/os.yaml"
+  include: "roles/cri-install/includes/crio/os.yaml"
   when: is_mandatory_crio_install or result.stderr
 
 - name: Install Containers
@@ -24,13 +24,13 @@
 - name: Systemd Reload Config Cache
   shell: "systemctl daemon-reload"
 
-- name: cri-o Powered UP And Startd
+- name: crio Powered UP And Startd
   service: 
     name: crio
     enabled: yes
   ignore_errors: true
 
-- name: Start cri-o
+- name: Start crio
   service:
     name: crio
     state: started

@@ -63,7 +63,7 @@
     state: stopped
   when: 
     - is_docker_daemon_config 
-    - check_old_md5.stderr == ''
+    - (check_old_md5.stderr == '')
     - check_old_md5.stdout != check_new_md5.stdout
     - not is_kube_simple
   ignore_errors: true
