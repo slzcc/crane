@@ -32,3 +32,7 @@ Crane 以更新至 1.22.1.0 版本。
 拆分 k8s_addons 到 k8s_addons.yml 中, 不在放入默认 main.yml 文件中。
 
 修改 `rbac.authorization.k8s.io/v1beta1` 为 `rbac.authorization.k8s.io/v1` 。
+
+优化 crane 方式部署时使用 cri 执行不必要命令。`crane/roles/downloads-packages/tasks/main.yml`
+
+优化 crane 方式部署时使用 cri 获取镜像时执行不必要命令。`crane/roles/downloads-packages/includes/crane/containerd/main.yml` and `crane/roles/downloads-packages/includes/crane/docker/main.yml`
