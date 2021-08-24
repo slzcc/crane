@@ -22,3 +22,10 @@ cfssl_arch: >-
   {%- else -%}
   amd64
   {%- endif -%}
+
+crane_cri_type: >-
+  {%- if is_using_local_files_deploy -%}
+  local_file
+  {%- else -%}
+  image_deploy
+  {%- endif -%}
