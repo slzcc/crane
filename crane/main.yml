@@ -17,8 +17,10 @@
     - "roles/cri-install/vars/crio.yaml"
     - "roles/cri-install/vars/docker.yaml"
     - "roles/crane/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/etcd-cluster-management/vars/main.yml"
+    - "roles/etcd-cluster-management/defaults/main.yml"
     - "roles/downloads-ssh-key/defaults/main.yml"
   roles:
     - { role: crane, tags: [crane] }
