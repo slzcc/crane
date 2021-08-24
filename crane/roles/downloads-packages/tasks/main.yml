@@ -1,14 +1,7 @@
 ---
-- name: Containerd Configure Kubernetes to execute files in download
-  include: "includes/crane/containerd/main.yml"
+- name: CRI Configure Kubernetes to execute files in download
+  include: "includes/crane/{{ cri_k8s_default }}/main.yml"
   when: 
-    - cri_k8s_default == 'containerd'
-    - is_crane_kubernetes_deploy != 'none'
-
-- name: Docker Configure Kubernetes to execute files in download
-  include: "includes/crane/docker/main.yml"
-  when: 
-    - cri_k8s_default == 'docker'
     - is_crane_kubernetes_deploy != 'none'
 
 - name: Deploy Kubernetes to execute files in download
