@@ -1,20 +1,7 @@
 ---
 
-- name: Install Docker Binray in v17
-  include: "roles/cri-install/includes/docker/versions/17.yaml"
-  when: ( docker_version.split('.')[0] == '17' )
-
-- name: Install Docker Binray in v18
-  include: "roles/cri-install/includes/docker/versions/17.yaml"
-  when: ( docker_version.split('.')[0] == '18' )
-
-- name: Install Docker Binray in v19
-  include: "roles/cri-install/includes/docker/versions/19.yaml"
-  when: ( docker_version.split('.')[0] == '19' )
-
-- name: Install Docker Binray in v20
-  include: "roles/cri-install/includes/docker/versions/20.yaml"
-  when: ( docker_version.split('.')[0] == '20' )
+- name: Install Docker Binray in docker_version.split('.')[0]
+  include: "roles/cri-install/includes/docker/versions/{{ docker_version.split('.')[0] }}.yaml"
 
 - name: OS is aarch64
   include: "roles/cri-install/includes/docker/aarch64.yaml"
