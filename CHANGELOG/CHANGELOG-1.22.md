@@ -2,6 +2,7 @@
   - [Updated Instructions](#updated-instructions)
     - [v1.22.0.0 更新内容](#v12200)
     - [v1.22.1.0 更新内容](#v12210)
+    - [v1.22.1.1 更新内容](#v12211)
 
 # v1.22.0.0
 
@@ -25,3 +26,7 @@ Crane 以更新至 1.22.0.0 版本。
 # v1.22.1.0
 
 Crane 以更新至 1.22.1.0 版本。
+
+# v1.22.1.1
+
+拆分 k8s_addons 到 k8s_addons.yml 中, 不在放入默认 main.yml 文件中。
