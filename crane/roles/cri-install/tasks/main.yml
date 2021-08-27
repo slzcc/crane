@@ -7,8 +7,8 @@
   include: "roles/cri-install/includes/runc/main.yml"
   when: cri_drive_install_type != "none"
 
-- name: Deploy CRI to cri_driver
-  include: "roles/cri-install/includes/crio/{{ cri_driver }}.yml"
+- name: Deploy CRI to cri_k8s_default
+  include: "roles/cri-install/includes/crio/{{ cri_k8s_default }}.yml"
   when: 
     - cri_drive_install_type != "none"
 
