@@ -3,6 +3,7 @@
     - [v1.22.0.0 更新内容](#v12200)
     - [v1.22.1.0 更新内容](#v12210)
     - [v1.22.1.1 更新内容](#v12211)
+    - [v1.22.1.2 更新内容](#v12212)
 
 # v1.22.0.0
 
@@ -36,3 +37,7 @@ Crane 以更新至 1.22.1.0 版本。
 优化 crane 方式部署时使用 cri 执行不必要命令。`crane/roles/downloads-packages/tasks/main.yml`
 
 优化 crane 方式部署时使用 cri 获取镜像时执行不必要命令。`crane/roles/downloads-packages/includes/crane/containerd/main.yml` and `crane/roles/downloads-packages/includes/crane/docker/main.yml`
+
+# v1.22.1.2
+
+优化 kube-apiserver、kube-controller-manager、kube-scheduler 健康检查以及启动命令。
