@@ -21,7 +21,10 @@ metadata:
   namespace: kube-system
 spec:
   hostNetwork: true
-  priorityClassName: system-cluster-critical
+  priorityClassName: system-node-critical
+  securityContext:
+    seccompProfile:
+      type: RuntimeDefault
   containers:
   - command:
     - kube-apiserver
@@ -60,14 +63,15 @@ spec:
     env:
     - name: TZ
       value: "{{ time_location }}"
-    livenessProbe:
-      failureThreshold: 8
+    startupProbe:
+      failureThreshold: 24
       httpGet:
-        host: 127.0.0.1
-        path: /healthz
+        host: 10.140.0.2
+        path: /livez
         port: {{ k8s_master_apiservice_bind_port }}
         scheme: HTTPS
-      initialDelaySeconds: 15
+      initialDelaySeconds: 10
+      periodSeconds: 10
       timeoutSeconds: 15
     name: kube-apiserver
     resources:

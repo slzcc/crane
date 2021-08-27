@@ -7,4 +7,4 @@
     - "roles/downloads-ssh-key/defaults/main.yml"
 
 - name: Configure Containerd to execute files in crane_cri_type
-  include: "roles/downloads-packages/includes/crane/containerd/{{ crane_cri_type }}.yaml"
+  include_tasks: "roles/downloads-packages/includes/crane/containerd/{{ crane_cri_type }}.yaml"

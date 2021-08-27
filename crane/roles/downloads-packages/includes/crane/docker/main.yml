@@ -2,4 +2,4 @@
 - include_vars: "roles/cri-install/vars/docker.yaml"
 
 - name: Configure Docker to execute files in localhost
-  include: "roles/downloads-packages/includes/crane/docker/{{ crane_cri_type }}.yaml"
+  include_tasks: "roles/downloads-packages/includes/crane/docker/{{ crane_cri_type }}.yaml"
