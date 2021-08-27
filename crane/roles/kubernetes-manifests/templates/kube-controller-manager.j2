@@ -10,6 +10,10 @@ metadata:
   namespace: kube-system
 spec:
   hostNetwork: true
+  priorityClassName: system-node-critical
+  securityContext:
+    seccompProfile:
+      type: RuntimeDefault
   containers:
   - name: kube-controller-manager
     image: {{ k8s_cluster_component_registry }}/kube-controller-manager:{{ k8s_version }}
@@ -18,24 +22,27 @@ spec:
       - --authentication-kubeconfig={{ kubernetes_etc_dirs }}controller-manager.conf
       - --authorization-kubeconfig={{ kubernetes_etc_dirs }}controller-manager.conf
       - --bind-address=0.0.0.0
+      - --cluster-name=kubernetes
       - --client-ca-file={{ kubernetes_pki_dirs }}ca.pem
       - --cluster-signing-cert-file={{ kubernetes_pki_dirs }}ca.pem
       - --cluster-signing-key-file={{ kubernetes_pki_dirs }}ca-key.pem
       - --controllers=*,bootstrapsigner,tokencleaner
       - --kubeconfig={{ kubernetes_etc_dirs }}controller-manager.conf
       - --leader-elect=true
+      - --port=0
       - --requestheader-client-ca-file={{ kubernetes_pki_dirs }}front-proxy-ca.pem
       - --root-ca-file={{ kubernetes_pki_dirs }}ca.pem
       - --service-account-private-key-file={{ kubernetes_pki_dirs }}sa.key
       - --use-service-account-credentials=true
-    livenessProbe:
-      failureThreshold: 8
+    startupProbe:
+      failureThreshold: 24
       httpGet:
         host: 127.0.0.1
         path: /healthz
-        port: 10252
-        scheme: HTTP
-      initialDelaySeconds: 15
+        port: 10257
+        scheme: HTTPS
+      initialDelaySeconds: 10
+      periodSeconds: 10
       timeoutSeconds: 15
     resources:
       requests:

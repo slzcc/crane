@@ -10,24 +10,32 @@ metadata:
   namespace: kube-system
 spec:
   hostNetwork: true
+  priorityClassName: system-node-critical
+  securityContext:
+    seccompProfile:
+      type: RuntimeDefault
   containers:
   - name: kube-scheduler
     image: {{ k8s_cluster_component_registry }}/kube-scheduler:{{ k8s_version }}
     command:
       - kube-scheduler
       - --v=0
+      - --port=0
       - --logtostderr=true
       - --address=0.0.0.0
       - --leader-elect=true
       - --kubeconfig={{ kubernetes_etc_dirs }}scheduler.conf
-    livenessProbe:
-      failureThreshold: 8
+      - --authentication-kubeconfig={{ kubernetes_etc_dirs }}scheduler.conf
+      - --authorization-kubeconfig={{ kubernetes_etc_dirs }}scheduler.conf
+    startupProbe:
+      failureThreshold: 24
       httpGet:
         host: 127.0.0.1
         path: /healthz
-        port: 10251
-        scheme: HTTP
-      initialDelaySeconds: 15
+        port: 10259
+        scheme: HTTPS
+      initialDelaySeconds: 10
+      periodSeconds: 10
       timeoutSeconds: 15
     resources:
       requests:
