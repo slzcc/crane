@@ -41,3 +41,5 @@ Crane 以更新至 1.22.1.0 版本。
 # v1.22.1.2
 
 优化 kube-apiserver、kube-controller-manager、kube-scheduler 健康检查以及启动命令。
+
+更新 logo.
