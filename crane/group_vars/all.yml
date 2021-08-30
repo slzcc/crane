@@ -7,7 +7,7 @@
 k8s_version: 'v1.22.1'
 
 # 避免大版本中组件的版本差异, 使用 build 版本作为差异配置项, 在项目中可以看做如下使用 '{{ k8s_version }}.{{ build_k8s_version }}'
-build_k8s_version: '1'
+build_k8s_version: '2'
 
 # OS Drive/Arch Type
 os_drive: 'linux'
