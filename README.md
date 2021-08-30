@@ -85,7 +85,3 @@ Crane 的架构简述:
 > 如有不明请参照 [Kube Simple](./kube-simple/README.md) 文档进行补充.
 
 > 使用 GoogleCloud 4C 8GB 单节点部署无任何干预初始化安装最高耗时 `7m13.958s` 如有镜像安装包最高耗时 `2m4.153s`, 如多节点安装需要增加推送安装包耗时.
-
----
-
-> Logo 图片并非商业, 本人无意侵犯版权。 前 Ansible-Kubernetes 正式更名 Crane .
