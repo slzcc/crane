@@ -54,6 +54,7 @@
     - "roles/kubernetes-cluster-management/defaults/tls.yaml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-networks/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
   roles:
     - { role: remove-cluster, tags: [clean], when: is_initialize_clean}
     - { role: cri-install, tags: [cri]}
