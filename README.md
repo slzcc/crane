@@ -1,8 +1,7 @@
 # Crane
 ![language](https://img.shields.io/badge/language-Ansible-green.svg) [![Wiki](https://img.shields.io/badge/docs-94%25-green.svg)](https://wiki.shileizcc.com/display/CASE/Ansible+Kubernetes+Cluster)
 
-![logo](logo/new-crane-logo_w200_h200.png)
-
+![logo-w50](logo/new-crane-logo_w177_h160.png)
 ---
 
 Please refer to the documentation for detailed configuration: [Wiki Docs URL](https://wiki.shileizcc.com/display/CASE/Ansible+Kubernetes+Cluster)。
