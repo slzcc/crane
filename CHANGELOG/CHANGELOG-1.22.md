@@ -4,6 +4,7 @@
     - [v1.22.1.0 更新内容](#v12210)
     - [v1.22.1.1 更新内容](#v12211)
     - [v1.22.1.2 更新内容](#v12212)
+    - [v1.22.1.3 更新内容](#v12213)
 
 # v1.22.0.0
 
@@ -47,3 +48,14 @@ Crane 以更新至 1.22.1.0 版本。
 ## 修复
 
 修复 crane 初始化脚本引发的 `etcd_ssl_dirs` 环境变量丢失问题。
+
+
+# v1.22.1.3
+
+按照 kubernetes 一致性测试 [sonobuoy](https://github.com/vmware-tanzu/sonobuoy) 进行初始化配置。
+
+1、需要部署 `ingress-nginx`.
+2、修改 `/etc/resole.conf` 文件为空或者只保留 nameserver.(关闭 systemd-resolved => systemctl stop systemd-resolved)
+3、去掉 kube-apiserver 中的 `--service-node-port-range` 配置, 走默认项.
+4、开启 `CoreDNS` 访问 `log` 以便查看错误.
+5、各机器安装 `socat`.
