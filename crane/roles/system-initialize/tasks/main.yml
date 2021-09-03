@@ -62,6 +62,13 @@
     owner: "{{ ssh_connect_user }}"
     state: directory
 
+- name: Ubuntu Initialize Source
+  shell: "apt update"
+  environment:
+    http_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ https_proxy }}"
+  when: ansible_distribution == 'Ubuntu'
+
 - name: Ubuntu Initialize Plugins
   apt: 
     name: ["openssl"]
@@ -111,7 +118,7 @@
 
 - name: Ubuntu Install IPset
   apt: 
-    name: ipset 
+    name: ["ipset", "socat"]
     state: present
   when: ansible_distribution == 'Ubuntu' and is_install_ipvsadm
   async: 30
@@ -120,7 +127,7 @@
 
 - name: Centos Install IPset
   yum: 
-    name: ipset 
+    name: ["ipset", "socat"] 
     state: present
   when: ansible_distribution == 'CentOS' and is_install_ipvsadm
   async: 30

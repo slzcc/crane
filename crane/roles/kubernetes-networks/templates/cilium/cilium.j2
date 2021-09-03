@@ -141,6 +141,14 @@ data:
 
   # wait-bpf-mount makes init container wait until bpf filesystem is mounted
   wait-bpf-mount: "false"
+  # Enable chaining with another CNI plugin
+  #
+  # Supported modes:
+  #  - none
+  #  - aws-cni
+  #  - flannel
+  #  - portmap (Enables HostPort support for Cilium)
+  cni-chaining-mode: {{ cilium_hostPort }}
 
   enable-ipv4-masquerade: "true"
   enable-ipv6-masquerade: "true"
@@ -159,7 +167,7 @@ data:
 
   kube-proxy-replacement: "{{ cilium_kubeProxy_replacement_type }}"
   kube-proxy-replacement-healthz-bind-address: ""
-  enable-host-reachable-services: "{{ cilium_hostPort }}"
+  enable-host-reachable-services: "true"
   # direct-routing-device: "{{ os_network_device_name }}"
   enable-health-check-nodeport: "true"
   node-port-bind-protection: "true"

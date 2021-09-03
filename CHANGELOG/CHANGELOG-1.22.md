@@ -4,6 +4,7 @@
     - [v1.22.1.0 更新内容](#v12210)
     - [v1.22.1.1 更新内容](#v12211)
     - [v1.22.1.2 更新内容](#v12212)
+    - [v1.22.1.3 更新内容](#v12213)
 
 # v1.22.0.0
 
@@ -47,3 +48,23 @@ Crane 以更新至 1.22.1.0 版本。
 ## 修复
 
 修复 crane 初始化脚本引发的 `etcd_ssl_dirs` 环境变量丢失问题。
+
+# v1.22.1.3
+
+按照 kubernetes 一致性测试 [sonobuoy](https://github.com/vmware-tanzu/sonobuoy) 进行初始化配置。
+
+1、需要部署 `ingress-nginx`.
+2、修改 `/etc/resole.conf` 文件为空或者只保留 nameserver.(关闭 systemd-resolved => systemctl stop systemd-resolved)
+3、去掉 kube-apiserver 中的 `--service-node-port-range` 配置或改为 `30000-32767`, 走默认项.
+4、开启 `CoreDNS` 访问 `log` 以便查看错误.
+5、各机器安装 `socat`.
+6、移除 `kube-proxy` 中的 `nodePortAddresses` 配置, 因一致性测试会有 `127.0.0.1` 请求测试.
+7、使用 cilium (v1.10.3, 需修改 cilium_hostPort 为 (portmap)[https://github.com/cilium/cilium/blob/master/Documentation/gettingstarted/cni-chaining-portmap.rst#portmap-hostport])网络, calico 在测试时有问题无法多集群访问, 可能由于使用 `GoogleCloud` 环境造成。
+> https://github.com/cilium/cilium/issues/14287
+> https://github.com/rancher/rke2/issues/935
+8、集群实例必须 2 个以上, 否则无法通过 `[sig-apps] Daemon set` 测试.
+
+## 更新
+
+1、CoreDNS 配置文件中对反向解析进行更改, 并添加 `ttl 30`.
+2、修改 cilium 中 `cilium_hostPort` 选项, 之前的配置项不准确.
