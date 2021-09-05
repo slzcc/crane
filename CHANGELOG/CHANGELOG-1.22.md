@@ -53,19 +53,17 @@ Crane 以更新至 1.22.1.0 版本。
 
 按照 kubernetes 一致性测试 [sonobuoy](https://github.com/vmware-tanzu/sonobuoy) 进行初始化配置。
 
-1、需要部署 `ingress-nginx`.
+1、修改 `/etc/resole.conf` 文件为空或者只保留 nameserver.(关闭 systemd-resolved => systemctl stop systemd-resolved)
 
-2、修改 `/etc/resole.conf` 文件为空或者只保留 nameserver.(关闭 systemd-resolved => systemctl stop systemd-resolved)
+2、去掉 kube-apiserver 中的 `--service-node-port-range` 配置或改为 `30000-32767`, 走默认项.
 
-3、去掉 kube-apiserver 中的 `--service-node-port-range` 配置或改为 `30000-32767`, 走默认项.
+3、开启 `CoreDNS` 访问 `log` 以便查看错误.
 
-4、开启 `CoreDNS` 访问 `log` 以便查看错误.
+4、各机器安装 `socat`.
 
-5、各机器安装 `socat`.
+5、移除 `kube-proxy` 中的 `nodePortAddresses` 配置, 因一致性测试会有 `127.0.0.1` 请求测试.
 
-6、移除 `kube-proxy` 中的 `nodePortAddresses` 配置, 因一致性测试会有 `127.0.0.1` 请求测试.
-
-7、使用 cilium (v1.10.3, 需修改 cilium_hostPort 为 (portmap)[https://github.com/cilium/cilium/blob/master/Documentation/gettingstarted/cni-chaining-portmap.rst#portmap-hostport])网络, calico 在测试时有问题无法多集群访问, 可能由于使用 `GoogleCloud` 环境造成。
+6、使用 cilium v1.10.3, 需修改 cilium_hostPort 为 [portmap](https://github.com/cilium/cilium/blob/master/Documentation/gettingstarted/cni-chaining-portmap.rst#portmap-hostport)网络, calico 在测试时有问题无法多集群访问, 可能由于使用 `GoogleCloud` 环境造成。
 
 > https://github.com/cilium/cilium/issues/14287
 
