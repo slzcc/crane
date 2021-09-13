@@ -9,7 +9,7 @@
 
 - name: Create Docker CRE Config Path
   file:
-    path: "/etc/docker/cert.d"
+    path: "/etc/docker/certs.d"
     mode: 0755
     owner: "{{ ssh_connect_user }}"
     state: directory

@@ -1,7 +1,7 @@
 ---
 # Clean Docker
 - name: Clean Docker Containers.
-  shell: "{{ kubernetes_ctl_path }}docker rm -f $(docker ps -f 'name=k8s*' -aq)"
+  shell: "{{ kubernetes_ctl_path }}docker rm -f $({{ kubernetes_ctl_path }}docker ps -f 'name=k8s*' -aq)"
   ignore_errors: true
 
 - name: Clean Containerd Shim Services
