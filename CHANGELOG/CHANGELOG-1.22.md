@@ -88,6 +88,8 @@ cri 创建 docker 配置文件目录 `/etc/docker/certs.d`.
 
 修复下载 cfssl 时无法跳转 301 造成无法下载的问题。
 
+修复默认安装时只允许 kube-master 安装 cfssl 的判定。
+
 ## 更新
 
 更新 cilium 1.10.3 ~ 4 版本的 template 文件内容。
