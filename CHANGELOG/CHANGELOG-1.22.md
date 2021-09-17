@@ -86,8 +86,10 @@ cri 创建 docker 配置文件目录 `/etc/docker/certs.d`.
 
 修复 cilium metrics 端口不一致问题。
 
+修复下载 cfssl 时无法跳转 301 造成无法下载的问题。
+
 ## 更新
 
-更新 cilium 1.10.3~4 版本的 template 文件内容。
+更新 cilium 1.10.3 ~ 4 版本的 template 文件内容。
 
 更新 crane logo, 准备 cncf k8s 一致性检测使用.

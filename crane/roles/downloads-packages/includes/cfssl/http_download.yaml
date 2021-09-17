@@ -10,28 +10,28 @@
   ignore_errors: true
 
 - name: Download CFSSL Binary Files *
-  shell: "curl -x '{{ http_proxy }}' -sk -o {{ kubernetes_ctl_path }}cfssl https://pkg.cfssl.org/R1.2/cfssl_{{ os_drive }}-{{ cfssl_arch }}"
+  shell: "curl -x '{{ http_proxy }}' -skL -o {{ kubernetes_ctl_path }}cfssl https://pkg.cfssl.org/R1.2/cfssl_{{ os_drive }}-{{ cfssl_arch }}"
   when: 
   - os_arch == 'amd64'
   - check_cfssl.stderr != ''
   ignore_errors: true
 
 - name: Download CFSSL Binary Files **
-  shell: "curl -x '{{ http_proxy }}' -sk -o {{ kubernetes_ctl_path }}cfssljson https://pkg.cfssl.org/R1.2/cfssljson_{{ os_drive }}-{{ cfssl_arch }}"
+  shell: "curl -x '{{ http_proxy }}' -skL -o {{ kubernetes_ctl_path }}cfssljson https://pkg.cfssl.org/R1.2/cfssljson_{{ os_drive }}-{{ cfssl_arch }}"
   when: 
   - os_arch == 'amd64'
   - check_cfssljson.stderr != ''
   ignore_errors: true
 
 - name: Download CFSSL Binary Files *
-  shell: "curl -x '{{ http_proxy }}' -sk -o {{ kubernetes_ctl_path }}cfssl http://mirror.shileizcc.com/Cfssl/cfssl.arm64"
+  shell: "curl -x '{{ http_proxy }}' -skL -o {{ kubernetes_ctl_path }}cfssl http://mirror.shileizcc.com/Cfssl/cfssl.arm64"
   when: 
   - os_arch == 'arm64'
   - check_cfssl.stderr != ''
   ignore_errors: true
 
 - name: Download CFSSL Binary Files **
-  shell: "curl -x '{{ http_proxy }}' -sk -o {{ kubernetes_ctl_path }}cfssljson http://mirror.shileizcc.com/Cfssl/cfssljson.arm64"
+  shell: "curl -x '{{ http_proxy }}' -skL -o {{ kubernetes_ctl_path }}cfssljson http://mirror.shileizcc.com/Cfssl/cfssljson.arm64"
   when: 
   - os_arch == 'arm64'
   - check_cfssljson.stderr != ''
