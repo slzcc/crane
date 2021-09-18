@@ -27,7 +27,7 @@ $ helm template cilium cilium/cilium --version 1.10.1 \
 --set config.ipam=cluster-pool \
 --set prometheus.enabled=true \
 --set prometheus.port=9990 \
---set peratorPrometheus.enabled=true \
+--set operator.prometheus.enabled=true \
 --set hubble.enabled=true \
 --set hubble.listenAddress=":4244" \
 --set hubble.relay.enabled=true \
@@ -152,4 +152,10 @@ kubectl exec -it -n kube-system cilium-s4cg7 -- cilium status | grep KubeProxyRe
 kubectl exec -it -n kube-system cilium-s4cg7 -- cilium service list
 kubectl exec -it -n kube-system cilium-pf4cc -- cilium status --verbose | grep XDP
 kubectl exec -it -n kube-system cilium-pf4cc -- cilium status --verbose | grep HostPort
+```
+
+开启 hostPort 模式 [portmap](https://github.com/cilium/cilium/blob/master/Documentation/gettingstarted/cni-chaining-portmap.rst#portmap-hostport).
+
+```
+--set cni.chainingMode=portmap
 ```

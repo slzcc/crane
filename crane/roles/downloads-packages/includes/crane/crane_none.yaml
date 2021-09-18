@@ -1,7 +1,6 @@
 ---
 - name: Deploy CFSSL Binary Files
   include: "roles/downloads-packages/includes/cfssl/http_download.yaml"
-  when: is_kube_master
   
 - name: Deploy Kubernetes Binary Files
   include: "roles/downloads-packages/includes/kubernetes/http_download.yaml"

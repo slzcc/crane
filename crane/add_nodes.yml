@@ -17,7 +17,10 @@
     - "roles/cri-install/vars/crio.yaml"
     - "roles/cri-install/vars/docker.yaml"
     - "roles/crane/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/etcd-cluster-management/vars/main.yml"
+    - "roles/etcd-cluster-management/defaults/main.yml"
     - "roles/downloads-ssh-key/defaults/main.yml"
   roles:
     - { role: crane, tags: [crane] }
@@ -51,6 +54,7 @@
     - "roles/kubernetes-cluster-management/defaults/tls.yaml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/kubernetes-networks/defaults/main.yml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
   roles:
     - { role: remove-cluster, tags: [clean], when: is_initialize_clean}
     - { role: cri-install, tags: [cri]}
@@ -117,6 +121,8 @@
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/kubernetes-cluster-management/defaults/main.yml"
   tasks:
+    - name: Check all Nodes
+      shell: "sleep 10"
     - { include: 'roles/kubernetes-cluster-management/includes/k8s-add-nodes/k8s-set-labels.yaml' }
 
 - name: Sync Crane Delploy Files to Instance

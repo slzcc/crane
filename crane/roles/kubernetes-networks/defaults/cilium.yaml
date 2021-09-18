@@ -22,7 +22,12 @@ cilium_pool_ipv4_mask_size: "24"
 # disabled or probe or partial or strict
 cilium_kubeProxy_replacement_type: "probe"
 
-cilium_hostPort: "true"
+# Enables HostPort support for Cilium
+#  - none    => default
+#  - aws-cni
+#  - flannel
+#  - portmap => Enables HostPort
+cilium_hostPort: "none"
 
 # https://docs.cilium.io/en/v1.10/concepts/networking/routing/
 cilium_auto_direct_node_routes: "false"

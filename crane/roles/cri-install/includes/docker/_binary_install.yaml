@@ -35,6 +35,10 @@
     - "docker.service"
     - "docker.socket"
 
+- name: Initialize Containerd
+  include: "roles/cri-install/includes/containerd/initialize.yaml"
+  when: result.stdout != 'active' or result.stderr
+
 - name: Copy Containerd Config
   template: 
     src: "roles/cri-install/templates/containerd/{{ item }}"

@@ -1,6 +1,6 @@
 ---
 
-- name: Check Docker-ce Version
+- name: Check Crictl Version
   shell: "crictl"
   register: check_crictl
   ignore_errors: true

@@ -7,7 +7,7 @@
 k8s_version: 'v1.22.1'
 
 # 避免大版本中组件的版本差异, 使用 build 版本作为差异配置项, 在项目中可以看做如下使用 '{{ k8s_version }}.{{ build_k8s_version }}'
-build_k8s_version: '1'
+build_k8s_version: '4'
 
 # OS Drive/Arch Type
 os_drive: 'linux'
@@ -102,9 +102,9 @@ cilium_version: 'v1.10.3'
 
 # Kube Proxy
 # 如果配置了 Keepalived 就需要配置绑定的 nodePort 的物理网段，否则 Keepalived 的流量无法到达 nodePort, 因为 Keepalived 会发送 ARP 请求到此网段内，如果不设置这个网段则会流量不可达. v1.15.3.5 中修复。
-# 如果物理网段为 10.100.21.0/24, 请把值写入下方配置即可. 需要传入列表。
+# 如果物理网段为 10.100.21.0/24, 请把值写入下方配置即可, 格式 ["10.100.21.0/24"] 需要传入列表。
 # 其他选择参照 roles/kubernetes-network/defaults/main.yml
-kube_proxy_node_port_addresses: ["10.100.21.0/24", "172.17.48.0/24"]
+kube_proxy_node_port_addresses: ""
 
 # 是否安装 Kube-Proxy
 is_kube_proxy: true
