@@ -95,3 +95,10 @@ cri 创建 docker 配置文件目录 `/etc/docker/certs.d`.
 更新 cilium 1.10.3 ~ 4 版本的 template 文件内容。
 
 更新 crane logo, 准备 cncf k8s 一致性检测使用.
+
+
+# v1.22.2.0
+
+Crane 以更新至 1.22.2.0 版本。
+
+cilium_version 更新到 1.10.4.
