@@ -849,8 +849,8 @@ spec:
               - /cni-uninstall.sh
         name: cilium-agent
         ports:
-        - containerPort: {{ cilium_prometheus_port }}
-          hostPort: {{ cilium_prometheus_port }}
+        - containerPort: {{ cilium_prometheus_port.split(":")[1] }}
+          hostPort: {{ cilium_prometheus_port.split(":")[1] }}
           name: prometheus
           protocol: TCP          
         - containerPort: {{ cilium_proxy_prometheus_port }}
