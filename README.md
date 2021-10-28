@@ -6,7 +6,7 @@
 
 Please refer to the documentation for detailed configuration: [Wiki Docs URL](https://wiki.shileizcc.com/display/CASE/Ansible+Kubernetes+Cluster)。
 
-Crane 使用半离线安装, 解决国内无法使用 `k8s.gcr.io` 源问题。
+Crane 通过 [CNCF kubernetes 一致性检测](https://www.cncf.io/certification/software-conformance/)。
 
 使用 Ansible 基于容器化部署 Kubernetes Cluster（非 Kubeadm）, 并支持 Master/Node/Etcd 节点的添加。
 
