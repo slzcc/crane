@@ -37,6 +37,10 @@
   include: "roles/downloads-packages/includes/cni/docker/image_deploy.yaml" 
   when: check_binary_files is failed
 
+- name: Export the Cilium
+  include: "roles/downloads-packages/includes/cilium/docker/image_deploy.yaml" 
+  when: general_network_drive == "cilium"
+
 - name: Clean Temporary Container
   shell: "{{ kubernetes_ctl_path }}docker rm -f import-kubernetes-temporary"
   ignore_errors: true
