@@ -1,0 +1,16 @@
+---
+- name: Configure cilium to execute files in localhost
+  include: "roles/downloads-packages/includes/cilium/http_download.yaml"
+  when: is_using_local_files_deploy
+
+- name: Configure cilium to execute files in image deploy
+  include: "roles/downloads-packages/includes/cilium/docker/image_deploy.yaml"
+  when: 
+    - not is_using_local_files_deploy
+    - cri_k8s_default == 'docker'
+
+- name: Configure cilium to execute files in image deploy
+  include: "roles/downloads-packages/includes/cilium/containerd/image_deploy.yaml"
+  when:
+    - not is_using_local_files_deploy
+    - cri_k8s_default == 'containerd'

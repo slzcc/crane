@@ -63,6 +63,10 @@
   include: "roles/downloads-packages/includes/cni/containerd/image_deploy.yaml" 
   when: check_binary_files is failed
 
+- name: Export the Cilium
+  include: "roles/downloads-packages/includes/cilium/containerd/image_deploy.yaml" 
+  when: general_network_drive == "cilium"
+
 - name: Temportay uMount to.
   shell: "umount -l {{ temporary_dirs }}import-kubernetes-temporary"
   ignore_errors: true

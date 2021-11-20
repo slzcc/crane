@@ -64,6 +64,8 @@ EOF
 chmod +x ${temporaryDirs}/docker-image-import.sh ${temporaryDirs}/containerd-image-import.sh
 
 cat > ${temporaryDirs}/Dockerfile << EOF
+FROM quay.io/cilium/cilium:${ciliumVersion} as CiliumCli
+
 FROM docker:${dockercliVersion} as DockerCli
 
 FROM slzcc/ansible:demo4 as Packages
@@ -88,6 +90,7 @@ COPY --from=Packages /kubernetes /kubernetes
 COPY --from=Packages /cni /cni
 COPY --from=Packages /cfssl /cfssl
 COPY --from=Packages /cfssljson /cfssljson
+COPY --from=CiliumCli /usr/bin/cilium /cilium
 
 COPY ./image_*.tar.gz /
 
