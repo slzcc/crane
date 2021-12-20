@@ -2,7 +2,7 @@
 object=$1
 type=$2
 
-source ../crane_env
+cd .. && source .crane_env
 
 mkdir -p $temporary_dirs
 
@@ -37,7 +37,7 @@ ExecStartPre=-/sbin/modprobe overlay
 # the default is not to use systemd for cgroups because the delegate issues still
 # exists and systemd currently does not support the cgroup feature set required
 # for containers run by docker
-ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+ExecStart=${kubernetes_ctl_path}dockerd -H fd:// --containerd=/run/containerd/containerd.sock
 ExecReload=/bin/kill -s HUP \$MAINPID
 TimeoutSec=0
 RestartSec=2
@@ -108,7 +108,7 @@ After=network.target
 
 [Service]
 ExecStartPre=-/sbin/modprobe overlay
-ExecStart=/usr/local/bin/containerd
+ExecStart=${kubernetes_ctl_path}containerd
 Restart=always
 RestartSec=5
 KillMode=process
@@ -136,8 +136,8 @@ function uninstall_docker() {
     systemctl daemon-reload
 
     rm -rf /lib/systemd/system/{docker.service,docker.socket}
-    rm -rf {{ temporary_dirs }}/{docker,docker-init,docker-proxy,dockerd,runc}
-    rm -rf /usr/bin/{docker,docker-init,docker-proxy,dockerd,runc}
+    rm -rf ${temporary_dirs}/{docker,docker-init,docker-proxy,dockerd,runc}
+    rm -rf ${kubernetes_ctl_path}{docker,docker-init,docker-proxy,dockerd,runc,containerd*}
     
     rm -rf /etc/docker
 }
@@ -145,9 +145,11 @@ function uninstall_docker() {
 function install_containerd() {
     wget -qO- https://github.com/containerd/containerd/releases/download/v${CONTAINERD_VERSION}/containerd-${CONTAINERD_VERSION}-linux-amd64.tar.gz > ${temporary_dirs}/containerd-${CONTAINERD_VERSION}-linux-amd64.tar.gz
 
-    tar zxf {{ temporary_dirs }}containerd-{{ containerd_version }}-linux-amd64.tar.gz -C {{ temporary_dirs }}containerd
+    mkdir -p ${temporary_dirs}containerd
 
-    cp -a {{ temporary_dirs }}containerd/bin/{containerd,containerd-shim,containerd-shim-runc-v1,containerd-shim-runc-v2,ctr} {{ kubernetes_ctl_path }}
+    tar zxf ${temporary_dirs}containerd-${CONTAINERD_VERSION}-linux-amd64.tar.gz -C ${temporary_dirs}containerd
+
+    cp -a ${temporary_dirs}containerd/bin/{containerd,containerd-shim,containerd-shim-runc-v1,containerd-shim-runc-v2,ctr} ${kubernetes_ctl_path}
 }
 
 function uninstall_containerd() {
@@ -156,8 +158,8 @@ function uninstall_containerd() {
     systemctl daemon-reload
 
     rm -rf /lib/systemd/system/containerd.service
-    rm -rf {{ temporary_dirs }}/{containerd,containerd-shim,containerd-shim-runc-v1,containerd-shim-runc-v2,ctr}
-    rm -rf /usr/bin/{containerd,containerd-shim,containerd-shim-runc-v1,containerd-shim-runc-v2,ctr}
+    rm -rf ${temporary_dirs}/{containerd,containerd-shim,containerd-shim-runc-v1,containerd-shim-runc-v2,ctr}
+    rm -rf ${kubernetes_ctl_path}{containerd,containerd-shim,containerd-shim-runc-v1,containerd-shim-runc-v2,ctr}
 
     rm -rf /etc/containerd
 }
@@ -166,11 +168,13 @@ if [ "$1" == "docker" ]; then
   if [ "$2" == "install" ]; then
     wget -qO- https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz > ${temporary_dirs}/docker-${DOCKER_VERSION}.tar.gz
 
-    tar zxf {{ temporary_dirs }}docker-{{ DOCKER_VERSION }}.tar.gz -C {{ temporary_dirs }}
+    tar zxf ${temporary_dirs}docker-${DOCKER_VERSION}.tar.gz -C ${temporary_dirs}
 
-    cp -a {{ temporary_dirs }}docker/{docker,docker-init,docker-proxy,dockerd,runc} {{ kubernetes_ctl_path }}
+    #cp -a ${temporary_dirs}docker/{docker,docker-init,docker-proxy,dockerd,runc,containerd*} ${kubernetes_ctl_path}
     
-    install_containerd
+    cp -a ${temporary_dirs}docker/* ${kubernetes_ctl_path}
+    
+    #install_containerd
 
     set_containerd_config
 
