@@ -1,6 +1,6 @@
 ---
 - name: Move CRIO binray to bin Path
-  shell: "cp -a {{ temporary_dirs }}crio-{{ crio_version }}/bin/{{ item }} {{ kubernetes_ctl_path }}"
+  shell: "cp -a {{ temporary_dirs }}cri-o/bin/{{ item }} {{ kubernetes_ctl_path }}"
   with_items:
     - "conmon"
     - "crio"

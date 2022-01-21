@@ -7,4 +7,4 @@
     owner: "{{ ssh_connect_user }}"
 
 - name: Unpack the crio. Tar. Gz
-  shell: "tar zxf {{ temporary_dirs }}crio-{{ crio_version }}.tar.gz -C {{ temporary_dirs }}"
+  shell: "tar zxf {{ temporary_dirs }}cri-o.{{ crio_version }}.tar.gz -C {{ temporary_dirs }}"
