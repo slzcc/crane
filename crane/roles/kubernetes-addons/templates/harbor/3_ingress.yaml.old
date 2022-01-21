@@ -1,0 +1,59 @@
+---
+# Source: harbor/templates/ingress/ingress.yaml
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: "{{ harbor_project_name_prefix }}harbor-ingress"
+  labels:
+    heritage: Tiller
+    release: release-name
+    chart: harbor
+    app: "harbor"
+  annotations:
+    ingress.kubernetes.io/proxy-body-size: "0"
+    ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  tls:
+  - secretName: "{{ harbor_project_name_prefix }}harbor-ingress"
+    hosts:
+    - {{ harbor_ingress_default_domain }}
+  - secretName: "{{ harbor_project_name_prefix }}harbor-ingress"
+    hosts:
+    - {{ harbor_ingress_notary_domain }}
+  rules:
+  - http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ harbor_project_name_prefix }}harbor-portal
+          servicePort: 80
+      - path: /api/
+        backend:
+          serviceName: {{ harbor_project_name_prefix }}harbor-core
+          servicePort: 80
+      - path: /service/
+        backend:
+          serviceName: {{ harbor_project_name_prefix }}harbor-core
+          servicePort: 80
+      - path: /v2/
+        backend:
+          serviceName: {{ harbor_project_name_prefix }}harbor-core
+          servicePort: 80
+      - path: /chartrepo/
+        backend:
+          serviceName: {{ harbor_project_name_prefix }}harbor-core
+          servicePort: 80
+      - path: /c/
+        backend:
+          serviceName: {{ harbor_project_name_prefix }}harbor-core
+          servicePort: 80
+    host: {{ harbor_ingress_default_domain }}
+  - http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ harbor_project_name_prefix }}harbor-notary-server
+          servicePort: 4443
+    host: {{ harbor_ingress_notary_domain }}

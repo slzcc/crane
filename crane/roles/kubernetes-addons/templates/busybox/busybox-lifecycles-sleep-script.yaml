@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: busybox-lifecycles-sleep-script
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: busybox-lifecycles-sleep-script
+  template:
+    metadata:
+      labels:
+        app: busybox-lifecycles-sleep-script
+    spec:
+      terminationGracePeriodSeconds: 120
+      containers:
+      - image: slzcc/terminal-ctl:ubuntu-20.04
+        imagePullPolicy: Always
+        command:
+          - nginx
+          - -g
+          - daemon off;
+        name: busybox
+        volumeMounts:
+        - mountPath: "/tmp/script"
+          name: script
+        lifecycle:
+          # https://www.freesion.com/article/4483973895/
+          # https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/?spm=a2c6h.12873639.0.0.39e74a0a90nzdV#container-hooks
+          postStart:
+            exec:
+              command: ["/bin/bash", "-c", "date > /tmp/PostStart"]
+          preStop:
+            exec:
+              command: ["/bin/bash", "-c", "/tmp/script/pre-stop.sh"]
+      volumes:
+      - name: script
+        configMap:
+          name: busybox-lifecycles-sleep-script
+          defaultMode: 0777
+      restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: busybox-lifecycles-sleep-script
+  labels:
+    app: busybox-lifecycles-sleep-script
+spec:
+  ports:
+   - name: http
+     port: 80
+     targetPort: 80
+     protocol: TCP
+  selector:
+    app: busybox-lifecycles-sleep-script
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: busybox-lifecycles-sleep-script
+data:
+  pre-stop.sh: |
+    #!/bin/bash
+    # pre-stop.sh
+    # 主要功能: 查看当前容器内是否存在 tcp 链接, 否则
+    # ConfigMap Mount:
+    #   volumes:
+    #     - name: script
+    #       configMap:
+    #         name: busybox-test
+    #         defaultMode: 0777
+
+    NET_DRIVE=${NET_DRIVE:-eth0}
+    IP=`ip a |grep $NET_DRIVE | grep 'inet' | awk '{print $2}' | awk -F/ '{print $1}'`
+    CHECK_PORT=${CHECK_PORT:-:80 :22}
+
+    [[ -n $IP ]] && \
+    for port in ${CHECK_PORT[*]}; do
+        while true; do
+            date > /tmp/lifecycles
+            if [ $(netstat -anlp | grep 'ESTABLISHED' | grep $port | grep -E "($IP|127.0.0.1)" | wc -l) -eq 0 ]; then
+                break
+            fi
+            sleep 2
+        done
+    done
+    sleep 2

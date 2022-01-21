@@ -1,6 +1,6 @@
 ---
 # Source: harbor/templates/ingress/ingress.yaml
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: "{{ harbor_project_name_prefix }}harbor-ingress"
@@ -26,34 +26,55 @@ spec:
   - http:
       paths:
       - path: /
+        pathType: Prefix
         backend:
-          serviceName: {{ harbor_project_name_prefix }}harbor-portal
-          servicePort: 80
+          service:
+            name: {{ harbor_project_name_prefix }}harbor-portal
+            port: 
+              number: 80
       - path: /api/
+        pathType: Prefix
         backend:
-          serviceName: {{ harbor_project_name_prefix }}harbor-core
-          servicePort: 80
+          service:
+            name: {{ harbor_project_name_prefix }}harbor-core
+            port: 
+              number: 80
       - path: /service/
+        pathType: Prefix
         backend:
-          serviceName: {{ harbor_project_name_prefix }}harbor-core
-          servicePort: 80
+          service:
+            name: {{ harbor_project_name_prefix }}harbor-core
+            port: 
+              number: 80
       - path: /v2/
+        pathType: Prefix
         backend:
-          serviceName: {{ harbor_project_name_prefix }}harbor-core
-          servicePort: 80
+          service:
+            name: {{ harbor_project_name_prefix }}harbor-core
+            port: 
+              number: 80
       - path: /chartrepo/
+        pathType: Prefix
         backend:
-          serviceName: {{ harbor_project_name_prefix }}harbor-core
-          servicePort: 80
+          service:
+            name: {{ harbor_project_name_prefix }}harbor-core
+            port: 
+              number: 80
       - path: /c/
+        pathType: Prefix
         backend:
-          serviceName: {{ harbor_project_name_prefix }}harbor-core
-          servicePort: 80
+          service:
+            name: {{ harbor_project_name_prefix }}harbor-core
+            port: 
+              number: 80
     host: {{ harbor_ingress_default_domain }}
   - http:
       paths:
       - path: /
+        pathType: Prefix
         backend:
-          serviceName: {{ harbor_project_name_prefix }}harbor-notary-server
-          servicePort: 4443
+          service:
+            name: {{ harbor_project_name_prefix }}harbor-notary-server
+            port: 
+              number: 4443
     host: {{ harbor_ingress_notary_domain }}
