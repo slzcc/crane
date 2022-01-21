@@ -4,7 +4,7 @@
 # 部署 Kubernetes 对应版本, 不建议修改, 如需修改请修改小版本进行部署测试, 大版本会引发部署参数不支持等问题.
 # 如使用镜像方式部署, 不能修改
 # https://github.com/kubernetes/kubernetes/releases
-k8s_version: 'v1.23.1'
+k8s_version: 'v1.23.2'
 
 # 避免大版本中组件的版本差异, 使用 build 版本作为差异配置项, 在项目中可以看做如下使用 '{{ k8s_version }}.{{ build_k8s_version }}'
 build_k8s_version: '0'
@@ -66,10 +66,11 @@ k8s_load_balance_ip: 10.211.55.3
 # CoreDNS Version
 # https://github.com/coredns/coredns/releases
 # 如使用镜像方式部署, 不能修改 (如果可以使用 {{ k8s_cluster_component_registry }} 中的仓库地址获取镜像则可随意修改)
-dns_version: '1.8.4'
+dns_version: '1.8.7'
 
 # 部署 CNI 对应版本, 如使用镜像方式部署, 不能修改 (如果可以使用 {{ k8s_cluster_component_registry }} 中的仓库地址获取镜像则可随意修改)
 # https://github.com/containernetworking/plugins/releases/
+# 此值如使用 Calico 时会使用, 其他请忽略
 cni_version: 'v0.9.1'
 
 # Etcd Verions
@@ -84,7 +85,7 @@ etcd_version: '3.4.9'
 
 # 支持 calico 与 cilium 网络模式, 默认 calico
 # calico or cilium or none
-general_network_drive: 'calico'
+general_network_drive: 'cilium'
 
 # Calico Verion
 # https://github.com/projectcalico/calico/releases
@@ -95,7 +96,7 @@ calico_version: 'v3.20.0'
 # Cilium Verion
 # https://github.com/cilium/cilium/releases
 # 其他配置请参照 roles/kubernetes-networks/defaults/cilium.yaml
-cilium_version: 'v1.10.4'
+cilium_version: 'v1.10.7'
 
 ## Kubelet Config
 # 参照 crane/roles/kubernetes-cluster-management/vars/kubelet.yaml

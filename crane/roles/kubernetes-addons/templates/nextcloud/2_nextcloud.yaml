@@ -62,7 +62,7 @@ spec:
     app: nextcloud
 
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: nextcloud
@@ -72,6 +72,9 @@ spec:
     http:
       paths:
       - path: /
+        pathType: Prefix
         backend:
-          serviceName: nextcloud
-          servicePort: http
+          service:
+            name: nextcloud
+            port: 
+              number: 80
