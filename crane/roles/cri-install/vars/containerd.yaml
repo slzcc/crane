@@ -2,7 +2,7 @@
 ## ********************************************************************************************************************************
 
 # https://github.com/containerd/containerd/releases
-containerd_version: 1.5.5
+containerd_version: 1.5.8
 
 # 自定义配置
 is_containerd_config_custom: true
