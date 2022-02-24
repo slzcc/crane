@@ -2,7 +2,7 @@
 # Cilium
 ## ********************************************************************************************************************************
 - name: Check Cilium Dir
-  shell: "ls {{ kubernetes_cni_dirs }}"
+  shell: "ls {{ kubernetes_ctl_path }}/cilium"
   register: CHECK_CILIUM_BIN_PACKAGE
   ignore_errors: true
 
