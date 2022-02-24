@@ -24,7 +24,7 @@ k8s_cluster_ipv4_pool_cidr: '172.208.0.0/12'
 # Kubernetes HaProxy 监听的 apiServer 完整的 URL
 k8s_apiserver_https_bind: 'https://{{ k8s_load_balance_ip }}:{{ k8s_master_haproxy_bind_port }}'
 
-# Kubernetes 可暴露的 NodePort 端口号
+# Kubernetes 可暴露的 NodePort 端口号, 默认 30000-32767
 k8s_apiserver_node_port_range: '10-64878'
 
 # Pause Version

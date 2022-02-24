@@ -209,10 +209,11 @@ data:
   # An additional address for Hubble server to listen to (e.g. ":4244").
   hubble-listen-address: ":4244"
   hubble-disable-tls: "true"
-  ipam: {{ cilium_ipam_type }}
+  ipam: "{{ cilium_ipam_type }}"
   cluster-pool-ipv4-cidr: "{{ cilium_pool_ipv4_cidr }}"
   cluster-pool-ipv4-mask-size: "{{ cilium_pool_ipv4_mask_size }}"
   disable-cnp-status-updates: "true"
+  cgroup-root: "/run/cilium/cgroupv2"
 ---
 # Source: cilium/templates/hubble-relay-configmap.yaml
 apiVersion: v1

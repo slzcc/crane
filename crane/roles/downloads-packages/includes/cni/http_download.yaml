@@ -2,7 +2,7 @@
 # CNI
 ## ********************************************************************************************************************************
 - name: Check CNI Dir
-  shell: "ls {{ kubernetes_cni_dirs }}"
+  shell: "ls {{ kubernetes_cni_dirs }}/vlan"
   register: CHECK_CNI_BIN_PACKAGE
   ignore_errors: true
 

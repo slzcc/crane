@@ -7,3 +7,8 @@
 
 - name: Deploy CNI Binary Files
   include: "roles/downloads-packages/includes/cni/http_download.yaml"
+
+- name: Deploy Cilium Binary Files
+  include: "roles/downloads-packages/includes/cilium/http_download.yaml"
+  when:
+  - general_network_drive == 'cilium'
