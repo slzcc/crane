@@ -19,7 +19,7 @@
   shell: 'ln -sf {{ istio_home }}/bin/istioctl /usr/bin/istioctl'
 
 - name: Deploy Istio ***
-  shell: 'cd {{ istio_home }}/bin && ./istioctl install'
+  shell: 'cd {{ istio_home }}/bin && ./istioctl install -y'
 
 - name: Deploy Istio ****
   template: 
