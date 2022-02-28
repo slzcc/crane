@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: openldap
+  namespace: {{ openldap_deploy_namespace }}
 spec:
   replicas: 1
   selector:
@@ -16,7 +17,7 @@ spec:
       restartPolicy: Always
       containers:
       - name: openldap
-        image: slzcc/openldap:0.1.4
+        image: slzcc/openldap:{{ openldap_version }}
         env:
           - name: TZ
             value: "Asia/Shanghai"
@@ -78,6 +79,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: ldap
+  namespace: {{ openldap_deploy_namespace }}
   labels:
     app: "openldap"
 spec:
