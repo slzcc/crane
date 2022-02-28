@@ -1,6 +1,3 @@
 ---
 - name: Deploy Helm Cli *
   shell: "curl -x '{{ http_proxy }}' -s https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | ALL_PROXY='{{ http_proxy }}' bash"
-
-# - name: Deploy Helm Cli **
-#   shell: "helm init"

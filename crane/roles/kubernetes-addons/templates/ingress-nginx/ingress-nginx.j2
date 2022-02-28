@@ -340,7 +340,7 @@ spec:
             runAsUser: 101
             allowPrivilegeEscalation: true
           env:
-          	- name: TZ
+            - name: TZ
               value: "{{ time_location }}"
             - name: POD_NAME
               valueFrom:

@@ -77,7 +77,7 @@ cni_version: 'v1.1.0'
 # https://github.com/etcd-io/etcd/releases
 # 如使用镜像方式部署, 不能修改 (如果可以使用 {{ k8s_cluster_component_registry }} 中的仓库地址获取镜像则可随意修改)
 # 其他配置参照 crane/roles/etcd-cluster-management/vars/mail.yml
-etcd_version: '3.5.2'
+etcd_version: '3.4.9'
 
 # Kube Network
 ## ********************************************************************************************************************************
