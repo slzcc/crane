@@ -325,4 +325,27 @@ EOF
 
 > 通过自定义 daemin.json 来保证 Ansible in Docker 不重启 DockerD。
 
+## ipset v7.1: Kernel and userspace incompatible: settype hash:ip,port with revision 6 not supported by userspace.
+
+使用 Calico 网络并使用 Ubuntu 系统时, 一旦内核版本过高就会导致如上错误, 因高版本的内核使用的是较高版本的 ipset, 因 calico 依赖 ipset 则会出现无法正常启动 Calico-node 的问题, 此问题自行解决。
+
+> 以试过变更 ipset 版本, 但无效.
+
+```
+$ apt autoremove --pruge ipset
+
+$ wget https://ipset.netfilter.org/ipset-7.15.tar.bz2
+$ tar xvf ipset-7.15.tar.bz2
+$ cd ipset-7.15
+$ apt-get -y install autoconf automake libtool libmnl-dev pkg-config
+$ apt-get -y install linux-kernel-headers kernel-package
+$ ./configure && make && make install
+```
+
+且执行命令即可模拟错误提示:
+
+```
+$ ipset list
+```
+
 ---

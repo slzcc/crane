@@ -1,24 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nexus-aps
-  labels:
-    app: nexus-ops
+  name: nexus
+  namespace: {{ nexus_deploy_namespace }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: nexus-ops
+      app: nexus
   template:
     metadata:
       labels:
-        app: nexus-ops
+        app: nexus
     spec:
       securityContext:
         fsGroup: 1000
       containers:
-        - name: nexus-ops
-          image: nexus3:3.24.0
+        - name: nexus
+          image: sonatype/nexus3:{{ nexus_version }}
           imagePullPolicy: IfNotPresent
           env:
             - name: TZ
@@ -44,12 +43,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: nexus-aps
-  labels:
-    app: nexus-ops
+  name: nexus
+  namespace: {{ nexus_deploy_namespace }}
 spec:
   ports:
     - port: 8081
       targetPort: 8081
   selector:
-    app: nexus-ops
+    app: nexus

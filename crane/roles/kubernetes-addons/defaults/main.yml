@@ -11,7 +11,7 @@ is_deploy_helm: false
 is_deploy_ingress_nginx: false
 
 # Ingress Nginx Version
-ingress_nginx_version: "0.33.0"
+ingress_nginx_version: "v1.1.1"
 
 # 部署 Ingress Nginx Example
 is_deploy_ingress_nginx_example: false
@@ -39,7 +39,7 @@ istio_home: "/usr/local/istio-{{ istio_version }}"
 
 # Istio Version
 # https://github.com/istio/istio/releases
-istio_version: 1.10.2
+istio_version: 1.13.1
 
 # 部署 Istio 所使用的 Ingress Domain
 istio_ingress_prometheus_domain: "prometheus.example.com"
@@ -51,11 +51,18 @@ istio_ingress_kiali_domain: "kiali.example.com"
 istio_kiali_username: "YWRtaW4="
 istio_kiali_password: "YWRtaW4="
 
-# 部署 upload service
+# 部署 Upload service
 # 如果部署 Harbor 则此服务默认开启，因为需要提供 TLS 证书的下载，如果机器网络等因素不稳定则会跳过。
 is_deploy_upload_service: false
 
+# Upload deploy namespace
+upload_deploy_namespace: "default"
+
+# Upload Ingress Domain
 upload_service_ingress_domain: "upload.example.com"
+
+# Upload Deploy Version
+upload_version: "v4"
 
 ## Harbor
 ## ********************************************************************************************************************************
@@ -177,6 +184,9 @@ tls_harbor_validity_period_hours: "{{ tls_harbor_server_validity_period * 365 * 
 # OpenLDAP Deploy Enable
 is_deploy_openldap: false
 
+# Webmin deploy namespace
+openldap_deploy_namespace: "default"
+
 # OpenLDAP admin 的密码
 openldap_admin_password: "ldap.password"
 
@@ -189,6 +199,8 @@ openldap_domain: "ldap.example.com"
 # OpenLDAP Ingress Domain
 openldap_ingress_domain: "{{ openldap_domain }}"
 
+# OpenLDAP Deploy Version
+openldap_version: "0.1.4"
 
 # Webmin
 ## ********************************************************************************************************************************
@@ -196,12 +208,17 @@ openldap_ingress_domain: "{{ openldap_domain }}"
 # Webmin Deploy Enable
 is_deploy_webmin: false
 
+# Webmin deploy namespace
+webmin_deploy_namespace: "default"
+
 # Webmin Root 密码
 webmin_root_password: "webmin.password"
 
 # Webmin Ingress Domain
 webmin_ingress_domain: "webmin.example.com"
 
+# Webmin Deploy Version
+webmin_version: "1.960"
 
 # Gitlab
 ## ********************************************************************************************************************************
@@ -210,11 +227,13 @@ webmin_ingress_domain: "webmin.example.com"
 is_deploy_gitlab: false
 
 # Gitlab deploy namespace
-gitlab_deploy_namespace: "gitlab"
+gitlab_deploy_namespace: "default"
 
 # Gitlab Ingress Domain
 gitlab_ingress_domain: "gitlab.example.com"
 
+# Gitlab Deploy Version
+gitlab_version: "14.6.5-ce.0"
 
 # Nexus
 ## ********************************************************************************************************************************
@@ -222,9 +241,14 @@ gitlab_ingress_domain: "gitlab.example.com"
 # Nexus Deploy Enable
 is_deploy_nexus: false
 
+# Nexus deploy namespace
+nexus_deploy_namespace: "default"
+
 # Nexus Ingress Domain
 nexus_ingress_domain: "nexus.example.com"
 
+# Mexus Deploy Version
+nexus_version: "3.37.3"
 
 # Jenkins
 ## ********************************************************************************************************************************
@@ -232,8 +256,11 @@ nexus_ingress_domain: "nexus.example.com"
 # Jenkins Deploy Enable
 is_deploy_jenkins: false
 
+# Gitlab deploy namespace
+jenkins_deploy_namespace: "default"
+
 # Jenkins Deploy Version
-jenkins_version: "2.238"
+jenkins_version: "2.317"
 
 # Jenkins Ingress Domain
 jenkins_ingress_domain: "jenkins.example.com"

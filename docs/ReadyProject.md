@@ -18,3 +18,4 @@
 - [x] 支持 `Kubernetes Cluster` 版本更新, `v1.15.0.5` 中更新。
 - [x] 支持 `Dockerd` 离线安装, `v1.16.3.2` 中更新。[Dockerd install](../crane/roles/docker-install/)
 - [x] 支持 `Kubernetes for Docker` Simple 方式部署。（主要解决部署前的测试） , `v1.17.0.6` 中更新。[Kubernetes Simple](../kube-simple/)
+- [ ] 支持外部的 `Etcd Cluster` 部署 `Kubernetes Cluster`.

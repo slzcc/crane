@@ -8,6 +8,7 @@
     - [v1.23.3.0 更新内容](#v12330)
     - [v1.23.4.0 更新内容](#v12340)
     - [v1.23.4.1 更新内容](#v12341)
+    - [v1.23.4.2 更新内容](#v12342)
 
 # v1.23.0.0
 
@@ -71,3 +72,35 @@ Crane 以更新至 1.23.4.0 版本。
 ## 修复
 
 修复 CNI 判断错误导致无法下载 CNI 官方包。
+
+# v1.23.4.2
+
+Crane 以更新至 1.23.4.2 版本。
+
+## 升级
+
+升级组件:
+  * Calico v3.20.0 => v3.20.4
+  * ingress-nginx 0.33.0 => v1.1.1
+  * Haproxy 2.4.2 => 2.5.3
+  * CoreDNS 1.8.7 => 1.9.0
+  * Cilium v1.10.7 => v1.10.8
+  * dockerd 20.10.8 => 20.10.9
+  * Jenkins 2.238 => 2.317
+  * Harbor 2.1.5 => 2.4.1
+
+## 修复
+
+修复 webmin 没有自定义版本问题。
+
+修复 gitlab 没有自定义版本问题。
+
+修复 Nexus 没有自定义版本问题。
+
+修复 openldap 没有自定义版本问题。
+
+修复 Ingress-nginx 启动项与官方 v1.1.1 版本一致。[详情参照](crane/roles/kubernetes-addons/templates/ingress-nginx/README.md)
+
+修复 Upload 没有自定义版本问题。
+
+部署 Harbor 时移除 clair 服务部署策略, 因已废弃。

@@ -1,7 +1,8 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: nexus-ops
+  name: nexus
+  namespace: {{ nexus_deploy_namespace }}
 spec:
   rules:
   - host: {{ nexus_ingress_domain }}
@@ -11,6 +12,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: nexus-ops
+            name: nexus
             port: 
               number: 80

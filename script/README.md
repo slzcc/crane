@@ -72,4 +72,4 @@ slzcc/keepalived                                                 1.2.24         
 
 > 可修改参数 `k8s_cluster_component_registry` 值为 `slzcc` 自定义镜像仓库地址, 在使用自定义镜像仓库时, 请确保已经执行过 `script/PublishK8sRegistryImages.sh` 脚本。(可支持的镜像版本参阅 [slzcc/kubernetes](https://hub.docker.com/r/slzcc/kubernetes))
 
-> 默认 Etcd 需要跟随 Master 进行部署, 暂不支持 Etcd 部署在 Node 中 (后期会优化, 在添加  节点时支持 Node 节点部署)。
+> 默认 Etcd 需要跟随 Master 进行部署, 暂不支持 Etcd 部署在 Node 中 (后期会优化, 在添加节点时支持 Node 节点部署)。

@@ -17,12 +17,6 @@
   import_tasks: roles/kubernetes-addons/includes/ingress-nginx-example-deploy.yaml
   when: is_deploy_ingress_nginx_example
 
-## Install Prometheus Operator
-## ********************************************************************************************************************************
-# - name: Initialize Prometheus Operator
-#   import_tasks: roles/kubernetes-addons/includes/prometheus-operator-deploy.yaml
-#   when: is_deploy_prometheus_operator
-
 ## Install DNS Example
 ## ********************************************************************************************************************************
 - name: Initialize DNS Example
