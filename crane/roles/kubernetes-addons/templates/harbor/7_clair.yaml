@@ -1,133 +1,133 @@
----
-# Source: harbor/templates/clair/clair-svc.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: "{{ harbor_project_name_prefix }}harbor-clair"
-  labels:
-    heritage: Tiller
-    release: release-name
-    chart: harbor
-    app: "harbor"
-spec:
-  ports:
-  ports:
-    - name: adapter
-      port: 8080
-  selector:
-    release: release-name
-    app: "harbor"
-    component: clair
+# ---
+# # Source: harbor/templates/clair/clair-svc.yaml
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: "{{ harbor_project_name_prefix }}harbor-clair"
+#   labels:
+#     heritage: Tiller
+#     release: release-name
+#     chart: harbor
+#     app: "harbor"
+# spec:
+#   ports:
+#   ports:
+#     - name: adapter
+#       port: 8080
+#   selector:
+#     release: release-name
+#     app: "harbor"
+#     component: clair
 
----
-# Source: harbor/templates/clair/clair-dpl.yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: {{ harbor_project_name_prefix }}harbor-clair
-  labels:
-    heritage: Tiller
-    release: release-name
-    chart: harbor
-    app: "harbor"
-    component: clair
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      release: release-name
-      app: "harbor"
-      component: clair
-  template:
-    metadata:
-      labels:
-        heritage: Tiller
-        release: release-name
-        chart: harbor
-        app: "harbor"
-        component: clair
-      annotations:
-        checksum/secret: 01e7c0619e0825e62219a350f89dce4cdc2e0592f543dd75488d0bf501e44e72
-    spec:
-      securityContext:
-        fsGroup: 10000
-      containers:
-      - name: clair
-        image: goharbor/clair-photon:{{ harbor_version }}
-        imagePullPolicy: IfNotPresent
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 6061
-          initialDelaySeconds: 300
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 6061
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        args: ["-log-level", "info"]
-        env:
-        - name: HTTP_PROXY
-          value: ""
-        - name: HTTPS_PROXY
-          value: ""
-        - name: NO_PROXY
-          value: "{{ harbor_project_name_prefix }}harbor-core,{{ harbor_project_name_prefix }}harbor-jobservice,{{ harbor_project_name_prefix }}harbor-database,{{ harbor_project_name_prefix }}harbor-chartmuseum,{{ harbor_project_name_prefix }}harbor-clair,{{ harbor_project_name_prefix }}harbor-notary-server,{{ harbor_project_name_prefix }}harbor-notary-signer,{{ harbor_project_name_prefix }}harbor-registry,{{ harbor_project_name_prefix }}harbor-portal,{{ harbor_project_name_prefix }}harbor-trivy,127.0.0.1,localhost,.local,.internal"
-        ports:
-        - containerPort: 6060
-        volumeMounts:
-        - name: config
-          mountPath: /etc/clair/config.yaml
-          subPath: config.yaml
-        - mountPath: /usr/share/zoneinfo
-          name: usr-local-timezone
-          readOnly: true
-      - name: adapter
-        image: goharbor/clair-adapter-photon:{{ harbor_version }}
-        imagePullPolicy: IfNotPresent
-        livenessProbe:
-          httpGet:
-            path: /probe/healthy
-            scheme: HTTP
-            port: 8080
-          initialDelaySeconds: 300
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /probe/ready
-            scheme: HTTP
-            port: 8080
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        env:
-        - name: SCANNER_CLAIR_URL
-          # To avoid a pod cannot reach itself via service IP when the clusters disable hairpin
-          value: "http://127.0.0.1:6060"
-        - name: SCANNER_STORE_REDIS_URL
-          valueFrom:
-              secretKeyRef:
-                name: {{ harbor_project_name_prefix }}harbor-clair
-                key: redis
-        - name: SCANNER_CLAIR_DATABASE_URL
-          valueFrom:
-              secretKeyRef:
-                name: {{ harbor_project_name_prefix }}harbor-clair
-                key: database
-        - name: SCANNER_LOG_LEVEL
-          value: "info"
-        ports:
-        - containerPort: 8080
-        volumeMounts:
-        - mountPath: /usr/share/zoneinfo
-          name: usr-local-timezone
-          readOnly: true
-      volumes:
-      - name: config
-        secret:
-          secretName: "{{ harbor_project_name_prefix }}harbor-clair"
-      - name: usr-local-timezone
-        hostPath:
-          path: /usr/share/zoneinfo
-          type: DirectoryOrCreate
+# ---
+# # Source: harbor/templates/clair/clair-dpl.yaml
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: {{ harbor_project_name_prefix }}harbor-clair
+#   labels:
+#     heritage: Tiller
+#     release: release-name
+#     chart: harbor
+#     app: "harbor"
+#     component: clair
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       release: release-name
+#       app: "harbor"
+#       component: clair
+#   template:
+#     metadata:
+#       labels:
+#         heritage: Tiller
+#         release: release-name
+#         chart: harbor
+#         app: "harbor"
+#         component: clair
+#       annotations:
+#         checksum/secret: 01e7c0619e0825e62219a350f89dce4cdc2e0592f543dd75488d0bf501e44e72
+#     spec:
+#       securityContext:
+#         fsGroup: 10000
+#       containers:
+#       - name: clair
+#         image: goharbor/clair-photon:{{ harbor_version }}
+#         imagePullPolicy: IfNotPresent
+#         livenessProbe:
+#           httpGet:
+#             path: /health
+#             port: 6061
+#           initialDelaySeconds: 300
+#           periodSeconds: 10
+#         readinessProbe:
+#           httpGet:
+#             path: /health
+#             port: 6061
+#           initialDelaySeconds: 30
+#           periodSeconds: 10
+#         args: ["-log-level", "info"]
+#         env:
+#         - name: HTTP_PROXY
+#           value: ""
+#         - name: HTTPS_PROXY
+#           value: ""
+#         - name: NO_PROXY
+#           value: "{{ harbor_project_name_prefix }}harbor-core,{{ harbor_project_name_prefix }}harbor-jobservice,{{ harbor_project_name_prefix }}harbor-database,{{ harbor_project_name_prefix }}harbor-chartmuseum,{{ harbor_project_name_prefix }}harbor-clair,{{ harbor_project_name_prefix }}harbor-notary-server,{{ harbor_project_name_prefix }}harbor-notary-signer,{{ harbor_project_name_prefix }}harbor-registry,{{ harbor_project_name_prefix }}harbor-portal,{{ harbor_project_name_prefix }}harbor-trivy,127.0.0.1,localhost,.local,.internal"
+#         ports:
+#         - containerPort: 6060
+#         volumeMounts:
+#         - name: config
+#           mountPath: /etc/clair/config.yaml
+#           subPath: config.yaml
+#         - mountPath: /usr/share/zoneinfo
+#           name: usr-local-timezone
+#           readOnly: true
+#       - name: adapter
+#         image: goharbor/clair-adapter-photon:{{ harbor_version }}
+#         imagePullPolicy: IfNotPresent
+#         livenessProbe:
+#           httpGet:
+#             path: /probe/healthy
+#             scheme: HTTP
+#             port: 8080
+#           initialDelaySeconds: 300
+#           periodSeconds: 10
+#         readinessProbe:
+#           httpGet:
+#             path: /probe/ready
+#             scheme: HTTP
+#             port: 8080
+#           initialDelaySeconds: 30
+#           periodSeconds: 10
+#         env:
+#         - name: SCANNER_CLAIR_URL
+#           # To avoid a pod cannot reach itself via service IP when the clusters disable hairpin
+#           value: "http://127.0.0.1:6060"
+#         - name: SCANNER_STORE_REDIS_URL
+#           valueFrom:
+#               secretKeyRef:
+#                 name: {{ harbor_project_name_prefix }}harbor-clair
+#                 key: redis
+#         - name: SCANNER_CLAIR_DATABASE_URL
+#           valueFrom:
+#               secretKeyRef:
+#                 name: {{ harbor_project_name_prefix }}harbor-clair
+#                 key: database
+#         - name: SCANNER_LOG_LEVEL
+#           value: "info"
+#         ports:
+#         - containerPort: 8080
+#         volumeMounts:
+#         - mountPath: /usr/share/zoneinfo
+#           name: usr-local-timezone
+#           readOnly: true
+#       volumes:
+#       - name: config
+#         secret:
+#           secretName: "{{ harbor_project_name_prefix }}harbor-clair"
+#       - name: usr-local-timezone
+#         hostPath:
+#           path: /usr/share/zoneinfo
+#           type: DirectoryOrCreate

@@ -87,6 +87,7 @@ Crane 以更新至 1.23.4.2 版本。
   * Cilium v1.10.7 => v1.10.8
   * dockerd 20.10.8 => 20.10.9
   * Jenkins 2.238 => 2.317
+  * Harbor 2.1.5 => 2.4.1
 
 ## 修复
 
@@ -101,3 +102,5 @@ Crane 以更新至 1.23.4.2 版本。
 修复 Ingress-nginx 启动项与官方 v1.1.1 版本一致。[详情参照](crane/roles/kubernetes-addons/templates/ingress-nginx/README.md)
 
 修复 Upload 没有自定义版本问题。
+
+部署 Harbor 时移除 clair 服务部署策略, 因已废弃。
