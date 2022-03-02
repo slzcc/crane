@@ -71,7 +71,7 @@
 
 - name: Ubuntu Initialize Plugins
   apt: 
-    name: ["openssl"]
+    name: ["openssl", "wget", "curl"]
     state: present
   environment:
     http_proxy: "{{ http_proxy }}"
@@ -88,7 +88,7 @@
 
 - name: Centos Initialize Plugins
   yum: 
-    name: ["openssl"]
+    name: ["openssl", "wget", "curl"]
     state: present
   environment:
     http_proxy: "{{ http_proxy }}"

@@ -20,6 +20,16 @@ is_deploy_ingress_nginx_example: false
 # Ingres 示例使用的域名, 如果没有自定义域名, 可配置本机 Hosts
 ingress_nginx_example: "www.example.com"
 
+# Metircs Server
+## ********************************************************************************************************************************
+
+# Metircs Server Enable
+is_deploy_metrics_server: false
+
+# Metircs Server Deploy Version
+# https://github.com/kubernetes-sigs/metrics-server/releases
+metrics_server_version: "v0.6.1"
+
 ## DNS Example
 ## ********************************************************************************************************************************
 
@@ -50,6 +60,9 @@ istio_ingress_kiali_domain: "kiali.example.com"
 # istio kiali user/pass base64 coding, default admin
 istio_kiali_username: "YWRtaW4="
 istio_kiali_password: "YWRtaW4="
+
+## Upload service
+## ********************************************************************************************************************************
 
 # 部署 Upload service
 # 如果部署 Harbor 则此服务默认开启，因为需要提供 TLS 证书的下载，如果机器网络等因素不稳定则会跳过。
@@ -184,7 +197,7 @@ tls_harbor_validity_period_hours: "{{ tls_harbor_server_validity_period * 365 * 
 # OpenLDAP Deploy Enable
 is_deploy_openldap: false
 
-# Webmin deploy namespace
+# OpenLDAP deploy namespace
 openldap_deploy_namespace: "default"
 
 # OpenLDAP admin 的密码

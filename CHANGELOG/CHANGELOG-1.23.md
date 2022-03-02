@@ -9,6 +9,7 @@
     - [v1.23.4.0 更新内容](#v12340)
     - [v1.23.4.1 更新内容](#v12341)
     - [v1.23.4.2 更新内容](#v12342)
+    - [v1.23.4.3 更新内容](#v12343)
 
 # v1.23.0.0
 
@@ -104,3 +105,15 @@ Crane 以更新至 1.23.4.2 版本。
 修复 Upload 没有自定义版本问题。
 
 部署 Harbor 时移除 clair 服务部署策略, 因已废弃。
+
+# v1.23.4.3
+
+Crane 以更新至 1.23.4.3 版本。
+
+## 修复
+
+修复初始化时, 没有 wget 和 curl 造成的错误。
+
+修复 `openldap-ui` 部署时没有自定义 `namespace` 问题。
+
+添加 `Metrics-Server`, 根据官方配置提供进行修改. [High Availability](https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/high-availability.yaml)

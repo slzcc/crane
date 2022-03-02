@@ -1,0 +1,19 @@
+---
+- name: Deploy Metrics Service *
+  file:
+    path: "{{ temporary_dirs }}metrics-server"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
+- name: Deploy Metrics Service **
+  template: 
+    src: "roles/kubernetes-addons/templates/metrics-server/{{ item }}"
+    dest: "{{ temporary_dirs }}metrics-server/{{ item }}"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+  with_items:
+    - "metrics-server.yaml"
+
+- name: Deploy Metrics Service ***
+  shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}metrics-server/ ; do >&2 echo "Starting..." && sleep 1 ; done'
