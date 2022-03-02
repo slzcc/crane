@@ -281,8 +281,6 @@ jenkins_ingress_domain: "jenkins.example.com"
 
 # Deploy Cluster Host List
 ## ********************************************************************************************************************************
-
-
 k8s_master_ip_list: >-
   [{% for host in groups['kube-master'] -%}
     '{{ host }}'
@@ -318,3 +316,119 @@ hadoop_dfs_edits_dir_str: >-
     '{{ host }}:8485'
     {%- if not loop.last -%};{%- endif -%}
   {%- endfor -%}]
+
+
+#&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+#
+#
+#                               Abandoned Service
+#
+#
+#&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+# # NextCloud
+# ## ********************************************************************************************************************************
+
+# # NextCloud Deploy Enable
+# is_deploy_nextcloud: false
+
+# # NextCloud MySQL Root 密码
+# nextcloud_mysql_root_password: "nextcloud"
+
+# # NextCloud Host
+# nextcloud_mysql_host: "mysql-0.default.svc"
+
+# # NextCloud DB User and Pass
+# nextcloud_mysql_user: "nextcloud"
+# nextcloud_mysql_pass: "nextcloud"
+
+# # NextCloud DB Database
+# nextcloud_mysql_database: "nextcloud"
+
+# # NextCloud Ingress Domain
+# nextcloud_ingress_domain: "nextcloud.example.com"
+
+# # NextCloud Admin Username
+# nextcloud_admin_user: "admin"
+
+# # NextCloud Admin Password
+# nextcloud_admin_pass: "nextcloud"
+
+
+# # Zookeeper
+# ## ********************************************************************************************************************************
+
+# # Zookeeper Deploy Enable
+# is_deploy_zookeeper: false
+
+# # Zookeeper Deploy Size
+# zookeeper_deploy_replicas: 3
+
+
+# # Kafka
+# ## ********************************************************************************************************************************
+
+# # Kafka Deploy Enable
+# is_deploy_kafka: false
+
+# # Kafka Deploy Version
+# kafka_version: "2.2.0"
+
+# # Kafka Manage Ingress Domain
+# kafka_manage_ingress_domain: "km.example.com"
+
+# # Kafka Deploy Size
+# kafka_deploy_replicas: 3
+
+
+# # Hadoop
+# ## ********************************************************************************************************************************
+
+# # Hadoop Deploy Enable
+# is_deploy_hadoop: false
+
+# # Hadoop Deploy Size
+# hadoop_deploy_replicas: 3
+
+# # 部署 Hadoop 方式比较简单, 默认是通过 hostNetwork 方式进行部署
+# # 并且需要实现开启内部 SSH 方式进行互相识别才可以启动, 请按照下方的配置进行修改
+# ## 所有节点的 hostname 并且可通过 hostname 可以 ping 通.
+# hadoop_all_hostname: "BJ-M5-K8S-21-87 BJ-M5-K8S-21-88 BJ-M5-K8S-21-89"
+
+# ## 容器内部开启的端口，如果不冲突请忽略
+# hadoop_local_ssh: "23312"
+
+# ## hdfs set zookeeper addr
+# ## 按照上述配置进行部署是, 则应配置如下
+# hadoop_set_config_zookeeper: "zk-0.zk-hs.cdh.svc.cluster.local:2181,zk-1.zk-hs.cdh.svc.cluster.local:2181,zk-2.zk-hs.cdh.svc.cluster.local:2181"
+
+# ## 选择前两个节点部署 namespace
+# hadoop_set_config_namespace_host01: "{{' '.join(hadoop_all_hostname.split()[0:1])}}"
+# hadoop_set_config_namespace_host02: "{{' '.join(hadoop_all_hostname.split()[1:2])}}"
+
+
+# # Hbase
+# ## ********************************************************************************************************************************
+
+# # Hbase Deploy Enable
+# is_deploy_hbase: false
+
+# # Hbase Deploy Size
+# hbase_deploy_replicas: 3
+
+# # 部署 hbase 方式比较简单, 默认是通过 hostNetwork 方式进行部署
+# # 并且需要实现开启内部 SSH 方式进行互相识别才可以启动, 请按照下方的配置进行修改
+# ## 所有节点的 hostname 并且可通过 hostname 可以 ping 通.
+# hbase_all_hostname: "BJ-M5-K8S-21-87 BJ-M5-K8S-21-88 BJ-M5-K8S-21-89"
+
+# ## 容器内部开启的端口，如果不冲突请忽略
+# ## 不要与 hadoop 重复
+# hbase_local_ssh: "23313"
+
+# ## hbase 数据目录路径
+# hbase_hdfs_dir: "/data/hbase"
+
+# ## hbase set zookeeper addr
+# ## 按照上述配置进行部署是, 则应配置如下
+# hbase_set_config_zookeeper: "zk-0.zk-hs.cdh.svc.cluster.local:2181,zk-1.zk-hs.cdh.svc.cluster.local:2181,zk-2.zk-hs.cdh.svc.cluster.local:2181"
+
