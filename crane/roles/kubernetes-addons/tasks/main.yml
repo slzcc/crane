@@ -77,6 +77,12 @@
   import_tasks: roles/kubernetes-addons/includes/nexus-deploy.yaml
   when: is_deploy_nexus
 
+## Install Metircs Server
+## ********************************************************************************************************************************
+- name: Initialize Metrics-server
+  import_tasks: roles/kubernetes-addons/includes/metrics-server-deploy.yaml
+  when: is_deploy_metrics_server
+
 ## Install NextCloud
 ## ********************************************************************************************************************************
 # - name: Initialize NextCloud
