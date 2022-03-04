@@ -1,0 +1,172 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "stunnel-client-config"
+  namespace: ops-system
+data:
+  stunnel.conf: |
+    cert = /etc/stunnel/stunnel_client.pem
+    CAfile = /etc/stunnel/stunnel_client.pem
+    socket = l:TCP_NODELAY=1
+    socket = r:TCP_NODELAY=1
+
+    ;;;chroot = /var/run/stunnel
+    pid = /tmp/stunnel.pid
+    verify = 3
+
+    ;;; CApath = certs
+    ;;; CRLpath = crls
+    ;;; CRLfile = crls.pem
+    foreground = yes
+
+    ;;; client=yes
+    compression = zlib
+    ;;; taskbar = no
+    delay = no
+    ;;; failover = rr
+    ;;; failover = prio
+    ;;; fips=no
+    sslVersion = all
+    ;;; options = NO_SSLv2
+    ;;; options = NO_SSLv3
+
+    debug = 7
+    syslog = no
+    output = /var/log/stunnel.log
+    client = yes
+
+    [sproxy]
+    accept = 0.0.0.0:44551
+    connect = stunnel-server:44111
+
+  stunnel_client.pem: |
+    -----BEGIN PRIVATE KEY-----
+    MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDJA2znxcSUZncq
+    YvYYVTiIGfy0L4X/T3331YL7FSxsfDxjOznDRfr9jeTuU/8Z5GnMm7vn9qKQVC7l
+    2kxwDVZZCKj9PCxBv6krNY87tUPYqKcTgohyQhEKNXz8YB69xUV0BrYhCaYvaUcv
+    3yOsrXgpYMK1Ej38k1S1UW0V83XVBrpCgdL9ytb+GTaURHI514wm1RAUDa5z3wDF
+    aIeRl8NUOUy7rqil+F6wtzv3MGSYwMHVwVyvHh+988pOWB6g7l2jDeWCteEnN0V2
+    BnTt9NmhrXYx/HUzL9POkll063BPCiXEEw/EkX7Vw7IHMpkpOQQWUGkUSSLeVijs
+    iUMDVaMZAgMBAAECggEAWZhgQ1JAE5E0Tj07yY66mtdSbpG8HRc2Y2/UaMuAOH6L
+    gANW9LXNcJR9VMk1rDnF+n/zmimxPbl4CdVqOouHUDnu8KiQZWHjKjI+PHPH4NsT
+    VTvaS2stIyrCIc9KBHXYRiXzqfgeDYXUR/8ibIYJSBAr2P9fh6O3nvXDNISGocMK
+    jH77w973KB6a+x/uzefy/j+BmfIuRyeUwC8LUd86hxo5YoId7Ofh6G7lmwRUVsO9
+    DF2xtwFbpOgaGigBGpuFYAmtlVDpFR6H0Lrw/CddnvZJI00+HB+qYDBiFrkniHmF
+    b5QmgB+5sMkDBfz+aqZ2mqSdVYwNWQPgwJDPMkTZsQKBgQDqz6+oCG5/KfReZLEb
+    XRCDtHRRDcu+kdAf4Wrvb8I/PPE2SNwqHSnVelxk+jLz92NdPwgC+aE2890a0TKD
+    SRPMoWtQwJ560dTj/wATEdy/+YfP7KgNTzaf2PBf86b+iyVV50ah9SYaKuMtjAQF
+    GklJ0eVaEVR8RYBZcNHgax+HpQKBgQDbJvuiy9TRsFrEc7uH434i66oydSFuGL7f
+    10sqzeFuaAZdD5yDm8O9l0aRmNisMD2gLoz8vHaaOmqvyNkNc5g0+PwW3azzbArL
+    sF5mWtDg7PzaYBdRgSeRZpDAVC8jJfFlyMkdkzXHHaRSC55LxwfDuPUkQO4WbDvv
+    9UY/DD5zZQKBgQDaUqapXsWWeOTci1Tc82fyfWuVHXWuSBcyPT5XSBtc/wXsCkyi
+    36DQ+8dCoBuWGRQLVBrX4VDTLmULlS0ZQm4lWoTUfXQdEFKYdrWUBYyx9oofepQ6
+    Y8ePUn8VSA+iJrBdMf/LgIuf0vaNl9z4/ZrdB0rvtqNONLUE9FBAEHotfQKBgQCh
+    mX9YrkFCVm64Cjcwnvn2Oh0IlAKQssKdQJ5289XVmfOHT+mzynpuJUyuNC0h23i1
+    0123SCmU1JqzAMG8/44vEaKiIdhUr0jOpkEV7MW19ksFpHHNchWBTEZU7D7OBj6Z
+    NZPHsTOonhz7OwIBEsSQ+KQblZ16/1i7OvwPpbGvWQKBgQCF8CCx1dppjy7v7U5P
+    SzCs71d6RLEHjcwyMkRlcBfZpXzgLJRf9UIWU8Rd5rcpj0Ve0Jk/9ouVia2wWCZX
+    1zFsT7ugJznvRGMREXmssEnYaT+D7wgYJWgVtmLBWgUMKlJ7cl0PQXHAmyrWbTvF
+    QGdayWEqU324SGI+f8+9GK7MPQ==
+    -----END PRIVATE KEY-----
+    -----BEGIN CERTIFICATE-----
+    MIIDbTCCAlWgAwIBAgIULoBkR2MqgVtngxrDPZX1y4JyRTowDQYJKoZIhvcNAQEL
+    BQAwRTELMAkGA1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUxITAfBgNVBAoM
+    GEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDAgFw0yMjAzMDIwMjU5NDlaGA8yMTIy
+    MDIwNjAyNTk0OVowRTELMAkGA1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUx
+    ITAfBgNVBAoMGEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDCCASIwDQYJKoZIhvcN
+    AQEBBQADggEPADCCAQoCggEBAMkDbOfFxJRmdypi9hhVOIgZ/LQvhf9PfffVgvsV
+    LGx8PGM7OcNF+v2N5O5T/xnkacybu+f2opBULuXaTHANVlkIqP08LEG/qSs1jzu1
+    Q9iopxOCiHJCEQo1fPxgHr3FRXQGtiEJpi9pRy/fI6yteClgwrUSPfyTVLVRbRXz
+    ddUGukKB0v3K1v4ZNpREcjnXjCbVEBQNrnPfAMVoh5GXw1Q5TLuuqKX4XrC3O/cw
+    ZJjAwdXBXK8eH73zyk5YHqDuXaMN5YK14Sc3RXYGdO302aGtdjH8dTMv086SWXTr
+    cE8KJcQTD8SRftXDsgcymSk5BBZQaRRJIt5WKOyJQwNVoxkCAwEAAaNTMFEwHQYD
+    VR0OBBYEFNUWHUCRabSBtEFyfpYTfnGMwy8aMB8GA1UdIwQYMBaAFNUWHUCRabSB
+    tEFyfpYTfnGMwy8aMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEB
+    ACSnLN6JCku40dgiiwiMV6iALGFXK54O047fLK6Lcf6Hj2+bm0tWrxX/zjkeb0sz
+    4iFOIA9Jg3YIp9p4Z9drnTcZLOGYZl8OJBuqTRs1j/Nk311Ey7ZDmcj8hllHyhz2
+    KO8w3qg1Z0u1S93SzNlvP8TX5hEPOAG+iAqcRympMJNFZEirKkpzmk9SuhiyZ1bA
+    ApqK6nd6yNnkl6NYX71RshbQSMyRCU4NgLQ1sxX3teQxVSwwKmclLSSaHI+7FHXU
+    v18tlObJD9lD8MBeBncqxMg2eF52q50KxsuQvuzaff2kx+5ANteGtMuEzDrbpy61
+    /QkT5dvOgiVlBxAgbjMdAHw=
+    -----END CERTIFICATE-----
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: stunnel-client-initialize
+  namespace: ops-system
+data:
+  initialize.sh: |-
+    #!/bin/bash
+
+    ln -sf /dev/stdout /var/log/stunnel.log
+    
+    stunnel /etc/stunnel/stunnel.conf
+    
+    exec tail -f /dev/null
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stunnel-client
+  namespace: ops-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stunnel-client
+  template:
+    metadata:
+      labels:
+        app: stunnel-client
+        version: v1
+    spec:
+      nodeSelector:
+        kubernetes.io/os: "linux"
+      containers:
+      - name: stunnel
+        image: slzcc/stunnel:centos
+        command: 
+        - "bash"
+        - "/data/scripts/initialize.sh"
+        volumeMounts:
+        - name: initialize
+          mountPath: "/data/scripts"
+        - name: config
+          mountPath: "/etc/stunnel"
+        - mountPath: /usr/share/zoneinfo
+          name: usr-local-timezone
+          readOnly: true
+        env:
+        - name: TZ
+          value: "Asia/Shanghai"
+        imagePullPolicy: IfNotPresent
+      volumes:
+      - name: initialize
+        configMap:
+          name: stunnel-client-initialize
+      - name: config
+        configMap:
+          name: stunnel-client-config
+      - name: usr-local-timezone
+        hostPath:
+          path: /usr/share/zoneinfo
+          type: DirectoryOrCreate
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: stunnel-client
+  namespace: ops-system
+spec:
+  type: NodePort
+  ports:
+  - name: http
+    port: 44551
+    targetPort: 44551
+    nodePort: 44551
+    protocol: TCP
+  selector:
+    app: stunnel-client

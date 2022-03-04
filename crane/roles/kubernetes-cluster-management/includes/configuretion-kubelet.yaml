@@ -28,6 +28,7 @@
     dest: "{{ kubelet_work_dirs }}kubernetes-flags.env"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
+  ignore_errors: true
 
 - name: Copy Kubelet Config
   template: 

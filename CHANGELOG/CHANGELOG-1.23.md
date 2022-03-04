@@ -10,6 +10,7 @@
     - [v1.23.4.1 更新内容](#v12341)
     - [v1.23.4.2 更新内容](#v12342)
     - [v1.23.4.3 更新内容](#v12343)
+    - [v1.23.4.4 更新内容](#v12344)
 
 # v1.23.0.0
 
@@ -117,3 +118,18 @@ Crane 以更新至 1.23.4.3 版本。
 修复 `openldap-ui` 部署时没有自定义 `namespace` 问题。
 
 添加 `Metrics-Server`, 根据官方配置提供进行修改. [High Availability](https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/high-availability.yaml)
+
+
+# v1.23.4.4
+
+## 修复
+
+测试发现 20.10.9 dockerd 版本与 Containerd 在一定程度上有兼容问题, 会经常出现:
+
+```
+unknown method AddResource for service containerd.services.leases.v1.Leases:
+```
+
+类似问题, 已经降级到 20.10.8 版本。
+
+修复部署 k8s 时可能引发低内核的报错。
