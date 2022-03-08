@@ -1,0 +1,131 @@
+{% macro initial_cluster() -%}
+{%- for host in groups['etcd-cluster'] -%}
+  {{ etcd_peer_url_scheme }}://
+  {%- if etcd_interface != "" -%}
+    {{ hostvars[host]['ansible_' + etcd_interface].ipv4.address }}
+  {%- else -%}
+    {{ hostvars[host].ansible_default_ipv4.address }}
+  {%- endif -%}
+:{{ etcd_client_port }}
+  {%- if not loop.last -%},{%- endif -%}
+{%- endfor -%}
+{% endmacro -%}
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    component: kube-apiserver
+    tier: control-plane
+  name: kube-apiserver
+  namespace: kube-system
+spec:
+  hostNetwork: true
+  priorityClassName: system-node-critical
+  securityContext:
+    seccompProfile:
+      type: RuntimeDefault
+  containers:
+  - command:
+    - kube-apiserver
+    - --bind-address=0.0.0.0
+    - --allow-privileged=true
+    - --authorization-mode=Node,RBAC
+    - --client-ca-file={{ kubernetes_pki_dirs }}ca.pem
+    - --enable-admission-plugins=NodeRestriction
+    - --enable-bootstrap-token-auth=true
+    - --etcd-cafile={{ etcd_ssl_dirs }}etcd-ca.pem
+    - --etcd-certfile={{ etcd_ssl_dirs }}etcd.pem
+    - --etcd-keyfile={{ etcd_ssl_dirs }}etcd-key.pem
+    - --etcd-servers={{ initial_cluster() }}
+    - --insecure-port=0
+    - --kubelet-client-certificate={{ kubernetes_pki_dirs }}apiserver.pem
+    - --kubelet-client-key={{ kubernetes_pki_dirs }}apiserver-key.pem
+    - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
+    - --proxy-client-cert-file={{ kubernetes_pki_dirs }}front-proxy-client.pem
+    - --proxy-client-key-file={{ kubernetes_pki_dirs }}front-proxy-client-key.pem
+    - --requestheader-allowed-names=front-proxy-client
+    - --requestheader-client-ca-file={{ kubernetes_pki_dirs }}front-proxy-ca.pem
+    - --requestheader-extra-headers-prefix=X-Remote-Extra-
+    - --requestheader-group-headers=X-Remote-Group
+    - --requestheader-username-headers=X-Remote-User
+    - --secure-port={{ k8s_master_apiservice_bind_port }}
+    - --service-account-key-file={{ kubernetes_pki_dirs }}sa.pub
+    - --service-account-issuer=https://kubernetes.default.svc.{{ dns_domain }}
+    - --service-account-signing-key-file={{ kubernetes_pki_dirs }}sa.key
+    - --service-cluster-ip-range={{ k8s_cluster_ip_range }}
+    - --tls-cert-file={{ kubernetes_pki_dirs }}apiserver.pem
+    - --tls-private-key-file={{ kubernetes_pki_dirs }}apiserver-key.pem
+    - --service-node-port-range={{ k8s_apiserver_node_port_range }}
+    - --client-ca-file={{ kubernetes_pki_dirs }}ca.pem
+    image: {{ k8s_cluster_component_registry }}/kube-apiserver:{{ k8s_version }}
+    imagePullPolicy: IfNotPresent
+    env:
+    - name: TZ
+      value: "{{ time_location }}"
+    startupProbe:
+      failureThreshold: 24
+      httpGet:
+        host: 127.0.0.1
+        path: /livez
+        port: {{ k8s_master_apiservice_bind_port }}
+        scheme: HTTPS
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      timeoutSeconds: 15
+    name: kube-apiserver
+    resources:
+      requests:
+        cpu: 250m
+    volumeMounts:
+    - mountPath: /etc/etcd/ssl
+      name: etcd-certs
+      readOnly: true
+    - mountPath: /etc/ssl/certs
+      name: ca-certs
+      readOnly: true
+    - mountPath: /etc/ca-certificates
+      name: etc-ca-certificates
+      readOnly: true
+    - mountPath: {{ kubernetes_etc_dirs }}pki
+      name: k8s-certs
+      readOnly: true
+    - mountPath: /usr/local/share/ca-certificates
+      name: usr-local-share-ca-certificates
+      readOnly: true
+    - mountPath: /usr/share/ca-certificates
+      name: usr-share-ca-certificates
+      readOnly: true
+    - mountPath: /usr/share/zoneinfo
+      name: usr-local-timezone
+      readOnly: true
+  volumes:
+  - hostPath:
+      path: /usr/share/zoneinfo
+      type: DirectoryOrCreate
+    name: usr-local-timezone
+  - hostPath:
+      path: /etc/etcd/ssl
+      type: DirectoryOrCreate
+    name: etcd-certs
+  - hostPath:
+      path: /etc/ssl/certs
+      type: DirectoryOrCreate
+    name: ca-certs
+  - hostPath:
+      path: /etc/ca-certificates
+      type: DirectoryOrCreate
+    name: etc-ca-certificates
+  - hostPath:
+      path: {{ kubernetes_etc_dirs }}pki
+      type: DirectoryOrCreate
+    name: k8s-certs
+  - hostPath:
+      path: /usr/local/share/ca-certificates
+      type: DirectoryOrCreate
+    name: usr-local-share-ca-certificates
+  - hostPath:
+      path: /usr/share/ca-certificates
+      type: DirectoryOrCreate
+    name: usr-share-ca-certificates
+status: {}

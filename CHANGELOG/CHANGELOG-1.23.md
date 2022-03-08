@@ -11,6 +11,7 @@
     - [v1.23.4.2 更新内容](#v12342)
     - [v1.23.4.3 更新内容](#v12343)
     - [v1.23.4.4 更新内容](#v12344)
+    - [v1.23.4.5 更新内容](#v12345)
 
 # v1.23.0.0
 
@@ -133,3 +134,9 @@ unknown method AddResource for service containerd.services.leases.v1.Leases:
 类似问题, 已经降级到 20.10.8 版本。
 
 修复部署 k8s 时可能引发低内核的报错。
+
+# v1.23.4.5
+
+Crane 添加到 [Cilium 用户](https://github.com/cilium/cilium/blob/master/USERS.md) 清单中。
+
+修复 1.23 不存在 upgrade 时 1.22 版本的支持.
