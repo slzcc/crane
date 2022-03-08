@@ -6,7 +6,9 @@
 
 Please refer to the documentation for detailed configuration: [Wiki Docs URL](https://wiki.shileizcc.com/display/CASE/Ansible+Kubernetes+Cluster)。
 
-Crane 通过 [CNCF kubernetes 一致性检测](https://www.cncf.io/certification/software-conformance/)。
+	* Crane 通过 [CNCF kubernetes 一致性检测](https://www.cncf.io/certification/software-conformance/)。
+
+	* Crane 添加到 [Cilium 用户](https://github.com/cilium/cilium/blob/master/USERS.md) 清单中。
 
 使用 Ansible 基于容器化部署 Kubernetes Cluster（非 Kubeadm）, 并支持 Master/Node/Etcd 节点的添加。
 
