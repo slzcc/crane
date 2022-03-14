@@ -12,6 +12,7 @@
     - [v1.23.4.3 更新内容](#v12343)
     - [v1.23.4.4 更新内容](#v12344)
     - [v1.23.4.5 更新内容](#v12345)
+    - [v1.23.4.6 更新内容](#v12346)
 
 # v1.23.0.0
 
@@ -140,3 +141,9 @@ unknown method AddResource for service containerd.services.leases.v1.Leases:
 Crane 添加到 [Cilium 用户](https://github.com/cilium/cilium/blob/master/USERS.md) 清单中。
 
 修复 1.23 不存在 upgrade 时 1.22 版本的支持.
+
+# v1.23.4.6
+
+## 新增
+
+新增 cilium 1.11.x 版本支持, 1.11.2 已经过测试。
