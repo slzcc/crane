@@ -1,7 +1,7 @@
 ---
 - name: Copy Cilium Config Files
   template: 
-    src: "roles/kubernetes-networks/templates/cilium/cilium.j2"
+    src: "roles/kubernetes-networks/templates/cilium/cilium-{{ cilium_version.split('.')[0] + '.' + cilium_version.split('.')[1] }}.j2"
     dest: "{{ temporary_dirs }}main/cilium.yml"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
