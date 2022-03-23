@@ -1,15 +1,15 @@
 ---
 
 - name: Deploy Etcd Configure
-  include: "includes/downloads-packages/includes/etcd/main.yml"
+  include: "roles/downloads-packages/includes/etcd/main.yml"
 
 - name: CRI Configure Kubernetes to execute files in download
-  include: "includes/crane/{{ cri_k8s_default }}/main.yml"
+  include: "roles/downloads-packages/includes/crane/{{ cri_k8s_default }}/main.yml"
   when: 
     - is_crane_kubernetes_deploy != 'none'
 
 - name: Deploy Kubernetes to execute files in download
-  include: "includes/kubernetes/main.yml"
+  include: "roles/downloads-packages/includes/kubernetes/main.yml"
   when: 
     - not is_using_local_files_deploy
     - is_crane_kubernetes_deploy != 'none'
