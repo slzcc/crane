@@ -11,7 +11,7 @@
   ignore_errors: true
 
 - name: Download EtcdCtl Binary Files **
-  shell: "cp -a {{ temporary_dirs }}/etcd* {{ kubernetes_ctl_path }}"
+  shell: "cp -a {{ temporary_dirs }}/etcd-v{{ etcd_version }}-{{ os_drive }}-{{ os_arch }}/etcd* {{ kubernetes_ctl_path }}"
   when: 
   - check_etcd.stderr != ''
   ignore_errors: true
