@@ -1,5 +1,5 @@
 ---
-- name: Copy Etcd Config Files to Kubernetes Master
+- name: Copy Etcd Config Files to Nodes
   template: 
     src: "roles/etcd-cluster-management/templates/etcd-new-cluster/etcd.j2"
     dest: "{{ kubernetes_manifests_dirs }}etcd.yml"

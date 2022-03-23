@@ -1,0 +1,6 @@
+---
+
+- name: Configure etcd Deploy Type
+  include: "roles/downloads-packages/includes/etcd/http_download.yaml"
+  when: 
+    - etcd_deploy_type == 'systemd'

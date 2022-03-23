@@ -1,0 +1,23 @@
+---
+- name: Check EtcdCtl
+  shell: "ls {{ kubernetes_ctl_path }}etcd"
+  register: check_etcd
+  ignore_errors: true
+
+- name: Download EtcdCtl Binary Files *
+  shell: "export http_proxy={{ http_proxy }} ; export https_proxy={{ https_proxy }} ; wget -qO- https://github.com/etcd-io/etcd/releases/download/v{{ etcd_version }}/etcd-v{{ etcd_version }}-{{ os_drive }}-{{ os_arch }}.tar.gz | tar -zx -C {{ temporary_dirs }}"
+  when: 
+  - check_etcd.stderr != ''
+  ignore_errors: true
+
+- name: Download EtcdCtl Binary Files **
+  shell: "cp -a {{ temporary_dirs }}/etcd-v{{ etcd_version }}-{{ os_drive }}-{{ os_arch }}/etcd* {{ kubernetes_ctl_path }}"
+  when: 
+  - check_etcd.stderr != ''
+  ignore_errors: true
+
+- name: Download EtcdCtl Binary Files ***
+  shell: "chmod +x {{ kubernetes_ctl_path }}etcd*"
+  when: 
+  - check_etcd.stderr != ''
+  ignore_errors: true

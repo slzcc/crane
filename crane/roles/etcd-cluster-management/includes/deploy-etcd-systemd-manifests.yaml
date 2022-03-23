@@ -1,0 +1,13 @@
+---
+- name: Copy Etcd Config Files to Nodes
+  template: 
+    src: "roles/etcd-cluster-management/templates/etcd.service"
+    dest: "{{ systemd_default_dirs }}etcd.service"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+
+- name: Init Systemd Configures and Start Etcd
+  shell: |
+    systemctl daemon-reload;
+    systemctl start etcd;
+    systemctl enable etcd;

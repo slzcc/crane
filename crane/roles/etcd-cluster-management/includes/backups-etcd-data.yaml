@@ -1,7 +1,7 @@
 ---
 - setup:
 
-- name: Backup Etcd(SnapShot) Data
+- name: Backup Etcd(SnapShot) Data (Docker)
   shell: >
     {{ kubernetes_ctl_path }}docker run --name crane-etcd-backup-to-clean --rm -i -v {{ etcd_ssl_dirs }}:{{ etcd_ssl_dirs }} -v {{ temporary_dirs }}:{{ temporary_dirs }} -w {{ temporary_dirs }}etcdb {{ k8s_cluster_component_registry }}/etcd:{{ etcd_version }} \
         etcdctl --cacert {{ etcd_ssl_dirs }}etcd-ca.pem \
@@ -12,3 +12,18 @@
   async: 30
   poll: 2
   ignore_errors: true
+  when: 
+    - etcd_deploy_type == 'staticPod'
+
+- name: Backup Etcd(SnapShot) Data (systemd)
+  shell: >
+    {{ kubernetes_ctl_path }}etcdctl --cacert {{ etcd_ssl_dirs }}etcd-ca.pem \
+            --key {{ etcd_ssl_dirs }}etcd-key.pem \
+            --cert {{ etcd_ssl_dirs }}etcd.pem \
+            --endpoints {{ etcd_cluster_str.split(",")[0] }} \
+            snapshot save snapshot-`date +%Y%m%d%H%M%S`.db
+  async: 30
+  poll: 2
+  ignore_errors: true
+  when: 
+    - etcd_deploy_type == 'systemd'

@@ -124,7 +124,8 @@
     - "roles/etcd-cluster-management/defaults/main.yml"
     - "roles/etcd-cluster-management/vars/main.yml"
   tasks:
-    - { include: 'roles/etcd-cluster-management/includes/deploy-etcd-manifests.yaml' }
+    - { include: 'roles/etcd-cluster-management/includes/deploy-etcd-manifests.yaml', when: etcd_deploy_type == 'staticPod' }
+    - { include: 'roles/etcd-cluster-management/includes/deploy-etcd-systemd-manifests.yaml', when: etcd_deploy_type == 'systemd' }
 
 - name: Create Kubernetes Cluster Master/Nodes Config
   hosts: k8s-cluster
