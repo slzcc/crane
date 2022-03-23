@@ -12,6 +12,8 @@
   async: 30
   poll: 2
   ignore_errors: true
+  when: 
+    - etcd_deploy_type == 'staticPod'
 
 - name: Backup Etcd(SnapShot) Data (systemd)
   shell: >

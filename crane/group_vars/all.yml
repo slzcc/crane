@@ -80,8 +80,7 @@ cni_version: 'v1.1.0'
 etcd_version: '3.4.9'
 
 # 值为 staticPod 则走静态 Pod 方式部署
-# 值为 systemd 通过 systemd 方式部署
-# 值为 none 则不会部署 etcd
+# 值为 systemd 通过 systemd 方式部署, systemd 模式下不可添加或移除 etcd 集群的配置项
 etcd_deploy_type: 'staticPod'
 
 # Kube Network
