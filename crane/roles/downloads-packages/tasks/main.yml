@@ -1,4 +1,8 @@
 ---
+
+- name: Deploy Etcd Configure
+  include: "includes/downloads-packages/includes/etcd/main.yml"
+
 - name: CRI Configure Kubernetes to execute files in download
   include: "includes/crane/{{ cri_k8s_default }}/main.yml"
   when: 
