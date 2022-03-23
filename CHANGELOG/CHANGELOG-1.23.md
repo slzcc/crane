@@ -162,3 +162,5 @@ Crane 以更新至 1.23.5.1 版本。
 ## 新增
 
 部署 etcd 时可以部署类型为 systemd, 则通过 systemd 方式部署，默认通过 staticPod 方式进行部署。
+
+systemd 部署的 etcd 目前只能提供部署, 不能提供扩容缩容功能即其他功能。
