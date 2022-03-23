@@ -1,10 +1,29 @@
 ---
-# Clean Etcd
-# - name: Clean Etcd ssl directory.
-#   file:
-#     path: "{{ etcd_ssl_dirs }}"
-#     state: absent
-#   ignore_errors: true
+
+- name: Systemd Stop Etcd
+  shell: |
+    systemctl daemon-reload;
+    systemctl stop etcd;
+    systemctl disable etcd;
+  ignore_errors: true
+  when: 
+    - etcd_deploy_type == 'systemd'
+
+# Clean Etcd Systemd Configure
+- name: Clean Etcd ssl directory.
+  file:
+    path: "{{ systemd_default_dirs }}etcd.service"
+    state: absent
+  ignore_errors: true
+  when: 
+    - etcd_deploy_type == 'systemd'
+
+- name: Reload Systemd
+  shell: |
+    systemctl daemon-reload;
+  ignore_errors: true
+  when: 
+    - etcd_deploy_type == 'systemd'
 
 - name: Clean Etcd Working directory.
   file:
