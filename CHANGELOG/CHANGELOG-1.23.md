@@ -15,6 +15,7 @@
     - [v1.23.4.6 更新内容](#v12346)
     - [v1.23.5.0 更新内容](#v12350)
     - [v1.23.5.1 更新内容](#v12351)
+    - [v1.23.5.2 更新内容](#v12352)
 
 # v1.23.0.0
 
@@ -164,3 +165,12 @@ Crane 以更新至 1.23.5.1 版本。
 部署 etcd 时可以部署类型为 systemd, 则通过 systemd 方式部署，默认通过 staticPod 方式进行部署。
 
 systemd 部署的 etcd 目前只能提供部署, 不能提供扩容缩容功能即其他功能。
+
+
+# v1.23.5.2
+
+Crane 以更新至 1.23.5.2 版本。
+
+## 新增
+
+部署 etcd 时可以选择 external 模式部署, 值为 external 时则使用外部的 etcd 则需要额外配置 tls 和 endpoint 配置项，请通过 crane/roles/etcd-cluster-management/defaults/tls.yaml 进行配置。

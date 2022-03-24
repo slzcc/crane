@@ -44,12 +44,12 @@ spec:
 {% endif %}{% if etcd_peer_tls_auto %}
     - --peer-auto-tls
 {% endif %}
-    - --cert-file={{ etcd_ssl_dirs }}etcd.pem
-    - --key-file={{ etcd_ssl_dirs }}etcd-key.pem
-    - --trusted-ca-file={{ etcd_ssl_dirs }}etcd-ca.pem
-    - --peer-cert-file={{ etcd_ssl_dirs }}etcd.pem
-    - --peer-key-file={{ etcd_ssl_dirs }}etcd-key.pem
-    - --peer-trusted-ca-file={{ etcd_ssl_dirs }}etcd-ca.pem
+    - --cert-file={{ etcd_ssl_dirs }}{{ tls_etcd_key_file_name }}
+    - --key-file={{ etcd_ssl_dirs }}{{ tls_etcd_cert_file_name }}
+    - --trusted-ca-file={{ etcd_ssl_dirs }}{{ tls_etcd_ca_file_name }}
+    - --peer-cert-file={{ etcd_ssl_dirs }}{{ tls_etcd_key_file_name }}
+    - --peer-key-file={{ etcd_ssl_dirs }}{{ tls_etcd_cert_file_name }}
+    - --peer-trusted-ca-file={{ etcd_ssl_dirs }}{{ tls_etcd_ca_file_name }}
     - --initial-cluster={{ initial_cluster() }}
     - --initial-cluster-token={{ etcd_cluster_token }}
     - --initial-cluster-state={{ etcd_cluster_type }}

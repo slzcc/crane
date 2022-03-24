@@ -7,7 +7,7 @@
 k8s_version: 'v1.23.5'
 
 # 避免大版本中组件的版本差异, 使用 build 版本作为差异配置项, 在项目中可以看做如下使用 '{{ k8s_version }}.{{ build_k8s_version }}'
-build_k8s_version: '1'
+build_k8s_version: '2'
 
 # OS Drive/Arch Type
 os_drive: 'linux'
@@ -81,6 +81,8 @@ etcd_version: '3.4.9'
 
 # 值为 staticPod 则走静态 Pod 方式部署
 # 值为 systemd 通过 systemd 方式部署, systemd 模式下不可添加或移除 etcd 集群的配置项
+# 值为 external 则通过使用外部的 etcd 进行部署集群, 则需要额外配置单独的 etcd tls 即 endpoint 配置项
+# 请参照 crane/roles/etcd-cluster-management/defaults/tls.yaml 中的 tls file 配置及 endpoint 进行修改
 etcd_deploy_type: 'staticPod'
 
 # Kube Network
