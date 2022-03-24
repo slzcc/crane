@@ -8,9 +8,16 @@
               "crane": "{{ k8s_version }}.{{ build_k8s_version }}",
               "haproxy": "{{ haproxy_version }}",
               "etcd": "{{ etcd_version }}",
-              "k8s": "{{ k8s_version }}",
+              "k8s": {
+                "version": "{{ k8s_version }}",
+                "apiServer": "{{ k8s_load_balance_ip }}"
+              },
               "network": {
+                {%- if general_network_drive == 'calico' -%}
                 "calico": "{{ calico_version }}",
+                {%- endif %}{% if general_network_drive == 'cilium' -%}
+                "cilium": "{{ cilium_version }}",
+                {%- endif -%}
                 "cni": "{{ cni_version }}",
                 "coredns": "{{ dns_version }}"
               },

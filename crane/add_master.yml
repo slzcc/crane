@@ -65,6 +65,7 @@
     - "roles/system-initialize/defaults/main.yml"
     - "roles/crane/defaults/main.yml"
     - "roles/kubernetes-cluster-management/vars/haproxy.yaml"
+    - "roles/etcd-cluster-management/defaults/tls.yaml"
   roles:
     - { role: kubernetes-manifests, tags: [kubernetes-manifests]}
 

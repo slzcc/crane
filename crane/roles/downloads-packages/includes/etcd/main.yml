@@ -1,6 +1,21 @@
 ---
 
-- name: Configure etcd Deploy Type
+- name: Configure etcd to execute files in localhost
   include: "roles/downloads-packages/includes/etcd/http_download.yaml"
   when: 
+    - is_using_local_files_deploy
+    - etcd_deploy_type == 'systemd'
+
+- name: Configure etcd to execute files in image deploy
+  include: "roles/downloads-packages/includes/etcd/docker/image_deploy.yaml"
+  when: 
+    - not is_using_local_files_deploy
+    - cri_k8s_default == 'docker'
+    - etcd_deploy_type == 'systemd'
+
+- name: Configure etcd to execute files in image deploy
+  include: "roles/downloads-packages/includes/etcd/containerd/image_deploy.yaml"
+  when:
+    - not is_using_local_files_deploy
+    - cri_k8s_default == 'containerd'
     - etcd_deploy_type == 'systemd'

@@ -27,3 +27,8 @@
   shell: "{{ kubernetes_ctl_path }}cilium cleanup -f"
   ignore_errors: true
 
+- name: Clean Cilium Binary
+  file:
+    path: "{{ kubernetes_ctl_path }}cilium"
+    state: absent
+  ignore_errors: true

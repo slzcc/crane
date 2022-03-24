@@ -25,8 +25,11 @@
   when: check_cmd.rc == 0
   ignore_errors: true
 
-- name: Export the CNI
-  shell: "cp -a {{ temporary_dirs }}import-kubernetes-temporary/cilium {{ kubernetes_ctl_path }}"
+- name: Export the etcd
+  shell: "cp -a {{ temporary_dirs }}import-kubernetes-temporary/etcd {{ kubernetes_ctl_path }}"
+
+- name: Export the etcdctl
+  shell: "cp -a {{ temporary_dirs }}import-kubernetes-temporary/etcdctl {{ kubernetes_ctl_path }}"
   
 - name: Temportay uMount to.
   shell: "umount -l {{ temporary_dirs }}import-kubernetes-temporary"

@@ -1,3 +1,7 @@
 ---
 - name: Deploy Helm Cli *
-  shell: "curl -x '{{ http_proxy }}' -s https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | ALL_PROXY='{{ http_proxy }}' bash"
+  shell: "curl -s https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash"
+  environment:
+    http_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ https_proxy }}"
+    no_proxy: "{{ no_proxy }}"

@@ -49,6 +49,7 @@
     - "roles/cri-install/vars/containerd.yaml"
     - "roles/cri-install/vars/crio.yaml"
     - "roles/cri-install/vars/cri-tools.yaml"
+    - "roles/cri-install/vars/runc.yaml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/kubernetes-networks/defaults/main.yml"
@@ -169,6 +170,7 @@
     - "roles/kubernetes-cluster-management/vars/haproxy.yaml"
     - "roles/kubernetes-networks/defaults/keepalived.yaml"
     - "roles/crane/defaults/main.yml"
+    - "roles/etcd-cluster-management/defaults/tls.yaml"
   roles:
     - { role: kubernetes-manifests, tags: [k8s-manifests]}
 

@@ -10,28 +10,44 @@
   ignore_errors: true
 
 - name: Download CFSSL Binary Files *
-  shell: "curl -x '{{ http_proxy }}' -skL -o {{ kubernetes_ctl_path }}cfssl https://pkg.cfssl.org/R1.2/cfssl_{{ os_drive }}-{{ cfssl_arch }}"
+  shell: "curl -skL -o {{ kubernetes_ctl_path }}cfssl https://pkg.cfssl.org/R1.2/cfssl_{{ os_drive }}-{{ cfssl_arch }}"
+  environment:
+    http_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ https_proxy }}"
+    no_proxy: "{{ no_proxy }}"
   when: 
   - os_arch == 'amd64'
   - check_cfssl.stderr != ''
   ignore_errors: true
 
 - name: Download CFSSL Binary Files **
-  shell: "curl -x '{{ http_proxy }}' -skL -o {{ kubernetes_ctl_path }}cfssljson https://pkg.cfssl.org/R1.2/cfssljson_{{ os_drive }}-{{ cfssl_arch }}"
-  when: 
+  shell: "curl -skL -o {{ kubernetes_ctl_path }}cfssljson https://pkg.cfssl.org/R1.2/cfssljson_{{ os_drive }}-{{ cfssl_arch }}"
+  environment:
+    http_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ https_proxy }}"
+    no_proxy: "{{ no_proxy }}"
+  when:
   - os_arch == 'amd64'
   - check_cfssljson.stderr != ''
   ignore_errors: true
 
 - name: Download CFSSL Binary Files *
-  shell: "curl -x '{{ http_proxy }}' -skL -o {{ kubernetes_ctl_path }}cfssl http://mirror.shileizcc.com/Cfssl/cfssl.arm64"
+  shell: "curl -skL -o {{ kubernetes_ctl_path }}cfssl http://mirror.shileizcc.com/Cfssl/cfssl.arm64"
+  environment:
+    http_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ https_proxy }}"
+    no_proxy: "{{ no_proxy }}"
   when: 
   - os_arch == 'arm64'
   - check_cfssl.stderr != ''
   ignore_errors: true
 
 - name: Download CFSSL Binary Files **
-  shell: "curl -x '{{ http_proxy }}' -skL -o {{ kubernetes_ctl_path }}cfssljson http://mirror.shileizcc.com/Cfssl/cfssljson.arm64"
+  shell: "curl -skL -o {{ kubernetes_ctl_path }}cfssljson http://mirror.shileizcc.com/Cfssl/cfssljson.arm64"
+  environment:
+    http_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ https_proxy }}"
+    no_proxy: "{{ no_proxy }}"
   when: 
   - os_arch == 'arm64'
   - check_cfssljson.stderr != ''

@@ -41,6 +41,7 @@
     - "roles/kubernetes-networks/defaults/keepalived.yaml"
     - "roles/crane/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/etcd-cluster-management/defaults/tls.yaml"
   tasks:
     - { include: 'roles/kubernetes-cluster-management/includes/kubernetes-mainifests-rotation/backup-master-mainifests.yaml' }
     - { include: 'roles/kubernetes-cluster-management/includes/kubernetes-mainifests-rotation/deploy-master-mainifests.yaml' }

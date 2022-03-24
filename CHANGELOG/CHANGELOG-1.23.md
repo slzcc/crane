@@ -15,6 +15,7 @@
     - [v1.23.4.6 更新内容](#v12346)
     - [v1.23.5.0 更新内容](#v12350)
     - [v1.23.5.1 更新内容](#v12351)
+    - [v1.23.5.2 更新内容](#v12352)
 
 # v1.23.0.0
 
@@ -164,3 +165,31 @@ Crane 以更新至 1.23.5.1 版本。
 部署 etcd 时可以部署类型为 systemd, 则通过 systemd 方式部署，默认通过 staticPod 方式进行部署。
 
 systemd 部署的 etcd 目前只能提供部署, 不能提供扩容缩容功能即其他功能。
+
+
+# v1.23.5.2
+
+Crane 以更新至 1.23.5.2 版本。
+
+## 新增
+
+部署 etcd 时可以选择 external 模式部署, 值为 external 时则使用外部的 etcd 则需要额外配置 tls 和 endpoint 配置项，请通过 crane/roles/etcd-cluster-management/defaults/tls.yaml 进行配置。
+
+当移除集群时，添加判断是否移除 etcd 配置策略可通过 crane/roles/remove-cluster/defaults/main.yml 中的 is_remove_etcd 修改生效。
+
+etcd systemd 方式支持离线安装。
+
+
+## 修复
+
+修复 cfssl 离线安装时无法正常安装的问题。
+
+修复使用镜像部署时, 不使用最新镜像版本, 加入获取最新镜像。
+
+修复清除集群时, 没有清理 cilium 以及 etcd 二进制文件。
+
+修复 deploy crane status 长期不更新问题。
+
+修复使用 proxy 下载 package 造成的执行命令错误。
+
+修复执行 `make local_load_cri` 时下载过多无用组件。

@@ -67,6 +67,7 @@
   environment:
     http_proxy: "{{ http_proxy }}"
     https_proxy: "{{ https_proxy }}"
+    no_proxy: "{{ no_proxy }}"
   when: ansible_distribution == 'Ubuntu'
 
 - name: Ubuntu Initialize Plugins
@@ -76,6 +77,7 @@
   environment:
     http_proxy: "{{ http_proxy }}"
     https_proxy: "{{ https_proxy }}"
+    no_proxy: "{{ no_proxy }}"
   when: ansible_distribution == 'Ubuntu'
   async: 30
   poll: 2
@@ -93,6 +95,7 @@
   environment:
     http_proxy: "{{ http_proxy }}"
     https_proxy: "{{ https_proxy }}"
+    no_proxy: "{{ no_proxy }}"
   async: 30
   poll: 2
   when: ansible_distribution == 'CentOS'

@@ -6,6 +6,7 @@
   environment:
     http_proxy: "{{ http_proxy }}"
     https_proxy: "{{ https_proxy }}"
+    no_proxy: "{{ no_proxy }}"
   when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
   async: 30
   poll: 2
