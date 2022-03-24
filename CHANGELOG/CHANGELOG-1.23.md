@@ -174,3 +174,5 @@ Crane 以更新至 1.23.5.2 版本。
 ## 新增
 
 部署 etcd 时可以选择 external 模式部署, 值为 external 时则使用外部的 etcd 则需要额外配置 tls 和 endpoint 配置项，请通过 crane/roles/etcd-cluster-management/defaults/tls.yaml 进行配置。
+
+当移除集群时，添加判断是否移除 etcd 配置策略可通过 crane/roles/remove-cluster/defaults/main.yml 中的 is_remove_etcd 修改生效。

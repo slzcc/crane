@@ -6,6 +6,8 @@
 # Clean Etcd
 - name: Clean Etcd
   include: "roles/remove-cluster/includes/etcd.yaml"
+  when:
+    - is_remove_etcd
 
 # Clean Kubernetes
 - name: Clean Kubernetes
