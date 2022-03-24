@@ -15,5 +15,8 @@
   when: CHECK_CNI_BIN_PACKAGE is failed
 
 - name: Download CNI Package
-  shell: "export http_proxy={{ http_proxy }} && export https_proxy={{ https_proxy }} && wget -qO- 'https://github.com/containernetworking/plugins/releases/download/{{ cni_version }}/cni-plugins-{{ cni_os_drive }}-{{ cni_version }}.tgz' | tar -zx -C {{ kubernetes_cni_dirs }}"
+  shell: "wget -qO- 'https://github.com/containernetworking/plugins/releases/download/{{ cni_version }}/cni-plugins-{{ cni_os_drive }}-{{ cni_version }}.tgz' | tar -zx -C {{ kubernetes_cni_dirs }}"
+  environment:
+    http_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ https_proxy }}"
   when: CHECK_CNI_BIN_PACKAGE is failed

@@ -41,7 +41,7 @@ Docker Install 同步官方: https://download.docker.com/linux/static/stable/x86
 
 ```
 - name: Get Docker Binary File
-  shell: "export http_proxy={{ http_proxy }} && export https_proxy={{ https_proxy }} && wget -qO- '{{ docker_install_http_binary_source }}/docker-{{ docker_version }}.tar.gz' | tar zx -C {{ docker_ctl_path }}"
+  shell: "wget -qO- '{{ docker_install_http_binary_source }}/docker-{{ docker_version }}.tar.gz' | tar zx -C {{ docker_ctl_path }}"
 
 =>
 
@@ -56,7 +56,7 @@ Docker Install 同步官方: https://download.docker.com/linux/static/stable/x86
     - "containerd"
 
 - name: Get Docker Binary File
-  shell: "export http_proxy={{ http_proxy }} && export https_proxy={{ https_proxy }} && wget -qO- '{{ docker_install_http_binary_source }}/docker-{{ docker_version }}.tgz' | tar zx -C {{ temporary_dirs }}"
+  shell: "wget -qO- '{{ docker_install_http_binary_source }}/docker-{{ docker_version }}.tgz' | tar zx -C {{ temporary_dirs }}"
 
 - name: Copy Dockerd to bin Path
   shell: "cp -a {{ temporary_dirs }}docker/* {{ docker_ctl_path }}"

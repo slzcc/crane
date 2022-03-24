@@ -7,7 +7,10 @@
     state: directory
 
 - name: Install runC Binary
-  shell: "export http_proxy={{ http_proxy }} && export https_proxy={{ https_proxy }} && wget -qO- https://github.com/opencontainers/runc/releases/download/v1.1.0/runc.{{ os_arch }} > {{ temporary_dirs }}runC/runc"
+  shell: "wget -qO- https://github.com/opencontainers/runc/releases/download/v1.1.0/runc.{{ os_arch }} > {{ temporary_dirs }}runC/runc"
+  environment:
+    http_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ https_proxy }}"
 
 - name: runC Empowerment
   shell: "chmod +x {{ temporary_dirs }}runC/runc"
