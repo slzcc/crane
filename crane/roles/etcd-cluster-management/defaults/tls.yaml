@@ -39,8 +39,8 @@ tls_etcd_file_header: 'etcd'
 # 相关服务启动时需要引用的文件名称, 一定要写完整且按照如下格式填写
 tls_etcd_ca_dir: '/etc/etcd/ssl/'
 tls_etcd_ca_file_name: '{{ {{ tls_etcd_file_header }}-ca.pem'
-tls_etcd_cert_file_name: '{{ tls_etcd_file_header }}-key.pem'
-tls_etcd_key_file_name: '{{ tls_etcd_file_header }}.pem'
+tls_etcd_cert_file_name: '{{ tls_etcd_file_header }}.pem'
+tls_etcd_key_file_name: '{{ tls_etcd_file_header }}-key.pem'
 
 # 当设置为外部的 etcd 部署模式是, 则需要自定义 endpoints 地址, 请严格按照 https 格式写入
 tls_etcd_endpoints: ''
