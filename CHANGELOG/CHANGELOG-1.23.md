@@ -191,3 +191,5 @@ etcd systemd 方式支持离线安装。
 修复 deploy crane status 长期不更新问题。
 
 修复使用 proxy 下载 package 造成的执行命令错误。
+
+修复执行 `make local_load_cri` 时下载过多无用组件。
