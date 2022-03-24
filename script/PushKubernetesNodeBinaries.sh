@@ -82,6 +82,9 @@ RUN wget -qO- "https://pkg.cfssl.org/R1.2/cfssl_linux-amd64" > /cfssl && \
     wget -qO- "https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64" > /cfssljson && \
     chmod +x /cfssl*
 
+RUN wget -qO- https://github.com/etcd-io/etcd/releases/download/v{{ etcd_version }}/etcd-v{{ etcd_version }}-{{ os_drive }}-{{ os_arch }}.tar.gz | tar -zx -C / && \
+    mv /etcd-v${etcdVersion}-linux-amd64/etcd* /
+
 FROM ubuntu:18.04
 
 COPY --from=DockerCli /usr/local/bin/docker /usr/local/bin
@@ -90,6 +93,8 @@ COPY --from=Packages /kubernetes /kubernetes
 COPY --from=Packages /cni /cni
 COPY --from=Packages /cfssl /cfssl
 COPY --from=Packages /cfssljson /cfssljson
+COPY --from=Packages /etcd /etcd
+COPY --from=Packages /etcdctl /etcdctl
 COPY --from=CiliumCli /usr/bin/cilium /cilium
 
 COPY ./image_*.tar.gz /
