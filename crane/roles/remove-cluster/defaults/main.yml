@@ -99,6 +99,6 @@ is_remove_cfssl: false
 # 是否关闭 Swap, 当值为 false 时, 则表示不作任何操作, 当为 true 时, 会关闭服务器上所有的 Swap.
 is_swap_off: false
 
-# 是否清楚临时存放目录
+# 是否清除临时存放目录
 is_remove_temporary: false
 

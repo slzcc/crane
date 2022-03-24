@@ -36,3 +36,14 @@
     path: "{{ kubernetes_manifests_dirs }}etcd.yml"
     state: absent
   ignore_errors: true
+
+- name: Clean Etcd Binary
+  file:
+    path: "{{ kubernetes_ctl_path }}{{ item }}"
+    state: absent
+  ignore_errors: true
+  with_items:
+    - "etcd"
+    - "etcdctl"
+  when: 
+    - etcd_deploy_type == 'systemd'
