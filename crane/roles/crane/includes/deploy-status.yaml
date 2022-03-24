@@ -13,11 +13,11 @@
                 "apiServer": "{{ k8s_load_balance_ip }}"
               },
               "network": {
-                {% if general_network_drive == 'calico' %}
+                {%- if general_network_drive == 'calico' -%}
                 "calico": "{{ calico_version }}",
-                {% endif %}{% if general_network_drive == 'cilium' %}
+                {%- endif %}{% if general_network_drive == 'cilium' -%}
                 "cilium": "{{ cilium_version }}",
-                {% endif %}
+                {%- endif -%}
                 "cni": "{{ cni_version }}",
                 "coredns": "{{ dns_version }}"
               },

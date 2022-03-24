@@ -2,12 +2,12 @@
 # Cilium
 ## ********************************************************************************************************************************
 - name: Check Cilium Dir
-  shell: "ls {{ kubernetes_ctl_path }}/cilium"
+  shell: "ls {{ kubernetes_ctl_path }}cilium"
   register: CHECK_CILIUM_BIN_PACKAGE
   ignore_errors: true
 
 - name: Download Cilium Package
-  shell: "wget -qO- 'https://github.com/slzcc/crane/releases/download/v1.22.4.0/cilium' > {{ kubernetes_ctl_path }}/cilium"
+  shell: "wget -qO- 'https://github.com/slzcc/crane/releases/download/v1.22.4.0/cilium' > {{ kubernetes_ctl_path }}cilium"
   environment:
     http_proxy: "{{ http_proxy }}"
     https_proxy: "{{ https_proxy }}"
@@ -15,5 +15,5 @@
   when: CHECK_CILIUM_BIN_PACKAGE is failed
 
 - name: Modifying file Permissions
-  shell: "chmod +x {{ kubernetes_ctl_path }}/cilium"
+  shell: "chmod +x {{ kubernetes_ctl_path }}cilium"
   when: CHECK_CILIUM_BIN_PACKAGE is failed
