@@ -187,3 +187,5 @@ etcd systemd 方式支持离线安装。
 修复使用镜像部署时, 不使用最新镜像版本, 加入获取最新镜像。
 
 修复清除集群时, 没有清理 cilium 以及 etcd 二进制文件。
+
+修复 deploy crane status 长期不更新问题。
