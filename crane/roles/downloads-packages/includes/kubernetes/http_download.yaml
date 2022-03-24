@@ -16,6 +16,7 @@
   environment:
     http_proxy: "{{ http_proxy }}"
     https_proxy: "{{ https_proxy }}"
+    no_proxy: "{{ no_proxy }}"
   changed_when: true
   when: check_kubelet_version.stdout != k8s_version
 

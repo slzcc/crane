@@ -172,6 +172,7 @@
   environment:
     http_proxy: "{{ http_proxy }}"
     https_proxy: "{{ https_proxy }}"
+    no_proxy: "{{ no_proxy }}"
   when: ansible_distribution == 'CentOS'
   ignore_errors: true
 
@@ -182,6 +183,7 @@
   environment:
     http_proxy: "{{ http_proxy }}"
     https_proxy: "{{ https_proxy }}"
+    no_proxy: "{{ no_proxy }}"
   when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
   ignore_errors: true
   

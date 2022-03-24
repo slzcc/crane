@@ -9,6 +9,7 @@
   environment:
     http_proxy: "{{ http_proxy }}"
     https_proxy: "{{ https_proxy }}"
+    no_proxy: "{{ no_proxy }}"
   when:
   - check_etcd.stderr != ''
   ignore_errors: true
