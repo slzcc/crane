@@ -1,5 +1,9 @@
 ---
 # CRI in Docker
+- name: Clean Temporary Container *
+  shell: "{{ kubernetes_ctl_path }}docker rm -f import-kubernetes-temporary"
+  ignore_errors: true
+
 - name: Pull the Image
   shell: "{{ kubernetes_ctl_path }}docker rm -f import-kubernetes-temporary | true && {{ kubernetes_ctl_path }}docker run --name import-kubernetes-temporary -d -v /var/run/docker.sock:/var/run/docker.sock:ro {{ k8s_image_deploy_repo }}:{{ k8s_version }}.{{ build_k8s_version }} sleep 1234567"
   register: check_cmd
@@ -11,7 +15,7 @@
 - name: Export the Kubectl
   shell: "{{ kubernetes_ctl_path }}docker cp import-kubernetes-temporary:/kubernetes/node/bin/kubectl {{ kubernetes_ctl_path }}"
 
-- name: Check Temporary Container
+- name: Check Temporary Container **
   shell: "{{ kubernetes_ctl_path }}docker rm -f import-kubernetes-temporary"
   when: check_cmd.rc == 0
   ignore_errors: true

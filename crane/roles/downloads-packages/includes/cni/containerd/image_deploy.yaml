@@ -1,6 +1,10 @@
 ---
 # CRI in Containerd
-- name: Pull the Image
+- name: Pull the Image *
+  shell: "{{ kubernetes_ctl_path }}ctr image pull {{ k8s_image_deploy_repo }}:{{ k8s_version }}.{{ build_k8s_version }}"
+  ignore_errors: true
+
+- name: Pull the Image **
   shell: "{{ kubernetes_ctl_path }}ctr -n k8s.io run --null-io --net-host -d \
                             --label name=import-kubernetes-temporary \
                             --mount type=bind,src=/var/run,dst=/var/run,options=rbind:ro \
