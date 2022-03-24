@@ -189,3 +189,5 @@ etcd systemd 方式支持离线安装。
 修复清除集群时, 没有清理 cilium 以及 etcd 二进制文件。
 
 修复 deploy crane status 长期不更新问题。
+
+修复使用 proxy 下载 package 造成的执行命令错误。

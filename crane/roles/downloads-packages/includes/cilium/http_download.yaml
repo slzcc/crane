@@ -7,7 +7,7 @@
   ignore_errors: true
 
 - name: Download Cilium Package
-  shell: "export http_proxy={{ http_proxy }} ; export https_proxy={{ https_proxy }} ; wget -qO- 'https://github.com/slzcc/crane/releases/download/v1.22.4.0/cilium' > {{ kubernetes_ctl_path }}/cilium"
+  shell: "export http_proxy={{ http_proxy }} && export https_proxy={{ https_proxy }} && wget -qO- 'https://github.com/slzcc/crane/releases/download/v1.22.4.0/cilium' > {{ kubernetes_ctl_path }}/cilium"
   when: CHECK_CILIUM_BIN_PACKAGE is failed
 
 - name: Modifying file Permissions

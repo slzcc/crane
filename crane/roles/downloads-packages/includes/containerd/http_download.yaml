@@ -8,4 +8,4 @@
     state: directory
 
 - name: install containerd binary
-  shell: "export http_proxy={{ http_proxy }} ; export https_proxy={{ https_proxy }} ; wget -qO- https://github.com/containerd/containerd/releases/download/v{{ containerd_version }}/containerd-{{ containerd_version }}-{{ os_drive }}-{{ os_arch }}.tar.gz | tar -zx -C {{ temporary_dirs }}containerd"
+  shell: "export http_proxy={{ http_proxy }} && export https_proxy={{ https_proxy }} && wget -qO- https://github.com/containerd/containerd/releases/download/v{{ containerd_version }}/containerd-{{ containerd_version }}-{{ os_drive }}-{{ os_arch }}.tar.gz | tar -zx -C {{ temporary_dirs }}containerd"

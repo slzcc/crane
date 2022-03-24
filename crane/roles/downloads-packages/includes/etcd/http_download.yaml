@@ -5,7 +5,7 @@
   ignore_errors: true
 
 - name: Download EtcdCtl Binary Files *
-  shell: "export http_proxy={{ http_proxy }} ; export https_proxy={{ https_proxy }} ; wget -qO- https://github.com/etcd-io/etcd/releases/download/v{{ etcd_version }}/etcd-v{{ etcd_version }}-{{ os_drive }}-{{ os_arch }}.tar.gz | tar -zx -C {{ temporary_dirs }}"
+  shell: "export http_proxy={{ http_proxy }} && export https_proxy={{ https_proxy }} && wget -qO- https://github.com/etcd-io/etcd/releases/download/v{{ etcd_version }}/etcd-v{{ etcd_version }}-{{ os_drive }}-{{ os_arch }}.tar.gz | tar -zx -C {{ temporary_dirs }}"
   when: 
   - check_etcd.stderr != ''
   ignore_errors: true
