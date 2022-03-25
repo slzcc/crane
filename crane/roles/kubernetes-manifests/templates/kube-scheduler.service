@@ -1,0 +1,19 @@
+[Unit]
+Description=kube-scheduler
+After=network.target
+After=kube-apiserver.service
+ 
+[Service]
+EnvironmentFile=-/etc/kubernetes/scheduler
+ExecStart=/usr/local/bin/kube-scheduler \
+        --logtostderr=true \
+        --v=0 \
+        --master=${KUBE_APISERVER} \
+        --kubeconfig=/etc/kubernetes/scheduler.conf \
+        --leader-elect=true
+Restart=on-failure
+Type=simple
+LimitNOFILE=65536
+ 
+[Install]
+WantedBy=multi-user.target

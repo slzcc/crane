@@ -1,0 +1,41 @@
+[Unit]
+Description=kube-apiserver
+After=network.target
+After=etcd.service
+ 
+[Service]
+EnvironmentFile=-/etc/kubernetes/apiserver
+ExecStart=/usr/local/bin/kube-apiserver \
+        --logtostderr=true \
+        --v=0 \
+        --advertise-address=${INTERNAL_IP} \
+        --bind-address=${INTERNAL_IP} \
+        --secure-port=6443 \
+        --insecure-port=0 \
+        --allow-privileged=true \
+        --etcd-servers=https://192.166.1.12:2379,https://192.166.1.2:2379,https://192.166.1.13:2379 \
+        --etcd-cafile=/etc/etcd/ssl/ca.pem \
+        --etcd-certfile=/etc/etcd/ssl/etcd.pem \
+        --etcd-keyfile=/etc/etcd/ssl/etcd-key.pem \
+        --storage-backend=etcd3 \
+        --service-node-port-range=79-39999 \
+        --service-cluster-ip-range=10.96.0.0/12 \
+        --tls-cert-file=/etc/kubernetes/pki/apiserver.pem \
+        --tls-private-key-file=/etc/kubernetes/pki/apiserver-key.pem \
+        --client-ca-file=/etc/kubernetes/pki/ca.pem \
+        --service-account-key-file=/etc/kubernetes/pki/ca-key.pem \
+        --experimental-bootstrap-token-auth=true \
+        --apiserver-count=3 \
+        --enable-swagger-ui=true \
+        --admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,PersistentVolumeLabel,DefaultStorageClass,ResourceQuota,DefaultTolerationSeconds \
+        --authorization-mode=RBAC \
+        --audit-log-maxage=30 \
+        --audit-log-maxbackup=3 \
+        --audit-log-maxsize=100 \
+        --audit-log-path=/var/log/kubernetes/audit.log
+Restart=on-failure
+Type=notify
+LimitNOFILE=65536
+ 
+[Install]
+WantedBy=multi-user.target

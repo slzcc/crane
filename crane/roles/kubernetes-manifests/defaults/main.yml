@@ -7,7 +7,12 @@ k8s_master_apiservice_bind_port: 5443
 # Kubernetes HaProxy 监听的端口号
 # 在部署的 Kubernetes 集群架构中, 使用 HaProxy 作为 apiServer 负载均衡设备, 集群架构应为 SLB > HaProxy > apiServer
 # 请自行设置端口号, 最好保持默认值
-k8s_master_haproxy_bind_port: 6443
+k8s_master_haproxy_bind_port: >-
+  {%- if is_haproxy -%}
+    6443
+  {%- else -%}
+    {{ k8s_master_apiservice_bind_port }}
+  {%- endif -%}
 
 # Kubernetes 在集群中使用的 ClusterIP, 此地址依赖 k8s_cluster_ip_range 的网段
 # Kubernetes Default Service 值, 实际由 apiServer 自动进行创建

@@ -12,7 +12,7 @@
   ignore_errors: true
 
 - name: Download Kubernetes Ctl And Kubelet Binary Files
-  shell: "wget -qO- 'https://dl.k8s.io/{{ k8s_version }}/kubernetes-node-{{ os_drive }}-{{ os_arch }}.tar.gz' | tar zx -C {{ temporary_dirs }}"
+  shell: "wget -qO- 'https://dl.k8s.io/{{ k8s_version }}/kubernetes-server-{{ os_drive }}-{{ os_arch }}.tar.gz' | tar zx -C {{ temporary_dirs }}"
   environment:
     http_proxy: "{{ http_proxy }}"
     https_proxy: "{{ https_proxy }}"
@@ -21,11 +21,32 @@
   when: check_kubelet_version.stdout != k8s_version
 
 - name: Copy Kubectl
-  shell: "cp -rf {{ temporary_dirs }}kubernetes/node/bin/kubectl {{ kubernetes_ctl_path }}"
+  shell: "cp -rf {{ temporary_dirs }}kubernetes/server/bin/kubectl {{ kubernetes_ctl_path }}"
   changed_when: true
   when: check_kubelet_version.stdout != k8s_version
 
 - name: Copy Kubelet
-  shell: "cp -rf {{ temporary_dirs }}kubernetes/node/bin/kubelet {{ kubernetes_ctl_path }}"
+  shell: "cp -rf {{ temporary_dirs }}kubernetes/server/bin/kubelet {{ kubernetes_ctl_path }}"
   changed_when: true
   when: check_kubelet_version.stdout != k8s_version
+
+- name: Export the kube-scheduler
+  shell: "cp -rf {{ temporary_dirs }}kubernetes/server/bin/kube-scheduler {{ kubernetes_ctl_path }}"
+  when: 
+    - k8s_deploy_type == 'systemd'
+    - check_kubelet_version.stdout != k8s_version
+    - is_kube_master or is_add_master
+
+- name: Export the kube-controller-manager
+  shell: "cp -rf {{ temporary_dirs }}kubernetes/server/bin/kube-controller-manager {{ kubernetes_ctl_path }}"
+  when: 
+    - k8s_deploy_type == 'systemd'
+    - check_kubelet_version.stdout != k8s_version
+    - is_kube_master or is_add_master
+
+- name: Export the kube-apiserver
+  shell: "cp -rf {{ temporary_dirs }}kubernetes/server/bin/kube-apiserver {{ kubernetes_ctl_path }}"
+  when: 
+    - k8s_deploy_type == 'systemd'
+    - check_kubelet_version.stdout != k8s_version
+    - is_kube_master or is_add_master
