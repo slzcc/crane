@@ -9,3 +9,4 @@
   service:
     name: kube-proxy
     state: started
+  ignore_errors: true
