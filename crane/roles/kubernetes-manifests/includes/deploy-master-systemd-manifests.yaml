@@ -1,8 +1,8 @@
 ---
 - name: Copy K8s-apiServer Systemd Config Files to Nodes
   template: 
-    src: "roles/kubernetes-manifests/templates/kube-apiServer.service"
-    dest: "{{ systemd_default_dirs }}kube-apiServer.service"
+    src: "roles/kubernetes-manifests/templates/kube-apiserver.service"
+    dest: "{{ systemd_default_dirs }}kube-apiserver.service"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
 
@@ -23,5 +23,5 @@
 - name: Init Systemd Configures and Start Kubernetes Master
   shell: |
     systemctl daemon-reload;
-    systemctl start kube-apiServer kube-controller-manager kube-scheduler.service;
-    systemctl enable kube-apiServer kube-controller-manager kube-scheduler.service;
+    systemctl start kube-apiserver kube-controller-manager kube-scheduler.service;
+    systemctl enable kube-apiserver kube-controller-manager kube-scheduler.service;
