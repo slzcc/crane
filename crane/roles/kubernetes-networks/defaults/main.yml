@@ -11,7 +11,7 @@ is_install_ipvsadm: true
 kube_proxy_ipvs_scheduler: "rr"
 
 # proxy 工作目录
-kube_proxy_work_dirs: "/var/lib/kube-proxy"
+kube_proxy_work_dirs: "/var/lib/kube-proxy/"
 
 # proxy 部署模式, 可以 staticPod 或 systemd
 kube_proxy_deploy_type: "{{ k8s_deploy_type }}"
