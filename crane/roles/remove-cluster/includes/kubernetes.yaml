@@ -62,14 +62,6 @@
   shell: "for i in `cat /proc/mounts | grep '{{ kubelet_work_dirs }}' | awk '{print $2}'`;do umount -l $i; done"
   ignore_errors: true
 
-- name: Clean kubernetes Etc Working directory ** .
-  shell: "mv {{ systemd_default_dirs }}kubelet.service {{ temporary_dirs }}"
-  ignore_errors: true
-
-- name: Clean kubernetes Etc Working directory *** .
-  shell: "mv {{ systemd_etc_dirs }}kubelet.service.d {{ temporary_dirs }}"
-  ignore_errors: true
-
 - name: Clean Kubelet Systemd Config
   file:
     path: "{{ item }}"
@@ -102,12 +94,6 @@
     state: absent
   ignore_errors: true
 
-- name: Clean Kubelet PKI Config directory.
-  file:
-    path: "{{ kubernetes_etc_dirs }}pki"
-    state: absent
-  ignore_errors: true
-
 - name: Clean Kubelet Config Home directory.
   file:
     path: "{{ kubernetes_etc_dirs }}"
@@ -117,6 +103,14 @@
 - name: Clean Kubelet Proxy Home directory.
   file:
     path: "{{ kube_proxy_work_dirs }}"
+    state: absent
+  ignore_errors: true
+  when: 
+    - kube_proxy_work_dirs == 'systemd'
+
+- name: Clean Kubelet Proxy Systemd Configure
+  file:
+    path: "{{ systemd_default_dirs }}kube-proxy.service"
     state: absent
   ignore_errors: true
   when: 
