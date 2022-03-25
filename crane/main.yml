@@ -157,6 +157,27 @@
     - { include: 'roles/kubernetes-cluster-management/includes/create-kubelet-conf.yaml' }
     - { include: 'roles/kubernetes-networks/includes/initialize-kube-proxy.yaml', when: kube_proxy_deploy_type == 'systemd' }
 
+- name: Create Kube Proxy Files
+  hosts: kube-master[0]
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/etcd-cluster-management/vars/main.yml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/system-initialize/defaults/main.yml"
+    - "roles/kubernetes-cluster-management/vars/haproxy.yaml"
+    - "roles/kubernetes-networks/defaults/keepalived.yaml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/kubernetes-networks/defaults/main.yml"
+    - "roles/etcd-cluster-management/defaults/tls.yaml"
+  tasks:
+    - { include: 'roles/kubernetes-networks/includes/create-kube-proxy-pki.yaml', when: kube_proxy_deploy_type == 'systemd' }
+    - { include: 'roles/kubernetes-networks/includes/create-kube-proxy-conf.yaml', when: kube_proxy_deploy_type == 'systemd' }
+    - { include: 'roles/kubernetes-networks/includes/copy-kube-proxy-ca-to-nodes.yaml', when: kube_proxy_deploy_type == 'systemd' }
+
 - name: Create Cluster Master Kubernetes Manifests Files
   hosts: kube-master
   become: yes
@@ -175,10 +196,6 @@
     - "roles/etcd-cluster-management/defaults/tls.yaml"
   roles:
     - { role: kubernetes-manifests, tags: [k8s-manifests]}
-  tasks:
-    - { include: 'roles/kubernetes-networks/includes/create-kubelet-pki.yaml', when: kube_proxy_deploy_type == 'systemd' }
-    - { include: 'roles/kubernetes-networks/includes/create-kubelet-conf.yaml', when: kube_proxy_deploy_type == 'systemd' }
-    - { include: 'roles/kubernetes-networks/includes/copy-kube-proxy-ca-to-nodes.yaml', when: kube_proxy_deploy_type == 'systemd' }
 
 - name: Start Kubernetes Cluster Maste/Nones Kubelet.
   hosts: k8s-cluster
