@@ -217,7 +217,7 @@
     - "roles/kubernetes-cluster-management/vars/kubelet.yaml"
   tasks:
     - { include: 'roles/kubernetes-cluster-management/includes/start-kubelet.yaml' }
-    - { include: 'roles/kubernetes-networks/includes/start-kubelet-proxy.yaml', when: kube_proxy_deploy_type == 'systemd' }
+    - { include: 'roles/kubernetes-networks/includes/start-kube-proxy.yaml', when: kube_proxy_deploy_type == 'systemd' }
 
 - name:  Initialize Kubernetes Cluster RBAC.
   hosts: kube-master[0]
