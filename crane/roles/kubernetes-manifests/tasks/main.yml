@@ -2,13 +2,13 @@
 ## Copy Kubernetes Manifests Files
 ## ********************************************************************************************************************************
 - name: Deploy Kubernetes Master to staticPod
-  include: "crane/roles/kubernetes-manifests/includes/deploy-master-manifests.yaml"
+  include: "roles/kubernetes-manifests/includes/deploy-master-manifests.yaml"
   when: 
     - is_kube_master or is_add_master
     - k8s_deploy_type == 'staticPod'
 
 - name: Deploy Kubernetes Master to systemd
-  include: "crane/roles/kubernetes-manifests/includes/deploy-master-systemd-manifests.yaml"
+  include: "roles/kubernetes-manifests/includes/deploy-master-systemd-manifests.yaml"
   when: 
     - is_kube_master or is_add_master
     - k8s_deploy_type == 'systemd'
