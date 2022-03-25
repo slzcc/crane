@@ -75,7 +75,7 @@ spec:
       httpGet:
         host: 127.0.0.1
         path: /healthz
-        port: 6443
+        port: {{ k8s_master_apiservice_bind_port }}
         scheme: HTTPS
       initialDelaySeconds: 15
       timeoutSeconds: 15

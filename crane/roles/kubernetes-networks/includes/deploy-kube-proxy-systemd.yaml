@@ -1,0 +1,37 @@
+---
+
+- name: Create Kube Proxy WorkDir
+  file:
+    path: "{{ kube_proxy_work_dirs }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
+- name: Copy Kube Proxy Configure Files
+  template:
+    src: "roles/kubernetes-networks/templates/kube-proxy/{{ item }}"
+    dest: "{{ kube_proxy_work_dirs }}{{ item }}"
+    owner: "{{ ssh_connect_user }}" 
+    mode: 0644
+  with_items:
+    - "config.conf"
+    - "kubeconfig.conf"
+
+- name: Copy Kube-Proxy Systemd Config Files to Nodes
+  template: 
+    src: "roles/kubernetes-networks/templates/kube-proxy/kube-proxy.service"
+    dest: "{{ systemd_default_dirs }}kube-proxy.service"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}"
+
+- shell: "systemctl daemon-reload"
+  
+- name: Kube-Proxy Powered UP And Startd
+  service: 
+    name: kube-proxy
+    enabled: yes
+
+- name: Run Kube-Proxy
+  service:
+    name: kube-proxy
+    state: started

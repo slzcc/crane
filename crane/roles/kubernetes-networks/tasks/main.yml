@@ -17,10 +17,15 @@
     dest: "{{ temporary_dirs }}main/kube-proxy.yml"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
+  when: 
+    - is_kube_proxy
+    - kube_proxy_deploy_type == 'staticPod'
 
 - name: Deploy Kube-Proxy
   shell: '{{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}main/kube-proxy.yml'
-  when: is_kube_proxy
+  when: 
+    - is_kube_proxy
+    - kube_proxy_deploy_type == 'staticPod'
   ignore_errors: true
 
 - name: Deploy General Networks

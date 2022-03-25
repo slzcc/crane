@@ -186,10 +186,12 @@
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/system-initialize/defaults/main.yml"
+    - "roles/kubernetes-networks/defaults/main.yml"
     - "roles/crane/defaults/main.yml"
     - "roles/kubernetes-cluster-management/vars/kubelet.yaml"
   tasks:
     - { include: 'roles/kubernetes-cluster-management/includes/start-kubelet.yaml' }
+    - { include: 'roles/kubernetes-networks/includes/deploy-kube-proxy-systemd.yaml', when: kube_proxy_deploy_type == 'systemd' }
 
 - name:  Initialize Kubernetes Cluster RBAC.
   hosts: kube-master[0]
@@ -221,6 +223,7 @@
     - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/kubernetes-networks/defaults/calico.yaml"
     - "roles/kubernetes-networks/defaults/cilium.yaml"
+    - "roles/kubernetes-networks/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   roles:

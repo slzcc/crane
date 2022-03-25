@@ -1,11 +1,12 @@
 ---
 # Clean Kubernetes
 
-- name: Systemd Stop Kubernetes Master
-  shell: |
-    systemctl daemon-reload;
-    systemctl stop {{ item }};
-    systemctl disable {{ item }};
+- shell: "systemctl daemon-reload"
+
+- name: Stop Kubernetes Master
+  service: 
+    name: "{{ item }}"
+    state: stopped
   ignore_errors: true
   with_items:
     - "kube-apiserver"
@@ -28,11 +29,16 @@
     - is_kube_master or is_add_master
     - k8s_deploy_type == 'systemd'
 
-- name: Reload Systemd
-  shell: |
-    systemctl daemon-reload;
+- name: Clean Kubernetes Mater Binary file
+  file:
+    path: "{{ kubernetes_ctl_path }}{{ item }}"
+    state: absent
   ignore_errors: true
-  when:
+  with_items:
+    - "kube-apiserver"
+    - "kube-controller-manager"
+    - "kube-scheduler"
+  when: 
     - is_kube_master or is_add_master
     - k8s_deploy_type == 'systemd'
 
@@ -41,6 +47,16 @@
     name: kubelet
     state: stopped
   ignore_errors: true
+
+- name: Stop Kube-Proxy
+  service: 
+    name: kube-proxy
+    state: stopped
+  ignore_errors: true
+  when: 
+    - kube_proxy_work_dirs == 'systemd'
+
+- shell: "systemctl daemon-reload"
 
 - name: Umount K8s Drive
   shell: "for i in `cat /proc/mounts | grep '{{ kubelet_work_dirs }}' | awk '{print $2}'`;do umount -l $i; done"
@@ -70,8 +86,10 @@
   with_items:
     - "kubectl"
     - "kubelet"
+    - "kube-proxy"
   when: is_remove_all or is_remove_k8s_binary
-  
+  ignore_errors: true
+
 - name: Clean KubeConfig Dir
   file:
     path: "~/.kube"
@@ -96,8 +114,17 @@
     state: absent
   ignore_errors: true
 
+- name: Clean Kubelet Proxy Home directory.
+  file:
+    path: "{{ kube_proxy_work_dirs }}"
+    state: absent
+  ignore_errors: true
+  when: 
+    - kube_proxy_work_dirs == 'systemd'
+
 - name: Clean Dockershim directory.
   file:
     path: "/var/lib/dockershim"
     state: absent
   ignore_errors: true
+
