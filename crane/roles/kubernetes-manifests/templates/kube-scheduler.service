@@ -4,15 +4,20 @@ After=network.target
 After=kube-apiserver.service
  
 [Service]
-EnvironmentFile=-/etc/kubernetes/scheduler
-ExecStart=/usr/local/bin/kube-scheduler \
-        --logtostderr=true \
-        --v=0 \
-        --master=${KUBE_APISERVER} \
-        --kubeconfig=/etc/kubernetes/scheduler.conf \
-        --leader-elect=true
-Restart=on-failure
-Type=simple
+Type=notify
+ExecStart={{ kubernetes_ctl_path }}kube-scheduler \
+--v=0 \
+--port=0 \
+--logtostderr=true \
+--address=0.0.0.0 \
+--leader-elect=true \
+--kubeconfig={{ kubernetes_etc_dirs }}scheduler.conf \
+--authentication-kubeconfig={{ kubernetes_etc_dirs }}scheduler.conf \
+--authorization-kubeconfig={{ kubernetes_etc_dirs }}scheduler.conf
+Restart=always
+StartLimitInterval=0
+RestartSec=10
+Environment=
 LimitNOFILE=65536
  
 [Install]

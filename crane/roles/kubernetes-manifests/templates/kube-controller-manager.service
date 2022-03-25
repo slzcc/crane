@@ -4,26 +4,27 @@ After=network.target
 After=kube-apiserver.service
  
 [Service]
-EnvironmentFile=-/etc/kubernetes/controller-manager
-ExecStart=/usr/local/bin/kube-controller-manager \
-        --logtostderr=true \
-        --v=0 \
-        --master=${KUBE_APISERVER} \
-        --kubeconfig=/etc/kubernetes/controller-manager.conf \
-        --cluster-name=kubernetes \
-        --cluster-signing-cert-file=/etc/kubernetes/pki/ca.pem \
-        --cluster-signing-key-file=/etc/kubernetes/pki/ca-key.pem \
-        --service-account-private-key-file=/etc/kubernetes/pki/ca-key.pem \
-        --root-ca-file=/etc/kubernetes/pki/ca.pem \
-        --insecure-experimental-approve-all-kubelet-csrs-for-group=system:bootstrappers \
-        --use-service-account-credentials=true \
-        --service-cluster-ip-range=10.96.0.0/12 \
-        --cluster-cidr=10.244.0.0/16 \
-        --allocate-node-cidrs=true \
-        --leader-elect=true \
-        --controllers=*,bootstrapsigner,tokencleaner
-Restart=on-failure
-Type=simple
+Type=notify
+ExecStart={{ kubernetes_ctl_path }}kube-controller-manager \
+--authentication-kubeconfig={{ kubernetes_etc_dirs }}controller-manager.conf \
+--authorization-kubeconfig={{ kubernetes_etc_dirs }}controller-manager.conf \
+--bind-address=0.0.0.0 \
+--cluster-name=kubernetes \
+--client-ca-file={{ kubernetes_pki_dirs }}ca.pem \
+--cluster-signing-cert-file={{ kubernetes_pki_dirs }}ca.pem \
+--cluster-signing-key-file={{ kubernetes_pki_dirs }}ca-key.pem \
+--controllers=*,bootstrapsigner,tokencleaner \
+--kubeconfig={{ kubernetes_etc_dirs }}controller-manager.conf \
+--leader-elect=true \
+--port=0 \
+--requestheader-client-ca-file={{ kubernetes_pki_dirs }}front-proxy-ca.pem \
+--root-ca-file={{ kubernetes_pki_dirs }}ca.pem \
+--service-account-private-key-file={{ kubernetes_pki_dirs }}sa.key \
+--use-service-account-credentials=true
+Restart=always
+StartLimitInterval=0
+RestartSec=10
+Environment=
 LimitNOFILE=65536
  
 [Install]

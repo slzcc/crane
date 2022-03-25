@@ -1,6 +1,41 @@
 ---
-
 # Clean Kubernetes
+
+- name: Systemd Stop Kubernetes Master
+  shell: |
+    systemctl daemon-reload;
+    systemctl stop {{ item }};
+    systemctl disable {{ item }};
+  ignore_errors: true
+  with_items:
+    - "kube-apiserver"
+    - "kube-controller-manager"
+    - "kube-scheduler"
+  when: 
+    - is_kube_master or is_add_master
+    - k8s_deploy_type == 'systemd'
+
+- name: Clean Kubernetes Mater systemd Configure
+  file:
+    path: "{{ systemd_default_dirs }}{{ item }}.service"
+    state: absent
+  ignore_errors: true
+  with_items:
+    - "kube-apiserver"
+    - "kube-controller-manager"
+    - "kube-scheduler"
+  when: 
+    - is_kube_master or is_add_master
+    - k8s_deploy_type == 'systemd'
+
+- name: Reload Systemd
+  shell: |
+    systemctl daemon-reload;
+  ignore_errors: true
+  when:
+    - is_kube_master or is_add_master
+    - k8s_deploy_type == 'systemd'
+
 - name: Stop Kubelet
   service: 
     name: kubelet

@@ -203,3 +203,5 @@ Crane 以更新至 1.23.5.3 版本。
 ## 新增
 
 当不需要 haproxy 时, 可以通过 `crane/group_vars/all.yml` 的 `is_haproxy` 值进行忽略部署, 默认会启用。
+
+添加部署 k8s 时可通过 `k8s_deploy_type` 项定义使用哪种方式部署默认 `staticPod`, 可以支持二进制使用 `systemd` 方式部署, `systemd` 模式下不支持版本升级(可能部署成功但没经过测试)。
