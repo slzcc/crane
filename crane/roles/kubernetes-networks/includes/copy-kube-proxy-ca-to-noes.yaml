@@ -5,4 +5,4 @@
             -P {{ ssh_connect_port }} {{ kubernetes_etc_dirs }}{{ item[1] }}  {{ ssh_connect_user }}@{{ item[0] }}:{{ kubernetes_etc_dirs }}{{ item[1] }}"
   with_nested:
     - "{{ all_k8s_cluster_ip_list }}"
-    - ['pki/kube-proxy.pem', 'pki/kube-proxy-key.pem', 'kube-proxy.confi']
+    - ['pki/kube-proxy.pem', 'pki/kube-proxy-key.pem', 'kube-proxy.conf']
