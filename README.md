@@ -10,7 +10,9 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 
 	* Crane 添加到 [Cilium 用户](https://github.com/cilium/cilium/blob/master/USERS.md) 清单中。
 
-使用 Ansible 基于容器化部署 Kubernetes Cluster（非 Kubeadm）, 并支持 Master/Node/Etcd 节点的添加。
+使用 Ansible 基于 `staticPod` 或 `systemd` 方式部署 Kubernetes Cluster（非 Kubeadm）, 并支持 Master/Node/Etcd 节点的添加。
+
+> systemd 当前版本不支持节点扩容等策略, 需需要生产使用则选择 `staticPod`。
 
 部署全局基于 TLS, 并区分 K8s Cluster CA、Etcd CA 证书, 并支持证书轮转。
 
@@ -42,10 +44,10 @@ kubernetes-addons 参照 [kubernetes-addons Install](./crane/roles/kubernetes-ad
 Crane 的架构简述:
 
 ```
-|------ Keepalived(Master) or ELB
+|------ Keepalived(Master) or ELB or localIP
 |               |
 |               |
-|       Haproxy(Master)
+|       Haproxy(Master) (可移除)
 |               |
 |               |
 |       Kube-ApiServer(Master)

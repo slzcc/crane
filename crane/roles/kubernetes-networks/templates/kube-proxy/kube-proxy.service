@@ -3,7 +3,6 @@ Description=kube-proxy
 After=network.target
  
 [Service]
-Type=notify
 ExecStart={{ kubernetes_ctl_path }}kube-proxy \
 --config={{ kube_proxy_work_dirs }}config.conf \
 --hostname-override={{ hostvars[inventory_hostname].ansible_nodename }}

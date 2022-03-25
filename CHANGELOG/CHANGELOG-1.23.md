@@ -200,6 +200,8 @@ etcd systemd 方式支持离线安装。
 
 Crane 以更新至 1.23.5.3 版本。
 
+当前版本改动幅度较大，可能会引起其他模式无法正常部署问题。
+
 ## 新增
 
 当不需要 haproxy 时, 可以通过 `crane/group_vars/all.yml` 的 `is_haproxy` 值进行忽略部署, 默认会启用。
