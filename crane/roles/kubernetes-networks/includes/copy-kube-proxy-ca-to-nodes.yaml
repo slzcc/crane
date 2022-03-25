@@ -1,8 +1,8 @@
 ---
 ## Copy Kubernetes Certification Files in Nodes
-- name: Copy Kubernetes Certification Files in Nodes
+- name: Copy Kubernetes Proxy Certification Files in Nodes
   shell: "sudo scp -r -p -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no -i {{ ssh_public_key }} \
             -P {{ ssh_connect_port }} {{ kubernetes_etc_dirs }}{{ item[1] }}  {{ ssh_connect_user }}@{{ item[0] }}:{{ kubernetes_etc_dirs }}{{ item[1] }}"
   with_nested:
     - "{{ all_k8s_cluster_ip_list }}"
-    - ['pki/ca.pem', 'pki/ca-key.pem']
+    - ['pki/kube-proxy.pem', 'pki/kube-proxy-key.pem', 'kube-proxy.conf']

@@ -87,7 +87,7 @@ data:
     clusters:
     - cluster:
         certificate-authority: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-        server: https://{{ k8s_load_balance_ip }}:6443
+        server: https://{{ k8s_load_balance_ip }}:{{ k8s_master_haproxy_bind_port }}
       name: default
     contexts:
     - context:

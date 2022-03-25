@@ -1,22 +1,65 @@
 ---
-
 # Clean Kubernetes
+
+- shell: "systemctl daemon-reload"
+
+- name: Stop Kubernetes Master
+  service: 
+    name: "{{ item }}"
+    state: stopped
+  ignore_errors: true
+  with_items:
+    - "kube-apiserver"
+    - "kube-controller-manager"
+    - "kube-scheduler"
+  when: 
+    - is_kube_master or is_add_master
+    - k8s_deploy_type == 'systemd'
+
+- name: Clean Kubernetes Mater systemd Configure
+  file:
+    path: "{{ systemd_default_dirs }}{{ item }}.service"
+    state: absent
+  ignore_errors: true
+  with_items:
+    - "kube-apiserver"
+    - "kube-controller-manager"
+    - "kube-scheduler"
+  when: 
+    - is_kube_master or is_add_master
+    - k8s_deploy_type == 'systemd'
+
+- name: Clean Kubernetes Mater Binary file
+  file:
+    path: "{{ kubernetes_ctl_path }}{{ item }}"
+    state: absent
+  ignore_errors: true
+  with_items:
+    - "kube-apiserver"
+    - "kube-controller-manager"
+    - "kube-scheduler"
+  when: 
+    - is_kube_master or is_add_master
+    - k8s_deploy_type == 'systemd'
+
 - name: Stop Kubelet
   service: 
     name: kubelet
     state: stopped
   ignore_errors: true
 
+- name: Stop Kube-Proxy
+  service: 
+    name: kube-proxy
+    state: stopped
+  ignore_errors: true
+  when: 
+    - kube_proxy_work_dirs == 'systemd'
+
+- shell: "systemctl daemon-reload"
+
 - name: Umount K8s Drive
   shell: "for i in `cat /proc/mounts | grep '{{ kubelet_work_dirs }}' | awk '{print $2}'`;do umount -l $i; done"
-  ignore_errors: true
-
-- name: Clean kubernetes Etc Working directory ** .
-  shell: "mv {{ systemd_default_dirs }}kubelet.service {{ temporary_dirs }}"
-  ignore_errors: true
-
-- name: Clean kubernetes Etc Working directory *** .
-  shell: "mv {{ systemd_etc_dirs }}kubelet.service.d {{ temporary_dirs }}"
   ignore_errors: true
 
 - name: Clean Kubelet Systemd Config
@@ -35,8 +78,10 @@
   with_items:
     - "kubectl"
     - "kubelet"
+    - "kube-proxy"
   when: is_remove_all or is_remove_k8s_binary
-  
+  ignore_errors: true
+
 - name: Clean KubeConfig Dir
   file:
     path: "~/.kube"
@@ -49,20 +94,31 @@
     state: absent
   ignore_errors: true
 
-- name: Clean Kubelet PKI Config directory.
-  file:
-    path: "{{ kubernetes_etc_dirs }}pki"
-    state: absent
-  ignore_errors: true
-
 - name: Clean Kubelet Config Home directory.
   file:
     path: "{{ kubernetes_etc_dirs }}"
     state: absent
   ignore_errors: true
 
+- name: Clean Kubelet Proxy Home directory.
+  file:
+    path: "{{ kube_proxy_work_dirs }}"
+    state: absent
+  ignore_errors: true
+  when: 
+    - kube_proxy_deploy_type == 'systemd'
+
+- name: Clean Kubelet Proxy Systemd Configure
+  file:
+    path: "{{ systemd_default_dirs }}kube-proxy.service"
+    state: absent
+  ignore_errors: true
+  when: 
+    - kube_proxy_deploy_type == 'systemd'
+
 - name: Clean Dockershim directory.
   file:
     path: "/var/lib/dockershim"
     state: absent
   ignore_errors: true
+

@@ -31,10 +31,17 @@ spec:
     - --client-ca-file={{ kubernetes_pki_dirs }}ca.pem
     - --enable-admission-plugins=NodeRestriction
     - --enable-bootstrap-token-auth=true
-    - --etcd-cafile={{ etcd_ssl_dirs }}etcd-ca.pem
-    - --etcd-certfile={{ etcd_ssl_dirs }}etcd.pem
-    - --etcd-keyfile={{ etcd_ssl_dirs }}etcd-key.pem
+{% if etcd_deploy_type == 'external' %}
+    - --etcd-cafile={{ tls_etcd_ca_dir }}{{ tls_etcd_ca_file_name }}
+    - --etcd-certfile={{ tls_etcd_ca_dir }}{{ tls_etcd_cert_file_name }}
+    - --etcd-keyfile={{ tls_etcd_ca_dir }}{{ tls_etcd_key_file_name }}
+    - --etcd-servers={{ tls_etcd_endpoints }}
+{% else %}
+    - --etcd-cafile={{ etcd_ssl_dirs }}{{ tls_etcd_ca_file_name }}
+    - --etcd-certfile={{ etcd_ssl_dirs }}{{ tls_etcd_cert_file_name }}
+    - --etcd-keyfile={{ etcd_ssl_dirs }}{{ tls_etcd_key_file_name }}
     - --etcd-servers={{ initial_cluster() }}
+{% endif %}
     - --insecure-port=0
     - --kubelet-client-certificate={{ kubernetes_pki_dirs }}apiserver.pem
     - --kubelet-client-key={{ kubernetes_pki_dirs }}apiserver-key.pem
@@ -65,7 +72,7 @@ spec:
       httpGet:
         host: 127.0.0.1
         path: /healthz
-        port: 6443
+        port: {{ k8s_master_apiservice_bind_port }}
         scheme: HTTPS
       initialDelaySeconds: 15
       timeoutSeconds: 15
@@ -74,12 +81,11 @@ spec:
       requests:
         cpu: 250m
     volumeMounts:
-    - mountPath: /etc/etcd/ssl
+{% if etcd_deploy_type == 'external' %}
+    - mountPath: {{ tls_etcd_ca_dir }}
       name: etcd-certs
       readOnly: true
-    - mountPath: /etc/ssl/certs
-      name: ca-certs
-      readOnly: true
+{% endif %}
     - mountPath: /etc/ca-certificates
       name: etc-ca-certificates
       readOnly: true
@@ -96,18 +102,16 @@ spec:
       name: usr-local-timezone
       readOnly: true
   volumes:
+{% if etcd_deploy_type == 'external' %}
+  - hostPath:
+      path: {{ tls_etcd_ca_dir }}
+      type: DirectoryOrCreate
+    name: etcd-certs
+{% endif %}
   - hostPath:
       path: /usr/share/zoneinfo
       type: DirectoryOrCreate
     name: usr-local-timezone
-  - hostPath:
-      path: /etc/etcd/ssl
-      type: DirectoryOrCreate
-    name: etcd-certs
-  - hostPath:
-      path: /etc/ssl/certs
-      type: DirectoryOrCreate
-    name: ca-certs
   - hostPath:
       path: /etc/ca-certificates
       type: DirectoryOrCreate

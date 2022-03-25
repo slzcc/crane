@@ -1,53 +1,17 @@
 ---
 ## Copy Kubernetes Manifests Files
 ## ********************************************************************************************************************************
-- name: Create Kubernetes PKI WorkDir
-  file:
-    path: "{{ kubernetes_manifests_dirs }}"
-    mode: 0755
-    owner: "{{ ssh_connect_user }}"
-    state: directory
-  when: is_kube_master or is_add_master
+- name: Deploy Kubernetes Master to staticPod
+  include: "roles/kubernetes-manifests/includes/deploy-master-manifests.yaml"
+  when: 
+    - is_kube_master or is_add_master
+    - k8s_deploy_type == 'staticPod'
 
-- name: Copy Kubernetes ApiServer Config Files
-  template: 
-    src: "kube-apiserver.j2"
-    dest: "{{ kubernetes_manifests_dirs }}kube-apiserver.yml"
-    mode: 0644
-    owner: "{{ ssh_connect_user }}" 
-  when: is_kube_master or is_add_master
-
-- name: Copy Kubernetes Controller Manager Config Files
-  template: 
-    src: "kube-controller-manager.j2"
-    dest: "{{ kubernetes_manifests_dirs }}kube-controller-manager.yml"
-    mode: 0644
-    owner: "{{ ssh_connect_user }}" 
-  when: is_kube_master or is_add_master
-
-- name: Copy Kubernetes Scheduler Config Files
-  template: 
-    src: "kube-scheduler.j2"
-    dest: "{{ kubernetes_manifests_dirs }}kube-scheduler.yml"
-    mode: 0644
-    owner: "{{ ssh_connect_user }}" 
-  when: is_kube_master or is_add_master
-
-- name: Copy encryption Config Files
-  copy: 
-    src: "master/encryption.yml"
-    dest: "{{ kubernetes_etc_dirs }}encryption.yml"
-    mode: 0644
-    owner: "{{ ssh_connect_user }}" 
-  when: is_kube_master or is_add_master
-
-- name: Copy audit-policy Config Files
-  copy: 
-    src: "master/audit-policy.yml"
-    dest: "{{ kubernetes_etc_dirs }}audit-policy.yml"
-    mode: 0644
-    owner: "{{ ssh_connect_user }}" 
-  when: is_kube_master or is_add_master
+- name: Deploy Kubernetes Master to systemd
+  include: "roles/kubernetes-manifests/includes/deploy-master-systemd-manifests.yaml"
+  when: 
+    - is_kube_master or is_add_master
+    - k8s_deploy_type == 'systemd'
 
 # Haproxy
 ## ********************************************************************************************************************************
@@ -58,7 +22,9 @@
     mode: 0755
     owner: "{{ ssh_connect_user }}"
     state: directory
-  when: is_kube_master or is_add_master
+  when: 
+    - is_kube_master or is_add_master
+    - is_haproxy
 
 - name: Copy Haproxy cfg Files
   template: 
@@ -66,7 +32,9 @@
     dest: "{{ haproxy_etc_dirs }}haproxy.cfg"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
-  when: is_kube_master or is_add_master
+  when: 
+    - is_kube_master or is_add_master
+    - is_haproxy
   
 - name: Copy Haproxy conf Files
   template: 
@@ -74,8 +42,9 @@
     dest: "{{ kubernetes_manifests_dirs }}haproxy.yml"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
-  when: is_kube_master or is_add_master
-
+  when: 
+    - is_kube_master or is_add_master
+    - is_haproxy
 
 # Keepalived
 ## ********************************************************************************************************************************

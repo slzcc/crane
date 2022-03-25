@@ -23,7 +23,7 @@ spec:
     - name: CHECK_IP
       value: any
     - name: CHECK_PORT
-      value: "6443"
+      value: "{{ k8s_master_haproxy_bind_port }}"
     - name: VRID
       value: "53"
     - name: TZ

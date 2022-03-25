@@ -1,0 +1,42 @@
+---
+- name: Create Kubernetes PKI WorkDir
+  file:
+    path: "{{ kubernetes_manifests_dirs }}"
+    mode: 0755
+    owner: "{{ ssh_connect_user }}"
+    state: directory
+
+- name: Copy Kubernetes ApiServer Config Files
+  template: 
+    src: "kube-apiserver.j2"
+    dest: "{{ kubernetes_manifests_dirs }}kube-apiserver.yml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+
+- name: Copy Kubernetes Controller Manager Config Files
+  template: 
+    src: "kube-controller-manager.j2"
+    dest: "{{ kubernetes_manifests_dirs }}kube-controller-manager.yml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+
+- name: Copy Kubernetes Scheduler Config Files
+  template: 
+    src: "kube-scheduler.j2"
+    dest: "{{ kubernetes_manifests_dirs }}kube-scheduler.yml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+
+- name: Copy encryption Config Files
+  copy: 
+    src: "master/encryption.yml"
+    dest: "{{ kubernetes_etc_dirs }}encryption.yml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 
+
+- name: Copy audit-policy Config Files
+  copy: 
+    src: "master/audit-policy.yml"
+    dest: "{{ kubernetes_etc_dirs }}audit-policy.yml"
+    mode: 0644
+    owner: "{{ ssh_connect_user }}" 

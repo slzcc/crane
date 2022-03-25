@@ -26,10 +26,33 @@
   ignore_errors: true
 
 - name: Export the Kubelet
-  shell: "cp -a {{ temporary_dirs }}import-kubernetes-temporary/kubernetes/node/bin/kubelet {{ kubernetes_ctl_path }}"
+  shell: "cp -a {{ temporary_dirs }}import-kubernetes-temporary/kubernetes/server/bin/kubelet {{ kubernetes_ctl_path }}"
 
 - name: Export the Kubectl
-  shell: "cp -a {{ temporary_dirs }}import-kubernetes-temporary/kubernetes/node/bin/kubectl {{ kubernetes_ctl_path }}"
+  shell: "cp -a {{ temporary_dirs }}import-kubernetes-temporary/kubernetes/server/bin/kubectl {{ kubernetes_ctl_path }}"
+
+- name: Export the Kube-proxy
+  shell: "cp -a {{ temporary_dirs }}import-kubernetes-temporary/kubernetes/server/bin/kube-proxy {{ kubernetes_ctl_path }}"
+  when: 
+    - k8s_deploy_type == 'systemd'
+
+- name: Export the kube-scheduler
+  shell: "cp -a {{ temporary_dirs }}import-kubernetes-temporary/kubernetes/server/bin/kube-scheduler {{ kubernetes_ctl_path }}"
+  when: 
+    - k8s_deploy_type == 'systemd'
+    - is_kube_master or is_add_master
+
+- name: Export the kube-controller-manager
+  shell: "cp -a {{ temporary_dirs }}import-kubernetes-temporary/kubernetes/server/bin/kube-controller-manager {{ kubernetes_ctl_path }}"
+  when: 
+    - k8s_deploy_type == 'systemd'
+    - is_kube_master or is_add_master
+
+- name: Export the kube-apiserver
+  shell: "cp -a {{ temporary_dirs }}import-kubernetes-temporary/kubernetes/server/bin/kube-apiserver {{ kubernetes_ctl_path }}"
+  when: 
+    - k8s_deploy_type == 'systemd'
+    - is_kube_master or is_add_master
 
 - name: Temportay uMount to.
   shell: "umount -l {{ temporary_dirs }}import-kubernetes-temporary"

@@ -1,0 +1,24 @@
+[Unit]
+Description=kube-scheduler
+After=network.target
+After=kube-apiserver.service
+ 
+[Service]
+Type=notify
+ExecStart={{ kubernetes_ctl_path }}kube-scheduler \
+--v=0 \
+--port=0 \
+--logtostderr=true \
+--address=0.0.0.0 \
+--leader-elect=true \
+--kubeconfig={{ kubernetes_etc_dirs }}scheduler.conf \
+--authentication-kubeconfig={{ kubernetes_etc_dirs }}scheduler.conf \
+--authorization-kubeconfig={{ kubernetes_etc_dirs }}scheduler.conf
+Restart=always
+StartLimitInterval=0
+RestartSec=10
+Environment=
+LimitNOFILE=65536
+ 
+[Install]
+WantedBy=multi-user.target
