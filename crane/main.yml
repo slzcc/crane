@@ -166,6 +166,8 @@
   vars_files:
     - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/kubernetes-cluster-management/defaults/main.yml"
+    - "roles/kubernetes-cluster-management/defaults/tls.yaml"
     - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/system-initialize/defaults/main.yml"
     - "roles/kubernetes-cluster-management/vars/haproxy.yaml"
