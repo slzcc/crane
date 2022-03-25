@@ -67,7 +67,9 @@ k8s_load_balance_ip: 10.211.55.3
 
 # 其他选择参照 roles/kubernetes-manifests/defaults/main.yml
 
-# 部署 Kubernetes 使用 Systemd 方式部署, 默认使用 staticPod
+# 部署 Kubernetes 的方式, 有 staticPod 和 systemd 模式。默认使用 staticPod
+# 当使用 staticPod 时, kubectl、kubelet 会通过二进制方式部署, 其余通过 kubelet 的 staticPod 模式启动。
+# 当使用 systemd 时, 下会使用二进制部署 kube-apiserver、kube-controller-manager、kube-scheduler、kube-proxy、kubectl、kubelet。
 k8s_deploy_type: 'staticPod'
 
 # CoreDNS Version

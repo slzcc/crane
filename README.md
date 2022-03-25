@@ -12,7 +12,7 @@ Please refer to the documentation for detailed configuration: [Wiki Docs URL](ht
 
 使用 Ansible 基于 `staticPod` 或 `systemd` 方式部署 Kubernetes Cluster（非 Kubeadm）, 并支持 Master/Node/Etcd 节点的添加。
 
-> systemd 当前版本不支持节点扩容等策略, 需需要生产使用则选择 `staticPod`。
+> systemd 当前版本不支持节点扩容等策略, 建议生产使用选择 `staticPod` 模式部署。
 
 部署全局基于 TLS, 并区分 K8s Cluster CA、Etcd CA 证书, 并支持证书轮转。
 
@@ -79,6 +79,8 @@ Crane 的架构简述:
 - [x] 支持 `Kubernetes` 离线安装。
 - [x] 支持 `Dockerd`、`Containerd`、`CRIO` 的容器运行环境部署。
 - [x] 支持新建 `Etcd` 集群并支持恢复。
+- [x] 支持 `Systemd` 方式部署 `k8s`, `etcd` 并支持离线安装。
+- [x] 支持非 `haproxy` 模式下部署, 以及对其解耦合。
 
 ## 安装过程示例
 
