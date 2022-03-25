@@ -1,6 +1,6 @@
 ---
-## Generate Kubelet Kubeconfig
-- name: Create Kubectl Config *
+## Generate Kube-Proxy Kubeconfig
+- name: Create Kube-Proxy Config *
   shell: "cd {{ kubernetes_pki_dirs }} &&
           {{ kubernetes_ctl_path }}kubectl config set-cluster kubernetes
             --certificate-authority=ca.pem
@@ -8,7 +8,7 @@
             --server={{ k8s_apiserver_https_bind }}
             --kubeconfig={{ kubernetes_etc_dirs }}kube-proxy.conf"
 
-- name: Create Kubectl Config **
+- name: Create Kube-Proxy Config **
   shell: "cd {{ kubernetes_pki_dirs }} && 
           {{ kubernetes_ctl_path }}kubectl config set-cluster kubernetes
             --certificate-authority=ca.pem
@@ -16,7 +16,7 @@
             --server={{ k8s_apiserver_https_bind }}
             --kubeconfig={{ kubernetes_etc_dirs }}kube-proxy.conf"
 
-- name: Create Kubectl Config ***
+- name: Create Kube-Proxy Config ***
   shell: "cd {{ kubernetes_pki_dirs }} &&
           {{ kubernetes_ctl_path }}kubectl config set-credentials system:kube-proxy
             --client-certificate=kube-proxy.pem
@@ -24,17 +24,17 @@
             --embed-certs=true
             --kubeconfig={{ kubernetes_etc_dirs }}kube-proxy.conf"
 
-- name: Create Kubectl Config ****
+- name: Create Kube-Proxy Config ****
   shell: "cd {{ kubernetes_pki_dirs }} &&
           {{ kubernetes_ctl_path }}kubectl config set-context system:kube-proxy@kubernetes
             --cluster=kubernetes
             --user=system:kube-proxy
             --kubeconfig={{ kubernetes_etc_dirs }}kube-proxy.conf"
             
-- name: Create Kubectl Config *****
+- name: Create Kube-Proxy Config *****
   shell: "cd {{ kubernetes_pki_dirs }} &&
           {{ kubernetes_ctl_path }}kubectl config use-context system:kube-proxy@kubernetes
             --kubeconfig={{ kubernetes_etc_dirs }}kube-proxy.conf"
 
-- name: Create Kubectl Config ******
+- name: Create Kube-Proxy Config ******
   shell: "chown {{ ssh_connect_user }} {{ kubernetes_etc_dirs }}kube-proxy.conf"
