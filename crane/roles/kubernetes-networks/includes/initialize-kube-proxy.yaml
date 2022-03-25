@@ -15,7 +15,6 @@
     mode: 0644
   with_items:
     - "config.conf"
-    - "kubeconfig.conf"
 
 - name: Copy Kube-Proxy Systemd Config Files to Nodes
   template: 
@@ -25,13 +24,3 @@
     owner: "{{ ssh_connect_user }}"
 
 - shell: "systemctl daemon-reload"
-  
-- name: Kube-Proxy Powered UP And Startd
-  service: 
-    name: kube-proxy
-    enabled: yes
-
-- name: Run Kube-Proxy
-  service:
-    name: kube-proxy
-    state: started

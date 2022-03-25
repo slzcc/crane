@@ -155,6 +155,7 @@
     - { include: 'roles/kubernetes-cluster-management/includes/configuretion-kubelet.yaml' }
     - { include: 'roles/kubernetes-cluster-management/includes/create-kubelet-pki.yaml' }
     - { include: 'roles/kubernetes-cluster-management/includes/create-kubelet-conf.yaml' }
+    - { include: 'roles/kubernetes-networks/includes/initialize-kube-proxy.yaml', when: kube_proxy_deploy_type == 'systemd' }
 
 - name: Create Cluster Master Kubernetes Manifests Files
   hosts: kube-master
@@ -170,9 +171,14 @@
     - "roles/kubernetes-cluster-management/vars/haproxy.yaml"
     - "roles/kubernetes-networks/defaults/keepalived.yaml"
     - "roles/crane/defaults/main.yml"
+    - "roles/kubernetes-networks/defaults/main.yml"
     - "roles/etcd-cluster-management/defaults/tls.yaml"
   roles:
     - { role: kubernetes-manifests, tags: [k8s-manifests]}
+  tasks:
+    - { include: 'roles/kubernetes-networks/includes/create-kubelet-pki.yaml', when: kube_proxy_deploy_type == 'systemd' }
+    - { include: 'roles/kubernetes-networks/includes/create-kubelet-conf.yaml', when: kube_proxy_deploy_type == 'systemd' }
+    - { include: 'roles/kubernetes-networks/includes/copy-kube-proxy-ca-to-nodes.yaml', when: kube_proxy_deploy_type == 'systemd' }
 
 - name: Start Kubernetes Cluster Maste/Nones Kubelet.
   hosts: k8s-cluster
@@ -191,7 +197,7 @@
     - "roles/kubernetes-cluster-management/vars/kubelet.yaml"
   tasks:
     - { include: 'roles/kubernetes-cluster-management/includes/start-kubelet.yaml' }
-    - { include: 'roles/kubernetes-networks/includes/deploy-kube-proxy-systemd.yaml', when: kube_proxy_deploy_type == 'systemd' }
+    - { include: 'roles/kubernetes-networks/includes/start-kubelet-proxy.yaml', when: kube_proxy_deploy_type == 'systemd' }
 
 - name:  Initialize Kubernetes Cluster RBAC.
   hosts: kube-master[0]

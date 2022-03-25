@@ -1,0 +1,11 @@
+---
+
+- name: Kube-Proxy Powered UP And Startd
+  service: 
+    name: kube-proxy
+    enabled: yes
+
+- name: Run Kube-Proxy
+  service:
+    name: kube-proxy
+    state: started

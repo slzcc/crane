@@ -1,0 +1,44 @@
+---
+- name: Copy CFSSL Kubernetes Json Files
+  template:
+    src: "roles/kubernetes-cluster-management/templates/{{ item }}"
+    dest: "{{ kubernetes_pki_dirs }}{{ item }}"
+    owner: "{{ ssh_connect_user }}" 
+    mode: 0644
+  with_items:
+    - "ca-config.json"
+    - "ca-csr.json"
+
+- name: Copy CFSSL Kubernetes Proxy Json Files
+  template:
+    src: "roles/kubernetes-networks/templates/kube-proxy/{{ item }}"
+    dest: "{{ kubernetes_pki_dirs }}{{ item }}"
+    owner: "{{ ssh_connect_user }}" 
+    mode: 0644
+  with_items:
+    - "kube-proxy-csr.json"
+
+- name: Create Kube-Proxy CA *
+  shell: >
+    cd {{ kubernetes_pki_dirs }} && {{ kubernetes_ctl_path }}cfssl gencert \
+            -ca=ca.pem \
+            -ca-key=ca-key.pem \
+            -config=ca-config.json \
+            -hostname={{ k8s_master_ip_str }} \
+            -profile=kubernetes \
+            kube-proxy-csr.json | {{ kubernetes_ctl_path }}cfssljson -bare kube-proxy
+
+- name: Modify File Owner **
+  shell: >
+    for ITEM in $(ls {{ kubernetes_pki_dirs }}); do 
+      chown {{ ssh_connect_user }} {{ kubernetes_pki_dirs }}${ITEM}; 
+    done
+
+- name: Remove CFSSL Kubernetes Json Files
+  file:
+    path: "{{ kubernetes_pki_dirs }}{{ item }}"
+    state: absent
+  with_items:
+    - "kube-proxy-csr.json"
+    - "ca-config.json"
+    - "ca-csr.json"
