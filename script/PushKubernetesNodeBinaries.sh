@@ -3,19 +3,19 @@
 # 如果需要部署到自己的私有仓库，请修改此项名称
 export targetRegistry=${targetRegistry:-'slzcc'}
 
-_cri_driver=`awk '/^cri_driver/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_cri_driver=`awk '/^cri_driver/{print}' ../crane/group_vars/default.yaml | awk -F': ' '{print $2}' | sed "s/'//g"`
 
 _cni_os_drive='linux-amd64'
-_dockerVersion=`awk '/^docker_version/{print}' ../crane/roles/cri-install/vars/docker.yaml | awk -F': ' '{print $2}' | sed "s/'//g"`
-_k8sVersion=`awk '/^k8s_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
-_cni_version=`awk '/^cni_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
-_etcdVersion=`awk '/^etcd_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
-_pauseVersion=`awk '/^pause_version/{print}' ../crane/roles/kubernetes-cluster-management/defaults/main.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
-_calicoVersion=`awk '/^calico_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
-_haproxyVersion=`awk '/^haproxy_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
-_corednsVersion=`awk '/^dns_version/{print}' ../crane/roles/kubernetes-cluster-management/defaults/main.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
-_nginxIngressVersion=`awk '/^ingress_nginx_version/{print}' ../crane/roles/kubernetes-addons/defaults/main.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
-_ciliumVersion=`awk '/^cilium_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_dockerVersion=`awk '/^docker_version/{print}' ../crane/group_vars/all/docker.yaml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_k8sVersion=`awk '/^k8s_version/{print}' ../crane/group_vars/default.yaml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_cni_version=`awk '/^cni_version/{print}' ../crane/group_vars/default.yaml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_etcdVersion=`awk '/^etcd_version/{print}' ../crane/group_vars/default.yaml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_pauseVersion=`awk '/^pause_version/{print}' ../crane/group_vars/k8s_cluster/k8s-configure.yaml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_calicoVersion=`awk '/^calico_version/{print}' ../crane/group_vars/default.yaml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_haproxyVersion=`awk '/^haproxy_version/{print}' ../crane/group_vars/default.yaml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_corednsVersion=`awk '/^dns_version/{print}' ../crane/group_vars/default.yaml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_nginxIngressVersion=`awk '/^ingress_nginx_version/{print}' ../crane/group_vars/k8s_cluster/k8s-addons.yaml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_ciliumVersion=`awk '/^cilium_version/{print}' ../crane/group_vars/default.yaml | awk -F': ' '{print $2}' | sed "s/'//g"`
 
 # Docker Version
 export dockercliVersion=${_dockerVersion:-'19.03'}
@@ -41,8 +41,8 @@ export ciliumVersion=${_ciliumVersion:-'v1.10.1'}
 export temporaryDirs=${temporaryDirs:-'/tmp'}
 
 # Proxy
-http_proxy=`awk '/^http_proxy/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}'`
-https_proxy=`awk '/^https_proxy/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}'`
+http_proxy=`awk '/^http_proxy/{print}' ../crane/group_vars/default.yaml | awk -F': ' '{print $2}'`
+https_proxy=`awk '/^https_proxy/{print}' ../crane/group_vars/default.yaml | awk -F': ' '{print $2}'`
 
 # Clean old files
 rm -rf  ${temporaryDirs}/image_*.tar.gz | true
@@ -104,7 +104,7 @@ COPY containerd-image-import.sh /containerd-image-import.sh
 
 EOF
 
-export BUILD_VERSION=`awk '/^k8s_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`.`awk '/^build_k8s_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+export BUILD_VERSION=`awk '/^k8s_version/{print}' ../crane/group_vars/default.yaml | awk -F': ' '{print $2}' | sed "s/'//g"`.`awk '/^build_k8s_version/{print}' ../crane/group_vars/default.yaml | awk -F': ' '{print $2}' | sed "s/'//g"`
 
 sudo docker build -t ${targetRegistry}/kubernetes:${BUILD_VERSION} ${temporaryDirs}
 

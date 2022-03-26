@@ -2,13 +2,13 @@ SHELL := /bin/bash
 
 DockerHubRepoName := "slzcc"
 ProjectName := "crane"
-VERSION := `awk '/^k8s_version/' ./crane/group_vars/all.yml | awk -F': ' '{print $$2}' | sed "s/'//g"`.`awk '/^build_k8s_version/{print}' ./crane/group_vars/all.yml | awk -F': ' '{print $$2}' | sed "s/'//g"`
-DOCKER_VERSION := `awk '/^docker_version/' ./crane/roles/cri-install/vars/docker.yaml | awk -F': ' '{print $$2}' | sed "s/'//g"`
-CRIO_VERSION := `awk '/^crio_version/' ./crane/roles/cri-install/vars/crio.yaml | awk -F': ' '{print $$2}' | sed "s/'//g"`
-CONTAINERD_VERSION := `awk '/^containerd_version/' ./crane/roles/cri-install/vars/containerd.yaml | awk -F': ' '{print $$2}' | sed "s/'//g"`
-CRITOOLS_VERSION := `awk '/^cri_tools_version/' ./crane/roles/cri-install/vars/cri-tools.yaml | awk -F': ' '{print $$2}' | sed "s/'//g"`
-OS_DRIVE := `awk '/^os_drive/' ./crane/group_vars/all.yml | awk -F': ' '{print $$2}' | sed "s/'//g"`
-OS_ARCH := `awk '/^os_arch/' ./crane/group_vars/all.yml | awk -F': ' '{print $$2}' | sed "s/'//g"`
+VERSION := `awk '/^k8s_version/' ./crane/group_vars/default.yaml | awk -F': ' '{print $$2}' | sed "s/'//g"`.`awk '/^build_k8s_version/{print}' ./crane/group_vars/default.yaml | awk -F': ' '{print $$2}' | sed "s/'//g"`
+DOCKER_VERSION := `awk '/^docker_version/' ./crane/group_vars/all/docker.yaml | awk -F': ' '{print $$2}' | sed "s/'//g"`
+CRIO_VERSION := `awk '/^crio_version/' ./crane/group_vars/all/crio.yaml | awk -F': ' '{print $$2}' | sed "s/'//g"`
+CONTAINERD_VERSION := `awk '/^containerd_version/' ./crane/group_vars/all/containerd.yaml | awk -F': ' '{print $$2}' | sed "s/'//g"`
+CRITOOLS_VERSION := `awk '/^cri_tools_version/' ./crane/group_vars/all/cri-tools.yaml | awk -F': ' '{print $$2}' | sed "s/'//g"`
+OS_DRIVE := `awk '/^os_drive/' ./crane/group_vars/default.yaml | awk -F': ' '{print $$2}' | sed "s/'//g"`
+OS_ARCH := `awk '/^os_arch/' ./crane/group_vars/default.yaml | awk -F': ' '{print $$2}' | sed "s/'//g"`
 
 ifeq ($(OS_ARCH), amd64)
 OS_ARCH_NAME := 'x86_64'

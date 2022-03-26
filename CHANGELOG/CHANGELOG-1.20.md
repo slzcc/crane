@@ -303,12 +303,12 @@ kubelet_containerd_cri_options: >-
     ansible_ssh_pipelining: true
   vars_files:
     - "roles/crane/defaults/main.yml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/kubernetes-manifests/defaults/main.yml"
+    
+    
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/etcd-cluster-management/vars/main.yml"
-    - "roles/kubernetes-networks/defaults/calico.yaml"
-    - "roles/kubernetes-networks/defaults/main.yml"
+    
+    
   tasks:
     - { include: 'roles/etcd-add-node/includes/update-k8s-calico.yml' }
 ```
@@ -384,14 +384,14 @@ Containerd 1.3.9 => 1.4.3。`@crane/roles/cri-install/vars/containerd.yaml`
     ansible_ssh_pipelining: true
   vars_files:
     - "roles/crane/defaults/main.yml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/kubernetes-manifests/defaults/main.yml"
+    
+    
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/etcd-cluster-management/vars/main.yml"
-    - "roles/kubernetes-networks/defaults/calico.yaml"
-    - "roles/kubernetes-networks/defaults/main.yml"
+    
+    
 +/+    
-    - "roles/kubernetes-upgrade/defaults/main.yml"
+    
 +/+
   tasks:
     - { include: 'roles/kubernetes-upgrade/includes/update-k8s-networks.yaml' }
@@ -406,13 +406,13 @@ Containerd 1.3.9 => 1.4.3。`@crane/roles/cri-install/vars/containerd.yaml`
     ansible_ssh_pipelining: true
   vars_files:
     - "roles/crane/defaults/main.yml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/kubernetes-manifests/defaults/main.yml"
+    
+    
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/etcd-cluster-management/vars/main.yml"
-    - "roles/kubernetes-networks/defaults/calico.yaml"
-    - "roles/kubernetes-networks/defaults/main.yml"
-    - "roles/kubernetes-upgrade/defaults/main.yml"
+    
+    
+    
   tasks:
     - { include: 'roles/kubernetes-upgrade/includes/update-k8s-networks.yaml' }
 -/-
@@ -533,12 +533,12 @@ etcd-add-node 和 etcd-del-node 重命名 xx.nodes
     ansible_ssh_pipelining: true
   vars_files:
     - "roles/crane/defaults/main.yml"
-    - "roles/system-initialize/defaults/main.yml"
-    - "roles/kubernetes-networks/defaults/main.yml"
-    - "roles/kubernetes-manifests/defaults/main.yml"
+    
+    
+    
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
 +/+
-    - "roles/downloads-ssh-key/defaults/main.yml"
+    
 +/+
   roles:
     - { role: remove-cluster, tags: [clean]}
@@ -607,9 +607,9 @@ kernel_nf_conntrack_max: 4194304
   vars:
     ansible_ssh_pipelining: true
   vars_files:
-    - "roles/downloads-ssh-key/defaults/main.yml"
+    
     - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-manifests/defaults/main.yml"
+    
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/etcd-cluster-management/vars/main.yml"
   tasks:
@@ -626,11 +626,11 @@ kernel_nf_conntrack_max: 4194304
 
 ### 移除
 
-将部分 addons 进行了移除, 一部分以因为无法跟进时代潮流, 另一部分是没有过多精力维护, 项目配置项在 1.2x 中不会移除, 但对 `@crane/roles/kubernetes-addons/defaults/main.yml` 入口文件进行了移除。
+将部分 addons 进行了移除, 一部分以因为无法跟进时代潮流, 另一部分是没有过多精力维护, 项目配置项在 1.2x 中不会移除, 但对 `@crane/group_vars/k8s_cluster/k8s-addons.yaml` 入口文件进行了移除。
 
 ### 增加
 
-对 Harbor 支持 CA Rotation 只需要对 `@crane/roles/kubernetes-addons/defaults/main.yml => is_harbor_ca_rotation` 值为 `true` 即可, 它会抑制 harbor 安装只会更新当前 harbor ca 证书。
+对 Harbor 支持 CA Rotation 只需要对 `@crane/group_vars/k8s_cluster/k8s-addons.yaml => is_harbor_ca_rotation` 值为 `true` 即可, 它会抑制 harbor 安装只会更新当前 harbor ca 证书。
 
 ### 调整
 
@@ -665,12 +665,12 @@ kernel_nf_conntrack_max: 4194304
     ansible_ssh_pipelining: true
   vars_files:
     - "roles/crane/defaults/main.yml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/kubernetes-manifests/defaults/main.yml"
+    
+    
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/etcd-cluster-management/vars/main.yml"
-    - "roles/kubernetes-networks/defaults/calico.yaml"
-    - "roles/kubernetes-networks/defaults/main.yml"
+    
+    
     - "roles/etcd-cluster-management/defaults/etcd-add-nodes.yaml"
   tasks:
     - { include: 'roles/etcd-cluster-management/includes/update-k8s-calico.yaml' }
@@ -687,12 +687,12 @@ kernel_nf_conntrack_max: 4194304
     ansible_ssh_pipelining: true
   vars_files:
     - "roles/crane/defaults/main.yml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/kubernetes-manifests/defaults/main.yml"
+    
+    
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/etcd-cluster-management/vars/main.yml"
-    - "roles/kubernetes-networks/defaults/calico.yaml"
-    - "roles/kubernetes-networks/defaults/main.yml"
+    
+    
   tasks:
     - { include: 'roles/etcd-ca-rotation/includes/update-cluster-network.yml' }
 ```
@@ -707,12 +707,12 @@ kernel_nf_conntrack_max: 4194304
 #   vars:
 #     ansible_ssh_pipelining: true
 #   vars_files:
-#     - "roles/downloads-ssh-key/defaults/main.yml"
+#     
 #     - "roles/crane/defaults/main.yml"
 #     - "roles/etcd-cluster-management/vars/main.yml"
-#     - "roles/kubernetes-networks/defaults/calico.yaml"
-#     - "roles/kubernetes-networks/defaults/main.yml"
-#     - "roles/kubernetes-manifests/defaults/main.yml"
+#     
+#     
+#     
 #     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
 #   tasks:
 #     - { include: 'roles/kubernetes-ca-rotation/includes/update-cluster-network.yml' }
@@ -728,10 +728,10 @@ kernel_nf_conntrack_max: 4194304
   vars:
     ansible_ssh_pipelining: true
   vars_files:
-    - "roles/kubernetes-upgrade/defaults/main.yml"
+    
     - "roles/crane/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
+    
   tasks:
     - { include: 'roles/kubernetes-upgrade/includes/update-k8s-calico.yaml', when: is_k8s_upgrade_calico }
 ```

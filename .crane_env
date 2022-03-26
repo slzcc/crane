@@ -1,18 +1,18 @@
 export DockerHubRepoName="slzcc"
 export ProjectName="crane"
 
-export VERSION=`awk '/^k8s_version/' ./crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`.`awk '/^build_k8s_version/{print}' ./crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+export VERSION=`awk '/^k8s_version/' ./crane/group_vars/default.yaml | awk -F': ' '{print $2}' | sed "s/'//g"`.`awk '/^build_k8s_version/{print}' ./crane/group_vars/default.yaml | awk -F': ' '{print $2}' | sed "s/'//g"`
 
-export DOCKER_VERSION=`awk '/^docker_version/' ./crane/roles/cri-install/vars/docker.yaml | awk -F': ' '{print $2}' | sed "s/'//g"`
-export CRIO_VERSION=`awk '/^crio_version/' ./crane/roles/cri-install/vars/crio.yaml | awk -F': ' '{print $2}' | sed "s/'//g"`
-export CONTAINERD_VERSION=`awk '/^containerd_version/' ./crane/roles/cri-install/vars/containerd.yaml | awk -F': ' '{print $2}' | sed "s/'//g"`
+export DOCKER_VERSION=`awk '/^docker_version/' ./crane/group_vars/all/docker.yaml | awk -F': ' '{print $2}' | sed "s/'//g"`
+export CRIO_VERSION=`awk '/^crio_version/' ./crane/group_vars/all/crio.yaml | awk -F': ' '{print $2}' | sed "s/'//g"`
+export CONTAINERD_VERSION=`awk '/^containerd_version/' ./crane/group_vars/all/containerd.yaml | awk -F': ' '{print $2}' | sed "s/'//g"`
 
-export http_proxy=`awk '/^http_proxy/' ./crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
-export https_proxy=`awk '/^https_proxy/' ./crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
-export no_proxy=`awk '/^no_proxy/' ./crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+export http_proxy=`awk '/^http_proxy/' ./crane/group_vars/default.yaml | awk -F': ' '{print $2}' | sed "s/'//g"`
+export https_proxy=`awk '/^https_proxy/' ./crane/group_vars/default.yaml | awk -F': ' '{print $2}' | sed "s/'//g"`
+export no_proxy=`awk '/^no_proxy/' ./crane/group_vars/default.yaml | awk -F': ' '{print $2}' | sed "s/'//g"`
 
-export temporary_dirs=`awk '/^temporary_dirs/' ./crane/roles/crane/defaults/main.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+export temporary_dirs=`awk '/^temporary_dirs/' ./crane/group_vars/crane/default.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 
-export kubernetes_ctl_path=`awk '/^kubernetes_ctl_path/' ./crane/roles/kubernetes-cluster-management/defaults/configure.yaml | awk -F': ' '{print $2}' | sed "s/'//g"`
+export kubernetes_ctl_path=`awk '/^kubernetes_ctl_path/' ./crane/roles/group_vars/k8s_cluster/k8s-configure.yaml | awk -F': ' '{print $2}' | sed "s/'//g"`
 
 export OPTION=-vv

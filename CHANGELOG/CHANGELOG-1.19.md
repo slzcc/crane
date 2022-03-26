@@ -132,7 +132,7 @@ Crane 以更新至 1.19.3.0 版本。
 Crane 以更新至 1.19.4.0 版本。
 
 ```
-@crane/roles/kubernetes-addons/defaults/main.yml
+@crane/group_vars/k8s_cluster/k8s-addons.yaml
 添加 Domain 使用注释。
 
 @crane/roles/kubernetes-addons/includes/harbor_create_tls.yaml
