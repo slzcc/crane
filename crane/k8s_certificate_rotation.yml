@@ -12,16 +12,6 @@
     ansible_ssh_pipelining: true
     crane_deploy_type: 'k8s_certifcate_rotation'
     crane_tasks: 'kubernetes-ca-rotation'
-  vars_files:
-    - "roles/cri-install/vars/containerd.yaml"
-    - "roles/cri-install/vars/crio.yaml"
-    - "roles/cri-install/vars/docker.yaml"
-    - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/etcd-cluster-management/vars/main.yml"
-    - "roles/etcd-cluster-management/defaults/main.yml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
   roles:
     - { role: crane, tags: [crane] }
     
@@ -30,10 +20,6 @@
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
-  vars_files:
-    - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
   tasks:
     - { include: 'roles/kubernetes-ca-rotation/includes/initialize.yaml' }
 
@@ -43,8 +29,6 @@
   become: yes
   become_method: sudo
   remote_user: "{{ ssh_connect_user }}"
-  vars_files:
-    - "roles/crane/defaults/main.yml"
   roles:
     - { role: downloads-ssh-key, tags: [copy_ssh_private_key]}
 
@@ -54,14 +38,6 @@
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
-  vars_files:
-    - "roles/kubernetes-cluster-management/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/system-initialize/defaults/main.yml"
-    - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/defaults/tls.yaml"
-    - "roles/kubernetes-manifests/defaults/main.yml"
   roles:
     - { role: kubernetes-ca-rotation, tags: [k8s-ca-rotation]}
 
@@ -71,13 +47,6 @@
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
-  vars_files:
-    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/kubernetes-cluster-management/defaults/tls.yaml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/system-initialize/defaults/main.yml"
-    - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-manifests/defaults/main.yml"
   tasks:
     - { include: 'roles/kubernetes-cluster-management/includes/copy-kubelet-admin.yaml' }
     - { include: 'roles/kubernetes-ca-rotation/includes/update-cluster-master.yml' }
@@ -88,16 +57,6 @@
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
-  vars_files:
-    - "roles/kubernetes-cluster-management/defaults/main.yml"
-    - "roles/kubernetes-ca-rotation/defaults/main.yml"
-    - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/system-initialize/defaults/main.yml"
-    - "roles/crane/defaults/main.yml"
-    - "roles/cri-install/vars/kubelet.yaml"
-    - "roles/kubernetes-cluster-management/vars/kubelet.yaml"
   tasks:
     - { include: 'roles/kubernetes-ca-rotation/includes/update-cluster-node-ca.yml' }
 
@@ -107,12 +66,6 @@
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
-  vars_files:
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/kubernetes-networks/defaults/main.yml"
-    - "roles/kubernetes-manifests/defaults/main.yml"
   tasks:
     - { include: 'roles/kubernetes-ca-rotation/includes/update-cluster-node.yml' }
 
@@ -123,10 +76,5 @@
   vars:
     ansible_ssh_pipelining: true
     crane_deploy_type: 'k8s_certifcate_rotation'
-  vars_files:
-    - "roles/crane/defaults/main.yml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   tasks:
     - { include: 'roles/crane/includes/sync-crane.yaml' }

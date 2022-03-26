@@ -26,17 +26,3 @@
     dest: "{{ kubernetes_manifests_dirs }}kube-scheduler.yml"
     mode: 0644
     owner: "{{ ssh_connect_user }}" 
-
-- name: Copy encryption Config Files
-  copy: 
-    src: "master/encryption.yml"
-    dest: "{{ kubernetes_etc_dirs }}encryption.yml"
-    mode: 0644
-    owner: "{{ ssh_connect_user }}" 
-
-- name: Copy audit-policy Config Files
-  copy: 
-    src: "master/audit-policy.yml"
-    dest: "{{ kubernetes_etc_dirs }}audit-policy.yml"
-    mode: 0644
-    owner: "{{ ssh_connect_user }}" 

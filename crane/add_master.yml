@@ -12,16 +12,6 @@
     ansible_ssh_pipelining: true
     crane_deploy_type: 'add_master'
     crane_tasks: 'k8s-add-master'
-  vars_files:
-    - "roles/cri-install/vars/containerd.yaml"
-    - "roles/cri-install/vars/crio.yaml"
-    - "roles/cri-install/vars/docker.yaml"
-    - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/etcd-cluster-management/vars/main.yml"
-    - "roles/etcd-cluster-management/defaults/main.yml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
   roles:
     - { role: crane, tags: [crane] }
     
@@ -39,16 +29,6 @@
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
-  vars_files:
-    - "roles/etcd-cluster-management/vars/main.yml"
-    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/kubernetes-cluster-management/defaults/tls.yaml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/system-initialize/defaults/main.yml"
-    - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/defaults/main.yml"
-    - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/vars/kubelet.yaml"
   tasks:
     - { include: 'roles/kubernetes-cluster-management/includes/copy-master-kubeconfig-to-new-master.yaml' }
     
@@ -58,14 +38,6 @@
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
-  vars_files:
-    - "roles/etcd-cluster-management/vars/main.yml"
-    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/system-initialize/defaults/main.yml"
-    - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/vars/haproxy.yaml"
-    - "roles/etcd-cluster-management/defaults/tls.yaml"
   roles:
     - { role: kubernetes-manifests, tags: [kubernetes-manifests]}
 
@@ -76,19 +48,6 @@
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
-  vars_files:
-    - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-networks/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/kubernetes-cluster-management/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/defaults/tls.yaml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/system-initialize/defaults/main.yml"
-    - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/vars/kubelet.yaml"
-    - "roles/cri-install/vars/kubelet.yaml"
-    - "roles/cri-install/vars/crio.yaml"
-    - "roles/cri-install/vars/containerd.yaml"
   tasks:
     - { include: 'roles/kubernetes-cluster-management/includes/configuretion-kubelet.yaml' }
     - { include: 'roles/kubernetes-cluster-management/includes/restart-kubelet.yaml' }
@@ -99,13 +58,6 @@
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
-  vars_files:
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/system-initialize/defaults/main.yml"
-    - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/vars/haproxy.yaml"
-    - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   tasks:
     - { include: roles/kubernetes-cluster-management/includes/update-k8s-haproxy.yaml, when: is_haproxy }
 
@@ -116,12 +68,6 @@
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
-  vars_files:
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/kubernetes-cluster-management/defaults/main.yml"
   tasks:
     - { include: roles/kubernetes-cluster-management/includes/update-k8s-label.yaml }
 
@@ -132,12 +78,6 @@
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
-  vars_files:
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/kubernetes-cluster-management/defaults/main.yml"
   tasks:
     - { include: 'roles/kubernetes-cluster-management/includes/k8s-add-masters/k8s-set-labels.yaml' }
 
@@ -148,10 +88,5 @@
   vars:
     ansible_ssh_pipelining: true
     crane_deploy_type: 'add_master'
-  vars_files:
-    - "roles/crane/defaults/main.yml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   tasks:
     - { include: 'roles/crane/includes/sync-crane.yaml' }

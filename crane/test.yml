@@ -21,14 +21,6 @@
   vars:
     ansible_ssh_pipelining: true
     crane_deploy_type: 'tests'
-  vars_files:
-    - "roles/crane/defaults/main.yml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/etcd-cluster-management/vars/main.yml"
-    - "roles/kubernetes-networks/defaults/calico.yaml"
-    - "roles/kubernetes-networks/defaults/main.yml"
   roles:
     - { role: tests, tags: [tests]}
   tasks:

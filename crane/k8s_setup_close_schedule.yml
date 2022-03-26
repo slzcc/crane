@@ -10,9 +10,5 @@
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
-  vars_files:
-    - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
   tasks:
     - { include: 'roles/kubernetes-upgrade/includes/nodes/node-no-schedule.yaml' }

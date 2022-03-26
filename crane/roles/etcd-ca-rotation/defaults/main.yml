@@ -1,1 +1,0 @@
-deploy_new_ca_rotation_dirs: '{{ temporary_dirs }}etcd-ca-rotation'

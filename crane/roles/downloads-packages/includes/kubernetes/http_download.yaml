@@ -1,9 +1,4 @@
 ---
-- include_vars: "{{ item }}"
-  with_items:
-    - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-
 # Kubernetes
 ## ********************************************************************************************************************************
 - name: Check Kubelet Version

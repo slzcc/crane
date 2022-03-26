@@ -1,3 +1,6 @@
+## Kubernetes Kubelet
+## ********************************************************************************************************************************
+
 # Kubelet Options
 ## 不区分 Master/Nodes
 kubelet_options: "--cgroup-driver={{ kubelet_cgroup_drive }} --network-plugin=cni --cni-conf-dir={{ cni_config_dir }} --cni-bin-dir={{ kubernetes_cni_dirs }} --pod-infra-container-image={{ k8s_pod_infra_container_image }} --runtime-cgroups=/systemd/system.slice --kubelet-cgroups=/systemd/system.slice {{ kubelet_swap_config }} {{ kubelet_resolv_config }} {{ kubelet_gc_options }} {{ kubelet_containers_log_config }} {{ kubelet_max_pod }}"
@@ -23,3 +26,12 @@ kubelet_containers_log_config: "--container-log-max-files=3 --container-log-max-
 
 # Kubelet Max Pods
 kubelet_max_pod: "--max-pods=110"
+
+# CRI Init
+kubelet_containerd_cri_options: >-
+  {% if cri_drive_install_type == "none" and is_crane_kubernetes_deploy == "none" %}
+  {% elif cri_k8s_default == "crio" %}
+  --container-runtime=remote --container-runtime-endpoint=unix://{{ crio_socket_path }}
+  {%- elif cri_k8s_default == "containerd" -%}
+  --container-runtime=remote --container-runtime-endpoint=unix://{{ containerd_socket_path }}
+  {% endif %}

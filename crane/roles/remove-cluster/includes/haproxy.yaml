@@ -1,5 +1,4 @@
 ---
-- include_vars: "roles/kubernetes-cluster-management/vars/haproxy.yaml"
 
 - name: Clean Haproxy
   file:

@@ -3,12 +3,7 @@
   
 - include_vars: "{{ item }}"
   with_items:
-    - "roles/crane/defaults/main.yml"
-    - "roles/etcd-cluster-management/vars/main.yml"
-    - "roles/remove-cluster/defaults/main.yml"
-    - "roles/kubernetes-networks/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"    
 
 - name: Check Swap
   shell: "swapon -s | sed '1d' | awk '{print $1}'"

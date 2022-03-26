@@ -1,4 +1,4 @@
-## Kubernetes
+## Kubernetes Manifests
 ## ********************************************************************************************************************************
 
 # Kubernetes ApiServer 监听的端口号
@@ -49,7 +49,7 @@ k8s_cluster_component_registry: 'k8s.gcr.io'
 # 是否使用 RBAC, 集群默认是 RBAC 认证, 但可以在部署完集群之后创建超级用户取消所有限制
 is_rbac: false
 
-# kubernetes CA Config 请参照: roles/kubernetes-cluster-management/defaults/main.yml
+# kubernetes CA Config 请参照: roles/kubernetes-cluster-management/defaults/tls.yml
 
 # kubernetes 最低 kernel 否则关闭相应的功能
 min_kernel_version: 4.3
@@ -63,8 +63,29 @@ dns_cluster_ip: '10.16.0.10'
 # DNS 集群 ClusterIP 网段
 dns_cluster_range: "{{ k8s_cluster_ip_range }}"
 
-# 判定值, 勿动
-is_kube_master: "{{ inventory_hostname in groups['kube-master'] }}"
-is_kube_node: "{{ inventory_hostname in groups['kube-node'] }}"
-is_add_master: "{{ inventory_hostname in groups['k8s-cluster-add-master'] }}"
-is_add_node: "{{ inventory_hostname in groups['k8s-cluster-add-node'] }}"
+## Kube Proxy
+## ********************************************************************************************************************************
+
+# Kube Proxy 模式, 默认 ipvs, 如果设置为空则默认使用 iptable
+kube_proxy_mode: "ipvs"
+
+# 是否安装 ipvsadm
+is_install_ipvsadm: true
+
+# ipvs 调度策略.
+kube_proxy_ipvs_scheduler: "rr"
+
+# proxy 工作目录
+kube_proxy_work_dirs: "/var/lib/kube-proxy/"
+
+# proxy 部署模式, 可以 staticPod 或 systemd
+kube_proxy_deploy_type: "{{ k8s_deploy_type }}"
+
+## CNI
+## ********************************************************************************************************************************
+
+# CNI OS Type
+cni_os_drive: "{{ os_drive }}-{{ os_arch }}"
+
+# CNI Config Dir
+cni_config_dir: '/etc/cni/net.d'

@@ -4,5 +4,5 @@
   shell: "sudo scp -r -p -o StrictHostKeyChecking=no -o GSSAPIAuthentication=no -i {{ ssh_public_key }} \
             -P {{ ssh_connect_port }} {{ kubernetes_etc_dirs }}{{ item[1] }}  {{ ssh_connect_user }}@{{ item[0] }}:{{ kubernetes_etc_dirs }}{{ item[1] }}"
   with_nested:
-    - "{{ k8s_node_ip_list }}"
+    - "{{ k8s_node_ip_list_not_ansible_env_address }}"
     - ['bootstrap-kubelet.conf']

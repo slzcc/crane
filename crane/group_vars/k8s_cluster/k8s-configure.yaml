@@ -1,3 +1,6 @@
+## Kubernetes Workdir Configure
+## ********************************************************************************************************************************
+
 # Kubectl DirName
 kubernetes_ctl_path: '/usr/local/bin/'
 

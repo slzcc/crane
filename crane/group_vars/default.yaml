@@ -148,7 +148,7 @@ cri_k8s_default: docker
 
 ## kubernetes-addons
 ## ********************************************************************************************************************************
-# kubernetes-addons 配置 请参照 roles/kubernetes-addons/defaults/main.yml
+# kubernetes-addons 配置 请参照 group_vars/k8s_cluster/k8s-addons.yaml
 
 ## Clean Kubernetes Cluster
 ## ********************************************************************************************************************************

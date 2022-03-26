@@ -40,7 +40,7 @@ docker_storage_driver: ""
 docker_insecure_registry: '[]'
 
 # docker cgroup drive
-docker_cgroup_drive: '{{ cgroup_drive }}'
+docker_cgroup_drive: '{{ kubelet_cgroup_drive }}'
 
 # docker login file size
 docker_log_size: '1G'

@@ -12,16 +12,6 @@
     ansible_ssh_pipelining: true
     crane_deploy_type: 'main'
     crane_tasks: 'main'
-  vars_files:
-    - "roles/cri-install/vars/containerd.yaml"
-    - "roles/cri-install/vars/crio.yaml"
-    - "roles/cri-install/vars/docker.yaml"
-    - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/etcd-cluster-management/vars/main.yml"
-    - "roles/etcd-cluster-management/defaults/main.yml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
   roles:
     - { role: crane, tags: [crane] }
 
@@ -30,8 +20,6 @@
   gather_facts: false
   become: yes
   become_method: sudo
-  vars_files:
-    - "roles/crane/defaults/main.yml"
   roles:
     - { role: downloads-ssh-key, tags: [copy_ssh_private_key]}
 
@@ -41,18 +29,6 @@
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
-  vars_files:
-    - "roles/crane/defaults/main.yml"
-    - "roles/system-initialize/defaults/main.yml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/cri-install/vars/docker.yaml"
-    - "roles/cri-install/vars/containerd.yaml"
-    - "roles/cri-install/vars/crio.yaml"
-    - "roles/cri-install/vars/cri-tools.yaml"
-    - "roles/cri-install/vars/runc.yaml"
-    - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/kubernetes-networks/defaults/main.yml"
   roles:
     - { role: system-initialize, tags: [system]}
     - { role: cri-install, tags: [cri]}
@@ -63,12 +39,6 @@
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
-  vars_files:
-    - "roles/kubernetes-cluster-management/defaults/main.yml"
-    - "roles/system-initialize/defaults/main.yml"
-    - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/defaults/tls.yaml"
   roles:
     - { role: downloads-packages, tags: [packages]}
 
@@ -78,14 +48,6 @@
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
-  vars_files:
-    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/kubernetes-cluster-management/defaults/tls.yaml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/system-initialize/defaults/main.yml"
-    - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-networks/defaults/main.yml"
   roles:
     - { role: kubernetes-cluster-management, tags: [k8s-kcm]}
   tasks:
@@ -97,15 +59,6 @@
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
-  vars_files:
-    - "roles/etcd-cluster-management/defaults/tls.yaml"
-    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/system-initialize/defaults/main.yml"
-    - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/etcd-cluster-management/defaults/main.yml"
-    - "roles/etcd-cluster-management/vars/main.yml"
   tasks:
     - { include: 'roles/etcd-cluster-management/includes/create-etcd-ca.yaml' }
 
@@ -115,15 +68,6 @@
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
-  vars_files:
-    - "roles/etcd-cluster-management/defaults/tls.yaml"
-    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/system-initialize/defaults/main.yml"
-    - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/etcd-cluster-management/defaults/main.yml"
-    - "roles/etcd-cluster-management/vars/main.yml"
   tasks:
     - { include: 'roles/etcd-cluster-management/includes/deploy-etcd-manifests.yaml', when: etcd_deploy_type == 'staticPod' }
     - { include: 'roles/etcd-cluster-management/includes/deploy-etcd-systemd-manifests.yaml', when: etcd_deploy_type == 'systemd' }
@@ -135,21 +79,6 @@
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
-  vars_files:
-    - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-networks/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/kubernetes-cluster-management/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/defaults/tls.yaml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/system-initialize/defaults/main.yml"
-    - "roles/etcd-cluster-management/defaults/main.yml"
-    - "roles/etcd-cluster-management/vars/main.yml"
-    - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/vars/kubelet.yaml"
-    - "roles/cri-install/vars/kubelet.yaml"
-    - "roles/cri-install/vars/crio.yaml"
-    - "roles/cri-install/vars/containerd.yaml"
   tasks:
     - { include: 'roles/kubernetes-cluster-management/includes/initialize-kubelet.yaml' }
     - { include: 'roles/kubernetes-cluster-management/includes/configuretion-kubelet.yaml' }
@@ -163,19 +92,6 @@
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
-  vars_files:
-    - "roles/etcd-cluster-management/vars/main.yml"
-    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/kubernetes-cluster-management/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/defaults/tls.yaml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/system-initialize/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/vars/haproxy.yaml"
-    - "roles/kubernetes-networks/defaults/keepalived.yaml"
-    - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-networks/defaults/main.yml"
-    - "roles/etcd-cluster-management/defaults/tls.yaml"
   tasks:
     - { include: 'roles/kubernetes-networks/includes/create-kube-proxy-pki.yaml', when: kube_proxy_deploy_type == 'systemd' }
     - { include: 'roles/kubernetes-networks/includes/create-kube-proxy-conf.yaml', when: kube_proxy_deploy_type == 'systemd' }
@@ -187,16 +103,6 @@
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
-  vars_files:
-    - "roles/etcd-cluster-management/vars/main.yml"
-    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/system-initialize/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/vars/haproxy.yaml"
-    - "roles/kubernetes-networks/defaults/keepalived.yaml"
-    - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-networks/defaults/main.yml"
-    - "roles/etcd-cluster-management/defaults/tls.yaml"
   roles:
     - { role: kubernetes-manifests, tags: [k8s-manifests]}
 
@@ -207,14 +113,6 @@
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
-  vars_files:
-    - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/system-initialize/defaults/main.yml"
-    - "roles/kubernetes-networks/defaults/main.yml"
-    - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/vars/kubelet.yaml"
   tasks:
     - { include: 'roles/kubernetes-cluster-management/includes/start-kubelet.yaml' }
     - { include: 'roles/kubernetes-networks/includes/start-kube-proxy.yaml', when: kube_proxy_deploy_type == 'systemd' }
@@ -226,13 +124,6 @@
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
-  vars_files:
-    - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/kubernetes-cluster-management/defaults/main.yml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/system-initialize/defaults/main.yml"
-    - "roles/crane/defaults/main.yml"
   tasks:
     - { include: 'roles/kubernetes-cluster-management/includes/initialize-cluster-rbac.yaml' }
 
@@ -243,15 +134,6 @@
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
-  vars_files:
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/crane/defaults/main.yml"
-    - "roles/etcd-cluster-management/vars/main.yml"
-    - "roles/kubernetes-networks/defaults/calico.yaml"
-    - "roles/kubernetes-networks/defaults/cilium.yaml"
-    - "roles/kubernetes-networks/defaults/main.yml"
-    - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   roles:
     - { role: kubernetes-networks, tags: [k8s-networks]}
 
@@ -262,12 +144,6 @@
   become_method: sudo
   vars:
     ansible_ssh_pipelining: true
-  vars_files:
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/crane/defaults/main.yml"
-    - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/kubernetes-cluster-management/defaults/main.yml"
   tasks:
     - { include: 'roles/kubernetes-cluster-management/includes/kubernetes-cluster-setup.yaml' }
 
@@ -278,10 +154,5 @@
   vars:
     ansible_ssh_pipelining: true
     crane_deploy_type: 'main'
-  vars_files:
-    - "roles/crane/defaults/main.yml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   tasks:
     - { include: 'roles/crane/includes/sync-crane.yaml' }

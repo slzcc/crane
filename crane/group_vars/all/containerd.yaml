@@ -12,7 +12,7 @@ is_containerd_config_custom: true
 containerd_install_type: "{{ cri_drive_install_type }}"
 
 # Containerd cgroup drive
-containerd_cgroup_drive: '{{ cgroup_drive }}'
+containerd_cgroup_drive: '{{ kubelet_cgroup_drive }}'
 
 # Containerd 存储路径
 containerd_data_root: '/var/lib/containerd'

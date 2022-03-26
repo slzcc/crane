@@ -1,3 +1,6 @@
+## Kubernetes LoadBalance Keepalived
+## ********************************************************************************************************************************
+
 # Keepalived 绑定的 IP 地址, 它在 HaProxy 的上一层
 keepalived_ip: "{{ k8s_load_balance_ip }}"
 

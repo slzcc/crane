@@ -18,7 +18,7 @@ crio_install_type: '{{ cri_drive_install_type }}'
 is_mandatory_crio_install: false
 
 # crio cgroup drive
-crio_cgroup_drive: '{{ cgroup_drive }}'
+crio_cgroup_drive: '{{ kubelet_cgroup_drive }}'
 
 # crio 存储路径
 crio_data: '/var/lib/containers'

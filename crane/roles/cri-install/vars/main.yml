@@ -1,1 +1,0 @@
-cgroup_drive: '{{ kubelet_cgroup_drive }}'
