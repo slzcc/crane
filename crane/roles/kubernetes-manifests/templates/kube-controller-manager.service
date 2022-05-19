@@ -16,7 +16,6 @@ ExecStart={{ kubernetes_ctl_path }}kube-controller-manager \
 --controllers=*,bootstrapsigner,tokencleaner \
 --kubeconfig={{ kubernetes_etc_dirs }}controller-manager.conf \
 --leader-elect=true \
---port=0 \
 --requestheader-client-ca-file={{ kubernetes_pki_dirs }}front-proxy-ca.pem \
 --root-ca-file={{ kubernetes_pki_dirs }}ca.pem \
 --service-account-private-key-file={{ kubernetes_pki_dirs }}sa.key \

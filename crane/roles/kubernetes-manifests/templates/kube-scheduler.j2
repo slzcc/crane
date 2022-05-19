@@ -19,7 +19,7 @@ spec:
     image: {{ k8s_cluster_component_registry }}/kube-scheduler:{{ k8s_version }}
     command:
       - kube-scheduler
-      - --address=0.0.0.0
+      - --bind-address=0.0.0.0
       - --leader-elect=true
       - --kubeconfig={{ kubernetes_etc_dirs }}scheduler.conf
       - --authentication-kubeconfig={{ kubernetes_etc_dirs }}scheduler.conf
