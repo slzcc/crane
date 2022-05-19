@@ -45,7 +45,6 @@ spec:
     - --etcd-keyfile={{ etcd_ssl_dirs }}{{ tls_etcd_key_file_name }}
     - --etcd-servers={{ initial_cluster() }}
 {% endif %}
-    - --insecure-port=0
     - --kubelet-client-certificate={{ kubernetes_pki_dirs }}apiserver.pem
     - --kubelet-client-key={{ kubernetes_pki_dirs }}apiserver-key.pem
     - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
