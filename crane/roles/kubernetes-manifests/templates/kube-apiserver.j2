@@ -70,6 +70,25 @@ spec:
     env:
     - name: TZ
       value: "{{ time_location }}"
+    livenessProbe:
+      failureThreshold: 8
+      httpGet:
+        host: 127.0.0.1
+        path: /livez
+        port: {{ k8s_master_apiservice_bind_port }}
+        scheme: HTTPS
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      timeoutSeconds: 15
+    readinessProbe:
+      failureThreshold: 3
+      httpGet:
+        host: 127.0.0.1
+        path: /readyz
+        port: {{ k8s_master_apiservice_bind_port }}
+        scheme: HTTPS
+      periodSeconds: 1
+      timeoutSeconds: 15
     startupProbe:
       failureThreshold: 24
       httpGet:
