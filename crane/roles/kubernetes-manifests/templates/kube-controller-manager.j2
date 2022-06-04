@@ -33,6 +33,16 @@ spec:
       - --root-ca-file={{ kubernetes_pki_dirs }}ca.pem
       - --service-account-private-key-file={{ kubernetes_pki_dirs }}sa.key
       - --use-service-account-credentials=true
+    livenessProbe:
+      failureThreshold: 8
+      httpGet:
+        host: 127.0.0.1
+        path: /healthz
+        port: 10257
+        scheme: HTTPS
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      timeoutSeconds: 15
     startupProbe:
       failureThreshold: 24
       httpGet:

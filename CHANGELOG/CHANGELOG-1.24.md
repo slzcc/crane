@@ -1,6 +1,8 @@
 - [v1.24](#v124)
   - [Updated Instructions](#updated-instructions)
     - [v1.24.0.0 更新内容](#v12400)
+    - [v1.24.0.1 更新内容](#v12401)
+    - [v1.24.1.0 更新内容](#v12410)
 
 # Updated Instructions
 
@@ -14,3 +16,9 @@ Crane 以更新至 1.24.0.0 版本。
 
 更新组件:
   * cilium 1.10.8 => 1.10.10
+
+# v1.24.1.0
+
+Crane 以更新至 1.24.1.0 版本。
+
+修复部分 apiServer 组件的健康检查不完善问题。
