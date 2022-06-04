@@ -101,6 +101,7 @@
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/etcd-cluster-management/defaults/etcd-del-nodes.yaml"
+    - "roles/etcd-cluster-management/defaults/tls.yaml"
   tasks:
     - { include: 'roles/etcd-cluster-management/includes/update-k8s-manifests.yaml' }
 
@@ -117,6 +118,7 @@
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
     - "roles/etcd-cluster-management/vars/main.yml"
     - "roles/etcd-cluster-management/defaults/etcd-del-nodes.yaml"
+    - "roles/etcd-cluster-management/defaults/tls.yaml"
   tasks:
     - { include: 'roles/etcd-cluster-management/includes/update-etcd-manifests.yaml' }
 

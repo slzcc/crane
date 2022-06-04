@@ -24,6 +24,16 @@ spec:
       - --kubeconfig={{ kubernetes_etc_dirs }}scheduler.conf
       - --authentication-kubeconfig={{ kubernetes_etc_dirs }}scheduler.conf
       - --authorization-kubeconfig={{ kubernetes_etc_dirs }}scheduler.conf
+    livenessProbe:
+      failureThreshold: 8
+      httpGet:
+        host: 127.0.0.1
+        path: /healthz
+        port: 10259
+        scheme: HTTPS
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      timeoutSeconds: 15
     startupProbe:
       failureThreshold: 24
       httpGet:
