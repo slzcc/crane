@@ -8,7 +8,7 @@
   when: cri_drive_install_type != "none"
 
 - name: Deploy CRI to cri_k8s_default
-  include: "roles/cri-install/includes/{{ item[0] }}/main.yml"
+  include: "roles/cri-install/includes/{{ item }}/main.yml"
   when: 
     - cri_drive_install_type != "none"
   with_nested:
