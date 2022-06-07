@@ -135,6 +135,7 @@
     - "roles/kubernetes-networks/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/etcd-cluster-management/defaults/etcd-add-nodes.yaml"
+    - "roles/etcd-cluster-management/defaults/tls.yaml"
   tasks:
     - { include: 'roles/etcd-cluster-management/includes/update-k8s-manifests.yaml' }
 
@@ -154,6 +155,7 @@
     - "roles/kubernetes-networks/defaults/calico.yaml"
     - "roles/kubernetes-networks/defaults/main.yml"
     - "roles/etcd-cluster-management/defaults/etcd-add-nodes.yaml"
+    - "roles/etcd-cluster-management/defaults/tls.yaml"
   tasks:
     - { include: 'roles/etcd-cluster-management/includes/update-etcd-manifests.yaml' }
 
