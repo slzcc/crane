@@ -4,7 +4,6 @@
   shell: >
     {{ kubernetes_ctl_path }}docker run --rm -i -v {{ etcd_ssl_dirs }}:{{ etcd_ssl_dirs }} -w {{ etcd_ssl_dirs }} {{ k8s_cluster_component_registry }}/etcd:{{ etcd_version }} etcdctl --cacert {{ etcd_ssl_dirs }}etcd-ca.pem --key {{ etcd_ssl_dirs }}etcd-key.pem --cert {{ etcd_ssl_dirs }}etcd.pem --endpoints {{ etcd_cluster_str }} member list 
   register: result
-  ignore_errors: true
 
 - name: Delete Etcd Cluster Nodes
   shell: >

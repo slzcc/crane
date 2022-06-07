@@ -34,3 +34,27 @@ Crane 以更新至 1.24.1.0 版本。
   * haproxy 2.5.3 => 2.6.0 版本。
   * coredns 1.9.0 => 1.9.3 版本。
   * pause 3.5 => 3.7 版本。
+
+## 修复
+
+修复 cri 安装时 `cri_driver` 选项不能正常生效的问题。
+
+在 99-k8s.conf 内核文件中添加:
+
+```
+# 用户 create 文件的数量，默认 128
+fs.inotify.max_user_instances = 8192
+# inotify队列最大长度，默认值 16384
+fs.inotify.max_queued_events = 32768
+
+# 限制进程拥有 VMA 的总数
+vm.max_map_count = 524288
+```
+
+解决 k8s-ApiServer 因重启可能内核资源不足造成的无法正常启动问题：
+
+```
+FATA[0000] failed to create fsnotify watcher: too many open files
+```
+
+修复 Etcd 相关文档说明，添加必须保证拥有 docker 才能如期运行。

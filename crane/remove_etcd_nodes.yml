@@ -122,6 +122,23 @@
   tasks:
     - { include: 'roles/etcd-cluster-management/includes/update-etcd-manifests.yaml' }
 
+- name: Check Etcd Cluster Info
+  hosts: kube-master[0]
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/etcd-cluster-management/defaults/main.yml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/etcd-cluster-management/defaults/tls.yaml"
+  tasks:
+    - { include: 'roles/etcd-cluster-management/includes/check-cluster-list.yaml' }
+
 - name: Sync Crane Delploy Files to Instance
   hosts: kube-master[0]
   become: yes
