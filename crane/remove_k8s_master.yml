@@ -96,3 +96,8 @@
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   tasks:
     - { include: 'roles/crane/includes/sync-crane.yaml' }
+
+- hosts: localhost
+  gather_facts: false
+  tasks:
+    - debug: msg="请在 nodes 文件中把 k8s-cluster-del-master 列表内容移动到 kube-node 保证后续可用性!"
