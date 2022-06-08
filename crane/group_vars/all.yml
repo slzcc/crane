@@ -138,7 +138,7 @@ cri_drive_install_type: 'http_binary'
 
 # cri 支持的驱动有 docker/containerd/crio
 ## 各驱动独立配置项, 请参阅 crane/roles/cri-install 并根据需求在 vars 中自定义配置各 cri 的驱动版本。
-cri_driver: ['docker', 'containerd']
+cri_driver: ['containerd', 'docker']
 
 # 此选项配置 Kubernetes 默认 cri 驱动
 # 当使用 RuntimeClass 时此选项配合 `cri_driver` 使用

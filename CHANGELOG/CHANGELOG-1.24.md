@@ -58,3 +58,14 @@ FATA[0000] failed to create fsnotify watcher: too many open files
 ```
 
 修复 Etcd 相关文档说明，添加必须保证拥有 docker 才能如期运行。
+
+修改 cri_driver 的值, 目的解决 containerd 为主 docker 为辅, 决绝 containerd 版本问题:
+
+```
+cri_driver: ['docker', 'containerd']
+
+=>
+cri_driver: ['containerd', 'docker']
+```
+
+修复在 `add_node.yml`、`add_etcd.yml`、`add_master.yml`、`remove_etcd_nodes.yml`、`remove_k8s_master.yml`、`remove_k8s_nodes.yml` 添加 nodes 列表判断保护机制，避免因输入 移除 或 新增 IP 池时造成旧数据残留引起的 BUG。
