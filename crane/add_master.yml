@@ -164,3 +164,8 @@
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   tasks:
     - { include: 'roles/crane/includes/sync-crane.yaml' }
+
+- hosts: localhost
+  gather_facts: false
+  tasks:
+    - debug: msg="请在 nodes 文件中把 k8s-cluster-add-master 列表内容移动到 kube-master 并且移除 kube-node 的记录保证后续可用性!"
