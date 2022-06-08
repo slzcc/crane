@@ -1,8 +1,17 @@
 ---
 - hosts: localhost
   gather_facts: false
+  vars_files:
+    - "roles/local-task/defaults/main.yml"
   roles:
     - { role: local-task }
+  tasks:
+    - name: Checl Etcd Del instance
+      assert:
+        that:
+          - "etcd_cluster_del_node_ip_str not in etcd_ip_str"
+        fail_msg: "在 nodes 文件中的 etcd 列表中存在 空值 或与 etcd-cluster-del-node 重复的 IP 会引起部署冲突, 请在 etcd 移除后重试!"
+        success_msg: "Check that the Nodes list is normal."
 
 - name: Initialize Crane Env
   hosts: all
@@ -121,6 +130,23 @@
     - "roles/etcd-cluster-management/defaults/tls.yaml"
   tasks:
     - { include: 'roles/etcd-cluster-management/includes/update-etcd-manifests.yaml' }
+
+- name: Check Etcd Cluster Info
+  hosts: kube-master[0]
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_ssh_pipelining: true
+  vars_files:
+    - "roles/etcd-cluster-management/defaults/main.yml"
+    - "roles/crane/defaults/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
+    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+    - "roles/kubernetes-manifests/defaults/main.yml"
+    - "roles/etcd-cluster-management/defaults/tls.yaml"
+  tasks:
+    - { include: 'roles/etcd-cluster-management/includes/check-cluster-list.yaml' }
 
 - name: Sync Crane Delploy Files to Instance
   hosts: kube-master[0]

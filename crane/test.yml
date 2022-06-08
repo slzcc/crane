@@ -1,35 +1,37 @@
 ---
 - hosts: localhost
   gather_facts: false
-  roles:
-    - { role: local-task }
-      
-- hosts: all
-  become: yes
-  gather_facts: true
-  become_method: sudo
-  vars:
-    ansible_ssh_pipelining: true
-  tasks:
-    - name: Check all Nodes
-      ping: 
-
-- name: Test
-  hosts: kube-master[0]
-  become: yes
-  become_method: sudo
-  vars:
-    ansible_ssh_pipelining: true
-    crane_deploy_type: 'tests'
   vars_files:
-    - "roles/crane/defaults/main.yml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
-    - "roles/kubernetes-manifests/defaults/main.yml"
-    - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/etcd-cluster-management/vars/main.yml"
-    - "roles/kubernetes-networks/defaults/calico.yaml"
-    - "roles/kubernetes-networks/defaults/main.yml"
+    - "tests/defaults/main.yml"
   roles:
     - { role: tests, tags: [tests]}
-  tasks:
-    - { include: 'roles/crane/includes/sync-crane.yaml' }
+      
+# - hosts: all
+#   become: yes
+#   gather_facts: true
+#   become_method: sudo
+#   vars:
+#     ansible_ssh_pipelining: true
+#   tasks:
+#     - name: Check all Nodes
+#       ping: 
+
+# - name: Test
+#   hosts: localhost
+#   become: yes
+#   become_method: sudo
+#   vars:
+#     ansible_ssh_pipelining: true
+#     crane_deploy_type: 'tests'
+#   vars_files:
+#     - "roles/crane/defaults/main.yml"
+#     - "roles/downloads-ssh-key/defaults/main.yml"
+#     - "roles/kubernetes-manifests/defaults/main.yml"
+#     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
+#     - "roles/etcd-cluster-management/vars/main.yml"
+#     - "roles/kubernetes-networks/defaults/calico.yaml"
+#     - "roles/kubernetes-networks/defaults/main.yml"
+#   roles:
+#     - { role: tests, tags: [tests]}
+  # tasks:
+  #   - { include: 'roles/crane/includes/sync-crane.yaml' }

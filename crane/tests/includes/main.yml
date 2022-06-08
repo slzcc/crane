@@ -50,3 +50,32 @@
 #   shell: env
 #   environment:
 #     PATH: /usr/local/bin:{{ ansible_facts.env.PATH }}
+
+# - include_vars: "tests/defaults/main.yml"
+# - debug: msg="{{ all_ip_str }}"
+
+# - shell: >
+#     echo {{ all_ip_str }}
+
+  # - name: Checl Etcd Del instance
+  #   assert:
+  #     that:
+  #       - "etcd_cluster_del_node_ip_str not in etcd_ip_str"
+  #     fail_msg: "'在 nodes 文件中的 etcd 列表中存在 空值 或与 etcd-cluster-del-node 重复的 IP 会引起部署冲突, 请在 etcd 移除后重试!"
+  #     success_msg: "Check that the Nodes list is normal."
+
+  - name: Checl Etcd Add instance
+    assert:
+      that:
+        - "not etcd_cluster_del_node_ip_str"
+        - "not etcd_cluster_add_node_ip_str"
+        - "not etcd_new_cluster_ip_str"
+        - "not etcd_del_cluster_ip_str"
+        - "not k8s_cluster_del_node_ip_str"
+        - "not k8s_cluster_add_node_ip_str"
+        - "not k8s_cluster_del_master_ip_str"
+        - "not k8s_cluster_add_master_ip_str"
+        - "kube_master_ip_str"
+        - "etcd_ip_str"
+      fail_msg: "部署 k8s 需要保证 nodes 文件的 kube-master、kube-node、etcd 有正确的值且其他 组 中不应有任何 IP 地址!"
+      success_msg: "Check that the Nodes list is normal."

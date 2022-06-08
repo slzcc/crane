@@ -5,6 +5,8 @@
 *.DS_Store
 *.swp
 *.runc
+crane/tests
+crane/test.yml
 tags
 ./crane/nodes
 ./crane/roles/downloads-packages/files/runc

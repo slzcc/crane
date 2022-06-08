@@ -1,5 +1,7 @@
 # REMOVE ETCD NODES
 
+> 执行操作时, 必须保证宿主机拥有 docker, 否则无法正常运行。
+
 清除 Etcd 节点会重启 Kube-ApiServer 和 Calico 则会造成集群短暂不可用, 请在使用频率较低的时间段内进行。
 
 > 必须保证新添加的节点存在 docker, 因为加入节点的命令是通过 docker 执行的.
