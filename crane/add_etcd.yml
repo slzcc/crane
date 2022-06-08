@@ -6,7 +6,7 @@
   roles:
     - { role: local-task }
   tasks:
-    - name: Checl Master Add instance
+    - name: Checl Etcd Add instance
       assert:
         that:
           - "etcd_cluster_add_node_ip_str not in etcd_ip_str"

@@ -69,3 +69,5 @@ cri_driver: ['containerd', 'docker']
 ```
 
 修复在 `add_node.yml`、`add_etcd.yml`、`add_master.yml`、`remove_etcd_nodes.yml`、`remove_k8s_master.yml`、`remove_k8s_nodes.yml` 添加 nodes 列表判断保护机制，避免因输入 移除 或 新增 IP 池时造成旧数据残留引起的 BUG。
+
+修复移除 etcd 节点时, 无法通过移除的 etcd 节点新增加 etcd 成员。

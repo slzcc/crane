@@ -6,7 +6,7 @@
   roles:
     - { role: local-task }
   tasks:
-    - name: Checl Etcd Add instance
+    - name: Checl Master Add instance
       assert:
         that:
           - "k8s_cluster_add_master_ip_str not in kube_master_ip_str"

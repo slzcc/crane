@@ -1,8 +1,8 @@
 ---
-- name: Remove Etcd DataDir
-  shell: "rm -rf {{ etcd_data_dirs }}"
-  ignore_errors: true
-
 - name: Remove Etcd Kubernetes Manifests Config
   shell: "rm -rf {{ kubernetes_manifests_dirs }}etcd.yml"
+  ignore_errors: true
+
+- name: Remove Etcd DataDir
+  shell: "rm -rf {{ etcd_data_dirs }}"
   ignore_errors: true
