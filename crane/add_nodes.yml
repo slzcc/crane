@@ -10,7 +10,7 @@
       assert:
         that:
           - "k8s_cluster_add_node_ip_str not in kube_node_ip_str"
-        fail_msg: "'在 nodes 文件中的 kube-node 列表中存在 空值 或与 k8s-cluster-add-node 重复的 IP 会引起部署冲突, 请在 kube-node 移除后重试!"
+        fail_msg: "在 nodes 文件中的 kube-node 列表中存在 空值 或与 k8s-cluster-add-node 重复的 IP 会引起部署冲突, 请在 kube-node 移除后重试!"
         success_msg: "Check that the Nodes list is normal."
 
 - name: Initialize Crane Env

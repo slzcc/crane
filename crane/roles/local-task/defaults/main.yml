@@ -10,6 +10,18 @@ k8s_cluster_del_master_ip_str: >-
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}
 
+k8s_cluster_add_node_ip_str: >-
+  {% for host in groups['k8s-cluster-add-node'] -%}
+    '{{ host }}'
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}
+
+k8s_cluster_del_node_ip_str: >-
+  {% for host in groups['k8s-cluster-del-node'] -%}
+    '{{ host }}'
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}
+
 kube_master_ip_str: >-
   {% for host in groups['kube-master'] -%}
     '{{ host }}'
@@ -36,6 +48,18 @@ etcd_cluster_del_node_ip_str: >-
 
 etcd_ip_str: >-
   {% for host in groups['etcd'] -%}
+    '{{ host }}'
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}
+
+etcd_new_cluster_ip_str: >-
+  {% for host in groups['etcd-new-cluster'] -%}
+    '{{ host }}'
+    {%- if not loop.last -%},{%- endif -%}
+  {%- endfor -%}
+
+etcd_del_cluster_ip_str: >-
+  {% for host in groups['etcd-del-cluster'] -%}
     '{{ host }}'
     {%- if not loop.last -%},{%- endif -%}
   {%- endfor -%}
