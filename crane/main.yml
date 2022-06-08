@@ -5,6 +5,7 @@
     - "roles/local-task/defaults/main.yml"
   roles:
     - { role: local-task }
+  tasks:
   - name: Checl All Host instance
     assert:
       that:
