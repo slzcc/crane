@@ -7,7 +7,7 @@
     - { role: local-task }
   tasks:
     - debug: msg="Document Description [https://github.com/slzcc/crane/blob/master/docs/ADD_KUBERNETES_NODES.md]"
-    - name: Checl Master Add instance
+    - name: Check Master Add instance
       assert:
         that:
           - "k8s_cluster_add_master_ip_str not in kube_master_ip_str"

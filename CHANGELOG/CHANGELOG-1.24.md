@@ -97,3 +97,11 @@ Crane 以更新至 1.24.1.2 版本。
 W0609 14:30:50.802569       1 watcher.go:229] watch chan error: etcdserver: mvcc: required revision has been compacted
 ...
 ```
+
+修复 containerd 离线安装 pause 版本错误的问题。
+
+修复部分 .md or .yml 文件中的说明描述更新。
+
+移除 nf_conntrack 旧版本的处理配置。
+
+修复之前离线安装文件不统一无法完整执行离线安装的问题。

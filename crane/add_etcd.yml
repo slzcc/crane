@@ -7,7 +7,7 @@
     - { role: local-task }
   tasks:
     - debug: msg="Document Description [https://github.com/slzcc/crane/blob/master/docs/ADD_ETCD.md]"
-    - name: Checl Etcd Add instance
+    - name: Check Etcd Add instance
       assert:
         that:
           - "etcd_cluster_add_node_ip_str not in etcd_ip_str"

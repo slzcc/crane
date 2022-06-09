@@ -57,14 +57,14 @@
 # - shell: >
 #     echo {{ all_ip_str }}
 
-  # - name: Checl Etcd Del instance
+  # - name: Check Etcd Del instance
   #   assert:
   #     that:
   #       - "etcd_cluster_del_node_ip_str not in etcd_ip_str"
   #     fail_msg: "'在 nodes 文件中的 etcd 列表中存在 空值 或与 etcd-cluster-del-node 重复的 IP 会引起部署冲突, 请在 etcd 移除后重试!"
   #     success_msg: "Check that the Nodes list is normal."
 
-  - name: Checl Etcd Add instance
+  - name: Check Etcd Add instance
     assert:
       that:
         - "not etcd_cluster_del_node_ip_str"
