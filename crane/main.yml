@@ -35,6 +35,7 @@
         - "If you do not have the above file, execute it in the Crane root directory"
         - "$ make local_load_cri && make local_save_image"
       when: is_using_local_files_deploy
+    - shell: "sleep 3"
 
 - name: Initialize Crane Env
   hosts: all
