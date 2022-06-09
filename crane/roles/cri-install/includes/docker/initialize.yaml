@@ -1,5 +1,4 @@
 ---
-
 - name: Create Docker Config Path
   file:
     path: "/etc/docker"

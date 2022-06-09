@@ -1,7 +1,5 @@
 ---
-
 # https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#noderestriction 
-
 - name: Set Master Role Label *
   shell: >
     {{ kubernetes_ctl_path }}kubectl label node {{ item[0] }} node-role.kubernetes.io/master='' ; \

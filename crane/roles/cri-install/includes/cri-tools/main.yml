@@ -1,5 +1,4 @@
 ---
-
 - name: Check Crictl Version
   shell: "crictl"
   register: check_crictl

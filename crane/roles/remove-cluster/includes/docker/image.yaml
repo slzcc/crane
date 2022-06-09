@@ -1,5 +1,4 @@
 ---
-
 - name: Clean Kubernetes Docker Image
   shell: "{{ kubernetes_ctl_path }}docker rmi -f $(docker images -f 'reference={{ item }}*' | sed '1d' | awk '{print $3}')"
   with_items:

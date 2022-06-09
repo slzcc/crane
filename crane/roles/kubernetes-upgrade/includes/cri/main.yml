@@ -1,5 +1,4 @@
 ---
-
 - name: Check Docker Bin, Ensure that the command line is available.
   include: 'roles/kubernetes-upgrade/includes/cri/docker.yaml'
   when: 

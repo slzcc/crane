@@ -1,5 +1,4 @@
 ---
-
 - name: Deploy Etcd Configure
   include: "roles/downloads-packages/includes/etcd/main.yml"
 

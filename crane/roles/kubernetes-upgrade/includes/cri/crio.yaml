@@ -1,8 +1,4 @@
 ---
-
-# - name: Deploy CRI to CRIO
-#   include: "roles/cri-install/includes/crio/main.yml"
-
 - name: Copy Crictl Config
   template: 
     src: "roles/cri-install/templates/{{ item }}"

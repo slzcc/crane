@@ -1,5 +1,4 @@
 ---
-
 - name: Create Containerd Config Path
   file:
     path: "{{ temporary_dirs }}containerd"

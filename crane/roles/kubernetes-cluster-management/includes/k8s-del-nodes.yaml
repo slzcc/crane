@@ -1,5 +1,4 @@
 ---
-
 - name: Install JQ.
   import_tasks: "roles/system-initialize/includes/system/jq.yaml"
 

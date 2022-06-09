@@ -1,6 +1,4 @@
-
 deploy_new_ca_rotation_dirs: '{{ temporary_dirs }}kubernetes-ca-rotation'
-
 
 k8s_node_ip_list: >-
   [{% for host in groups['kube-node'] -%}

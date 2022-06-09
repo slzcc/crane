@@ -1,4 +1,3 @@
 ---
-
 - name: Restart Kubelet
   shell: "systemctl daemon-reload && systemctl restart kubelet"

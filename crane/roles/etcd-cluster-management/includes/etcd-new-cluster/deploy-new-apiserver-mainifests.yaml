@@ -1,5 +1,4 @@
 ---
-
 - name: Copy Kubernetes ApiServer Config Files
   template:
     src: "roles/etcd-cluster-management/templates/etcd-new-cluster/kube-apiserver.j2"

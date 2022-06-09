@@ -1,5 +1,4 @@
 ---
-
 - name: Create Cri Tools Temporary Path
   file:
     path: "{{ temporary_dirs }}cri-tools"

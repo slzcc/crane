@@ -1,5 +1,4 @@
 ---
-
 - name: Systemd Stop Etcd
   shell: |
     systemctl daemon-reload;

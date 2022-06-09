@@ -1,5 +1,4 @@
 ---
-
 - name: Configure cfssl to execute files in localhost
   include: "roles/downloads-packages/includes/cfssl/http_download.yaml"
   when: 

@@ -1,5 +1,4 @@
 ---
-
 - name: Create Kube Proxy WorkDir
   file:
     path: "{{ kube_proxy_work_dirs }}"

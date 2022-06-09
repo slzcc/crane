@@ -1,5 +1,4 @@
 ---
-
 - name: Check Systemd-resolved Systemd Status
   shell: "systemctl is-active systemd-resolved --no-pager"
   register: result

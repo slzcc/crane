@@ -1,4 +1,3 @@
 ---
-
 - name: Containerd Configure Kubernetes to execute files in download
   include: "roles/cri-install/includes/containerd/ctr.yaml"
