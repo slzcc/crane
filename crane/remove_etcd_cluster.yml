@@ -11,7 +11,7 @@
       assert:
         that:
           - "etcd_del_cluster_ip_str"
-        fail_msg: "部署 k8s 需要保证 nodes 文件的 etcd_del_cluster_ip_str 有正确的 IP 地址! 请修复后重试."
+        fail_msg: "部署 k8s 需要保证 nodes 文件的 etcd-del-cluster 有正确的 IP 地址! 请修复后重试."
         success_msg: "Check that the Nodes list is normal."
 
 - name: Initialize Crane Env

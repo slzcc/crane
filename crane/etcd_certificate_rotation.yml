@@ -18,7 +18,8 @@
           - "not k8s_cluster_add_node_ip_str"
           - "not k8s_cluster_del_master_ip_str"
           - "not k8s_cluster_add_master_ip_str"
-        fail_msg: "部署 k8s 需要保证 nodes 文件的 kube-master、kube-node、etcd 有正确的值且其他 组 中不应有任何 IP 地址! 请修复后重试."
+          - "etcd_ip_str"
+        fail_msg: "部署 k8s 需要保证 nodes 文件的 etcd 有正确的值且其他 组 中不应有任何 IP 地址! 请修复后重试."
         success_msg: "Check that the Nodes list is normal."
     
 - hosts: all
