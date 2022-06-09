@@ -10,10 +10,10 @@ _dockerVersion=`awk '/^docker_version/{print}' ../crane/roles/cri-install/vars/d
 _k8sVersion=`awk '/^k8s_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 _cni_version=`awk '/^cni_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 _etcdVersion=`awk '/^etcd_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
-_pauseVersion=`awk '/^pause_version/{print}' ../crane/roles/kubernetes-cluster-management/defaults/main.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_pauseVersion=`awk '/^pause_version/{print}' ../crane/roles/kubernetes-manifests/defaults/main.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 _calicoVersion=`awk '/^calico_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 _haproxyVersion=`awk '/^haproxy_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
-_corednsVersion=`awk '/^dns_version/{print}' ../crane/roles/kubernetes-cluster-management/defaults/main.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_corednsVersion=`awk '/^dns_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 _nginxIngressVersion=`awk '/^ingress_nginx_version/{print}' ../crane/roles/kubernetes-addons/defaults/main.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 _ciliumVersion=`awk '/^cilium_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 
