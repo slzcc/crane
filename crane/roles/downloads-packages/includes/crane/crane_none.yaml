@@ -12,3 +12,4 @@
   include: "roles/downloads-packages/includes/cilium/http_download.yaml"
   when:
   - general_network_drive == 'cilium'
+  - is_kube_master

@@ -1,5 +1,4 @@
 ---
-
 - name: Create CRI Tasks Temporary Directory
   file:
     path: "{{ temporary_dirs }}cri"

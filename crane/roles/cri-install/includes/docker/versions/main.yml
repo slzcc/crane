@@ -1,5 +1,4 @@
 ---
-
 - name: Install Docker Binray in docker_version.split('.')[0]
   include: "roles/cri-install/includes/docker/versions/{{ docker_version.split('.')[0] }}.yaml"
 

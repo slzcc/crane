@@ -1,5 +1,4 @@
 ---
-
 - name: Create Kubernetes Rotation Path
   file:
     path: "{{ temporary_dirs }}kubernetes-ca-rotation"

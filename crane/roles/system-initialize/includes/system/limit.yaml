@@ -1,5 +1,4 @@
 ---
-
 - name: Copy Limit Config
   template:
     src: "roles/system-initialize/templates/19-k8s-limit.conf"

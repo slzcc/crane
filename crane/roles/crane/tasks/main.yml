@@ -1,5 +1,4 @@
 ---
-
 - name: Initialize Crane Directory
   include: "roles/crane/includes/initialize.yaml"
 

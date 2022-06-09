@@ -1,5 +1,4 @@
 ---
-
 - shell: sleep 8
 
 - name: Remove the master Schedule status.

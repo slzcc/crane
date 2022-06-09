@@ -1,5 +1,4 @@
 ---
-
 - name: Move v19 Docker binray to bin Path
   shell: "cp -a {{ temporary_dirs }}docker/{{ item }} {{ kubernetes_ctl_path }}"
   with_items:

@@ -4,6 +4,7 @@
     - [v1.24.0.1 更新内容](#v12401)
     - [v1.24.1.0 更新内容](#v12410)
     - [v1.24.1.1 更新内容](#v12411)
+    - [v1.24.1.2 更新内容](#v12412)
 
 # Updated Instructions
 
@@ -25,9 +26,9 @@ Crane 以更新至 1.24.1.0 版本。
 修复部分 apiServer 组件的健康检查不完善问题。
 
 
-# v1.24.1.0
+# v1.24.1.1
 
-Crane 以更新至 1.24.1.0 版本。
+Crane 以更新至 1.24.1.1 版本。
 
 升级组件:
   * cilium 1.10.11 => 1.11.5 版本。
@@ -71,3 +72,28 @@ cri_driver: ['containerd', 'docker']
 修复在 `add_node.yml`、`add_etcd.yml`、`add_master.yml`、`remove_etcd_nodes.yml`、`remove_k8s_master.yml`、`remove_k8s_nodes.yml` 添加 nodes 列表判断保护机制，避免因输入 移除 或 新增 IP 池时造成旧数据残留引起的 BUG。
 
 修复移除 etcd 节点时, 无法通过移除的 etcd 节点新增加 etcd 成员。
+
+
+# v1.24.1.2
+
+Crane 以更新至 1.24.1.2 版本。
+
+升级组件
+  * containerd 1.5.8 => 1.6.6
+  * cri-o amd64.61748dc51bdf1af367b8a68938dbbc81c593b95d => 1.24.1
+  * cilium agent v1.10.x => v1.11.x
+  * etcd 3.4.9 => 3.5.3-0
+
+## 修复
+
+修复所有可执行 `*.yml` 文件中的判断 nodes 事件，保证系统稳定可靠且添加部署相关说明文档。
+
+修复 cilium 下载影响的部署效率, 依规定只允许部署在 k8s master 节点中。
+
+解决 Kube-apiServer 报错, 升级 etcd 版本:
+
+```
+...
+W0609 14:30:50.802569       1 watcher.go:229] watch chan error: etcdserver: mvcc: required revision has been compacted
+...
+```

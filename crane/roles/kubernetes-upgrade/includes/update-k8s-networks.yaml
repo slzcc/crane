@@ -1,3 +1,4 @@
+---
 - name: Copy Kubernetes DNS Config Files
   template: 
     src: "roles/kubernetes-networks/templates/CoreDNS.j2"
@@ -24,4 +25,3 @@
   shell: 'until {{ kubernetes_ctl_path }}kubectl apply -f {{ temporary_dirs }}kubernetes-upgrade/kube-proxy.yml ; do >&2 echo "Starting..." && sleep 1 ; done'
   when: is_kube_proxy
   ignore_errors: true
-  

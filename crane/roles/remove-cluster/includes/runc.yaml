@@ -1,5 +1,4 @@
 ---
-
 - name: Clean runC Binary
   file:
     path: "{{ kubernetes_ctl_path }}runc"

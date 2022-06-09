@@ -1,5 +1,4 @@
 ---
-
 # Clean CNI
 - name: Clean CNI Cluster Config
   file:

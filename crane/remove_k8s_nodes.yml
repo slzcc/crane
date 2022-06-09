@@ -6,6 +6,7 @@
   roles:
     - { role: local-task }
   tasks:
+    - debug: msg="Document Description [https://github.com/slzcc/crane/blob/master/docs/REMOVE_KUBERNETES_NODES.md]"
     - name: Checl Node Del instance
       assert:
         that:

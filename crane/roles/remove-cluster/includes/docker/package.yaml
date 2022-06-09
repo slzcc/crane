@@ -1,8 +1,7 @@
 ---
-
 - name: Clean Docker for Ubuntu
   apt: 
-    name: ["docker-ce"]
+    name: ["docker-ce", "containerd", "docker.io"]
     autoremove: yes
     purge: yes
   when: 
@@ -11,7 +10,7 @@
 
 - name: Clean Docker for Centos
   yum: 
-    name: ["docker-ce"]
+    name: ["docker-ce", "containerd", "docker.io"]
     state: removed
     autoremove: yes
   when: 

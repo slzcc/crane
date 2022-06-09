@@ -1,5 +1,4 @@
 ---
-
 - name: Configure etcd to execute files in localhost
   include: "roles/downloads-packages/includes/etcd/http_download.yaml"
   when: 

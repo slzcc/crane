@@ -1,5 +1,4 @@
 ---
-
 - name: Remove Cri-Tools Binary Files
   file:
     path: "{{ kubernetes_ctl_path }}{{ item }}"

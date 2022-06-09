@@ -1,5 +1,4 @@
 ---
-
 - name: Check runC Version
   shell: "{{ kubernetes_ctl_path }}runc --version"
   register: check_runc

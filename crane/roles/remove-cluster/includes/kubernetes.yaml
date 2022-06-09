@@ -1,6 +1,5 @@
 ---
 # Clean Kubernetes
-
 - shell: "systemctl daemon-reload"
 
 - name: Stop Kubernetes Master
@@ -121,4 +120,3 @@
     path: "/var/lib/dockershim"
     state: absent
   ignore_errors: true
-

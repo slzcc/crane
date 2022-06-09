@@ -1,5 +1,4 @@
 ---
-
 - name: Clean Calico directory.
   file:
     path: "{{ item }}"

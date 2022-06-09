@@ -1,5 +1,4 @@
 ---
-
 # https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#noderestriction 
 - name: Clean Cluster Node-Role Labels
   shell: >

@@ -6,6 +6,7 @@
   roles:
     - { role: local-task }
   tasks:
+    - debug: msg="Document Description [https://github.com/slzcc/crane/blob/master/docs/ADD_KUBERNETES_NODES.md]"
     - name: Checl Master Add instance
       assert:
         that:

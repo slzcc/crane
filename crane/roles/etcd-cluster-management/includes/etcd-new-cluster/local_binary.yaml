@@ -1,5 +1,4 @@
 ---
-
 - name: Check Restore DB Type to local
   copy:
     src: "roles/etcd-cluster-management/files/snapshot.db"

@@ -1,8 +1,12 @@
 ---
 - hosts: localhost
   gather_facts: false
+  vars_files:
+    - "roles/local-task/defaults/main.yml"
   roles:
     - { role: local-task }
+  tasks:
+    - debug: msg="Document Description [https://github.com/slzcc/crane/blob/master/docs/K8S_SETUP_CLOSE_SCHEDULE.md]"
 
 - name: Stop Cluster Scheduling
   hosts: kube-master[0]

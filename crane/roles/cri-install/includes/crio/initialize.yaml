@@ -1,18 +1,7 @@
 ---
-
 - name: Create CRIO Config Path
   file:
     path: "/etc/crio"
     mode: 0755
     owner: "{{ ssh_connect_user }}"
     state: directory
-
-# - name: Create CRIO Data Path
-#   file:
-#     path: "{{ item }}"
-#     mode: 0755
-#     owner: "{{ ssh_connect_user }}"
-#     state: directory
-#   with_items:
-#     - "{{ containerd_data_root }}"
-#     - "{{ containerd_plugin_root }}"
