@@ -1,5 +1,4 @@
 ---
-
 - name: Stop kubelet
   service:
     name: kubelet

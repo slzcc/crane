@@ -1,5 +1,4 @@
 ---
-
 - name: Remove Docker User
   shell: "userdel docker"
   ignore_errors: true

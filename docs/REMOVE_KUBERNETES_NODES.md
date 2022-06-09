@@ -19,13 +19,14 @@
 [k8s-cluster-del-node]
 35.243.107.98
 ```
+> 删除的 Node IP 地址一定要在 `kube-node` 配置中移除, 如果不设置不影响正常使用。
 
 ## 执行
 
 上述配置准备好后准备执行命令:
 
 ```
-$ make remove_k8s_nodes
+$ make remove_k8s_master
 ```
 
 ## 恢复

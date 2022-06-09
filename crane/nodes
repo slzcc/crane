@@ -1,17 +1,17 @@
 [kube-master]
-10.211.55.3
+127.0.0.1
 
 [kube-node]
 
 [etcd]
-10.211.55.3
+127.0.0.1
 
 
 [all:vars]
 ansible_ssh_public_key_file='~/.ssh/id_rsa.pub'
 ansible_ssh_private_key_file='~/.ssh/id_rsa'
 ansible_ssh_port=22
-ansible_ssh_user=shilei
+ansible_ssh_user=root
 
 [k8s-cluster:children]
 kube-node
@@ -29,3 +29,5 @@ etcd-cluster-add-node
 [etcd-cluster-del-node]
 [etcd-new-cluster]
 [etcd-del-cluster]
+
+# Nodes Document Description [https://github.com/slzcc/crane/blob/master/docs/NODES.md]

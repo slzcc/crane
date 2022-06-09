@@ -1,5 +1,4 @@
 ---
-
 - name: Close Old kubectl Check CMD
   shell: "ps aux | grep 'until {{ kubernetes_ctl_path }}kubectl get pod'|grep -v grep |awk '{print $2}'|xargs -i kill -9 {}"
   ignore_errors: true

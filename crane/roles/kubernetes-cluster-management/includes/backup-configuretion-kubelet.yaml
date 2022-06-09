@@ -1,5 +1,4 @@
 ---
-
 - name: Copy Old kubelet.service.d To Temporary Data
   shell: "cp -a {{ systemd_etc_dirs }}kubelet.service.d  {{ temporary_dirs }}{{ crane_tasks }}/kubelet.service.d-`date +%Y%m%d%H%M%S`"
   ignore_errors: true

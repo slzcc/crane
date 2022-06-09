@@ -33,11 +33,6 @@
   include: "roles/remove-cluster/includes/containerd/shim.yaml"
   when: is_remove_all or is_remove_containerd
   
-# Clean Containerd Image
-# - name: Clean Containerd Image
-#   include: "roles/remove-cluster/includes/containerd/image.yaml"
-#   when: is_remove_all or is_remove_k8s_images
-
 - name: Clean Containerd Config
   include: "roles/remove-cluster/includes/containerd/config.yaml"
   when: is_remove_all or is_remove_containerd
@@ -49,4 +44,3 @@
 - name: Clean Containerd Data
   include: "roles/remove-cluster/includes/containerd/data.yaml"
   when: is_remove_all or is_remove_containerd_dir
-

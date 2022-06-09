@@ -1,5 +1,4 @@
 ---
-
 - name: Remove System Docker Configs
   shell: "mv {{ systemd_default_dirs }}docker.service {{ temporary_dirs }}remove-cluster"
   ignore_errors: true

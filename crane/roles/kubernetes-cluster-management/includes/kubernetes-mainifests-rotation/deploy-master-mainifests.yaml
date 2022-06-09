@@ -1,5 +1,4 @@
 ---
-
 - name: Create Kubernetes PKI WorkDir
   file:
     path: "{{ kubernetes_manifests_dirs }}"

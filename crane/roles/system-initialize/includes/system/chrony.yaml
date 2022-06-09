@@ -1,5 +1,4 @@
 ---
-
 - name: Check Chrony Systemd Status
   shell: "systemctl is-active chrony --no-pager"
   register: result

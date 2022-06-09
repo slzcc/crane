@@ -1,5 +1,4 @@
 ---
-
 - name: Kube-Proxy Powered UP And Startd
   service: 
     name: kube-proxy

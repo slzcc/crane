@@ -1,5 +1,4 @@
 ---
-
 - name: Clean Docker Data DIR
   file:
     path: "{{ docker_data_root }}"

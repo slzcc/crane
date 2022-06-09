@@ -1,5 +1,4 @@
 ---
-
 - name: Create Data Path
   file:
     path: "{{ etcd_data_dirs }}"

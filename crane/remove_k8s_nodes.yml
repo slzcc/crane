@@ -1,8 +1,18 @@
 ---
 - hosts: localhost
   gather_facts: false
+  vars_files:
+    - "roles/local-task/defaults/main.yml"
   roles:
     - { role: local-task }
+  tasks:
+    - debug: msg="Document Description [https://github.com/slzcc/crane/blob/master/docs/REMOVE_KUBERNETES_NODES.md]"
+    - name: Check Node Del instance
+      assert:
+        that:
+          - "k8s_cluster_del_node_ip_str not in kube_node_ip_str"
+        fail_msg: "在 nodes 文件中的 kube-node 列表中存在 空值 或与 k8s-cluster-del-node 重复的 IP 会引起部署冲突, 请在 kube-node 移除后重试!"
+        success_msg: "Check that the Nodes list is normal."
 
 - name: Initialize Crane Env
   hosts: all
@@ -56,12 +66,18 @@
   vars:
     ansible_ssh_pipelining: true
   vars_files:
+    - "roles/downloads-ssh-key/defaults/main.yml"
     - "roles/crane/defaults/main.yml"
+    - "roles/cri-install/vars/docker.yaml"
+    - "roles/cri-install/vars/containerd.yaml"
+    - "roles/cri-install/vars/crio.yaml"
+    - "roles/cri-install/vars/cri-tools.yaml"
+    - "roles/cri-install/vars/kubelet.yaml"    
     - "roles/system-initialize/defaults/main.yml"
     - "roles/kubernetes-networks/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
-    - "roles/downloads-ssh-key/defaults/main.yml"
+    - "roles/etcd-cluster-management/vars/main.yml"
   roles:
     - { role: remove-cluster, tags: [clean]}
 
@@ -79,3 +95,8 @@
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   tasks:
     - { include: 'roles/crane/includes/sync-crane.yaml' }
+
+- hosts: localhost
+  gather_facts: false
+  tasks:
+    - debug: msg="请在 nodes 文件中把 k8s-cluster-del-node 列表内容移除并且把 kube-master 或 kube-node 对应的 IP 地址也进行移除，保证后续可用性!"

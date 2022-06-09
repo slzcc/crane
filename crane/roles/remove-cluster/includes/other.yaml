@@ -1,5 +1,4 @@
 ---
-
 - name: Create Other Path
   file:
     path: "{{ temporary_dirs }}tools"

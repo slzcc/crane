@@ -1,8 +1,41 @@
 ---
 - hosts: localhost
   gather_facts: false
+  vars_files:
+    - "roles/local-task/defaults/main.yml"
   roles:
     - { role: local-task }
+  tasks:
+    - debug: msg="Default Install Document Description [https://github.com/slzcc/crane/blob/master/docs/INSTALL.md]"
+    - debug: msg="Nodes Document Description [https://github.com/slzcc/crane/blob/master/docs/NODES.md]"
+    - debug: msg="online Install [https://github.com/slzcc/crane/blob/master/docs/ONLINE_INSTALL.md]"
+    - debug: msg="offline Install [https://github.com/slzcc/crane/blob/master/docs/OFFINE_INSTALL.md]"
+    - name: Check All Host instance
+      assert:
+        that:
+          - "not etcd_cluster_del_node_ip_str"
+          - "not etcd_cluster_add_node_ip_str"
+          - "not etcd_new_cluster_ip_str"
+          - "not etcd_del_cluster_ip_str"
+          - "not k8s_cluster_del_node_ip_str"
+          - "not k8s_cluster_add_node_ip_str"
+          - "not k8s_cluster_del_master_ip_str"
+          - "not k8s_cluster_add_master_ip_str"
+          - "kube_master_ip_str"
+          - "etcd_ip_str"
+        fail_msg: "部署 k8s 需要保证 nodes 文件的 kube-master、kube-node、etcd 有正确的值且其他 组 中不应有任何 IP 地址! 请修复后重试."
+        success_msg: "Check that the Nodes list is normal."
+    - debug: 
+        msg: 
+        - "In offline deployment mode, check whether the local path crane/roles/downloads-packages/files/ exists files."
+        - "1、image file: crane/roles/downloads-packages/files/kubernetes.tar.gz"
+        - "2、runtime runC file: crane/roles/downloads-packages/files/runC"
+        - "3、cri tools file: crane/roles/downloads-packages/files/crictl*.tar.gz"
+        - "4、cri apps file(It can be multiple depending on 'cri_driver'): crane/roles/downloads-packages/files/{docker.*|containerd.*|cir-o.*}.tar.gz"
+        - "If you do not have the above file, execute it in the Crane root directory"
+        - "$ make local_load_cri && make local_save_image"
+      when: is_using_local_files_deploy
+    - shell: "sleep 3"
 
 - name: Initialize Crane Env
   hosts: all

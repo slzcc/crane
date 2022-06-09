@@ -1,5 +1,4 @@
 ---
-
 - name: Create Haproxy cfg Path
   file:
     path: "{{ haproxy_etc_dirs }}"

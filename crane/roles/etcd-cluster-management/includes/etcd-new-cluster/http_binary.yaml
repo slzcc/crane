@@ -1,4 +1,3 @@
 ---
-
 - name: Check Restore DB Type to local
   shell: "wget -qO {{ restore_db_download_url }} > {{ temporary_dirs }}{{ crane_tasks }}/snapshot.db"

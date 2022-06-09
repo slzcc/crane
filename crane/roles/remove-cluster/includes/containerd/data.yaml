@@ -1,5 +1,4 @@
 ---
-
 - name: Remove Containerd Data Path
   file:
     path: "{{ item }}"

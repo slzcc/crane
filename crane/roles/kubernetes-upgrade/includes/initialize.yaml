@@ -1,5 +1,4 @@
 ---
-
 - name: Get Current TimeStamp
   shell: "date +%Y%m%d%H%M%S"
   register: result

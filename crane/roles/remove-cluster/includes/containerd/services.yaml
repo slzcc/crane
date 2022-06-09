@@ -1,5 +1,4 @@
 ---
-
 - name: Clean Kubernetes Containerd Service and rm >
   shell: "for i in $({{ kubernetes_ctl_path }}ctr -n k8s.io tasks ls -q); do {{ kubernetes_ctl_path }}ctr -n k8s.io tasks kill --signal 9 $i; done"
   ignore_errors: true

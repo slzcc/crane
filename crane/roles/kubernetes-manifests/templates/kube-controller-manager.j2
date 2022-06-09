@@ -29,11 +29,20 @@ spec:
       - --controllers=*,bootstrapsigner,tokencleaner
       - --kubeconfig={{ kubernetes_etc_dirs }}controller-manager.conf
       - --leader-elect=true
-      - --port=0
       - --requestheader-client-ca-file={{ kubernetes_pki_dirs }}front-proxy-ca.pem
       - --root-ca-file={{ kubernetes_pki_dirs }}ca.pem
       - --service-account-private-key-file={{ kubernetes_pki_dirs }}sa.key
       - --use-service-account-credentials=true
+    livenessProbe:
+      failureThreshold: 8
+      httpGet:
+        host: 127.0.0.1
+        path: /healthz
+        port: 10257
+        scheme: HTTPS
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      timeoutSeconds: 15
     startupProbe:
       failureThreshold: 24
       httpGet:

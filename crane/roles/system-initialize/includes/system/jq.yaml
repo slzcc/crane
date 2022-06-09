@@ -1,5 +1,4 @@
 ---
-
 - name: Ubuntu Install JQ
   apt: 
     name: jq

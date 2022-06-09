@@ -1,8 +1,18 @@
 ---
 - hosts: localhost
   gather_facts: false
+  vars_files:
+    - "roles/local-task/defaults/main.yml"
   roles:
     - { role: local-task }
+  tasks:
+    - debug: msg="Document Description [https://github.com/slzcc/crane/blob/master/docs/ADD_ETCD.md]"
+    - name: Check Etcd Add instance
+      assert:
+        that:
+          - "etcd_cluster_add_node_ip_str not in etcd_ip_str"
+        fail_msg: "在 nodes 文件中的 etcd 列表中存在 空值 或与 etcd-cluster-add-node 重复的 IP 会引起部署冲突, 请在 etcd 移除后重试!"
+        success_msg: "Check that the Nodes list is normal."
 
 - name: Initialize Crane Env
   hosts: all
@@ -135,6 +145,7 @@
     - "roles/kubernetes-networks/defaults/main.yml"
     - "roles/kubernetes-manifests/defaults/main.yml"
     - "roles/etcd-cluster-management/defaults/etcd-add-nodes.yaml"
+    - "roles/etcd-cluster-management/defaults/tls.yaml"
   tasks:
     - { include: 'roles/etcd-cluster-management/includes/update-k8s-manifests.yaml' }
 
@@ -154,6 +165,7 @@
     - "roles/kubernetes-networks/defaults/calico.yaml"
     - "roles/kubernetes-networks/defaults/main.yml"
     - "roles/etcd-cluster-management/defaults/etcd-add-nodes.yaml"
+    - "roles/etcd-cluster-management/defaults/tls.yaml"
   tasks:
     - { include: 'roles/etcd-cluster-management/includes/update-etcd-manifests.yaml' }
 
@@ -189,3 +201,8 @@
     - "roles/kubernetes-cluster-management/defaults/configure.yaml"
   tasks:
     - { include: 'roles/crane/includes/sync-crane.yaml' }
+
+- hosts: localhost
+  gather_facts: false
+  tasks:
+    - debug: msg="请在 nodes 文件中把 etcd-cluster-add-node 列表内容移动到 etcd 保证后续可用性!"

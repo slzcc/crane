@@ -1,5 +1,4 @@
 ---
-
 - name: Clean Containerd Binary Files
   file:
     path: "{{ kubernetes_ctl_path }}{{ item }}"

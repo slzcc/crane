@@ -1,24 +1,4 @@
 ---
-
-# - name: Clean Cilium directory.
-#   file:
-#     path: "{{ item }}"
-#     state: absent
-#   with_items:
-#     - "/var/run/cilium"
-#   ignore_errors: true
-
-# - name: Clean Cilium CNI.
-#   shell: "rm -rf {{ cni_config_dir }}/{{ item }}"
-#   with_items:
-#     - "05-cilium.conf"
-#   ignore_errors: true
-
-# - name: Clean Cilium IP Route
-#   shell: >
-#     ip route | grep 'cilium_host' | awk '{print $1}' | xargs -i ip route delete {}
-#   ignore_errors: true
-
 - name: Clean Cilium directory.
   shell: "mv /var/run/cilium {{ temporary_dirs }}remove-cluster/"
   ignore_errors: true

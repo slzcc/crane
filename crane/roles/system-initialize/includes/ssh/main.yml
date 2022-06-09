@@ -1,5 +1,4 @@
 ---
-
 - name: Move SSH Known
   shell: "mv ~/.ssh/known_hosts ~/.ssh/known_hosts-`date +%Y%m%d%H%M%S`"
   ignore_errors: true

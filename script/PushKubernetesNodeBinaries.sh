@@ -10,10 +10,10 @@ _dockerVersion=`awk '/^docker_version/{print}' ../crane/roles/cri-install/vars/d
 _k8sVersion=`awk '/^k8s_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 _cni_version=`awk '/^cni_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 _etcdVersion=`awk '/^etcd_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
-_pauseVersion=`awk '/^pause_version/{print}' ../crane/roles/kubernetes-cluster-management/defaults/main.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_pauseVersion=`awk '/^pause_version/{print}' ../crane/roles/kubernetes-manifests/defaults/main.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 _calicoVersion=`awk '/^calico_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 _haproxyVersion=`awk '/^haproxy_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
-_corednsVersion=`awk '/^dns_version/{print}' ../crane/roles/kubernetes-cluster-management/defaults/main.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_corednsVersion=`awk '/^dns_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 _nginxIngressVersion=`awk '/^ingress_nginx_version/{print}' ../crane/roles/kubernetes-addons/defaults/main.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 _ciliumVersion=`awk '/^cilium_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 
@@ -36,7 +36,7 @@ export corednsVersion=${_corednsVersion:-'1.8.3'}
 # Nginx Ingress
 export nginxIngressVersion=${_nginxIngressVersion:-'0.26.1'}
 # Cilium Version
-export ciliumVersion=${_ciliumVersion:-'v1.10.1'}
+export ciliumVersion=${_ciliumVersion:-'v1.11.5'}
 # 数据打包临时路径
 export temporaryDirs=${temporaryDirs:-'/tmp'}
 
@@ -47,7 +47,7 @@ https_proxy=`awk '/^https_proxy/{print}' ../crane/group_vars/all.yml | awk -F': 
 # Clean old files
 rm -rf  ${temporaryDirs}/image_*.tar.gz | true
 
-CleanPullImage=false isImageExport=true isImagePush=false bash -c ./PublishK8sRegistryImages.sh
+CleanPullImage=false isImageExport=true isImagePush=false bash -cx ./PublishK8sRegistryImages.sh
 
 cat > ${temporaryDirs}/docker-image-import.sh <<EOF
 for i in \$(ls /image_*.tar.gz); do
@@ -82,8 +82,8 @@ RUN wget -qO- "https://pkg.cfssl.org/R1.2/cfssl_${_cni_os_drive}" > /cfssl && \
     wget -qO- "https://pkg.cfssl.org/R1.2/cfssljson_${_cni_os_drive}" > /cfssljson && \
     chmod +x /cfssl*
 
-RUN wget -qO- https://github.com/etcd-io/etcd/releases/download/v${etcdVersion}/etcd-v${etcdVersion}-${_cni_os_drive}.tar.gz | tar -zx -C / && \
-    mv /etcd-v${etcdVersion}-${_cni_os_drive}/etcd* /
+RUN wget -qO- https://github.com/etcd-io/etcd/releases/download/v${etcdVersion%-*}/etcd-v${etcdVersion%-*}-${_cni_os_drive}.tar.gz | tar -zx -C / && \
+    mv /etcd-v${etcdVersion%-*}-${_cni_os_drive}/etcd* /
 
 FROM ubuntu:18.04
 

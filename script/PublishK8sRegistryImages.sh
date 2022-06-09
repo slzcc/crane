@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -x
 ########
 # 删除镜像要比打包镜像优先级高, 所以要打包时不能清除本地镜像切记!
 #
@@ -19,7 +19,7 @@ pauseVersion=${pauseVersion:-'3.2'}
 calicoVersion=${calicoVersion:-'v3.7.2'}
 haproxyVersion=${haproxyVersion:-'2.0.0'}
 corednsVersion=${corednsVersion:-'1.5.0'}
-ciliumVersion=${_ciliumVersion:-'v1.10.1'}
+ciliumVersion=${ciliumVersion:-'v1.10.1'}
 nginxIngressVersion=${nginxIngressVersion:-''}
 
 # Calico Source Registry
