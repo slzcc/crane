@@ -7,7 +7,7 @@
     - { role: local-task }
   tasks:
     - debug: msg="Document Description [https://github.com/slzcc/crane/blob/master/docs/ETCD_RESTORE_CLUSTER.md]"
-    - name: Checl All Host instance
+    - name: Check All Host instance
       assert:
         that:
           - "etcd_new_cluster_ip_str"

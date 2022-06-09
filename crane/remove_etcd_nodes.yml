@@ -7,7 +7,7 @@
     - { role: local-task }
   tasks:
     - debug: msg="Document Description [https://github.com/slzcc/crane/blob/master/docs/REMOVE_ETCD_NODES.md]"
-    - name: Checl Etcd Del instance
+    - name: Check Etcd Del instance
       assert:
         that:
           - "etcd_cluster_del_node_ip_str not in etcd_ip_str"

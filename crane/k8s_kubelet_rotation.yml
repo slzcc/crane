@@ -7,7 +7,7 @@
     - { role: local-task }
   tasks:
     - debug: msg="Document Description [https://github.com/slzcc/crane/blob/master/docs/K8S_KUBELET_ROTATION.md]"
-    - name: Checl All Host instance
+    - name: Check All Host instance
       assert:
         that:
           - "not etcd_cluster_del_node_ip_str"
