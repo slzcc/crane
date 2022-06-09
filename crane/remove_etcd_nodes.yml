@@ -6,6 +6,7 @@
   roles:
     - { role: local-task }
   tasks:
+    - debug: msg="Document Description [https://github.com/slzcc/crane/blob/master/docs/REMOVE_ETCD_NODES.md]"
     - name: Checl Etcd Del instance
       assert:
         that:

@@ -1,8 +1,27 @@
 ---
 - hosts: localhost
   gather_facts: false
+  vars_files:
+    - "roles/local-task/defaults/main.yml"
   roles:
     - { role: local-task }
+  tasks:
+    - debug: msg="Document Description [https://github.com/slzcc/crane/blob/master/docs/K8S_KUBELET_ROTATION.md]"
+    - name: Checl All Host instance
+      assert:
+        that:
+          - "not etcd_cluster_del_node_ip_str"
+          - "not etcd_cluster_add_node_ip_str"
+          - "not etcd_new_cluster_ip_str"
+          - "not etcd_del_cluster_ip_str"
+          - "not k8s_cluster_del_node_ip_str"
+          - "not k8s_cluster_add_node_ip_str"
+          - "not k8s_cluster_del_master_ip_str"
+          - "not k8s_cluster_add_master_ip_str"
+          - "kube_master_ip_str"
+          - "kube_node_ip_str"
+        fail_msg: "部署 k8s 需要保证 nodes 文件的 kube-master、kube-node 有正确的值且其他 报错组 中不应有任何 IP 地址! 请修复后重试."
+        success_msg: "Check that the Nodes list is normal."
 
 - name: Initialize Crane Env
   hosts: all

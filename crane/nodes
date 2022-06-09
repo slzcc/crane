@@ -29,3 +29,5 @@ etcd-cluster-add-node
 [etcd-cluster-del-node]
 [etcd-new-cluster]
 [etcd-del-cluster]
+
+# Nodes Document Description [https://github.com/slzcc/crane/blob/master/docs/NODES.md]

@@ -1,8 +1,18 @@
 ---
 - hosts: localhost
   gather_facts: false
+  vars_files:
+    - "roles/local-task/defaults/main.yml"
   roles:
     - { role: local-task }
+  tasks:
+    - debug: msg="Document Description [https://github.com/slzcc/crane/blob/master/docs/MIGRATION_K8S_TO_NEW_ETCD_CLUSTER.md]"
+    - name: Checl Etcd Add Cluster instance
+      assert:
+        that:
+          - "etcd_new_cluster_ip_str"
+        fail_msg: "部署 k8s 需要保证 nodes 文件的 etcd_new_cluster_ip_str 有正确的 IP 地址! 请修复后重试."
+        success_msg: "Check that the Nodes list is normal."
 
 - name: Initialize Crane Env
   hosts: all
