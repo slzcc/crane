@@ -82,8 +82,8 @@ RUN wget -qO- "https://pkg.cfssl.org/R1.2/cfssl_${_cni_os_drive}" > /cfssl && \
     wget -qO- "https://pkg.cfssl.org/R1.2/cfssljson_${_cni_os_drive}" > /cfssljson && \
     chmod +x /cfssl*
 
-RUN wget -qO- https://github.com/etcd-io/etcd/releases/download/v${etcdVersion}/etcd-v${etcdVersion}-${_cni_os_drive}.tar.gz | tar -zx -C / && \
-    mv /etcd-v${etcdVersion}-${_cni_os_drive}/etcd* /
+RUN wget -qO- https://github.com/etcd-io/etcd/releases/download/v${etcdVersion%-*}/etcd-v${etcdVersion%-*}-${_cni_os_drive}.tar.gz | tar -zx -C / && \
+    mv /etcd-v${etcdVersion%-*}-${_cni_os_drive}/etcd* /
 
 FROM ubuntu:18.04
 
