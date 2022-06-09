@@ -36,7 +36,7 @@ export corednsVersion=${_corednsVersion:-'1.8.3'}
 # Nginx Ingress
 export nginxIngressVersion=${_nginxIngressVersion:-'0.26.1'}
 # Cilium Version
-export ciliumVersion=${_ciliumVersion:-'v1.10.1'}
+export ciliumVersion=${_ciliumVersion:-'v1.11.5'}
 # 数据打包临时路径
 export temporaryDirs=${temporaryDirs:-'/tmp'}
 
