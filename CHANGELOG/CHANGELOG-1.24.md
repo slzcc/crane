@@ -81,8 +81,10 @@ Crane 以更新至 1.24.1.2 版本。
 升级组件
   * containerd 1.5.8 => 1.6.6
   * cri-o amd64.61748dc51bdf1af367b8a68938dbbc81c593b95d => 1.24.1
+  * cilium agent v1.10.x => v1.11.x
 
 ## 修复
 
 修复所有可执行 `*.yml` 文件中的判断 nodes 事件，保证系统稳定可靠且添加部署相关说明文档。
 
+修复 cilium 下载影响的部署效率, 依规定只允许部署在 k8s master 节点中。
