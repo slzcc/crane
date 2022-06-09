@@ -82,9 +82,18 @@ Crane 以更新至 1.24.1.2 版本。
   * containerd 1.5.8 => 1.6.6
   * cri-o amd64.61748dc51bdf1af367b8a68938dbbc81c593b95d => 1.24.1
   * cilium agent v1.10.x => v1.11.x
+  * etcd 3.4.9 => 3.5.3-0
 
 ## 修复
 
 修复所有可执行 `*.yml` 文件中的判断 nodes 事件，保证系统稳定可靠且添加部署相关说明文档。
 
 修复 cilium 下载影响的部署效率, 依规定只允许部署在 k8s master 节点中。
+
+解决 Kube-apiServer 报错, 升级 etcd 版本:
+
+```
+...
+W0609 14:30:50.802569       1 watcher.go:229] watch chan error: etcdserver: mvcc: required revision has been compacted
+...
+```
