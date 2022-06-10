@@ -11,7 +11,7 @@ jobs:
     
     if: github.ref == 'refs/heads/develop'
 
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     services:
       simple:
@@ -49,7 +49,7 @@ jobs:
 
     if: github.ref == 'refs/heads/staging'
 
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     steps:
     - uses: actions/checkout@v2
@@ -80,6 +80,7 @@ jobs:
         sed -i "s/is_kube_simple:\ .*/is_kube_simple:\ true/g" ${WORKDIR}/crane/group_vars/all.yml
         sed -i "s/cri_driver:\ .*/cri_driver:\ ['docker']/g" ${WORKDIR}/crane/group_vars/all.yml
         sed -i "s/cri_k8s_default:\ .*/cri_k8s_default:\ docker/g" ${WORKDIR}/crane/group_vars/all.yml
+        sed -i "s/general_network_drive:\ .*/general_network_drive:\ calico/g" ${WORKDIR}/crane/group_vars/all.yml
         sed -i "s/172.20.0.2/${INSTANCE_IP}/g" ${WORKDIR}/kube-simple/nodes
         sed -i 's/false/true/g' ${WORKDIR}/crane/roles/kubernetes-addons/defaults/main.yml
         sed -i 's/is_deploy_istio:\ .*/is_deploy_istio: false/g' ${WORKDIR}/crane/roles/kubernetes-addons/defaults/main.yml
@@ -101,7 +102,7 @@ jobs:
                            -v crane-node-etcd:/var/lib/etcd \
                            -v crane-node-tmp:/tmp \
                            --privileged \
-                           docker:19.03.12-dind 
+                           docker:20.10.17-dind
 
         sudo docker run -d --name crane-node \
                            --net kube_simple \
@@ -114,7 +115,7 @@ jobs:
                            -v crane-node-etcd:/var/lib/etcd \
                            -v crane-node-tmp:/tmp \
                            --entrypoint "/sbin/init" \
-                           slzcc/ubuntu:18.04-linuxkit-4.9.184-docker-19.03.12
+                           slzcc/ubuntu:20.04-linuxkit-5.10.34-docker
 
         sleep 10
         sudo docker exec -i crane-node docker info
@@ -139,7 +140,7 @@ jobs:
                            -v crane-add-master-etcd:/var/lib/etcd \
                            -v crane-add-master-tmp:/tmp \
                            --privileged \
-                           docker:19.03.12-dind 
+                           docker:20.10.17-dind
 
         sudo docker run -d --name add-master \
                            --net kube_simple \
@@ -152,7 +153,7 @@ jobs:
                            -v crane-add-master-etcd:/var/lib/etcd \
                            -v crane-add-master-tmp:/tmp \
                            --entrypoint "/sbin/init" \
-                           slzcc/ubuntu:18.04-linuxkit-4.9.184-docker-19.03.12
+                           slzcc/ubuntu:20.04-linuxkit-5.10.34-docker
 
         sleep 10
         sudo docker exec -i add-master docker info
@@ -176,7 +177,7 @@ jobs:
                            -v crane-add-node-etcd:/var/lib/etcd \
                            -v crane-add-node-tmp:/tmp \
                            --privileged \
-                           docker:19.03.12-dind
+                           docker:20.10.17-dind
 
         sudo docker run -d --name add-node \
                            --net kube_simple \
@@ -189,7 +190,7 @@ jobs:
                            -v crane-add-node-etcd:/var/lib/etcd \
                            -v crane-add-node-tmp:/tmp \
                            --entrypoint "/sbin/init" \
-                           slzcc/ubuntu:18.04-linuxkit-4.9.184-docker-19.03.12
+                           slzcc/ubuntu:20.04-linuxkit-5.10.34-docker
 
         sleep 20
         sudo docker exec -i add-node docker info
