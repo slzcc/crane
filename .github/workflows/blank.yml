@@ -11,7 +11,7 @@ jobs:
     
     if: github.ref == 'refs/heads/develop'
 
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     services:
       simple:
@@ -49,7 +49,7 @@ jobs:
 
     if: github.ref == 'refs/heads/staging'
 
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     steps:
     - uses: actions/checkout@v2
