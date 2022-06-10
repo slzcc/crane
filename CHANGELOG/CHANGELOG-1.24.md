@@ -5,6 +5,7 @@
     - [v1.24.1.0 更新内容](#v12410)
     - [v1.24.1.1 更新内容](#v12411)
     - [v1.24.1.2 更新内容](#v12412)
+    - [v1.24.1.3 更新内容](#v12413)
 
 # Updated Instructions
 
@@ -105,3 +106,21 @@ W0609 14:30:50.802569       1 watcher.go:229] watch chan error: etcdserver: mvcc
 移除 nf_conntrack 旧版本的处理配置。
 
 修复之前离线安装文件不统一无法完整执行离线安装的问题。
+
+
+# v1.24.1.3
+
+Crane 以更新至 1.24.1.3 版本。
+
+## 修复
+
+修复通过 roles 方式部署 k8s-networks 时的异常报错:
+
+升级组件:
+  * calico 3.20.5 => 3.23.1
+
+```
+TASK [cri-install : Install Containerd] ****************************************************************************************************************************************************************************************************************************************
+fatal: [10.170.0.3]: FAILED! => {"msg": "The conditional check 'is_mandatory_containerd_install or result.stderr' failed. The error was: error while evaluating conditional (is_mandatory_containerd_install or result.stderr): 'result' is undefined\n\nThe error appears to be in '/root/crane-develop/crane/roles/cri-install/includes/containerd/main.yml': line 10, column 3, but may\nbe elsewhere in the file depending on the exact syntax problem.\n\nThe offending line appears to be:\n\n\n- name: Install Containerd\n  ^ here\n"}
+...ignoring
+```
