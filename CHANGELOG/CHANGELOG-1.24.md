@@ -112,15 +112,17 @@ W0609 14:30:50.802569       1 watcher.go:229] watch chan error: etcdserver: mvcc
 
 Crane 以更新至 1.24.1.3 版本。
 
+升级组件:
+  * calico 3.20.5 => 3.23.1
+  
 ## 修复
 
 修复通过 roles 方式部署 k8s-networks 时的异常报错:
-
-升级组件:
-  * calico 3.20.5 => 3.23.1
 
 ```
 TASK [cri-install : Install Containerd] ****************************************************************************************************************************************************************************************************************************************
 fatal: [10.170.0.3]: FAILED! => {"msg": "The conditional check 'is_mandatory_containerd_install or result.stderr' failed. The error was: error while evaluating conditional (is_mandatory_containerd_install or result.stderr): 'result' is undefined\n\nThe error appears to be in '/root/crane-develop/crane/roles/cri-install/includes/containerd/main.yml': line 10, column 3, but may\nbe elsewhere in the file depending on the exact syntax problem.\n\nThe offending line appears to be:\n\n\n- name: Install Containerd\n  ^ here\n"}
 ...ignoring
 ```
+
+修复因执行命令等待时间过长问题, 目前在文件: `crane/roles/kubernetes-cluster-management/includes/initialize-cluster-rbac.yaml` 中进行试验阶段, 当 `600` or `300` 秒中任务没有正常完成则中断整个执行。
