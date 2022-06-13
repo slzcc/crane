@@ -3,7 +3,7 @@
   file:
     path: "{{ etcd_data_dirs }}"
     owner: "{{ ssh_connect_user }}" 
-    mode: 0755
+    mode: 0700
     state: directory
   ignore_errors: true
 
