@@ -85,6 +85,9 @@ jobs:
         sed -i 's/false/true/g' ${WORKDIR}/crane/roles/kubernetes-addons/defaults/main.yml
         sed -i 's/is_deploy_istio:\ .*/is_deploy_istio: false/g' ${WORKDIR}/crane/roles/kubernetes-addons/defaults/main.yml
         sed -i "s/docker_install_type:\ \"http_binary\"/docker_install_type:\ \"local_binary\"/g" ${WORKDIR}/crane/roles/cri-install/vars/docker.yaml
+        echo "********************** Check Files Start"
+        cat ${WORKDIR}/crane/group_vars/all.yml
+        echo "********************** Check Files Done"
         sudo apt install -y ansible
         sudo cp -a crane/ansible.cfg /etc/ansible/ansible.cfg
         sudo usermod -aG docker runner
