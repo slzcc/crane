@@ -1,7 +1,7 @@
 ---
 # CRI in Containerd
 - name: Pull the Image *
-  shell: "{{ kubernetes_ctl_path }}ctr image pull {{ k8s_image_deploy_repo }}:{{ k8s_version }}.{{ build_k8s_version }}"
+  shell: "{{ kubernetes_ctl_path }}ctr image pull {{ k8s_image_deploy_repo }}:{{ k8s_version }}.{{ build_k8s_version }} > /dev/null"
   ignore_errors: true
 
 - name: Pull the Image **
