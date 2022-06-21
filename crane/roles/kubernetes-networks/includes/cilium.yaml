@@ -37,3 +37,4 @@
 
 - name: Deploy Cilium CA
   shell: "{{ kubernetes_ctl_path }}kubectl create secret generic cilium-ca --from-file={{ kubernetes_pki_dirs }}cilium/ca.crt --from-file={{ kubernetes_pki_dirs }}cilium/ca.key -n {{ cilium_namespace }}"
+  ignore_errors: true
