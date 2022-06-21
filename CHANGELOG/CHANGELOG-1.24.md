@@ -6,6 +6,7 @@
     - [v1.24.1.1 更新内容](#v12411)
     - [v1.24.1.2 更新内容](#v12412)
     - [v1.24.1.3 更新内容](#v12413)
+    - [v1.24.2.0 更新内容](#v12420)
 
 # Updated Instructions
 
@@ -126,3 +127,8 @@ fatal: [10.170.0.3]: FAILED! => {"msg": "The conditional check 'is_mandatory_con
 ```
 
 修复因执行命令等待时间过长问题, 目前在文件: `crane/roles/kubernetes-cluster-management/includes/initialize-cluster-rbac.yaml` 中进行试验阶段, 当 `600` or `300` 秒中任务没有正常完成则中断整个执行。
+
+
+# v1.24.2.0
+
+Crane 以更新至 1.24.2.0 版本。
