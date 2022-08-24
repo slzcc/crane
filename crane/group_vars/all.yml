@@ -4,7 +4,7 @@
 # 部署 Kubernetes 对应版本, 不建议修改, 如需修改请修改小版本进行部署测试, 大版本会引发部署参数不支持等问题.
 # 如使用镜像方式部署, 不能修改
 # https://github.com/kubernetes/kubernetes/releases
-k8s_version: 'v1.24.4'
+k8s_version: 'v1.25.0'
 
 # 避免大版本中组件的版本差异, 使用 build 版本作为差异配置项, 在项目中可以看做如下使用 '{{ k8s_version }}.{{ build_k8s_version }}'
 build_k8s_version: '0'
@@ -33,7 +33,7 @@ is_haproxy: true
 # 如使用镜像方式部署, 不能修改 (如果可以使用 {{ k8s_cluster_component_registry }} 中的仓库地址获取镜像则可随意修改)
 # https://hub.docker.com/_/haproxy
 # 其他配置参照 crane/roles/kubernetes-cluster-management/vars/haproxy.yaml
-haproxy_version: '2.6.0'
+haproxy_version: '2.6.4'
 
 ## External Proxy
 ## ********************************************************************************************************************************
@@ -111,7 +111,7 @@ calico_version: 'v3.20.4'
 # Cilium Verion
 # https://github.com/cilium/cilium/releases
 # 其他配置请参照 roles/kubernetes-networks/defaults/cilium.yaml
-cilium_version: 'v1.11.5'
+cilium_version: 'v1.11.8'
 
 ## Kubelet Config
 # 参照 crane/roles/kubernetes-cluster-management/vars/kubelet.yaml
