@@ -20,30 +20,20 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
-    - name: Docker Logins
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUBTOKEN }}
-        ALIYUN_TOKEN: ${{ secrets.ALIYUNREGISTRYPASS }}
-        ALIYUN_USERS: ${{ secrets.ALIYUNREGISTRYUSER }}
-        DOCKER_TOKEN: ${{ secrets.DOCKERHUBTOKEN }}
+    - name: Login to Docker Hub
       run: |
-        # echo ${ALIYUN_TOKEN} | docker login -u ${ALIYUN_USERS} registry.cn-beijing.aliyuncs.com --password-stdin
-        # echo ${ALIYUN_TOKEN} | docker login -u ${ALIYUN_USERS} registry.cn-hangzhou.aliyuncs.com --password-stdin
-        # echo ${GITHUB_TOKEN} | docker login docker.pkg.github.com -u slzcc --password-stdin
-        echo ${DOCKER_TOKEN} | docker login -u slzcc --password-stdin
-    
+        echo ${{ secrets.DOCKERHUBTOKEN }} | sudo docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+
     - name: Create Images and Push
       run: |
-        sudo usermod -aG docker runner
         sudo docker info
         cd script && \
            bash -x ./PushKubernetesNodeBinaries.sh
 
     - name: Deploy Crane Image
       run: |
-        sudo usermod -aG docker runner
-        make build
-        make push
+        sudo make build
+        sudo make push
 
   deployCrane:
 

@@ -3,7 +3,7 @@
 ## ********************************************************************************************************************************
 # Check kubernetes image
 - name: Check kubernetes image
-  shell: 'for i in k8s.gcr.io/kube-proxy:{{ k8s_version }} k8s.gcr.io/kube-apiserver-amd64:{{ k8s_version }} k8s.gcr.io/kube-controller-manager:{{ k8s_version }} k8s.gcr.io/kube-scheduler:{{ k8s_version }} haproxy calico/node:{{ calico_version }} calico/cni:{{ calico_version }} calico/kube-controllers:{{ calico_version }} coredns/coredns:{{ dns_version }} k8s.gcr.io/etcd:{{ etcd_version }} k8s.gcr.io/pause:{{ pause_version }} slzcc/keepalived; do if [ ! `{{ kubernetes_ctl_path }}docker images --filter=reference="$i*" -aq | wc -l` -ge 1 ] ;then echo 1 > /dev/stderr && exit 1 ; fi ; done'
+  shell: 'for i in {{ k8s_cluster_component_registry }}/kube-proxy:{{ k8s_version }} {{ k8s_cluster_component_registry }}/kube-apiserver-amd64:{{ k8s_version }} {{ k8s_cluster_component_registry }}/kube-controller-manager:{{ k8s_version }} {{ k8s_cluster_component_registry }}/kube-scheduler:{{ k8s_version }} haproxy calico/node:{{ calico_version }} calico/cni:{{ calico_version }} calico/kube-controllers:{{ calico_version }} coredns/coredns:{{ dns_version }} {{ k8s_cluster_component_registry }}/etcd:{{ etcd_version }} {{ k8s_cluster_component_registry }}/pause:{{ pause_version }} slzcc/keepalived; do if [ ! `{{ kubernetes_ctl_path }}docker images --filter=reference="$i*" -aq | wc -l` -ge 1 ] ;then echo 1 > /dev/stderr && exit 1 ; fi ; done'
   register: check_k8s_image
   ignore_errors: true
 

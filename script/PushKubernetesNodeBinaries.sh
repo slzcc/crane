@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 如果需要部署到自己的私有仓库，请修改此项名称
-export targetRegistry=${targetRegistry:-'slzcc'}
+export targetRegistry=${targetRegistry:-'docker.io/slzcc'}
 
 _cri_driver=`awk '/^cri_driver/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 
@@ -16,6 +16,8 @@ _haproxyVersion=`awk '/^haproxy_version/{print}' ../crane/group_vars/all.yml | a
 _corednsVersion=`awk '/^dns_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 _nginxIngressVersion=`awk '/^ingress_nginx_version/{print}' ../crane/roles/kubernetes-addons/defaults/main.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 _ciliumVersion=`awk '/^cilium_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+
+sourceRegistry=`awk '/^k8s_cluster_component_registry/{print}' ../crane/roles/kubernetes-manifests/defaults/main.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 
 # Docker Version
 export dockercliVersion=${_dockerVersion:-'19.03'}
@@ -47,7 +49,7 @@ https_proxy=`awk '/^https_proxy/{print}' ../crane/group_vars/all.yml | awk -F': 
 # Clean old files
 rm -rf  ${temporaryDirs}/image_*.tar.gz | true
 
-CleanPullImage=false isImageExport=true isImagePush=false bash -cx ./PublishK8sRegistryImages.sh
+CleanPullImage=false isImageExport=true isImagePush=false sourceRegistry=${sourceRegistry} bash -cx ./PublishK8sRegistryImages.sh
 
 cat > ${temporaryDirs}/docker-image-import.sh <<EOF
 for i in \$(ls /image_*.tar.gz); do
@@ -123,5 +125,4 @@ fi
 # export PUSH_OTHER_REGISTRY_CHECK_PERFORM=true
 # ./PushOtherWarehouse.sh
 
-./PushIstioNodeBinaries.sh
-
+sourceRegistry=${sourceRegistry} bash -cx ./PushIstioNodeBinaries.sh

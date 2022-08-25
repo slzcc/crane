@@ -2,12 +2,12 @@
 - name: Clean Kubernetes Containerd Image
   shell: "{{ kubernetes_ctl_path }}ctr -n k8s.io i rm $({{ kubernetes_ctl_path }}ctr -n k8s.io i ls | tail -1 | grep '{{ item }}' | awk '{print $1}')"
   with_items:
-    - "k8s.gcr.io/kube-apiserver-amd64"
-    - "k8s.gcr.io/kube-controller-manager"
-    - "k8s.gcr.io/kube-scheduler"
-    - "k8s.gcr.io/kube-proxy"
-    - "k8s.gcr.io/etcd"
-    - "k8s.gcr.io/pause"
+    - "{{ k8s_cluster_component_registry }}/kube-apiserver-amd64"
+    - "{{ k8s_cluster_component_registry }}/kube-controller-manager"
+    - "{{ k8s_cluster_component_registry }}/kube-scheduler"
+    - "{{ k8s_cluster_component_registry }}/kube-proxy"
+    - "{{ k8s_cluster_component_registry }}/etcd"
+    - "{{ k8s_cluster_component_registry }}/pause"
     - "docker.io/slzcc/keepalived"
     - "docker.io/haproxy"
     - "docker.io/calico/cni"

@@ -316,7 +316,7 @@ spec:
       dnsPolicy: ClusterFirst
       containers:
         - name: controller
-          image: k8s.gcr.io/ingress-nginx/controller:v1.1.0
+          image: {{ k8s_cluster_component_registry }}/ingress-nginx/controller:v1.1.0
           imagePullPolicy: IfNotPresent
           lifecycle:
             preStop:
@@ -592,7 +592,7 @@ spec:
     spec:
       containers:
         - name: create
-          image: k8s.gcr.io/ingress-nginx/kube-webhook-certgen:{{ ingress_nginx_version }}
+          image: {{ k8s_cluster_component_registry }}/ingress-nginx/kube-webhook-certgen:{{ ingress_nginx_version }}
           imagePullPolicy: IfNotPresent
           args:
             - create
@@ -642,7 +642,7 @@ spec:
     spec:
       containers:
         - name: patch
-          image: k8s.gcr.io/ingress-nginx/kube-webhook-certgen:{{ ingress_nginx_version }}
+          image: {{ k8s_cluster_component_registry }}/ingress-nginx/kube-webhook-certgen:{{ ingress_nginx_version }}
           imagePullPolicy: IfNotPresent
           args:
             - patch
