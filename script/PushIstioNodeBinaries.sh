@@ -63,10 +63,10 @@ COPY containerd-image-import.sh /containerd-image-import.sh
 
 EOF
 
-docker build -t ${targetRegistry}/istio:${IstioVersion} ${temporaryDirs}
+sudo docker build -t ${targetRegistry}/istio:${IstioVersion} ${temporaryDirs}
 
 # Push Images
-docker push ${targetRegistry}/istio:${IstioVersion}
+sudo docker push ${targetRegistry}/istio:${IstioVersion}
 
 if [ $? -ne 0 ]; then
     echo 
