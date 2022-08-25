@@ -898,7 +898,7 @@ spec:
           hostPort: 4244
           protocol: TCP
         - name: prometheus
-          ccontainerPort: {{ cilium_prometheus_port.split(":")[1] }}
+          containerPort: {{ cilium_prometheus_port.split(":")[1] }}
           hostPort: {{ cilium_prometheus_port.split(":")[1] }}
           protocol: TCP
         - name: envoy-metrics
