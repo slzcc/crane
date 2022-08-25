@@ -108,10 +108,10 @@ EOF
 
 export BUILD_VERSION=`awk '/^k8s_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`.`awk '/^build_k8s_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 
-sudo docker build -t ${targetRegistry}/kubernetes:${BUILD_VERSION} ${temporaryDirs}
+docker build -t ${targetRegistry}/kubernetes:${BUILD_VERSION} ${temporaryDirs}
 
 # Push Images
-sudo docker push ${targetRegistry}/kubernetes:${BUILD_VERSION}
+docker push ${targetRegistry}/kubernetes:${BUILD_VERSION}
 
 if [ $? -ne 0 ]; then
     echo 
