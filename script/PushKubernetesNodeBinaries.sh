@@ -17,6 +17,8 @@ _corednsVersion=`awk '/^dns_version/{print}' ../crane/group_vars/all.yml | awk -
 _nginxIngressVersion=`awk '/^ingress_nginx_version/{print}' ../crane/roles/kubernetes-addons/defaults/main.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 _ciliumVersion=`awk '/^cilium_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 
+sourceRegistry=`awk '/^k8s_cluster_component_registry/{print}' ../crane/crane/roles/kubernetes-manifests/defaults/main.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
+
 # Docker Version
 export dockercliVersion=${_dockerVersion:-'19.03'}
 # Kubernetes Version

@@ -54,7 +54,7 @@ $ /usr/local/bin/docker run --rm -i -v /etc/kubernetes/pki/etcd/:/etc/kubernetes
 把当前的 certs 恢复至所有 etcd 节点的 `/etc/kubernetes/pki/etcd` 目录中, 并重启 etcd 后, 执行删除新节点的命令:
 
 ```
-$ docker run --rm -i -v /etc/kubernetes/pki/etcd/:/etc/kubernetes/pki/etcd/ -w /etc/kubernetes/pki/etcd/ k8s.gcr.io/etcd:3.4.9 etcdctl --cacert /etc/kubernetes/pki/etcd/etcd-ca.pem --key /etc/kubernetes/pki/etcd/etcd-key.pem --cert /etc/kubernetes/pki/etcd/etcd.pem --endpoints https://127.0.0.1:2379 member remove <clean_ip>
+$ docker run --rm -i -v /etc/kubernetes/pki/etcd/:/etc/kubernetes/pki/etcd/ -w /etc/kubernetes/pki/etcd/ {{ k8s_cluster_component_registry }}/etcd:3.4.9 etcdctl --cacert /etc/kubernetes/pki/etcd/etcd-ca.pem --key /etc/kubernetes/pki/etcd/etcd-key.pem --cert /etc/kubernetes/pki/etcd/etcd.pem --endpoints https://127.0.0.1:2379 member remove <clean_ip>
 ```
 
 Kube-ApiServer 重启执行命令即可:

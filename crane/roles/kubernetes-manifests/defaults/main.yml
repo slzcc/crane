@@ -44,7 +44,8 @@ k8s_pod_infra_container_image: "{{ k8s_cluster_component_registry }}/pause:{{ pa
 # 此地址可以修改为自定义镜像地址, 但需要确保已经执行 script/PublishK8sRegistryImages.sh 脚本, 所以参数可改为 slzcc, 如果在国内可使用 docker.io/slzcc 获取镜像。
 # 受影响的镜像为: etcd、kube-apiserver-amd64、kube-controller-manager、kube-scheduler、kube-proxy、pause。
 # 此值依赖于 is_kube_master_schedule, 如果使用镜像方式部署时, 此值不能变动
-k8s_cluster_component_registry: 'k8s.gcr.io'
+# 1.25 版本从 k8s.gcr.io 修改为 registry.k8s.io
+k8s_cluster_component_registry: 'registry.k8s.io'
 
 # 是否使用 RBAC, 集群默认是 RBAC 认证, 但可以在部署完集群之后创建超级用户取消所有限制
 is_rbac: false
