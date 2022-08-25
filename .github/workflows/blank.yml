@@ -29,16 +29,14 @@ jobs:
     
     - name: Create Images and Push
       run: |
-        sudo usermod -aG docker runner
+        sudo usermod -aG docker ${USER}
         sudo docker info
-        cat ~/.docker/config.json
         cd script && \
            bash -x ./PushKubernetesNodeBinaries.sh
 
     - name: Deploy Crane Image
       run: |
-        sudo usermod -aG docker runner
-        cat ~/.docker/config.json
+        sudo usermod -aG docker ${USER}
         make build
         make push
 

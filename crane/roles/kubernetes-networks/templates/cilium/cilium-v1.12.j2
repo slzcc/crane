@@ -1360,7 +1360,7 @@ spec:
     spec:
       containers:
       - name: cilium-operator
-        image: quay.io/cilium/operator-generic:v1.12.1@sha256:93d5aaeda37d59e6c4325ff05030d7b48fabde6576478e3fdbfb9bb4a68ec4a1
+        image: quay.io/cilium/operator-generic:{{ cilium_version }}
         imagePullPolicy: IfNotPresent
         command:
         - cilium-operator-generic
@@ -1531,7 +1531,7 @@ spec:
       serviceAccountName: "hubble-ui"
       containers:
       - name: frontend
-        image: "quay.io/cilium/hubble-ui:v0.9.1@sha256:baff611b975cb12307a163c0e547e648da211384eabdafd327707ff2ec31cc24"
+        image: "quay.io/cilium/hubble-ui:v0.9.1"
         imagePullPolicy: IfNotPresent
         ports:
         - name: http
@@ -1543,7 +1543,7 @@ spec:
           - name: tmp-dir
             mountPath: /tmp
       - name: backend
-        image: "quay.io/cilium/hubble-ui-backend:v0.9.1@sha256:c4b86e0d7a38d52c6ea3d9d7b17809e5212efd97494e8bd37c8466ddd68d42d0"
+        image: "quay.io/cilium/hubble-ui-backend:v0.9.1"
         imagePullPolicy: IfNotPresent
         env:
         - name: TZ
