@@ -34,7 +34,7 @@ jobs:
     
     - name: Create Images and Push
       run: |
-        echo ${DOCKER_TOKEN} | docker login -u slzcc --password-stdin
+        echo ${DOCKER_TOKEN} | sudo docker login -u slzcc --password-stdin
         sudo usermod -aG docker runner
         sudo docker info
         cd script && \
@@ -42,7 +42,7 @@ jobs:
 
     - name: Deploy Crane Image
       run: |
-        echo ${DOCKER_TOKEN} | docker login -u slzcc --password-stdin
+        echo ${DOCKER_TOKEN} | sudo docker login -u slzcc --password-stdin
         sudo usermod -aG docker runner
         make build
         make push
