@@ -1369,7 +1369,7 @@ spec:
         - --debug=$(CILIUM_DEBUG)
         env:
         - name: TZ
-            value: "{{ time_location }}"
+          value: "{{ time_location }}"
         - name: K8S_NODE_NAME
           valueFrom:
             fieldRef:
