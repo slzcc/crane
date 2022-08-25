@@ -126,4 +126,3 @@ fi
 # ./PushOtherWarehouse.sh
 
 sourceRegistry=${sourceRegistry} bash -cx ./PushIstioNodeBinaries.sh
-
