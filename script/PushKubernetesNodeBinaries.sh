@@ -49,7 +49,7 @@ https_proxy=`awk '/^https_proxy/{print}' ../crane/group_vars/all.yml | awk -F': 
 # Clean old files
 rm -rf  ${temporaryDirs}/image_*.tar.gz | true
 
-CleanPullImage=false isImageExport=true isImagePush=false bash -cx ./PublishK8sRegistryImages.sh
+CleanPullImage=false isImageExport=true isImagePush=false sourceRegistry=${sourceRegistry} bash -cx ./PublishK8sRegistryImages.sh
 
 cat > ${temporaryDirs}/docker-image-import.sh <<EOF
 for i in \$(ls /image_*.tar.gz); do
@@ -125,5 +125,5 @@ fi
 # export PUSH_OTHER_REGISTRY_CHECK_PERFORM=true
 # ./PushOtherWarehouse.sh
 
-./PushIstioNodeBinaries.sh
+sourceRegistry=${sourceRegistry} bash -cx ./PushIstioNodeBinaries.sh
 
