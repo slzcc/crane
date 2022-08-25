@@ -31,12 +31,14 @@ jobs:
       run: |
         sudo usermod -aG docker runner
         sudo docker info
+        cat ~/.docker/config.json
         cd script && \
            bash -x ./PushKubernetesNodeBinaries.sh
 
     - name: Deploy Crane Image
       run: |
         sudo usermod -aG docker runner
+        cat ~/.docker/config.json
         make build
         make push
 
