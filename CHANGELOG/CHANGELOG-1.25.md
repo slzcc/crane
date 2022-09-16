@@ -1,6 +1,7 @@
 - [v1.25](#v125)
   - [Updated Instructions](#updated-instructions)
     - [v1.25.0.0 更新内容](#v12500)
+    - [v1.25.0.1 更新内容](#v12501)
     - [v1.25.1.0 更新内容](#v12510)
 
 
