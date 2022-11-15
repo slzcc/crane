@@ -14,3 +14,7 @@
   when:
     - not is_using_local_files_deploy
     - cri_k8s_default == 'containerd'
+
+- name: Set Path Permissions
+  shell: "chmod 777 {{ kubernetes_cni_dirs }}"
+  ignore_errors: true
