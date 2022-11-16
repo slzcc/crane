@@ -13,3 +13,7 @@
   when:
   - general_network_drive == 'cilium'
   - is_kube_master
+
+- name: Set Path Permissions
+  shell: "chmod 777 {{ kubernetes_cni_dirs }}"
+  ignore_errors: true
