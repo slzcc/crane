@@ -1,0 +1,8 @@
+---
+- name: Ubuntu Install CriDocker roles
+  include: roles/cri-install/includes/cri-docker/ubuntu.yaml
+  when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
+
+- name: Centos Install CriDocker roles
+  include: roles/cri-install/includes/cri-docker/centos.yaml
+  when: ansible_distribution == 'CentOS'

@@ -1,0 +1,26 @@
+---
+- name: Check CriDocker Dir
+  shell: "ls {{ kubernetes_ctl_path }}cri-docker"
+  register: CHECK_CIRDOCKER_BIN_PACKAGE
+  ignore_errors: true
+
+- name: Get CriDocker Binary File
+  shell: "cd {{ temporary_dirs }} && wget 'https://github.com/Mirantis/cri-dockerd/releases/download/v{{ cri_docker_version }}/cri-dockerd-{{ cri_docker_version }}.{{ os_arch }}.tgz'"
+  environment:
+    http_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ https_proxy }}"
+    no_proxy: "{{ no_proxy }}"
+  ignore_errors: true
+  when: CHECK_CILIUM_BIN_PACKAGE is failed
+
+- name: Unpack the CriDocker. Tar. Gz
+  shell: "tar zxf {{ temporary_dirs }}cri-dockerd-{{ cri_docker_version }}.{{ os_arch }}.tar.gz -C {{ temporary_dirs }}cri-docker"
+  when: CHECK_CILIUM_BIN_PACKAGE is failed
+
+- name: Copy Binary file to the execution directory
+  shell: "cp -a {{ temporary_dirs }}cri-docker/cri-docker {{ kubernetes_ctl_path }}"
+  when: CHECK_CILIUM_BIN_PACKAGE is failed
+
+- name: Modifying file Permissions
+  shell: "chmod +x {{ kubernetes_ctl_path }}cri-docker"
+  when: CHECK_CILIUM_BIN_PACKAGE is failed

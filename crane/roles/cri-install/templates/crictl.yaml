@@ -7,8 +7,8 @@ image-endpoint: unix://{{ containerd_socket_path }}
 #timeout: 10
 #debug: false
 {%- else -%}
-runtime-endpoint: unix:///var/run/dockershim.sock
-image-endpoint: unix:///var/run/dockershim.sock
+runtime-endpoint: unix://{{ cri_docker_socket_path }}
+image-endpoint: unix://{{ cri_docker_socket_path }}
 #timeout: 10
 #debug: true
 {% endif %}
