@@ -1,6 +1,6 @@
 ---
 - name: Check CriDocker Dir
-  shell: "ls {{ kubernetes_ctl_path }}cri-docker"
+  shell: "ls {{ kubernetes_ctl_path }}cri-dockerd"
   register: CHECK_CIRDOCKER_BIN_PACKAGE
   ignore_errors: true
 
@@ -17,9 +17,9 @@
   when: CHECK_CIRDOCKER_BIN_PACKAGE is failed
 
 - name: Copy Binary file to the execution directory
-  shell: "cp -a {{ temporary_dirs }}cri-docker/cri-docker {{ kubernetes_ctl_path }}"
+  shell: "cp -a {{ temporary_dirs }}cri-dockerd/cri-dockerd {{ kubernetes_ctl_path }}"
   when: CHECK_CIRDOCKER_BIN_PACKAGE is failed
 
 - name: Modifying file Permissions
-  shell: "chmod +x {{ kubernetes_ctl_path }}cri-docker"
+  shell: "chmod +x {{ kubernetes_ctl_path }}cri-dockerd"
   when: CHECK_CIRDOCKER_BIN_PACKAGE is failed
