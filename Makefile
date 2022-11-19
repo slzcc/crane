@@ -5,6 +5,7 @@ ProjectName := "crane"
 VERSION := `awk '/^k8s_version/' ./crane/group_vars/all.yml | awk -F': ' '{print $$2}' | sed "s/'//g"`.`awk '/^build_k8s_version/{print}' ./crane/group_vars/all.yml | awk -F': ' '{print $$2}' | sed "s/'//g"`
 DOCKER_VERSION := `awk '/^docker_version/' ./crane/roles/cri-install/vars/docker.yaml | awk -F': ' '{print $$2}' | sed "s/'//g"`
 CRIO_VERSION := `awk '/^crio_version/' ./crane/roles/cri-install/vars/crio.yaml | awk -F': ' '{print $$2}' | sed "s/'//g"`
+CRI_DOCKER_VERSION := `awk '/^cri_docker_version/' ./crane/roles/cri-install/vars/cri-docker.yaml | awk -F': ' '{print $$2}' | sed "s/'//g"`
 CONTAINERD_VERSION := `awk '/^containerd_version/' ./crane/roles/cri-install/vars/containerd.yaml | awk -F': ' '{print $$2}' | sed "s/'//g"`
 CRITOOLS_VERSION := `awk '/^cri_tools_version/' ./crane/roles/cri-install/vars/cri-tools.yaml | awk -F': ' '{print $$2}' | sed "s/'//g"`
 OS_DRIVE := `awk '/^os_drive/' ./crane/group_vars/all.yml | awk -F': ' '{print $$2}' | sed "s/'//g"`
@@ -143,6 +144,7 @@ rotation_etcd_ca:
 
 local_load_dockerd: local_load_containerd
 	@wget -qO- https://download.docker.com/linux/static/stable/${OS_ARCH_NAME}/docker-${DOCKER_VERSION}.tgz > ${PWD}/crane/roles/downloads-packages/files/docker-${DOCKER_VERSION}.tar.gz
+	@wget -qO- https://github.com/Mirantis/cri-dockerd/releases/download/v${CRI_DOCKER_VERSION}/cri-dockerd-${CRI_DOCKER_VERSION}.${OS_ARCH}.tgz > ${PWD}/crane/roles/downloads-packages/files/cri-dockerd-${CRI_DOCKER_VERSION}.${OS_ARCH}.tgz
 
 # Ready to scrap
 local_load_dockerd_old:

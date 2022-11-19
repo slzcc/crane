@@ -1,0 +1,31 @@
+---
+- name: Remove Cri-Docker Binary Files
+  file:
+    path: "{{ kubernetes_ctl_path }}{{ item }}"
+    state: absent
+  with_items:
+    - "cri-docker"
+  when: is_remove_all or is_remove_cri_docker
+  ignore_errors: true
+
+- name: Clean CriDocker DIR
+  file:
+    path: "{{ cri_docker_socket_home }}"
+    state: absent
+  when: is_remove_all or is_remove_cri_docker
+  ignore_errors: true
+
+- name: Remove System CriDocker Configs
+  shell: "mv {{ systemd_default_dirs }}cri-docker.service {{ temporary_dirs }}remove-cluster"
+  when: is_remove_all or is_remove_cri_docker
+  ignore_errors: true
+
+- name: Remove System CriDocker Socket Configs
+  shell: "mv {{ systemd_default_dirs }}cri-docker.socket {{ temporary_dirs }}remove-cluster"
+  when: is_remove_all or is_remove_cri_docker
+  ignore_errors: true
+
+- name: Systemd Reload Remove Docker
+  shell: "systemctl daemon-reload"
+  when: is_remove_all or is_remove_cri_docker
+  ignore_errors: true

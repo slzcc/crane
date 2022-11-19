@@ -29,6 +29,10 @@
 - name: Clean Docker
   include: "roles/remove-cluster/includes/docker/main.yaml"
 
+# Clean CriDocker
+- name: Clean Docker
+  include: "roles/remove-cluster/includes/cri-docker.yaml"
+
 # Clean Containerd
 - name: Clean Containerd
   include: "roles/remove-cluster/includes/containerd/main.yaml"
