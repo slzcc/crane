@@ -14,7 +14,7 @@
     path: "{{ kubernetes_ctl_path }}{{ item }}"
     state: absent
   with_items:
-    - "cri-docker"
+    - "cri-dockerd"
   when: is_remove_all or is_remove_cri_docker
   ignore_errors: true
 
