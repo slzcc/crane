@@ -184,6 +184,7 @@
     - "roles/cri-install/vars/kubelet.yaml"
     - "roles/cri-install/vars/crio.yaml"
     - "roles/cri-install/vars/containerd.yaml"
+    - "roles/cri-install/vars/cri-docker.yaml"
   tasks:
     - { include: 'roles/kubernetes-cluster-management/includes/initialize-kubelet.yaml' }
     - { include: 'roles/kubernetes-cluster-management/includes/configuretion-kubelet.yaml' }
