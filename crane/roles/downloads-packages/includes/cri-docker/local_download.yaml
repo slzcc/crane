@@ -6,14 +6,14 @@
 
 - name: Copy CriDocker Compressed File
   copy: 
-    src: "roles/downloads-packages/files/cri-dockerd-{{ cri_docker_version }}.{{ os_arch }}.tar.gz"
+    src: "roles/downloads-packages/files/cri-dockerd-{{ cri_docker_version }}.{{ os_arch }}.tgz"
     dest: "{{ temporary_dirs }}cri-dockerd-{{ cri_docker_version }}.{{ os_arch }}.tar.gz"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
   when: CHECK_CIRDOCKER_BIN_PACKAGE is failed
 
 - name: Unpack the CriDocker. Tar. Gz
-  shell: "tar zxf {{ temporary_dirs }}cri-dockerd-{{ cri_docker_version }}.{{ os_arch }}.tar.gz -C {{ temporary_dirs }}"
+  shell: "tar zxf {{ temporary_dirs }}cri-dockerd-{{ cri_docker_version }}.{{ os_arch }}.tgz -C {{ temporary_dirs }}"
   when: CHECK_CIRDOCKER_BIN_PACKAGE is failed
 
 - name: Copy Binary file to the execution directory
