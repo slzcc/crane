@@ -1,4 +1,14 @@
 ---
+- name: Stop CriDocker (If there is)
+  service:
+    name: "{{ item }}"
+    state: stopped
+  ignore_errors: true
+  with_items:
+    - "cri-docker"
+    - "cri-docker.socket"
+  when: is_remove_all or is_remove_cri_docker
+
 - name: Remove Cri-Docker Binary Files
   file:
     path: "{{ kubernetes_ctl_path }}{{ item }}"
