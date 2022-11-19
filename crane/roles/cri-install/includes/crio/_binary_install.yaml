@@ -10,7 +10,7 @@
 
 - name: Copy crio Systemd Config
   template: 
-    src: "roles/cri-install/templates/crio/{{ item }}"
+    src: "roles/cri-install/templates/cri-o/{{ item }}"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
     dest: "{{ systemd_default_dirs }}{{ item }}"
@@ -19,7 +19,7 @@
 
 - name: Copy crio Systemd Env Config
   template: 
-    src: "roles/cri-install/templates/crio/{{ item }}"
+    src: "roles/cri-install/templates/cri-o/{{ item }}"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
     dest: "/etc/default/crio"
@@ -35,7 +35,7 @@
 
 - name: Copy crio Config
   template: 
-    src: "roles/cri-install/templates/crio/{{ item }}"
+    src: "roles/cri-install/templates/cri-o/{{ item }}"
     mode: 0644
     owner: "{{ ssh_connect_user }}"
     dest: "/etc/crio/crio.conf"
