@@ -106,6 +106,10 @@
   include: "roles/cri-install/includes/cri-docker/os.yaml"
   when: is_cir_docker_install
 
+- name: Start CriDocker
+  include: "roles/cri-install/includes/cri-docker/_system_start.yaml"
+  when: is_cir_docker_install
+
 - name: Open Kubelet..
   include: "roles/cri-install/includes/docker/kubernetes/open-kubelet.yaml"
   when: is_docker_install_close_kubelet

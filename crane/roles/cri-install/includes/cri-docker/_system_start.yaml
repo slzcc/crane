@@ -1,0 +1,18 @@
+- name: CriDockerd Powered UP And Startd
+  service: 
+    name: "{{ item }}"
+    enabled: yes
+  with_items:
+    - "cri-docker.service"
+    - "cri-docker.socket"
+  ignore_errors: true
+
+- name: Start CriDockerd
+  service:
+    name: "{{ item }}"
+    state: started
+  with_items:
+    - "cri-docker.service"
+    - "cri-docker.socket"
+  ignore_errors: true
+  when: not is_kube_simple
