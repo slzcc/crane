@@ -38,3 +38,8 @@
 
 - name: Create Kubectl Config ******
   shell: "chown {{ ssh_connect_user }} {{ kubernetes_etc_dirs }}kubelet.conf"
+
+- name: Clean Files *
+  shell: 'rm -rf {{ kubernetes_pki_dirs }}*.json \
+                 {{ kubernetes_pki_dirs }}*.csr'
+  ignore_errors: true

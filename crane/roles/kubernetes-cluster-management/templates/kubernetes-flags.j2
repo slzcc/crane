@@ -1,1 +1,1 @@
-KUBELET_KUBEADM_ARGS={{ kubelet_options }} {% if min_kernel_version is version(ansible_facts.kernel, ">=") %} {{ kubelet_low_kernel_config }} {% endif %} {% if cri_k8s_default != 'docker' %}  {{ kubelet_containerd_cri_options }} {% endif %}
+KUBELET_KUBEADM_ARGS={{ kubelet_options }} {% if min_kernel_version is version(ansible_facts.kernel, ">=") %} {{ kubelet_low_kernel_config }} {% endif %} {{ kubelet_containerd_cri_options }}

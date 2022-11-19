@@ -1,0 +1,10 @@
+- name: Ubuntu Install CriDocker
+  include: roles/downloads-packages/includes/cri-docker/local_download.yaml
+  when: docker_install_type == 'local_binary'
+
+- name: Ubuntu Install CriDocker
+  include: roles/downloads-packages/includes/cri-docker/http_download.yaml
+  when: docker_install_type == 'http_binary'
+
+- name: Binary Install
+  include: "roles/cri-install/includes/cri-docker/_binary_install.yaml"

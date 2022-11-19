@@ -35,6 +35,11 @@
     ln -sf {{ kubernetes_pki_dirs }}cilium/cilium-ca.pem {{ kubernetes_pki_dirs }}cilium/ca.crt;
     ln -sf {{ kubernetes_pki_dirs }}cilium/cilium-ca-key.pem {{ kubernetes_pki_dirs }}cilium/ca.key;
 
+- name: Clean Files *
+  shell: 'rm -rf {{ kubernetes_pki_dirs }}*.json \
+                 {{ kubernetes_pki_dirs }}*.csr'
+  ignore_errors: true
+
 - name: Deploy Cilium CA
   shell: "{{ kubernetes_ctl_path }}kubectl create secret generic cilium-ca --from-file={{ kubernetes_pki_dirs }}cilium/ca.crt --from-file={{ kubernetes_pki_dirs }}cilium/ca.key -n {{ cilium_namespace }}"
   ignore_errors: true

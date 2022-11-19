@@ -12,3 +12,9 @@
     path: "{{ kubernetes_ctl_path }}cilium"
     state: absent
   ignore_errors: true
+
+- name: Clean Cilium CNI.
+  shell: "rm -rf {{ cni_config_dir }}/{{ item }}"
+  with_items:
+    - "05-cilium.conflist*"
+  ignore_errors: true
