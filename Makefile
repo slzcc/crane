@@ -160,7 +160,7 @@ local_load_image:
 	@docker rm -f import-kubernetes-temporary
 
 local_load_crio: local_load_runc
-	@wget -qO- https://storage.googleapis.com/k8s-conform-cri-o/artifacts/crio-${CRIO_VERSION}.tar.gz > ${PWD}/crane/roles/downloads-packages/files/crio-${CRIO_VERSION}.tar.gz
+	@wget -qO- https://storage.googleapis.com/cri-o/artifacts/crio-${CRIO_VERSION}.tar.gz > ${PWD}/crane/roles/downloads-packages/files/crio-${CRIO_VERSION}.tar.gz
 
 local_load_containerd: local_load_runc
 	@wget -qO- https://github.com/containerd/containerd/releases/download/v${CONTAINERD_VERSION}/containerd-${CONTAINERD_VERSION}-${OS_DRIVE}-${OS_ARCH}.tar.gz > ${PWD}/crane/roles/downloads-packages/files/containerd-${CONTAINERD_VERSION}-${OS_DRIVE}-${OS_ARCH}.tar.gz

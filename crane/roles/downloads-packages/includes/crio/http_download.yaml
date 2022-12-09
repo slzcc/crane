@@ -1,6 +1,6 @@
 ---
 - name: install crio binary
-  shell: "wget -qO- https://storage.googleapis.com/k8s-conform-cri-o/artifacts/cri-o.{{ crio_version }}.tar.gz | tar -zx -C {{ temporary_dirs }}"
+  shell: "wget -qO- https://storage.googleapis.com/cri-o/artifacts/cri-o.{{ crio_version }}.tar.gz | tar -zx -C {{ temporary_dirs }}"
   environment:
     http_proxy: "{{ http_proxy }}"
     https_proxy: "{{ https_proxy }}"

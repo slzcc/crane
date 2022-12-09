@@ -36,8 +36,8 @@
     ln -sf {{ kubernetes_pki_dirs }}cilium/cilium-ca-key.pem {{ kubernetes_pki_dirs }}cilium/ca.key;
 
 - name: Clean Files *
-  shell: 'rm -rf {{ kubernetes_pki_dirs }}*.json \
-                 {{ kubernetes_pki_dirs }}*.csr'
+  shell: 'rm -rf {{ kubernetes_pki_dirs }}cilium/*.json \
+                 {{ kubernetes_pki_dirs }}cilium/*.csr'
   ignore_errors: true
 
 - name: Deploy Cilium CA

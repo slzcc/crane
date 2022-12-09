@@ -49,7 +49,7 @@ istio_home: "/usr/local/istio-{{ istio_version }}"
 
 # Istio Version
 # https://github.com/istio/istio/releases
-istio_version: 1.13.1
+istio_version: 1.15.3
 
 # 部署 Istio 所使用的 Ingress Domain
 istio_ingress_prometheus_domain: "prometheus.example.com"
@@ -85,7 +85,7 @@ is_deploy_harbor: false
 
 # Harbor Version
 ## https://github.com/goharbor/harbor/releases
-harbor_version: "v2.1.5"
+harbor_version: "v2.6.2"
 
 # Harbor Pod Prefix Name
 harbor_project_name_prefix: "release-name-"

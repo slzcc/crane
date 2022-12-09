@@ -2,7 +2,7 @@
 ## ********************************************************************************************************************************
 
 # https://github.com/cri-o/cri-o/releases
-crio_version: '{{ os_arch }}.v1.24.1'
+crio_version: '{{ os_arch }}.v1.25.1'
 
 # install docs https://github.com/cri-o/cri-o/blob/master/install.md#installation-instructions
 
