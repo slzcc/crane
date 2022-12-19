@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 如果需要部署到自己的私有仓库，请修改此项名称
-export targetRegistry=${targetRegistry:-'docker.io/slzcc'}
+export targetRegistry=${targetRegistry:-'slzcc'}
 
 _cri_driver=`awk '/^cri_driver/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 
