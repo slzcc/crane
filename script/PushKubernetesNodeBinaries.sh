@@ -1,12 +1,13 @@
 #!/bin/bash
 
 # 如果需要部署到自己的私有仓库，请修改此项名称
-export targetRegistry=${targetRegistry:-'slzcc'}
+export targetRegistry=${targetRegistry:-'docker.io/slzcc'}
 
 _cri_driver=`awk '/^cri_driver/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 
 _cni_os_drive='linux-amd64'
 _dockerVersion=`awk '/^docker_version/{print}' ../crane/roles/cri-install/vars/docker.yaml | awk -F': ' '{print $2}' | sed "s/'//g"`
+_containerdVersion=`awk '/^containerd_version/{print}' ../crane/roles/cri-install/vars/containerd.yaml | awk -F': ' '{print $2}' | sed "s/'//g"`
 _k8sVersion=`awk '/^k8s_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 _cni_version=`awk '/^cni_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
 _etcdVersion=`awk '/^etcd_version/{print}' ../crane/group_vars/all.yml | awk -F': ' '{print $2}' | sed "s/'//g"`
@@ -87,10 +88,12 @@ RUN wget -qO- "https://pkg.cfssl.org/R1.2/cfssl_${_cni_os_drive}" > /cfssl && \
 RUN wget -qO- https://github.com/etcd-io/etcd/releases/download/v${etcdVersion%-*}/etcd-v${etcdVersion%-*}-${_cni_os_drive}.tar.gz | tar -zx -C / && \
     mv /etcd-v${etcdVersion%-*}-${_cni_os_drive}/etcd* /
 
+RUN wget -qO- https://github.com/containerd/containerd/releases/download/v${_containerdVersion}/containerd-${_containerdVersion}-${_cni_os_drive}.tar.gz | tar -zx -C /
+
 FROM ubuntu:18.04
 
 COPY --from=DockerCli /usr/local/bin/docker /usr/local/bin
-COPY --from=DockerCli /usr/local/bin/ctr /usr/local/bin
+COPY --from=Packages /bin/ctr /usr/local/bin
 COPY --from=Packages /kubernetes /kubernetes
 COPY --from=Packages /cni /cni
 COPY --from=Packages /cfssl /cfssl
