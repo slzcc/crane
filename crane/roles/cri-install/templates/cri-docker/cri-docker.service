@@ -7,7 +7,7 @@ Requires=cri-docker.socket
 
 [Service]
 Type=notify
-ExecStart={{ kubernetes_ctl_path }}cri-dockerd --container-runtime-endpoint fd://
+ExecStart={{ kubernetes_ctl_path }}cri-dockerd --container-runtime-endpoint unix://{{ cri_docker_socket_path }} --docker-endpoint unix://{{ docker_socket_path }} --pod-infra-container-image {{ k8s_cluster_component_registry }}/pause:{{ pause_version }}
 ExecReload=/bin/kill -s HUP $MAINPID
 TimeoutSec=0
 RestartSec=2

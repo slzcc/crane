@@ -111,7 +111,7 @@ calico_version: 'v3.24.5'
 # Cilium Verion
 # https://github.com/cilium/cilium/releases
 # 其他配置请参照 roles/kubernetes-networks/defaults/cilium.yaml
-cilium_version: 'v1.12.4'
+cilium_version: 'v1.12.5'
 
 ## Kubelet Config
 # 参照 crane/roles/kubernetes-cluster-management/vars/kubelet.yaml

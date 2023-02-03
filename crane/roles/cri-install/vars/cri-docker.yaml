@@ -2,10 +2,10 @@
 ## ********************************************************************************************************************************
 
 # https://github.com/Mirantis/cri-dockerd/releases
-cri_docker_version: 0.2.6
+cri_docker_version: 0.3.1
 
 # CriDocker Socket 文件路径
-cri_docker_socket_home: '/run/cri-dockerd'
+cri_docker_socket_home: '/var/run'
 cri_docker_socket_path: '{{ cri_docker_socket_home }}/cri-dockerd.sock'
 
 # 是否默认安装
