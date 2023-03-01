@@ -28,7 +28,7 @@ is_deploy_metrics_server: false
 
 # Metircs Server Deploy Version
 # https://github.com/kubernetes-sigs/metrics-server/releases
-metrics_server_version: "v0.6.1"
+metrics_server_version: "v0.6.2"
 
 ## DNS Example
 ## ********************************************************************************************************************************

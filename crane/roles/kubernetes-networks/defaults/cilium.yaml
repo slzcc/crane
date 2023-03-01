@@ -20,7 +20,7 @@ cilium_pool_ipv4_mask_size: "24"
 
 # kubeProxy Replacement
 # disabled or probe or partial or strict
-cilium_kubeProxy_replacement_type: "probe"
+cilium_kubeProxy_replacement_type: "strict"
 
 # Enables HostPort support for Cilium
 #  - none    => default
