@@ -34,14 +34,15 @@ cilium_auto_direct_node_routes: "false"
 
 # 是否部署 hubble
 is_deploy_hubble: false
-cilium_hubble_metrics_port: ":9091"
+cilium_hubble_metrics_port: "7070"
 
 # Ingress Daemon
 cilium_hubble_daemon: "hubble.example.com"
 
 # Prometheus Configmap
-cilium_prometheus_port: ":9990"
-cilium_proxy_prometheus_port: "9095"
+cilium_prometheus_port: "9990"
+cilium_proxy_prometheus_port: "9964"
+cilium_operator_prometheus_serve_port: "9963"
 
 # 可参考文献: https://zhuanlan.zhihu.com/p/143335054
 

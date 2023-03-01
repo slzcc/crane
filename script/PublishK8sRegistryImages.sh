@@ -101,8 +101,8 @@ docker save -o ${temporaryDirs}/image_calico.tar.gz \
 
 # Cilium
 docker pull quay.io/cilium/startup-script:d69851597ea019af980891a4628fb36b7880ec26
-docker pull quay.io/cilium/hubble-ui-backend:v0.9.1
-docker pull quay.io/cilium/hubble-ui:v0.9.1
+docker pull quay.io/cilium/hubble-ui-backend:v0.10.0
+docker pull quay.io/cilium/hubble-ui:v0.10.0
 for i in cilium operator-generic hubble-relay; do
     docker pull quay.io/cilium/$i:${ciliumVersion}
     
