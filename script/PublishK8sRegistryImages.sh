@@ -116,8 +116,8 @@ docker save -o ${temporaryDirs}/image_cilium.tar.gz \
                quay.io/cilium/operator-generic:${ciliumVersion} \
                quay.io/cilium/cilium:${ciliumVersion} \
                quay.io/cilium/startup-script:d69851597ea019af980891a4628fb36b7880ec26 \
-               quay.io/cilium/hubble-ui-backend:v0.9.1 \
-               quay.io/cilium/hubble-ui:v0.9.1
+               quay.io/cilium/hubble-ui-backend:v0.10.0 \
+               quay.io/cilium/hubble-ui:v0.10.0
 
 # HaProxy
 docker pull haproxy:${haproxyVersion}
