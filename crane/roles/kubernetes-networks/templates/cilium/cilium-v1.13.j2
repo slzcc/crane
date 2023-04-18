@@ -71,12 +71,6 @@ data:
   # Port to expose Envoy metrics (e.g. "{{ cilium_proxy_prometheus_port }}"). Envoy metrics listener will be disabled if this
   # field is not set.
   proxy-prometheus-port: "{{ cilium_proxy_prometheus_port }}"
-  # If you want metrics enabled in cilium-operator, set the port for
-  # which the Cilium Operator will have their metrics exposed.
-  # NOTE that this will open the port on the nodes where Cilium operator pod
-  # is scheduled.
-  operator-prometheus-serve-addr: ":{{ cilium_operator_prometheus_serve_port }}"
-  enable-metrics: "true"
 
   # Enable IPv4 addressing. If enabled, all endpoints are allocated an IPv4
   # address.
@@ -159,6 +153,7 @@ data:
   #  - portmap (Enables HostPort support for Cilium)
   cni-chaining-mode: {{ cilium_hostPort }}
 
+
   # Enables L7 proxy for L7 policy enforcement and visibility
   enable-l7-proxy: "true"
 
@@ -167,7 +162,6 @@ data:
   enable-ipv6-masquerade: "true"
 
   enable-xt-socket-fallback: "true"
-  install-iptables-rules: "true"
   install-no-conntrack-iptables-rules: "false"
 
   auto-direct-node-routes: "false"
@@ -182,6 +176,7 @@ data:
   enable-svc-source-range-check: "true"
   enable-l2-neigh-discovery: "true"
   arping-refresh-period: "30s"
+  cni-uninstall: "true"
   enable-endpoint-health-checking: "true"
   enable-health-checking: "true"
   enable-well-known-identities: "false"
@@ -246,7 +241,7 @@ metadata:
 data:
   config.yaml: |
     cluster-name: cilium-a
-    peer-service: "hubble-peer.{{ cilium_namespace }}.svc.cluster.local:80"
+    peer-service: "hubble-peer.kube-system.svc.cluster.local:80"
     listen-address: :4245
     dial-timeout:
     retry-timeout:
@@ -986,8 +981,6 @@ spec:
           mountPropagation: HostToContainer
         - name: cilium-run
           mountPath: {{ cilium_workdir_run }}
-        - name: cni-path
-          mountPath: /host/opt/cni/bin
         - name: etc-cni-netd
           mountPath: /host/etc/cni/net.d
         - name: clustermesh-secrets
@@ -1032,7 +1025,7 @@ spec:
       # Required to mount cgroup2 filesystem on the underlying Kubernetes node.
       # We use nsenter command with host's cgroup and mount namespaces enabled.
       - name: mount-cgroup
-        image: "quay.io/cilium/cilium:{{ cilium_version }}"
+        image: "quay.io/cilium/cilium:v1.13.1@sha256:428a09552707cc90228b7ff48c6e7a33dc0a97fe1dd93311ca672834be25beda"
         imagePullPolicy: IfNotPresent
         env:
         - name: TZ
@@ -1074,6 +1067,8 @@ spec:
         image: "quay.io/cilium/cilium:{{ cilium_version }}"
         imagePullPolicy: IfNotPresent
         env:
+        - name: TZ
+          value: "{{ time_location }}"
         - name: BIN_PATH
           value: /opt/cni/bin
         command:
@@ -1117,6 +1112,9 @@ spec:
         - /bin/bash
         - -c
         - --
+        env:
+        - name: TZ
+          value: "{{ time_location }}"
         terminationMessagePolicy: FallbackToLogsOnError
         securityContext:
           privileged: true
@@ -1127,6 +1125,9 @@ spec:
       - name: wait-for-node-init
         image: "quay.io/cilium/cilium:{{ cilium_version }}"
         imagePullPolicy: IfNotPresent
+        env:
+        - name: TZ
+          value: "{{ time_location }}"
         command:
         - sh
         - -c
@@ -1189,10 +1190,35 @@ spec:
           requests:
             cpu: 100m
             memory: 100Mi # wait-for-kube-proxy
+      # Install the CNI binaries in an InitContainer so we don't have a writable host mount in the agent
+      - name: install-cni-binaries
+        image: "quay.io/cilium/cilium:{{ cilium_version }}"
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: TZ
+          value: "{{ time_location }}"
+        command:
+          - "/install-plugin.sh"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 10Mi
+        securityContext:
+          seLinuxOptions:
+            level: s0
+            type: spc_t
+          capabilities:
+            drop:
+              - ALL
+        terminationMessagePolicy: FallbackToLogsOnError
+        volumeMounts:
+          - name: cni-path
+            mountPath: /host/opt/cni/bin
       restartPolicy: Always
       priorityClassName: system-node-critical
       serviceAccount: "cilium"
       serviceAccountName: "cilium"
+      automountServiceAccountToken: true
       terminationGracePeriodSeconds: 1
       hostNetwork: true
       affinity:
@@ -1303,6 +1329,8 @@ spec:
           imagePullPolicy: IfNotPresent
           lifecycle:
           env:
+          - name: TZ
+            value: "{{ time_location }}"
           # STARTUP_SCRIPT is the script run on node bootstrap. Node
           # bootstrapping can be customized in this script. This script is invoked
           # using nsenter, so it runs in the host's network and mount namespace using
@@ -1380,8 +1408,6 @@ spec:
   template:
     metadata:
       annotations:
-        prometheus.io/port: "{{ cilium_operator_prometheus_serve_port }}"
-        prometheus.io/scrape: "true"
       labels:
         io.cilium/app: operator
         name: cilium-operator
@@ -1420,11 +1446,6 @@ spec:
           value: "{{ k8s_load_balance_ip }}"
         - name: KUBERNETES_SERVICE_PORT
           value: "{{ k8s_master_haproxy_bind_port }}"
-        ports:
-        - name: prometheus
-          containerPort: {{ cilium_operator_prometheus_serve_port }}
-          hostPort: {{ cilium_operator_prometheus_serve_port }}
-          protocol: TCP
         livenessProbe:
           httpGet:
             host: "127.0.0.1"
@@ -1444,6 +1465,7 @@ spec:
       priorityClassName: system-cluster-critical
       serviceAccount: "cilium-operator"
       serviceAccountName: "cilium-operator"
+      automountServiceAccountToken: true
       # In HA mode, cilium-operator pods must not be scheduled on the same
       # node as they will clash with each other.
       affinity:
@@ -1554,6 +1576,10 @@ spec:
   selector:
     matchLabels:
       k8s-app: hubble-ui
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
   template:
     metadata:
       annotations:
@@ -1569,6 +1595,7 @@ spec:
       priorityClassName:
       serviceAccount: "hubble-ui"
       serviceAccountName: "hubble-ui"
+      automountServiceAccountToken: true
       containers:
       - name: frontend
         image: "quay.io/cilium/hubble-ui:v0.10.0"
@@ -1577,11 +1604,11 @@ spec:
         - name: http
           containerPort: 8081
         volumeMounts:
-          - name: hubble-ui-nginx-conf
-            mountPath: /etc/nginx/conf.d/default.conf
-            subPath: nginx.conf
-          - name: tmp-dir
-            mountPath: /tmp
+        - name: hubble-ui-nginx-conf
+          mountPath: /etc/nginx/conf.d/default.conf
+          subPath: nginx.conf
+        - name: tmp-dir
+          mountPath: /tmp
         terminationMessagePolicy: FallbackToLogsOnError
       - name: backend
         image: "quay.io/cilium/hubble-ui-backend:v0.10.0"
