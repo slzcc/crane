@@ -7,7 +7,7 @@
 k8s_version: 'v1.27.4'
 
 # 避免大版本中组件的版本差异, 使用 build 版本作为差异配置项, 在项目中可以看做如下使用 '{{ k8s_version }}.{{ build_k8s_version }}'
-build_k8s_version: '0'
+build_k8s_version: '1'
 
 # OS Drive/Arch Type
 os_drive: 'linux'
@@ -111,7 +111,7 @@ calico_version: 'v3.24.5'
 # Cilium Verion
 # https://github.com/cilium/cilium/releases
 # 其他配置请参照 roles/kubernetes-networks/defaults/cilium.yaml
-cilium_version: 'v1.13.1'
+cilium_version: 'v1.13.5'
 
 ## Kubelet Config
 # 参照 crane/roles/kubernetes-cluster-management/vars/kubelet.yaml
