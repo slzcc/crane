@@ -76,13 +76,13 @@ FROM slzcc/ansible:demo4 as Packages
 ENV http_proxy=${http_proxy} \ 
     https_proxy=${https_proxy}
 
-RUN wget -qO- "https://dl.k8s.io/${k8sVersion}/kubernetes-server-${_cni_os_drive}.tar.gz" | tar zx -C /
+RUN wget -qO- https://dl.k8s.io/${k8sVersion}/kubernetes-server-${_cni_os_drive}.tar.gz | tar zx -C /
 
 RUN mkdir -p /cni && \
-    wget -qO- "https://github.com/containernetworking/plugins/releases/download/${cniVersion}/cni-plugins-${_cni_os_drive}-${cniVersion}.tgz" | tar zx -C /cni
+    wget -qO- https://github.com/containernetworking/plugins/releases/download/${cniVersion}/cni-plugins-${_cni_os_drive}-${cniVersion}.tgz | tar zx -C /cni
 
-RUN wget -qO- "https://pkg.cfssl.org/R1.2/cfssl_${_cni_os_drive}" > /cfssl && \
-    wget -qO- "https://pkg.cfssl.org/R1.2/cfssljson_${_cni_os_drive}" > /cfssljson && \
+RUN wget -qO- https://pkg.cfssl.org/R1.2/cfssl_${_cni_os_drive} > /cfssl && \
+    wget -qO- https://pkg.cfssl.org/R1.2/cfssljson_${_cni_os_drive} > /cfssljson && \
     chmod +x /cfssl*
 
 RUN wget -qO- https://github.com/etcd-io/etcd/releases/download/v${etcdVersion%-*}/etcd-v${etcdVersion%-*}-${_cni_os_drive}.tar.gz | tar -zx -C / && \
