@@ -7,7 +7,7 @@
   ignore_errors: true
 
 - name: Download Cilium Package
-  shell: "wget -qO- 'https://github.com/slzcc/crane/releases/download/v1.25.4.1/cilium' > {{ kubernetes_ctl_path }}cilium"
+  shell: "wget -qO- 'https://github.com/slzcc/crane/releases/download/v1.28.0.1/cilium' > {{ kubernetes_ctl_path }}cilium"
   environment:
     http_proxy: "{{ http_proxy }}"
     https_proxy: "{{ https_proxy }}"
