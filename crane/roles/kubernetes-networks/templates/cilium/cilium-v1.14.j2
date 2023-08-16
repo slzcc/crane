@@ -209,7 +209,7 @@ data:
   hubble-disable-tls: "true"
   ipam: "{{ cilium_ipam_type }}"
   ipam-cilium-node-update-rate: "15s"
-  cluster-pool-ipv4-cidr: "[{{ cilium_pool_ipv4_cidr }}]"
+  cluster-pool-ipv4-cidr: "{{ cilium_pool_ipv4_cidr }}"
   cluster-pool-ipv4-mask-size: "{{ cilium_pool_ipv4_mask_size }}"
   disable-cnp-status-updates: "true"
   cnp-node-status-gc-interval: "0s"

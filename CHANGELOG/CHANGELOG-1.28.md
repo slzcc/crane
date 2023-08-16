@@ -22,3 +22,5 @@ Crane 以更新至 1.28.0.0 版本。
   * docker 20.10.18 > 23.0.6
   * runC 1.1.4 > 1.1.9
   * pause 3.7 > 3.9
+
+从 1.28.0 版本开始, 修改 `cri_k8s_default` 使用 docker 为默认 cri, 因使用太不习惯, 如果有特殊需求使用前修改 `cri_k8s_default`。
