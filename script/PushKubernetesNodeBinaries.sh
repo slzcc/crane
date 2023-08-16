@@ -73,10 +73,11 @@ FROM docker:${dockercliVersion} as DockerCli
 
 FROM slzcc/ansible:demo4 as Packages
 
-#ENV http_proxy=${http_proxy} \ 
-#    https_proxy=${https_proxy}
+ENV http_proxy=${http_proxy} \ 
+    https_proxy=${https_proxy}
 
-RUN wget -qO- https://dl.k8s.io/${k8sVersion}/kubernetes-server-${_cni_os_drive}.tar.gz | tar zx -C /
+#RUN wget -qO- https://dl.k8s.io/${k8sVersion}/kubernetes-server-${_cni_os_drive}.tar.gz | tar zx -C /
+RUN wget https://dl.k8s.io/${k8sVersion}/kubernetes-server-${_cni_os_drive}.tar.gz && tar zxf kubernetes-server-${_cni_os_drive}.tar.gz -C /
 
 RUN mkdir -p /cni && \
     wget -qO- https://github.com/containernetworking/plugins/releases/download/${cniVersion}/cni-plugins-${_cni_os_drive}-${cniVersion}.tgz | tar zx -C /cni
