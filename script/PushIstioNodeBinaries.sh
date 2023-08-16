@@ -47,7 +47,7 @@ FROM slzcc/ansible:demo4 as Packages
 ENV http_proxy=${http_proxy} \ 
     https_proxy=${https_proxy}
 
-RUN wget -qO- "https://github.com/istio/istio/releases/download/${IstioVersion}/istio-${IstioVersion}-linux-amd64.tar.gz" | tar zx -C ${temporaryDirs} && \
+RUN wget --no-check-certificate -qO- "https://github.com/istio/istio/releases/download/${IstioVersion}/istio-${IstioVersion}-linux-amd64.tar.gz" | tar zx -C ${temporaryDirs} && \
     mv ${temporaryDirs}/istio-${IstioVersion} ${temporaryDirs}/istio
 
 FROM ubuntu:18.04
