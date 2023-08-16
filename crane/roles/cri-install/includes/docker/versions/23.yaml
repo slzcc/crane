@@ -1,0 +1,9 @@
+---
+- name: Move v23 Docker binray to bin Path
+  shell: "cp -a {{ temporary_dirs }}docker/{{ item }} {{ kubernetes_ctl_path }}"
+  with_items:
+    - "docker"
+    - "docker-init"
+    - "docker-proxy"
+    - "dockerd"
+  ignore_errors: true
