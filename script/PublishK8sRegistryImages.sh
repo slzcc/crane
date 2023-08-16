@@ -100,9 +100,9 @@ docker save -o ${temporaryDirs}/image_calico.tar.gz \
                ${calicoRegistry}/node:${calicoVersion}
 
 # Cilium
-docker pull quay.io/cilium/startup-script:d69851597ea019af980891a4628fb36b7880ec26
-docker pull quay.io/cilium/hubble-ui-backend:v0.10.0
-docker pull quay.io/cilium/hubble-ui:v0.10.0
+docker pull quay.io/cilium/startup-script:62093c5c233ea914bfa26a10ba41f8780d9b737f
+docker pull quay.io/cilium/hubble-ui-backend:v0.12.0
+docker pull quay.io/cilium/hubble-ui:v0.12.0
 for i in cilium operator-generic hubble-relay; do
     docker pull quay.io/cilium/$i:${ciliumVersion}
     
@@ -115,9 +115,9 @@ done
 docker save -o ${temporaryDirs}/image_cilium.tar.gz \
                quay.io/cilium/operator-generic:${ciliumVersion} \
                quay.io/cilium/cilium:${ciliumVersion} \
-               quay.io/cilium/startup-script:d69851597ea019af980891a4628fb36b7880ec26 \
-               quay.io/cilium/hubble-ui-backend:v0.10.0 \
-               quay.io/cilium/hubble-ui:v0.10.0
+               quay.io/cilium/startup-script:62093c5c233ea914bfa26a10ba41f8780d9b737f \
+               quay.io/cilium/hubble-ui-backend:v0.12.0 \
+               quay.io/cilium/hubble-ui:v0.12.0
 
 # HaProxy
 docker pull haproxy:${haproxyVersion}
