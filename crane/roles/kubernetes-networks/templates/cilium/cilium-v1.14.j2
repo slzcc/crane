@@ -150,6 +150,14 @@ data:
   routing-mode: "tunnel"
   tunnel-protocol: "{{ cilium_tunnel_type }}"
 
+  # Enable chaining with another CNI plugin
+  #
+  # Supported modes:
+  #  - none
+  #  - aws-cni
+  #  - generic-veth
+  #  - portmap (Enables HostPort support for Cilium)
+  cni-chaining-mode: {{ cilium_hostPort }}
 
   # Enables L7 proxy for L7 policy enforcement and visibility
   enable-l7-proxy: "true"
