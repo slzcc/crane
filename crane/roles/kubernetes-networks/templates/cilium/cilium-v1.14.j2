@@ -106,6 +106,9 @@ data:
   # Specifies the ratio (0.0-1.0] of total system memory to use for dynamic
   # sizing of the TCP CT, non-TCP CT, NAT and policy BPF maps.
   bpf-map-dynamic-size-ratio: "0.0025"
+  # In cni chaining mode, the other chained plugin is responsible for underlying connectivity,
+  # so cilium eBPF host routing shoud not work, and let it fall back to the legacy routing mode
+  enable-host-legacy-routing: "true"
   # bpf-policy-map-max specifies the maximum number of entries in endpoint
   # policy map (per endpoint)
   bpf-policy-map-max: "16384"
@@ -150,6 +153,15 @@ data:
   routing-mode: "tunnel"
   tunnel-protocol: "{{ cilium_tunnel_type }}"
 
+  # Enable chaining with another CNI plugin
+  #
+  # Supported modes:
+  #  - none
+  #  - aws-cni
+  #  - flannel
+  #  - generic-veth
+  #  - portmap (Enables HostPort support for Cilium)
+  cni-chaining-mode: {{ cilium_hostPort }}
 
   # Enables L7 proxy for L7 policy enforcement and visibility
   enable-l7-proxy: "true"

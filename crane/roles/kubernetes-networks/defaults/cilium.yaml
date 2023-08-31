@@ -26,6 +26,7 @@ cilium_kubeProxy_replacement_type: "strict"
 #  - none    => default
 #  - aws-cni
 #  - flannel
+#  - generic-veth
 #  - portmap => Enables HostPort
 cilium_hostPort: "none"
 
